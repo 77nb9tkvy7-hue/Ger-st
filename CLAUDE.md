@@ -21,6 +21,27 @@ Die Anmeldung wird per `localStorage` auf dem Gerät gespeichert und gilt
 bis zum Ende des Kalendertages – morgens einmal anmelden reicht
 (`saveSession`/`restoreSession`/`clearSession`). „Abmelden" löscht sie.
 
+## Menü / Kalender (ohne Anmeldung erreichbar)
+
+Oben links sitzt das SGM-Logo, oben rechts ein Menü-Knopf (☰) – beides ist
+auch VOR der Anmeldung sichtbar (Funktion `topNavHTML()`). Im Menü gibt es
+aktuell nur den Punkt „Kalender" (`state.view = 'calendar'`). Der Kalender
+zeigt, wer wann wo im Einsatz sein soll, und ist bewusst frei einsehbar
+(kein Login nötig). Einträge bearbeiten/anlegen/löschen kann nur, wer das
+Chef-Passwort eingibt (gleiche Konstante `CHEF_PASSWORD`, eigene Freischalt-
+Abfrage `state.calUnlocked`, gilt nur für die aktuelle Seitenladung, nicht
+dauerhaft gespeichert). Die Kalender-Daten (`calendarEntries`,
+`calCounter`) liegen im selben Supabase-Datensatz wie alles andere.
+
+## PWA / „Wie eine App" nutzbar
+
+Die Datei bindet eine `manifest.json` sowie `icon-192.png`/`icon-512.png`
+(quadratische Kacheln, generiert aus `logo.png`) und einen minimalen
+`sw.js` (Service Worker, nur zur Erfüllung der Browser-Installierbarkeits-
+Kriterien, kein Offline-Cache) ein. Dadurch bieten Handy-Browser „Zum
+Startbildschirm hinzufügen" an; die App startet dann ohne Adressleiste wie
+eine eigenständige App (`display: standalone` in der Manifest-Datei).
+
 ## Die 4 Rollen
 
 1. **Baustelle** (z. B. Max): Bestellt Teile über eine einfache Liste mit
