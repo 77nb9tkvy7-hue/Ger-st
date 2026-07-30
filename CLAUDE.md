@@ -9,11 +9,24 @@ an das Lager und an den LKW-Fahrer.
 Die komplette App ist EINE Datei: `geruest-bestell-app.html`
 (HTML + CSS + JavaScript, keine Frameworks, kein Build-Schritt).
 
-## Die 4 Rollen (Login-Screen: Name eingeben + Rolle wählen)
+## Anmeldung (Name + PIN)
+
+Nur festangestellte Mitarbeiter können sich anmelden: Name aus einer
+festen Liste wählen + eigene 4-stellige PIN eingeben, dann Rolle wählen.
+Die Liste steht in der Konstante `EMPLOYEES` am Anfang des
+`<script>`-Blocks (Name + PIN pro Person, neue Mitarbeiter = neue Zeile).
+Die Anmeldung wird per `localStorage` auf dem Gerät gespeichert und gilt
+bis zum Ende des Kalendertages – morgens einmal anmelden reicht
+(`saveSession`/`restoreSession`/`clearSession`). „Abmelden" löscht sie.
+
+## Die 4 Rollen
 
 1. **Baustelle** (z. B. Max): Bestellt Teile über eine einfache Liste mit
    +/− Mengenwahl (bewusst KEIN Amazon-Warenkorb-Stil, das wurde extra
    entfernt). Sieht unten seine eigenen letzten Bestellungen mit Status.
+   Beim Ort gibt es einen Knopf „Meinen Standort als Adresse übernehmen"
+   (GPS + Adress-Auflösung über die freie Nominatim/OpenStreetMap-API);
+   die Koordinaten werden mit der Bestellung gespeichert.
 2. **Lager** (z. B. Jochen): Zwei Reiter:
    - "Bestellungen": eingehende Bestellungen, Buttons "Bearbeitung starten"
      und "Bereit melden"
@@ -23,6 +36,8 @@ Die komplette App ist EINE Datei: `geruest-bestell-app.html`
 3. **Fahrer** (z. B. Ludwig): Sieht was wohin muss und wann bestellt wurde.
    Kann erst handeln, wenn das Lager freigegeben hat.
    Buttons: "Verladen" → "Losfahren" → "Lieferung bestätigen".
+   Jede Bestellkarte (bei allen Rollen) hat einen Link „In Google Maps
+   öffnen": mit GPS-Koordinaten, falls vorhanden, sonst per Adress-Suche.
 4. **Chef**: Nur-Lese-Übersicht über alles: Statistik-Chips pro Status,
    alle Bestellungen, kompletter Lagerbestand. Diese Rolle ist mit einem
    Passwort geschützt (Konstante `CHEF_PASSWORD` am Anfang des
@@ -56,8 +71,8 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
 ## Geplante nächste Schritte
 
 - Aktuell keine offenen Punkte. Mögliche spätere Verbesserungen: Realtime-
-  Updates statt Polling (Supabase Realtime), Passwortschutz auch für
-  Lager/Fahrer, Export der Bestellungen als PDF/CSV.
+  Updates statt Polling (Supabase Realtime), Push-Benachrichtigungen,
+  Export der Bestellungen als PDF/CSV.
 
 ## Stil-Vorgaben
 
