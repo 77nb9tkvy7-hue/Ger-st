@@ -24,7 +24,11 @@ Die komplette App ist EINE Datei: `geruest-bestell-app.html`
    Kann erst handeln, wenn das Lager freigegeben hat.
    Buttons: "Verladen" → "Losfahren" → "Lieferung bestätigen".
 4. **Chef**: Nur-Lese-Übersicht über alles: Statistik-Chips pro Status,
-   alle Bestellungen, kompletter Lagerbestand.
+   alle Bestellungen, kompletter Lagerbestand. Diese Rolle ist mit einem
+   Passwort geschützt (Konstante `CHEF_PASSWORD` am Anfang des
+   `<script>`-Blocks). Hinweis: Da die Prüfung im Browser stattfindet und
+   das Repo öffentlich ist, ist das nur ein einfacher Schutz gegen
+   neugierige Mitarbeiter, keine echte Sicherheitsmaßnahme.
 
 ## Status-Ablauf einer Bestellung
 
@@ -52,8 +56,8 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
 ## Geplante nächste Schritte
 
 - Aktuell keine offenen Punkte. Mögliche spätere Verbesserungen: Realtime-
-  Updates statt Polling (Supabase Realtime), einfacher Passwortschutz pro
-  Rolle, Export der Bestellungen als PDF/CSV.
+  Updates statt Polling (Supabase Realtime), Passwortschutz auch für
+  Lager/Fahrer, Export der Bestellungen als PDF/CSV.
 
 ## Stil-Vorgaben
 

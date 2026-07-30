@@ -147,6 +147,10 @@ const supabaseClient = (typeof supabase !== 'undefined')
 
 const STORAGE_KEY = 'shopfloor-data-v2';
 
+// Passwort für die Chef-Ansicht. Zum Ändern einfach den Text
+// zwischen den Anführungszeichen austauschen.
+const CHEF_PASSWORD = 'chef2026';
+
 const CATALOG = [
   {id:'rahmen20', name:'Vertikalrahmen 2,00 m', unit:'Stk', icon:'frame'},
   {id:'rahmen10', name:'Vertikalrahmen 1,00 m', unit:'Stk', icon:'frame'},
@@ -190,6 +194,7 @@ const state = {
   loggedIn:false, name:'', role:null,
   cart:{}, orders:[], orderCounter:1001, inventory:{...DEFAULT_INVENTORY},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
+  askChefPw:false,
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
@@ -239,6 +244,23 @@ function helmetIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="curre
 function chefIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';}
 
 function loginHTML(){
+  if(state.askChefPw){
+    return `<div class="login-wrap">
+      <div class="login-card">
+        <h1>Chef-Bereich</h1>
+        <div class="sub">Bitte das Chef-Passwort eingeben</div>
+        <div class="field">
+          <label>Passwort</label>
+          <input id="chefPwInput" type="password" placeholder="Passwort">
+        </div>
+        <div class="role-grid">
+          <button class="role-btn" data-action="chef-pw-ok" style="justify-content:center;background:var(--orange);color:white;">Anmelden</button>
+          <button class="role-btn" data-action="chef-pw-back" style="justify-content:center;">Zurück</button>
+        </div>
+        ${state.loginWarn? `<div class="warn">${state.loginWarn}</div>`:''}
+      </div>
+    </div>`;
+  }
   return `<div class="login-wrap">
     <div class="login-card">
       <h1>Gerüst-Bestellung</h1>
@@ -457,10 +479,22 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const nameInput = document.getElementById('loginName');
     const name = (nameInput? nameInput.value : '').trim();
     if(!name){ state.loginWarn='Bitte Namen eingeben.'; render(); return; }
-    state.name = name; state.role = el.dataset.role; state.loggedIn = true; state.loginWarn='';
+    state.name = name; state.loginWarn='';
+    if(el.dataset.role==='chef'){ state.askChefPw = true; render(); return; }
+    state.role = el.dataset.role; state.loggedIn = true;
     render();
   }
-  if(action==='logout'){ state.loggedIn=false; state.role=null; render(); }
+  if(action==='chef-pw-ok'){
+    const pw = document.getElementById('chefPwInput');
+    if(pw && pw.value===CHEF_PASSWORD){
+      state.askChefPw=false; state.loginWarn=''; state.role='chef'; state.loggedIn=true;
+    } else {
+      state.loginWarn='Falsches Passwort.';
+    }
+    render();
+  }
+  if(action==='chef-pw-back'){ state.askChefPw=false; state.loginWarn=''; render(); }
+  if(action==='logout'){ state.loggedIn=false; state.role=null; state.askChefPw=false; render(); }
   if(action==='qty'){
     const id = el.dataset.id, delta = parseInt(el.dataset.delta,10);
     const cur = state.cart[id]||0;
