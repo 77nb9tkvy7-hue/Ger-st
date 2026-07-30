@@ -44,7 +44,9 @@
 
   .field{margin-bottom:10px;}
   .field label{display:block;font-size:12px;color:var(--steel);margin-bottom:4px;font-weight:600;}
-  .field input{width:100%;padding:10px;border:1px solid var(--concrete-2);border-radius:6px;font-size:14px;font-family:inherit;}
+  .field input,.field select{width:100%;padding:10px;border:1px solid var(--concrete-2);border-radius:6px;font-size:14px;font-family:inherit;background:var(--white);color:var(--ink);}
+  .loc-btn{display:block;width:100%;background:none;border:1px dashed var(--steel);color:var(--steel);border-radius:6px;padding:9px;font-size:12.5px;cursor:pointer;margin-bottom:12px;font-family:'Inter',sans-serif;}
+  .maps-btn{display:block;text-align:center;border:1.5px solid var(--blue);color:var(--blue);border-radius:6px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;margin-top:8px;}
 
   /* Bestellliste (kein Warenkorb) */
   .order-row{display:flex;align-items:center;gap:10px;background:var(--white);border-radius:8px;padding:10px 12px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,0.08);}
@@ -151,6 +153,34 @@ const STORAGE_KEY = 'shopfloor-data-v2';
 // zwischen den Anführungszeichen austauschen.
 const CHEF_PASSWORD = 'chef2026';
 
+// Festangestellte Mitarbeiter: Nur wer hier steht, kann sich anmelden.
+// Jeder hat eine eigene 4-stellige PIN. Neue Mitarbeiter: einfach eine
+// Zeile nach dem gleichen Muster ergänzen.
+const EMPLOYEES = [
+  {name:'Jason',  pin:'1111'},
+  {name:'Max',    pin:'2222'},
+  {name:'Jochen', pin:'3333'},
+  {name:'Ludwig', pin:'4444'},
+];
+
+// Angemeldet bleiben: Die Anmeldung wird auf dem Handy gespeichert und
+// gilt bis zum Ende des Tages – morgens einmal anmelden reicht.
+const SESSION_KEY = 'geruest-session';
+function saveSession(){
+  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({name:state.name, role:state.role, day:new Date().toDateString()})); }catch(e){}
+}
+function restoreSession(){
+  try{
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY));
+    if(s && s.day===new Date().toDateString() && s.name && s.role){
+      state.name = s.name; state.role = s.role; state.loggedIn = true;
+    }
+  }catch(e){}
+}
+function clearSession(){
+  try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+}
+
 const CATALOG = [
   {id:'rahmen20', name:'Vertikalrahmen 2,00 m', unit:'Stk', icon:'frame'},
   {id:'rahmen10', name:'Vertikalrahmen 1,00 m', unit:'Stk', icon:'frame'},
@@ -194,7 +224,7 @@ const state = {
   loggedIn:false, name:'', role:null,
   cart:{}, orders:[], orderCounter:1001, inventory:{...DEFAULT_INVENTORY},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
-  askChefPw:false,
+  askChefPw:false, baustelleCoords:null,
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
@@ -267,7 +297,14 @@ function loginHTML(){
       <div class="sub">Anmelden und Rolle wählen</div>
       <div class="field">
         <label>Dein Name</label>
-        <input id="loginName" placeholder="z. B. Max" value="${state.name}">
+        <select id="loginName">
+          <option value="" ${state.name?'':'selected'} disabled>Bitte wählen…</option>
+          ${EMPLOYEES.map(e=>`<option value="${e.name}" ${state.name===e.name?'selected':''}>${e.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Deine PIN</label>
+        <input id="loginPin" type="password" inputmode="numeric" maxlength="4" placeholder="4-stellige PIN">
       </div>
       <div class="role-grid">
         <button class="role-btn" data-action="login" data-role="baustelle">${helmetIcon()}<div>Baustelle<small>Teile bestellen</small></div></button>
@@ -289,6 +326,7 @@ function catalogHTML(){
     <label>Baustelle / Ort *</label>
     <input id="baustelleOrtInput" placeholder="z. B. Musterstraße 12" value="${state.baustelleOrt}">
   </div>
+  <button class="loc-btn" data-action="use-location">📍 Meinen Standort als Adresse übernehmen</button>
   <div id="ortWarnArea"></div>
   ${CATALOG.map(it=>{
     const qty = state.cart[it.id]||0;
@@ -341,6 +379,9 @@ function orderCardHTML(o, role){
   const step = NEXT_STEP[o.status];
   const showBtn = role && step && step.role===role;
   const statusClass = 'st-'+slug(o.status);
+  const mapsUrl = o.coords
+    ? `https://www.google.com/maps?q=${o.coords.lat},${o.coords.lon}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.baustelle)}`;
   return `<div class="order-card ${statusClass}">
     <div class="order-head">
       <div><div class="no">#${o.id}</div><div class="site">${o.baustelle} · bestellt von ${o.person}</div></div>
@@ -348,6 +389,7 @@ function orderCardHTML(o, role){
     </div>
     <div class="order-time">Bestellt: ${o.time}</div>
     <ul class="order-items">${o.items.map(i=>`<li>${i.qty} ${i.unit} — ${i.name}</li>`).join('')}</ul>
+    <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">🗺️ In Google Maps öffnen</a>
     ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${step.label}</button>` : ''}
     ${o.status==='Geliefert'? '<div class="done-label">✓ Geliefert</div>' : ''}
   </div>`;
@@ -457,6 +499,7 @@ async function submitOrder(){
   const order = {
     id: state.orderCounter++,
     baustelle: ort,
+    coords: state.baustelleCoords || null,
     person: state.name,
     items,
     status:'Neu',
@@ -476,25 +519,32 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   const action = el.dataset.action;
 
   if(action==='login'){
-    const nameInput = document.getElementById('loginName');
-    const name = (nameInput? nameInput.value : '').trim();
-    if(!name){ state.loginWarn='Bitte Namen eingeben.'; render(); return; }
-    state.name = name; state.loginWarn='';
+    const nameSel = document.getElementById('loginName');
+    const pinInput = document.getElementById('loginPin');
+    const name = nameSel? nameSel.value : '';
+    const pin = pinInput? pinInput.value.trim() : '';
+    const emp = EMPLOYEES.find(e=>e.name===name);
+    if(!emp){ state.loginWarn='Bitte Namen auswählen.'; render(); return; }
+    state.name = name;
+    if(pin!==emp.pin){ state.loginWarn='Falsche PIN.'; render(); return; }
+    state.loginWarn='';
     if(el.dataset.role==='chef'){ state.askChefPw = true; render(); return; }
     state.role = el.dataset.role; state.loggedIn = true;
+    saveSession();
     render();
   }
   if(action==='chef-pw-ok'){
     const pw = document.getElementById('chefPwInput');
     if(pw && pw.value===CHEF_PASSWORD){
       state.askChefPw=false; state.loginWarn=''; state.role='chef'; state.loggedIn=true;
+      saveSession();
     } else {
       state.loginWarn='Falsches Passwort.';
     }
     render();
   }
   if(action==='chef-pw-back'){ state.askChefPw=false; state.loginWarn=''; render(); }
-  if(action==='logout'){ state.loggedIn=false; state.role=null; state.askChefPw=false; render(); }
+  if(action==='logout'){ state.loggedIn=false; state.role=null; state.askChefPw=false; clearSession(); render(); }
   if(action==='qty'){
     const id = el.dataset.id, delta = parseInt(el.dataset.delta,10);
     const cur = state.cart[id]||0;
@@ -516,6 +566,31 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     }
     render();
   }
+  if(action==='use-location'){
+    const warn = (msg)=>{ const w=document.getElementById('ortWarnArea'); if(w) w.innerHTML = `<div class="warn">${msg}</div>`; };
+    if(!navigator.geolocation){ warn('Standort wird von diesem Browser nicht unterstützt.'); return; }
+    el.textContent = 'Standort wird ermittelt…';
+    navigator.geolocation.getCurrentPosition(async (pos)=>{
+      const lat = pos.coords.latitude, lon = pos.coords.longitude;
+      state.baustelleCoords = {lat, lon};
+      let text = lat.toFixed(5)+', '+lon.toFixed(5);
+      try{
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+        const j = await r.json();
+        if(j && j.address){
+          const a = j.address;
+          const street = [a.road, a.house_number].filter(Boolean).join(' ');
+          const city = [a.postcode, a.city || a.town || a.village].filter(Boolean).join(' ');
+          text = [street, city].filter(Boolean).join(', ') || j.display_name || text;
+        }
+      }catch(e){ /* Adresse nicht auflösbar – Koordinaten reichen für die Karte */ }
+      state.baustelleOrt = text;
+      render();
+    }, ()=>{
+      warn('Standort nicht verfügbar. Bitte die Standort-Freigabe im Browser erlauben oder die Adresse eintippen.');
+      el.textContent = '📍 Meinen Standort als Adresse übernehmen';
+    }, {enableHighAccuracy:true, timeout:10000});
+  }
   if(action==='lager-tab'){ state.lagerTab = el.dataset.tab; render(); }
   if(action==='inv'){
     const id = el.dataset.id, delta = parseInt(el.dataset.delta,10);
@@ -527,7 +602,10 @@ document.getElementById('app').addEventListener('click', async (e)=>{
 });
 
 document.getElementById('app').addEventListener('input', (e)=>{
-  if(e.target.id==='baustelleOrtInput') state.baustelleOrt = e.target.value;
+  if(e.target.id==='baustelleOrtInput'){
+    state.baustelleOrt = e.target.value;
+    state.baustelleCoords = null;
+  }
 });
 
 setInterval(async ()=>{
@@ -537,6 +615,7 @@ setInterval(async ()=>{
 }, 4000);
 
 (async function init(){
+  restoreSession();
   await loadShared();
   state.loading = false;
   render();
