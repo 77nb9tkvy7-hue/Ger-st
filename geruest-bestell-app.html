@@ -55,6 +55,10 @@
   .field input:focus,.field select:focus{outline:none;border-color:var(--accent);}
   .loc-btn{display:block;width:100%;background:var(--accent-soft);border:none;color:var(--accent-dark);border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;font-family:'Inter',sans-serif;}
   .maps-btn{display:block;text-align:center;background:#EFF4FF;border:none;color:var(--blue);border-radius:10px;padding:9px;font-size:12.5px;font-weight:600;text-decoration:none;margin-top:10px;}
+  .addr-sug{background:var(--card);border:1.5px solid var(--line);border-radius:12px;margin-top:6px;overflow:hidden;}
+  .addr-sug div{padding:10px 12px;font-size:13px;cursor:pointer;border-bottom:1px solid var(--line);}
+  .addr-sug div:last-child{border-bottom:none;}
+  .addr-sug div:active{background:var(--accent-soft);}
 
   /* Bestellliste (kein Warenkorb) */
   .order-row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow);}
@@ -173,8 +177,9 @@ const STORAGE_KEY = 'shopfloor-data-v2';
 const CHEF_PASSWORD = 'chef2026';
 
 // Festangestellte Mitarbeiter: Nur wer hier steht, kann sich anmelden.
-// Jeder hat eine eigene 4-stellige PIN. Neue Mitarbeiter: einfach eine
-// Zeile nach dem gleichen Muster ergänzen.
+// Die PINs sind aktuell DEAKTIVIERT (Anmeldung nur per Namenswahl) und
+// bleiben für eine spätere Aktivierung stehen. Neue Mitarbeiter: einfach
+// eine Zeile nach dem gleichen Muster ergänzen.
 const EMPLOYEES = [
   {name:'Jason',  pin:'1111'},
   {name:'Max',    pin:'2222'},
@@ -244,6 +249,7 @@ const state = {
   cart:{}, orders:[], orderCounter:1001, inventory:{...DEFAULT_INVENTORY},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
+  projects:[], projektCounter:101, chefTab:'uebersicht', selProjekt:'', lastGPS:null,
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
@@ -266,6 +272,8 @@ async function loadShared(){
       state.orders = data.value.orders || [];
       state.orderCounter = data.value.counter || 1001;
       state.inventory = data.value.inventory || {...DEFAULT_INVENTORY};
+      state.projects = data.value.projects || [];
+      state.projektCounter = data.value.projektCounter || 101;
     } else {
       state.inventory = {...DEFAULT_INVENTORY};
       await saveShared();
@@ -281,7 +289,8 @@ async function saveShared(){
       .from('app_state')
       .upsert({
         key: STORAGE_KEY,
-        value: {orders:state.orders, counter:state.orderCounter, inventory:state.inventory},
+        value: {orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
+                projects:state.projects, projektCounter:state.projektCounter},
       });
     if(error) throw error;
   }catch(e){ console.error('Speichern fehlgeschlagen', e); }
@@ -322,10 +331,6 @@ function loginHTML(){
           ${EMPLOYEES.map(e=>`<option value="${e.name}" ${state.name===e.name?'selected':''}>${e.name}</option>`).join('')}
         </select>
       </div>
-      <div class="field">
-        <label>Deine PIN</label>
-        <input id="loginPin" type="password" inputmode="numeric" maxlength="4" placeholder="4-stellige PIN">
-      </div>
       <div class="role-grid">
         <button class="role-btn" data-action="login" data-role="baustelle">${helmetIcon()}<div>Baustelle<small>Teile bestellen</small></div></button>
         <button class="role-btn" data-action="login" data-role="lager">${warehouseIcon()}<div>Lager<small>Bestellungen &amp; Inventur</small></div></button>
@@ -340,13 +345,23 @@ function loginHTML(){
 function catalogHTML(){
   const mine = state.orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id).slice(0,5);
   const count = cartCount();
+  const aktive = state.projects.filter(p=>p.aktiv);
+  const freiGewaehlt = !aktive.length || state.selProjekt==='_frei';
   return `<h2 class="view-title">Neue Bestellung</h2>
   <p class="view-sub">Teile auswählen – geht sofort an Lager &amp; Fahrer.</p>
-  <div class="field">
+  ${aktive.length? `<div class="field">
+    <label>Bauvorhaben *</label>
+    <select id="projektSelect">
+      ${aktive.map(p=>`<option value="${p.id}" ${String(state.selProjekt)===String(p.id)?'selected':''}>BV ${p.id} – ${p.name}</option>`).join('')}
+      <option value="_frei" ${state.selProjekt==='_frei'?'selected':''}>Andere Adresse (selbst eingeben)</option>
+    </select>
+  </div>`:''}
+  ${freiGewaehlt? `<div class="field">
     <label>Baustelle / Ort *</label>
-    <input id="baustelleOrtInput" placeholder="z. B. Musterstraße 12" value="${state.baustelleOrt}">
+    <input id="baustelleOrtInput" placeholder="z. B. Musterstraße 12" value="${state.baustelleOrt}" autocomplete="off">
+    <div id="addrSuggestions"></div>
   </div>
-  <button class="loc-btn" data-action="use-location">📍 Meinen Standort als Adresse übernehmen</button>
+  <button class="loc-btn" data-action="use-location">📍 Meinen Standort als Adresse übernehmen</button>`:''}
   <div id="ortWarnArea"></div>
   <div class="catalog-list">${CATALOG.map(it=>{
     const qty = state.cart[it.id]||0;
@@ -465,18 +480,63 @@ function fahrerHTML(){
   ${ready.length? ready.map(o=>orderCardHTML(o,'fahrer')).join('') : '<div class="empty-state">Aktuell keine Bestellungen zur Abholung bereit.</div>'}`;
 }
 
+function projektCardHTML(p){
+  const orders = state.orders.filter(o=>o.projekt===p.id).sort((a,b)=>a.id-b.id);
+  const geliefert = {}, offen = {};
+  orders.forEach(o=>{
+    const ziel = o.status==='Geliefert' ? geliefert : offen;
+    o.items.forEach(it=>{ ziel[it.name] = (ziel[it.name]||0) + it.qty; });
+  });
+  const mapsUrl = p.coords
+    ? `https://www.google.com/maps?q=${p.coords.lat},${p.coords.lon}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse)}`;
+  return `<div class="order-card ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">
+    <div class="order-head">
+      <div><div class="no">BV ${p.id} – ${p.name}</div><div class="site">${p.adresse}</div></div>
+      <div class="status-badge ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">${p.aktiv?'Aktiv':'Fertig'}</div>
+    </div>
+    ${Object.keys(geliefert).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">Vor Ort (geliefert):</div>
+      <ul class="order-items">${Object.entries(geliefert).map(([n,q])=>`<li>${q} Stk — ${n}</li>`).join('')}</ul>`:''}
+    ${Object.keys(offen).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">Bestellt / unterwegs:</div>
+      <ul class="order-items">${Object.entries(offen).map(([n,q])=>`<li>${q} Stk — ${n}</li>`).join('')}</ul>`:''}
+    <div class="order-time">${orders.length? 'Bestellungen: '+orders.map(o=>'#'+o.id+' ('+o.status+')').join(', ') : 'Noch keine Bestellungen zu diesem Bauvorhaben.'}</div>
+    <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">🗺️ In Google Maps öffnen</a>
+    <button class="refresh-btn" data-action="projekt-toggle" data-id="${p.id}" style="margin-top:10px;">${p.aktiv? 'Als fertig markieren':'Wieder aktivieren'}</button>
+  </div>`;
+}
+
+function projekteHTML(){
+  const aktive = state.projects.filter(p=>p.aktiv);
+  const fertig = state.projects.filter(p=>!p.aktiv);
+  return `<p class="view-sub">Bauvorhaben anlegen – die Baustelle wählt beim Bestellen dann einfach aus der Liste.</p>
+  <div class="order-card">
+    <div class="field"><label>Name des Bauvorhabens</label><input id="pvName" placeholder="z. B. Frauenkirche" autocomplete="off"></div>
+    <div class="field"><label>Adresse</label><input id="pvAdresse" placeholder="z. B. Frauenplatz 12, München" autocomplete="off"></div>
+    <div id="pvWarn"></div>
+    <button class="advance-btn" data-action="add-projekt">+ Bauvorhaben anlegen</button>
+  </div>
+  ${aktive.length? aktive.map(projektCardHTML).join('') : '<div class="empty-state">Noch keine aktiven Bauvorhaben.</div>'}
+  ${fertig.length? `<h3 style="margin-top:24px;font-size:15px;">Abgeschlossen</h3>${fertig.map(projektCardHTML).join('')}`:''}`;
+}
+
 function chefHTML(){
+  const tab = state.chefTab;
   const orders = [...state.orders].sort((a,b)=>a.id-b.id);
   const counts = {};
   STATUS_FLOW.forEach(s=> counts[s] = orders.filter(o=>o.status===s).length);
   return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">↻ Aktualisieren</button></div>
-  <h2 class="view-title">Übersicht</h2>
+  <h2 class="view-title">Chef</h2>
+  <div class="seg-control">
+    <button class="${tab==='uebersicht'?'active':''}" data-action="chef-tab" data-tab="uebersicht">Übersicht</button>
+    <button class="${tab==='bauvorhaben'?'active':''}" data-action="chef-tab" data-tab="bauvorhaben">Bauvorhaben</button>
+  </div>
+  ${tab==='bauvorhaben' ? projekteHTML() : `
   <p class="view-sub">Gesamtüberblick über alle Bestellungen und den Lagerbestand.</p>
   <div class="stat-row">${STATUS_FLOW.map(s=>`<div class="stat-chip"><b>${counts[s]}</b><span>${s}</span></div>`).join('')}</div>
   <h3 style="margin-top:22px;font-size:15px;">Alle Bestellungen</h3>
   ${orders.length? orders.map(o=>orderCardHTML(o,null)).join('') : '<div class="empty-state">Noch keine Bestellungen.</div>'}
   <h3 style="margin-top:26px;font-size:15px;">Lagerbestand</h3>
-  ${inventoryTableHTML(false)}`;
+  ${inventoryTableHTML(false)}`}`;
 }
 
 function render(){
@@ -503,12 +563,21 @@ function render(){
 }
 
 async function submitOrder(){
-  const ortInput = document.getElementById('baustelleOrtInput');
-  const ort = (ortInput? ortInput.value : state.baustelleOrt).trim();
-  if(!ort){
-    const w = document.getElementById('ortWarnArea');
-    if(w) w.innerHTML = '<div class="warn">Bitte Baustelle / Ort eingeben.</div>';
-    return;
+  let ort='', coords=null, projektId=null;
+  const sel = document.getElementById('projektSelect');
+  if(sel && sel.value!=='_frei'){
+    const p = state.projects.find(x=>String(x.id)===sel.value);
+    if(p){ ort = p.name+', '+p.adresse; coords = p.coords || null; projektId = p.id; }
+  }
+  if(!projektId){
+    const ortInput = document.getElementById('baustelleOrtInput');
+    ort = (ortInput? ortInput.value : state.baustelleOrt).trim();
+    coords = state.baustelleCoords || null;
+    if(!ort){
+      const w = document.getElementById('ortWarnArea');
+      if(w) w.innerHTML = '<div class="warn">Bitte Baustelle / Ort eingeben.</div>';
+      return;
+    }
   }
   const items = Object.entries(state.cart).filter(([id,q])=>q>0).map(([id,q])=>{
     const it = CATALOG.find(c=>c.id===id);
@@ -519,7 +588,8 @@ async function submitOrder(){
   const order = {
     id: state.orderCounter++,
     baustelle: ort,
-    coords: state.baustelleCoords || null,
+    coords,
+    projekt: projektId,
     person: state.name,
     items,
     status:'Neu',
@@ -528,7 +598,7 @@ async function submitOrder(){
   state.orders.push(order);
   state.cart = {};
   state.confirmOrder = order;
-  state.baustelleOrt = ort;
+  if(!projektId) state.baustelleOrt = ort;
   await saveShared();
   render();
 }
@@ -540,13 +610,10 @@ document.getElementById('app').addEventListener('click', async (e)=>{
 
   if(action==='login'){
     const nameSel = document.getElementById('loginName');
-    const pinInput = document.getElementById('loginPin');
     const name = nameSel? nameSel.value : '';
-    const pin = pinInput? pinInput.value.trim() : '';
     const emp = EMPLOYEES.find(e=>e.name===name);
     if(!emp){ state.loginWarn='Bitte Namen auswählen.'; render(); return; }
     state.name = name;
-    if(pin!==emp.pin){ state.loginWarn='Falsche PIN.'; render(); return; }
     state.loginWarn='';
     if(el.dataset.role==='chef'){ state.askChefPw = true; render(); return; }
     state.role = el.dataset.role; state.loggedIn = true;
@@ -593,6 +660,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     navigator.geolocation.getCurrentPosition(async (pos)=>{
       const lat = pos.coords.latitude, lon = pos.coords.longitude;
       state.baustelleCoords = {lat, lon};
+      state.lastGPS = {lat, lon};
       let text = lat.toFixed(5)+', '+lon.toFixed(5);
       try{
         const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
@@ -612,6 +680,26 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     }, {enableHighAccuracy:true, timeout:10000});
   }
   if(action==='lager-tab'){ state.lagerTab = el.dataset.tab; render(); }
+  if(action==='chef-tab'){ state.chefTab = el.dataset.tab; render(); }
+  if(action==='add-projekt'){
+    const n = document.getElementById('pvName'), a = document.getElementById('pvAdresse');
+    const name = (n? n.value : '').trim(), adresse = (a? a.value : '').trim();
+    const w = document.getElementById('pvWarn');
+    if(!name || !adresse){ if(w) w.innerHTML = '<div class="warn">Bitte Name und Adresse eingeben.</div>'; return; }
+    state.projects.push({id: state.projektCounter++, name, adresse, coords:null, aktiv:true});
+    await saveShared();
+    render();
+  }
+  if(action==='projekt-toggle'){
+    const p = state.projects.find(x=>String(x.id)===el.dataset.id);
+    if(p){ p.aktiv = !p.aktiv; await saveShared(); }
+    render();
+  }
+  if(action==='pick-addr'){
+    state.baustelleOrt = el.dataset.text;
+    state.baustelleCoords = {lat: parseFloat(el.dataset.lat), lon: parseFloat(el.dataset.lon)};
+    render();
+  }
   if(action==='inv'){
     const id = el.dataset.id, delta = parseInt(el.dataset.delta,10);
     state.inventory[id] = (state.inventory[id] ?? 0) + delta;
@@ -621,15 +709,51 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='refresh'){ await loadShared(); render(); }
 });
 
+// Adress-Vorschläge aus der Umgebung (freie OpenStreetMap-Suche).
+// Wird gebremst abgefragt (max. ~1 Anfrage pro Sekunde erlaubt).
+let addrTimer = null;
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fetchAddrSuggestions(q){
+  clearTimeout(addrTimer);
+  const box = document.getElementById('addrSuggestions');
+  if(q.trim().length < 3){ if(box) box.innerHTML=''; return; }
+  addrTimer = setTimeout(async ()=>{
+    try{
+      let url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&countrycodes=de&q=${encodeURIComponent(q)}`;
+      if(state.lastGPS){
+        const g = state.lastGPS;
+        url += `&viewbox=${g.lon-0.15},${g.lat+0.15},${g.lon+0.15},${g.lat-0.15}`;
+      }
+      const r = await fetch(url);
+      const list = await r.json();
+      const b = document.getElementById('addrSuggestions');
+      if(!b) return;
+      if(!Array.isArray(list) || !list.length){ b.innerHTML=''; return; }
+      b.innerHTML = `<div class="addr-sug">${list.map(x=>{
+        const t = escapeHtml(x.display_name.split(',').slice(0,3).join(','));
+        return `<div data-action="pick-addr" data-lat="${x.lat}" data-lon="${x.lon}" data-text="${t}">📍 ${t}</div>`;
+      }).join('')}</div>`;
+    }catch(e){ /* Vorschläge sind nur Komfort – Fehler still ignorieren */ }
+  }, 700);
+}
+
 document.getElementById('app').addEventListener('input', (e)=>{
   if(e.target.id==='baustelleOrtInput'){
     state.baustelleOrt = e.target.value;
     state.baustelleCoords = null;
+    fetchAddrSuggestions(e.target.value);
+  }
+  if(e.target.id==='projektSelect'){
+    state.selProjekt = e.target.value;
+    render();
   }
 });
 
 setInterval(async ()=>{
   if(!state.loggedIn || state.confirmOrder) return;
+  // Nicht mitten ins Tippen hinein neu zeichnen
+  const ae = document.activeElement;
+  if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
   await loadShared();
   render();
 }, 4000);

@@ -9,12 +9,14 @@ an das Lager und an den LKW-Fahrer.
 Die komplette App ist EINE Datei: `geruest-bestell-app.html`
 (HTML + CSS + JavaScript, keine Frameworks, kein Build-Schritt).
 
-## Anmeldung (Name + PIN)
+## Anmeldung
 
 Nur festangestellte Mitarbeiter können sich anmelden: Name aus einer
-festen Liste wählen + eigene 4-stellige PIN eingeben, dann Rolle wählen.
-Die Liste steht in der Konstante `EMPLOYEES` am Anfang des
-`<script>`-Blocks (Name + PIN pro Person, neue Mitarbeiter = neue Zeile).
+festen Liste wählen, dann Rolle wählen. Die Liste steht in der Konstante
+`EMPLOYEES` am Anfang des `<script>`-Blocks (Name + PIN pro Person, neue
+Mitarbeiter = neue Zeile). Die PIN-Prüfung ist auf Kundenwunsch aktuell
+DEAKTIVIERT (nur der Chef braucht sein Passwort); die PINs bleiben im
+Code für eine spätere Aktivierung stehen.
 Die Anmeldung wird per `localStorage` auf dem Gerät gespeichert und gilt
 bis zum Ende des Kalendertages – morgens einmal anmelden reicht
 (`saveSession`/`restoreSession`/`clearSession`). „Abmelden" löscht sie.
@@ -24,9 +26,12 @@ bis zum Ende des Kalendertages – morgens einmal anmelden reicht
 1. **Baustelle** (z. B. Max): Bestellt Teile über eine einfache Liste mit
    +/− Mengenwahl (bewusst KEIN Amazon-Warenkorb-Stil, das wurde extra
    entfernt). Sieht unten seine eigenen letzten Bestellungen mit Status.
-   Beim Ort gibt es einen Knopf „Meinen Standort als Adresse übernehmen"
-   (GPS + Adress-Auflösung über die freie Nominatim/OpenStreetMap-API);
-   die Koordinaten werden mit der Bestellung gespeichert.
+   Ort der Bestellung: Wenn der Chef Bauvorhaben angelegt hat, wählt die
+   Baustelle einfach das Bauvorhaben aus einer Liste (plus Option „Andere
+   Adresse"). Bei freier Adresseingabe gibt es Live-Adressvorschläge beim
+   Tippen (Nominatim-Suche, bevorzugt Umgebung des letzten GPS-Punkts)
+   und einen Knopf „Meinen Standort als Adresse übernehmen" (GPS +
+   Adress-Auflösung); Koordinaten werden mit der Bestellung gespeichert.
 2. **Lager** (z. B. Jochen): Zwei Reiter:
    - "Bestellungen": eingehende Bestellungen, Buttons "Bearbeitung starten"
      und "Bereit melden"
@@ -38,12 +43,16 @@ bis zum Ende des Kalendertages – morgens einmal anmelden reicht
    Buttons: "Verladen" → "Losfahren" → "Lieferung bestätigen".
    Jede Bestellkarte (bei allen Rollen) hat einen Link „In Google Maps
    öffnen": mit GPS-Koordinaten, falls vorhanden, sonst per Adress-Suche.
-4. **Chef**: Nur-Lese-Übersicht über alles: Statistik-Chips pro Status,
-   alle Bestellungen, kompletter Lagerbestand. Diese Rolle ist mit einem
-   Passwort geschützt (Konstante `CHEF_PASSWORD` am Anfang des
-   `<script>`-Blocks). Hinweis: Da die Prüfung im Browser stattfindet und
-   das Repo öffentlich ist, ist das nur ein einfacher Schutz gegen
-   neugierige Mitarbeiter, keine echte Sicherheitsmaßnahme.
+4. **Chef**: Zwei Reiter. „Übersicht": Statistik-Chips pro Status, alle
+   Bestellungen, kompletter Lagerbestand (nur lesen). „Bauvorhaben":
+   Bauvorhaben anlegen (Name + Adresse, automatische Nummer „BV 101"
+   aufwärts) und wie ein Ordner pro Bauvorhaben sehen, welche Teile
+   schon geliefert „vor Ort" sind, was bestellt/unterwegs ist und welche
+   Bestellungen dazugehören; Bauvorhaben können als fertig markiert und
+   reaktiviert werden. Die Rolle ist mit einem Passwort geschützt
+   (Konstante `CHEF_PASSWORD` am Anfang des `<script>`-Blocks). Hinweis:
+   Prüfung läuft im Browser und das Repo ist öffentlich – einfacher
+   Schutz, keine echte Sicherheitsmaßnahme.
 
 ## Status-Ablauf einer Bestellung
 
@@ -55,7 +64,7 @@ Neu → In Bearbeitung → Bereit zur Abholung → Beladen → Unterwegs → Gel
 Die App nutzt Supabase als geteilten Online-Speicher (kostenlose Stufe).
 Alle Bestellungen und der Lagerbestand landen in einer Tabelle `app_state`
 (eine Zeile mit `key = 'shopfloor-data-v2'` und einer `jsonb`-Spalte `value`,
-die `{orders, counter, inventory}` enthält). Dadurch sehen alle Rollen
+die `{orders, counter, inventory, projects, projektCounter}` enthält). Dadurch sehen alle Rollen
 (egal auf welchem Handy, auch über GitHub Pages) dieselben Daten.
 
 Die einzigen zwei Funktionen, die den Speicher anfassen, sind `loadShared()`
@@ -70,9 +79,12 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
 
 ## Geplante nächste Schritte
 
-- Aktuell keine offenen Punkte. Mögliche spätere Verbesserungen: Realtime-
-  Updates statt Polling (Supabase Realtime), Push-Benachrichtigungen,
-  Export der Bestellungen als PDF/CSV.
+- PIN-Prüfung beim Anmelden wieder aktivieren (Code ist vorhanden,
+  aktuell bewusst deaktiviert)
+- Baupläne pro Bauvorhaben hochladen (braucht Supabase Storage /
+  Datei-Bucket – ausdrücklicher Wunsch des Nutzers für später)
+- Weitere Ideen: Realtime-Updates statt Polling (Supabase Realtime),
+  Push-Benachrichtigungen, Export der Bestellungen als PDF/CSV.
 
 ## Stil-Vorgaben
 
