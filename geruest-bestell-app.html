@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gerüst-Bestellung</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0069B3">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Gerüst-Bestellung">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -24,8 +32,19 @@
 
   .login-logo{display:block;margin:0 auto 14px auto;width:110px;border-radius:10px;}
 
+  /* Menü (3 Striche) + Logo, sichtbar auch ohne Anmeldung */
+  .top-nav{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;}
+  .top-nav.on-dark{background:transparent;}
+  .top-nav.on-light{background:var(--card);border-bottom:1px solid var(--line);}
+  .top-nav-logo{height:28px;width:auto;border-radius:6px;}
+  .menu-wrap{position:relative;}
+  .menu-btn{background:rgba(255,255,255,0.18);border:none;color:#fff;width:38px;height:38px;border-radius:10px;font-size:19px;cursor:pointer;line-height:1;}
+  .menu-dropdown{position:absolute;top:46px;right:0;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:220px;overflow:hidden;z-index:41;}
+  .menu-dropdown button{display:block;width:100%;text-align:left;background:none;border:none;padding:13px 14px;font-size:13.5px;color:var(--ink);cursor:pointer;font-family:'Inter',sans-serif;}
+  .menu-dropdown button:active{background:var(--accent-soft);}
+
   /* LOGIN */
-  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#0069B3 0%,#00538D 60%,#003A63 100%);padding:20px;}
+  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#0069B3 0%,#00538D 60%,#003A63 100%);padding:76px 20px 20px 20px;}
   .login-card{background:var(--card);border-radius:20px;border-top:6px solid #FFEE00;padding:30px 26px;max-width:400px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,0.25);}
   .login-card h1{font-size:22px;margin:0 0 4px 0;text-align:center;}
   .login-card .sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px;}
@@ -250,6 +269,9 @@ const state = {
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
   projects:[], projektCounter:101, chefTab:'uebersicht', selProjekt:'', lastGPS:null,
+  view:'app', menuOpen:false,
+  calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
+  calEditId:null, calDraft:null, calWarn:'',
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
@@ -274,6 +296,8 @@ async function loadShared(){
       state.inventory = data.value.inventory || {...DEFAULT_INVENTORY};
       state.projects = data.value.projects || [];
       state.projektCounter = data.value.projektCounter || 101;
+      state.calendarEntries = data.value.calendarEntries || [];
+      state.calCounter = data.value.calCounter || 1;
     } else {
       state.inventory = {...DEFAULT_INVENTORY};
       await saveShared();
@@ -290,7 +314,8 @@ async function saveShared(){
       .upsert({
         key: STORAGE_KEY,
         value: {orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
-                projects:state.projects, projektCounter:state.projektCounter},
+                projects:state.projects, projektCounter:state.projektCounter,
+                calendarEntries:state.calendarEntries, calCounter:state.calCounter},
       });
     if(error) throw error;
   }catch(e){ console.error('Speichern fehlgeschlagen', e); }
@@ -301,9 +326,27 @@ function warehouseIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="cu
 function helmetIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15a8 8 0 0 1 16 0z"/><line x1="2" y1="15" x2="22" y2="15"/><line x1="12" y1="7" x2="12" y2="3"/></svg>';}
 function chefIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';}
 
+function menuDropdownHTML(){
+  if(!state.menuOpen) return '';
+  return `<div class="menu-dropdown">
+    ${state.view==='calendar'
+      ? `<button data-action="go-app">🔑 Zur Anmeldung / Bestellung</button>`
+      : `<button data-action="go-calendar">📅 Kalender</button>`}
+  </div>`;
+}
+function topNavHTML(mode){
+  return `<div class="top-nav ${mode==='dark'?'on-dark':'on-light'}">
+    <img src="logo.png" alt="SGM" class="top-nav-logo">
+    <div class="menu-wrap">
+      <button class="menu-btn" data-action="menu-toggle" aria-label="Menü">☰</button>
+      ${menuDropdownHTML()}
+    </div>
+  </div>`;
+}
+
 function loginHTML(){
   if(state.askChefPw){
-    return `<div class="login-wrap">
+    return `${topNavHTML('dark')}<div class="login-wrap">
       <div class="login-card">
         <h1>Chef-Bereich</h1>
         <div class="sub">Bitte das Chef-Passwort eingeben</div>
@@ -319,7 +362,7 @@ function loginHTML(){
       </div>
     </div>`;
   }
-  return `<div class="login-wrap">
+  return `${topNavHTML('dark')}<div class="login-wrap">
     <div class="login-card">
       <img class="login-logo" src="logo.png" alt="SGM">
       <h1>Gerüst-Bestellung</h1>
@@ -539,8 +582,70 @@ function chefHTML(){
   ${inventoryTableHTML(false)}`}`;
 }
 
+function formatDateDE(iso){
+  const [y,m,d] = iso.split('-');
+  const wt = ['So','Mo','Di','Mi','Do','Fr','Sa'][new Date(iso+'T00:00:00').getDay()];
+  return `${wt}, ${d}.${m}.${y}`;
+}
+
+function calendarPageHTML(){
+  const entries = [...state.calendarEntries].sort((a,b)=> a.date.localeCompare(b.date) || a.person.localeCompare(b.person));
+  const grouped = {};
+  entries.forEach(e=>{ (grouped[e.date] = grouped[e.date]||[]).push(e); });
+  const dates = Object.keys(grouped).sort();
+  const d = state.calDraft || {};
+
+  return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
+    <main style="padding:0;max-width:720px;margin:0 auto;">
+      <h2 class="view-title">Kalender</h2>
+      <p class="view-sub">Wer wann wo im Einsatz sein soll. Zum Bestellen bitte oben im Menü anmelden.</p>
+
+      ${state.calAskPw? `<div class="order-card">
+        <div class="field"><label>Chef-Passwort</label><input id="calPwInput" type="password" placeholder="Passwort"></div>
+        <div id="calPwWarn"></div>
+        <button class="advance-btn" data-action="cal-unlock-ok">Freischalten</button>
+        <button class="refresh-btn" data-action="cal-unlock-cancel" style="margin-top:8px;">Abbrechen</button>
+      </div>` : ''}
+
+      ${state.calUnlocked? `<div class="order-card">
+        <div class="field"><label>Datum</label><input type="date" id="calDate" value="${d.date||''}"></div>
+        <div class="field"><label>Mitarbeiter</label>
+          <select id="calPerson">
+            <option value="" ${d.person?'':'selected'} disabled>Bitte wählen…</option>
+            ${EMPLOYEES.map(e=>`<option value="${e.name}" ${d.person===e.name?'selected':''}>${e.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Ort / Baustelle</label><input id="calOrt" placeholder="z. B. BV 101 – Frauenkirche" value="${d.ort? d.ort.replace(/"/g,'&quot;'):''}"></div>
+        <div class="field"><label>Notiz (optional)</label><input id="calNotiz" placeholder="z. B. ganztags, ab 7 Uhr" value="${d.notiz? d.notiz.replace(/"/g,'&quot;'):''}"></div>
+        ${state.calWarn? `<div class="warn">${state.calWarn}</div>`:''}
+        <button class="advance-btn" data-action="cal-save">${state.calEditId? 'Speichern' : '+ Termin hinzufügen'}</button>
+        ${state.calEditId? `<button class="refresh-btn" data-action="cal-cancel-edit" style="margin-top:8px;">Abbrechen</button>`:''}
+      </div>
+      <button class="refresh-btn" data-action="cal-lock" style="margin-bottom:14px;">🔒 Sperren</button>`
+      : `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">🔒 Termine bearbeiten (Chef-Passwort)</button>`}
+
+      ${dates.length? dates.map(dt=>`
+        <h3 style="margin-top:18px;font-size:14px;">${formatDateDE(dt)}</h3>
+        ${grouped[dt].map(e=>`
+          <div class="order-card">
+            <div class="order-head">
+              <div><div class="no">${e.person}</div><div class="site">${e.ort}</div></div>
+            </div>
+            ${e.notiz? `<div class="order-time">${e.notiz}</div>`:''}
+            ${state.calUnlocked? `<div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="refresh-btn" data-action="cal-edit" data-id="${e.id}">Bearbeiten</button>
+              <button class="refresh-btn" data-action="cal-delete" data-id="${e.id}" style="color:var(--red);border-color:var(--red);">Löschen</button>
+            </div>`:''}
+          </div>
+        `).join('')}
+      `).join('') : '<div class="empty-state">Noch keine Termine eingetragen.</div>'}
+    </main>
+  </div>`;
+}
+
 function render(){
   if(state.loading){ document.getElementById('app').innerHTML = '<div class="loading">Lade Daten…</div>'; return; }
+  if(state.view==='calendar'){ document.getElementById('app').innerHTML = calendarPageHTML(); return; }
   if(!state.loggedIn){ document.getElementById('app').innerHTML = loginHTML(); return; }
 
   let mainHTML='';
@@ -555,7 +660,13 @@ function render(){
         <img class="brand-mark" src="logo.png" alt="SGM">
         <div><h1>Gerüst-Bestellung</h1><span>${ROLE_LABEL[state.role]}</span></div>
       </div>
-      <div class="who"><b>${state.name}</b><br><a data-action="logout">Abmelden / Rolle wechseln</a></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="who"><b>${state.name}</b><br><a data-action="logout">Abmelden / Rolle wechseln</a></div>
+        <div class="menu-wrap">
+          <button class="menu-btn" data-action="menu-toggle" aria-label="Menü" style="background:#F1F4F6;color:var(--ink);">☰</button>
+          ${menuDropdownHTML()}
+        </div>
+      </div>
     </header>
     <main>${mainHTML}</main>
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
@@ -605,7 +716,10 @@ async function submitOrder(){
 
 document.getElementById('app').addEventListener('click', async (e)=>{
   const el = e.target.closest('[data-action]');
-  if(!el) return;
+  if(!el){
+    if(state.menuOpen && !e.target.closest('.menu-wrap')){ state.menuOpen=false; render(); }
+    return;
+  }
   const action = el.dataset.action;
 
   if(action==='login'){
@@ -707,6 +821,55 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='refresh'){ await loadShared(); render(); }
+
+  if(action==='menu-toggle'){ state.menuOpen = !state.menuOpen; render(); }
+  if(action==='go-calendar'){
+    state.view='calendar'; state.menuOpen=false; state.calWarn='';
+    await loadShared();
+    render();
+  }
+  if(action==='go-app'){ state.view='app'; state.menuOpen=false; render(); }
+
+  if(action==='cal-unlock-ask'){ state.calAskPw=true; render(); }
+  if(action==='cal-unlock-cancel'){ state.calAskPw=false; render(); }
+  if(action==='cal-unlock-ok'){
+    const pw = document.getElementById('calPwInput');
+    if(pw && pw.value===CHEF_PASSWORD){
+      state.calUnlocked=true; state.calAskPw=false;
+    } else {
+      const w = document.getElementById('calPwWarn');
+      if(w) w.innerHTML = '<div class="warn">Falsches Passwort.</div>';
+    }
+    render();
+  }
+  if(action==='cal-lock'){ state.calUnlocked=false; state.calEditId=null; state.calDraft=null; render(); }
+  if(action==='cal-cancel-edit'){ state.calEditId=null; state.calDraft=null; state.calWarn=''; render(); }
+  if(action==='cal-edit'){
+    const entry = state.calendarEntries.find(x=>String(x.id)===el.dataset.id);
+    if(entry){ state.calEditId=entry.id; state.calDraft={...entry}; state.calWarn=''; render(); }
+  }
+  if(action==='cal-delete'){
+    state.calendarEntries = state.calendarEntries.filter(x=>String(x.id)!==el.dataset.id);
+    await saveShared();
+    render();
+  }
+  if(action==='cal-save'){
+    const date = document.getElementById('calDate').value;
+    const person = document.getElementById('calPerson').value;
+    const ort = document.getElementById('calOrt').value.trim();
+    const notiz = document.getElementById('calNotiz').value.trim();
+    if(!date || !person || !ort){ state.calWarn='Bitte Datum, Mitarbeiter und Ort ausfüllen.'; render(); return; }
+    if(state.calEditId){
+      const entry = state.calendarEntries.find(x=>x.id===state.calEditId);
+      if(entry){ entry.date=date; entry.person=person; entry.ort=ort; entry.notiz=notiz; }
+      state.calEditId=null;
+    } else {
+      state.calendarEntries.push({id: state.calCounter++, date, person, ort, notiz});
+    }
+    state.calDraft=null; state.calWarn='';
+    await saveShared();
+    render();
+  }
 });
 
 // Adress-Vorschläge aus der Umgebung (freie OpenStreetMap-Suche).
@@ -750,13 +913,17 @@ document.getElementById('app').addEventListener('input', (e)=>{
 });
 
 setInterval(async ()=>{
-  if(!state.loggedIn || state.confirmOrder) return;
+  if((!state.loggedIn && state.view!=='calendar') || state.confirmOrder) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
   await loadShared();
   render();
 }, 4000);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=> navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
 
 (async function init(){
   restoreSession();
