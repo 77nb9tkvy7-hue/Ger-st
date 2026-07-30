@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gerüst-Bestellung – Design-Vorschau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -139,6 +140,14 @@
   .stat-chip{background:var(--card);border-radius:14px;padding:10px 14px;text-align:center;min-width:74px;box-shadow:var(--shadow);}
   .stat-chip b{display:block;font-family:'Space Grotesk',sans-serif;font-size:20px;}
   .stat-chip span{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
+
+  /* PC / breite Bildschirme */
+  @media (min-width: 900px){
+    main{max-width:900px;}
+    .order-footer{max-width:900px;}
+    .catalog-list{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-items:start;}
+    .inv-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;}
+  }
 </style>
 </head>
 <body>
@@ -337,7 +346,7 @@ function catalogHTML(){
   </div>
   <button class="loc-btn" data-action="use-location">📍 Meinen Standort als Adresse übernehmen</button>
   <div id="ortWarnArea"></div>
-  ${CATALOG.map(it=>{
+  <div class="catalog-list">${CATALOG.map(it=>{
     const qty = state.cart[it.id]||0;
     return `<div class="order-row">
       <div class="order-row-icon">${ICONS[it.icon]}</div>
@@ -351,7 +360,7 @@ function catalogHTML(){
         <button data-action="qty" data-id="${it.id}" data-delta="1">+</button>
       </div>
     </div>`;
-  }).join('')}
+  }).join('')}</div>
   <div class="mine-section">
     <h3>Meine letzten Bestellungen</h3>
     ${mine.length? mine.map(o=>orderCardHTML(o,null)).join('') : '<div class="empty-state" style="padding:20px 0;">Du hast noch nichts bestellt.</div>'}
