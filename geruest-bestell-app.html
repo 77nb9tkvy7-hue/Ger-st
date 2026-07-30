@@ -5,6 +5,7 @@
 <title>Gerüst-Bestellung</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
     --asphalt:#22262A; --concrete:#D9D6CD; --concrete-2:#C9C6BC;
@@ -133,6 +134,17 @@
 <div id="app"><div class="loading">Lade Daten…</div></div>
 
 <script>
+// ---- Supabase-Verbindung -------------------------------------------------
+// Hier deine eigenen Werte aus dem Supabase-Dashboard eintragen
+// (Project Settings -> API -> "Project URL" und "anon public" Key).
+const SUPABASE_URL = 'https://DEIN-PROJEKT.supabase.co';
+const SUPABASE_ANON_KEY = 'DEIN-ANON-KEY';
+
+const supabaseClient = (typeof supabase !== 'undefined')
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+// ---------------------------------------------------------------------------
+
 const STORAGE_KEY = 'shopfloor-data-v2';
 
 const CATALOG = [
@@ -184,24 +196,40 @@ function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
 function cartCount(){ return Object.values(state.cart).reduce((a,b)=>a+b,0); }
 
 async function loadShared(){
+  if(!supabaseClient){
+    document.getElementById('app').innerHTML =
+      '<div class="loading">Keine Internet-Verbindung zum Speicher.<br>Bitte Internet prüfen und Seite neu laden.</div>';
+    throw new Error('Supabase-Bibliothek nicht geladen');
+  }
   try{
-    const res = await window.storage.get(STORAGE_KEY, true);
-    if(res && res.value){
-      const data = JSON.parse(res.value);
-      state.orders = data.orders || [];
-      state.orderCounter = data.counter || 1001;
-      state.inventory = data.inventory || {...DEFAULT_INVENTORY};
+    const { data, error } = await supabaseClient
+      .from('app_state')
+      .select('value')
+      .eq('key', STORAGE_KEY)
+      .maybeSingle();
+    if(error) throw error;
+    if(data && data.value){
+      state.orders = data.value.orders || [];
+      state.orderCounter = data.value.counter || 1001;
+      state.inventory = data.value.inventory || {...DEFAULT_INVENTORY};
     } else {
       state.inventory = {...DEFAULT_INVENTORY};
+      await saveShared();
     }
   }catch(e){
+    console.error('Laden fehlgeschlagen', e);
     state.inventory = {...DEFAULT_INVENTORY};
-    await saveShared();
   }
 }
 async function saveShared(){
   try{
-    await window.storage.set(STORAGE_KEY, JSON.stringify({orders:state.orders, counter:state.orderCounter, inventory:state.inventory}), true);
+    const { error } = await supabaseClient
+      .from('app_state')
+      .upsert({
+        key: STORAGE_KEY,
+        value: {orders:state.orders, counter:state.orderCounter, inventory:state.inventory},
+      });
+    if(error) throw error;
   }catch(e){ console.error('Speichern fehlgeschlagen', e); }
 }
 

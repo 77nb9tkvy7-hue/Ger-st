@@ -33,20 +33,27 @@ Neu → In Bearbeitung → Bereit zur Abholung → Beladen → Unterwegs → Gel
 
 ## Datenspeicherung – WICHTIG
 
-Aktuell nutzt die App `window.storage` (get/set mit shared=true) – das ist
-eine Claude-Artefakt-API und funktioniert NUR, wenn die Datei innerhalb von
-Claude geöffnet wird. Außerhalb (z. B. GitHub Pages, lokaler Browser)
-funktioniert das Teilen der Daten nicht.
+Die App nutzt Supabase als geteilten Online-Speicher (kostenlose Stufe).
+Alle Bestellungen und der Lagerbestand landen in einer Tabelle `app_state`
+(eine Zeile mit `key = 'shopfloor-data-v2'` und einer `jsonb`-Spalte `value`,
+die `{orders, counter, inventory}` enthält). Dadurch sehen alle Rollen
+(egal auf welchem Handy, auch über GitHub Pages) dieselben Daten.
+
+Die einzigen zwei Funktionen, die den Speicher anfassen, sind `loadShared()`
+und `saveShared()` – dort steht auch, welche Supabase-Tabelle/Spalten
+erwartet werden. Zusätzlich gibt es ein 4-Sekunden-Polling per
+`setInterval`, das `loadShared()` aufruft, damit alle Rollen neue
+Bestellungen/Status ohne manuellen Reload sehen.
+
+Die Zugangsdaten (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) stehen am Anfang des
+`<script>`-Blocks in `geruest-bestell-app.html` und müssen pro Firma einmal
+mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
 
 ## Geplante nächste Schritte
 
-- Umbau der Datenspeicherung auf einen echten Online-Speicher
-  (z. B. Firebase oder Supabase, kostenlose Stufe), damit die App über
-  GitHub Pages von allen Mitarbeitern auf ihren eigenen Handys genutzt
-  werden kann und alle dieselben Daten sehen.
-- Beim Umbau: `loadShared()` und `saveShared()` in der Datei sind die
-  einzigen zwei Funktionen, die den Speicher anfassen – nur die müssen
-  ersetzt werden. Zusätzlich gibt es ein 4-Sekunden-Polling per setInterval.
+- Aktuell keine offenen Punkte. Mögliche spätere Verbesserungen: Realtime-
+  Updates statt Polling (Supabase Realtime), einfacher Passwortschutz pro
+  Rolle, Export der Bestellungen als PDF/CSV.
 
 ## Stil-Vorgaben
 
