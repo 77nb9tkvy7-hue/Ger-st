@@ -77,8 +77,12 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
 ## Stil-Vorgaben
 
 - Sprache der Oberfläche: Deutsch, einfache Handwerker-taugliche Wörter
-- Design: Baustellen-Look (Asphalt-Dunkelgrau #22262A, Beton-Grau #D9D6CD,
-  Warnorange #E85D04, Gelb #FFC300), Schriften: Oswald (Überschriften,
-  Versalien) + Inter (Text)
-- Mobile-first: wird hauptsächlich am Handy benutzt
+- Design: heller Look in den Firmenfarben der Stahlrohrgerüstbau München
+  GmbH (sg-muc.de): SG-Blau #0069B3 und Gelb #FFEE00 etwa 50/50 verteilt
+  (blauer Login-Verlauf, gelbe Haupt-Knöpfe, gelbe Akzente in Header und
+  Icons), weiße runde Karten, Schriften: Space Grotesk (Überschriften)
+  + Inter (Text). Firmenlogo `logo.png` (SGM, blau auf gelb) im Header
+  und auf dem Login-Screen.
+- Mobile-first: wird hauptsächlich am Handy benutzt (meta viewport!);
+  ab 900 px Breite zweispaltige Teile-Liste/Inventur für PC
 - Kein Amazon-/Shop-Feeling: Bestellschein-Charakter statt Warenkorb
