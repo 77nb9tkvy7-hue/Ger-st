@@ -44,9 +44,17 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
 
 ## Die 4 Rollen
 
-1. **Baustelle** (z. B. Max): Bestellt Teile über eine einfache Liste mit
-   +/− Mengenwahl (bewusst KEIN Amazon-Warenkorb-Stil, das wurde extra
-   entfernt). Sieht unten seine eigenen letzten Bestellungen mit Status.
+1. **Baustelle** (z. B. Max): Bestellt Teile über eine kompakte Tabelle
+   (nach Kategorien gruppiert, `CATEGORIES`/`CATALOG[].cat`), bewusst
+   nüchtern/Formular-artig statt Shop-Kacheln (Nutzerwunsch: "fühlt sich
+   an wie Amazon" sollte weg). Teile-Name antippen und **halten** (Long-
+   Press, ~480ms, `data-longpress`) öffnet ein Detail-Popup mit größerer
+   Bildfläche (aktuell Platzhalter "Foto folgt", später echte Teile-Fotos)
+   zur Sicherheit, dass das richtige Teil bestellt wird. „Bestellung
+   prüfen" öffnet vor dem echten Abschicken einen Bestellschein-Entwurf
+   zum Gegenlesen (`state.orderReview`, `orderReviewHTML()`) – erst dort
+   bestätigt „Bestellung verbindlich abschicken" (`submitOrderFinal()`)
+   endgültig. Sieht unten seine eigenen letzten Bestellungen mit Status.
    Ort der Bestellung: Wenn der Chef Bauvorhaben angelegt hat, wählt die
    Baustelle einfach das Bauvorhaben aus einer Liste (plus Option „Andere
    Adresse"). Bei freier Adresseingabe gibt es Live-Adressvorschläge beim
@@ -74,6 +82,22 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    (Konstante `CHEF_PASSWORD` am Anfang des `<script>`-Blocks). Hinweis:
    Prüfung läuft im Browser und das Repo ist öffentlich – einfacher
    Schutz, keine echte Sicherheitsmaßnahme.
+
+## Hell-/Dunkelmodus
+
+Die App folgt automatisch der Handy-/Browser-Einstellung
+(`@media (prefers-color-scheme: dark)`), kein manueller Umschalter. Alle
+Farben laufen über CSS-Variablen im `:root` (z. B. `--bg`, `--card`,
+`--ink`, `--accent`, `--line`, `--surface-2`, `--icon-tile`, `--zebra`) –
+der Dunkelmodus überschreibt nur diese Grundwerte, Komponenten verwenden
+nie eigene Hex-Farben direkt. Bewusst FEST (nicht vom Modus abhängig)
+bleiben die Marken-Elemente: der blaue Login-Verlauf, die gelben Ränder
+an Header/Login-Karte und die gelben Haupt-Knöpfe – das war ausdrücklich
+so gewünscht ("dunkel mit diesem Blau, hell wie es davor war"). Für
+Knöpfe mit weißer Schrift auf voller Akzentfläche (z. B. Chef-Passwort-
+"Anmelden") gibt es die eigene, immer kräftige `--accent-solid` (statt
+`--accent`, das im Dunkelmodus bewusst heller wird und mit weißer
+Schrift sonst zu wenig Kontrast hätte).
 
 ## Status-Ablauf einer Bestellung
 
@@ -104,18 +128,27 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
   aktuell bewusst deaktiviert)
 - Baupläne pro Bauvorhaben hochladen (braucht Supabase Storage /
   Datei-Bucket – ausdrücklicher Wunsch des Nutzers für später)
+- Kalender-Bearbeitung: aktuell nur über das (gemeinsame) Chef-Passwort
+  freischaltbar. Nutzer möchte, dass auch andere/mehrere Mitarbeiter
+  Termine eintragen können, nicht nur "Chef" – noch offen, wie genau
+  (eigene Berechtigung pro Person? weiteres Passwort?).
+  Nur eine Idee bisher: eine Extra-Spalte "Stunden" im Kalender, die nur
+  Chefin (und Chef, der sieht sowieso alles) sehen kann, andere Rollen/
+  Mitarbeiter nicht – noch nicht umgesetzt, nur besprochen.
 - Weitere Ideen: Realtime-Updates statt Polling (Supabase Realtime),
   Push-Benachrichtigungen, Export der Bestellungen als PDF/CSV.
 
 ## Stil-Vorgaben
 
 - Sprache der Oberfläche: Deutsch, einfache Handwerker-taugliche Wörter
-- Design: heller Look in den Firmenfarben der Stahlrohrgerüstbau München
-  GmbH (sg-muc.de): SG-Blau #0069B3 und Gelb #FFEE00 etwa 50/50 verteilt
-  (blauer Login-Verlauf, gelbe Haupt-Knöpfe, gelbe Akzente in Header und
-  Icons), weiße runde Karten, Schriften: Space Grotesk (Überschriften)
-  + Inter (Text). Firmenlogo `logo.png` (SGM, blau auf gelb) im Header
-  und auf dem Login-Screen.
+- Design: Firmenfarben der Stahlrohrgerüstbau München GmbH (sg-muc.de):
+  SG-Blau #0069B3 und Gelb #FFEE00 etwa 50/50 verteilt (blauer
+  Login-Verlauf, gelbe Haupt-Knöpfe, gelbe Akzente in Header und Icons).
+  Hell- und Dunkelmodus (siehe oben): helle Variante mit weißen runden
+  Karten wie ursprünglich, Dunkelmodus in dunklem Marine-/Navy-Blau statt
+  reinem Schwarz. Schriften: Space Grotesk (Überschriften) + Inter
+  (Text). Firmenlogo `logo.png` (SGM, blau auf gelb) im Header und auf
+  dem Login-Screen.
 - Mobile-first: wird hauptsächlich am Handy benutzt (meta viewport!);
   ab 900 px Breite zweispaltige Teile-Liste/Inventur für PC
 - Kein Amazon-/Shop-Feeling: Bestellschein-Charakter statt Warenkorb
