@@ -17,13 +17,32 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
-    --bg:#F2F4F6; --card:#FFFFFF; --ink:#17242D; --muted:#64748B; --line:#E2E8F0;
+    --bg:#F2F4F6; --card:#FFFFFF; --ink:#17242D; --muted:#64748B; --line:#E2E8F0; --line-strong:#CBD5E1;
     --accent:#0069B3; --accent-dark:#00538D; --accent-soft:#E1F0FA;
+    /* Feste Marken-Füllfarbe für Knöpfe mit weißer Schrift -- bleibt in
+       beiden Modi kräftig genug, damit der Text lesbar bleibt (--accent
+       wird im Dunkelmodus bewusst heller, siehe unten). */
+    --accent-solid:#0069B3;
+    --surface-2:#F1F4F6; --icon-tile:#FFF9C4; --zebra:#F6F8FA;
+    --disabled-bg:#CBD5E1; --disabled-fg:#F8FAFC;
     --amber:#F59E0B; --blue:#2563EB; --green:#16A34A; --red:#DC2626;
     --shadow:0 6px 18px rgba(23,36,45,0.07);
-    /* Alias-Namen aus dem alten Design, die in Inline-Styles vorkommen */
-    --steel:#64748B; --concrete:#E2E8F0; --concrete-2:#CBD5E1;
-    --orange:#0069B3; --orange-dark:#00538D; --yellow:#F59E0B; --white:#FFFFFF; --asphalt:#17242D;
+    /* Alias-Namen aus früheren Design-Ständen, die noch in Inline-Styles
+       vorkommen -- zeigen bewusst auf die Grundfarben, damit sie sich im
+       Dunkelmodus automatisch mit anpassen. */
+    --steel:var(--muted); --concrete:var(--line); --concrete-2:var(--line-strong);
+    --orange:var(--accent); --orange-dark:var(--accent-dark); --yellow:#F59E0B;
+    --white:#FFFFFF; --asphalt:var(--ink);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0C161F; --card:#122130; --ink:#EAF1F6; --muted:#93A5B2; --line:#233242; --line-strong:#324457;
+      --accent:#5CAEEA; --accent-dark:#8FCBFA; --accent-soft:rgba(92,174,234,0.14);
+      --surface-2:#18262F; --icon-tile:rgba(255,238,0,0.12); --zebra:#0F1D29;
+      --disabled-bg:#233242; --disabled-fg:#5B6B79;
+      --red:#F87171; --green:#4ADE80;
+      --shadow:0 1px 2px rgba(0,0,0,0.35),0 10px 26px rgba(0,0,0,0.35);
+    }
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;}
@@ -49,7 +68,7 @@
   .login-card h1{font-size:22px;margin:0 0 4px 0;text-align:center;}
   .login-card .sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px;}
   .role-grid{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
-  .role-btn{display:flex;align-items:center;gap:14px;background:#F7F9FA;border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--ink);text-align:left;}
+  .role-btn{display:flex;align-items:center;gap:14px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--ink);text-align:left;}
   .role-btn svg{width:24px;height:24px;flex:none;color:var(--accent);}
   .role-btn small{display:block;font-family:'Inter';font-size:11.5px;color:var(--muted);font-weight:400;margin-top:2px;}
   .role-btn:hover{border-color:var(--accent);background:var(--accent-soft);}
@@ -73,26 +92,54 @@
   .field input,.field select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;font-family:inherit;background:var(--card);color:var(--ink);}
   .field input:focus,.field select:focus{outline:none;border-color:var(--accent);}
   .loc-btn{display:block;width:100%;background:var(--accent-soft);border:none;color:var(--accent-dark);border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;font-family:'Inter',sans-serif;}
-  .maps-btn{display:block;text-align:center;background:#EFF4FF;border:none;color:var(--blue);border-radius:10px;padding:9px;font-size:12.5px;font-weight:600;text-decoration:none;margin-top:10px;}
+  .maps-btn{display:block;text-align:center;background:var(--accent-soft);border:none;color:var(--accent-dark);border-radius:10px;padding:9px;font-size:12.5px;font-weight:600;text-decoration:none;margin-top:10px;}
   .addr-sug{background:var(--card);border:1.5px solid var(--line);border-radius:12px;margin-top:6px;overflow:hidden;}
   .addr-sug div{padding:10px 12px;font-size:13px;cursor:pointer;border-bottom:1px solid var(--line);}
   .addr-sug div:last-child{border-bottom:none;}
   .addr-sug div:active{background:var(--accent-soft);}
 
-  /* Bestellliste (kein Warenkorb) */
-  .order-row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow);}
-  .order-row-icon{width:40px;height:40px;background:#FFF9C4;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;}
-  .order-row-icon svg{width:22px;height:22px;}
-  .order-row-main{flex:1;}
-  .order-row-name{font-size:14px;font-weight:600;}
-  .order-row-unit{font-size:11.5px;color:var(--muted);}
-  .stepper{display:flex;align-items:center;background:#F1F4F6;border-radius:10px;overflow:hidden;flex:none;}
-  .stepper button{background:transparent;color:var(--accent-dark);border:none;width:34px;height:34px;font-size:17px;font-weight:700;cursor:pointer;line-height:1;}
-  .stepper button:active{background:var(--accent);color:#fff;}
-  .stepper .qty{width:34px;text-align:center;font-weight:700;font-size:15px;}
+  /* Bestellliste als Tabelle (kein Warenkorb) -- Name antippen+halten
+     zeigt ein Detail-Popup, praktisch sobald echte Teile-Fotos da sind. */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line-strong);border-radius:10px;margin-bottom:6px;}
+  table.order-table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);}
+  .order-table thead th{text-align:left;font-family:'Space Grotesk',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1.5px solid var(--line-strong);background:var(--zebra);}
+  .order-table td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  .order-table tbody tr:last-child td{border-bottom:none;}
+  .order-table tbody tr.row-alt{background:var(--zebra);}
+  .order-table tbody tr.cat-row td{background:var(--accent-soft);color:var(--accent-dark);font-weight:700;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;padding:7px 12px;}
+  .t-name{display:flex;align-items:center;gap:9px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+  .t-name:active{background:var(--accent-soft);}
+  .t-icon{width:22px;height:22px;color:var(--accent);flex:none;}
+  .t-unit{color:var(--muted);font-size:12.5px;}
+  .qty-ctl{display:flex;align-items:center;border:1.5px solid var(--line-strong);border-radius:8px;overflow:hidden;flex:none;background:var(--card);}
+  .qty-ctl button{background:none;border:none;width:30px;height:34px;font-size:16px;line-height:1;cursor:pointer;color:var(--muted);}
+  .qty-ctl button:active{background:var(--accent-soft);color:var(--accent-dark);}
+  .qty-ctl .qty-val{width:32px;text-align:center;font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;border-left:1px solid var(--line-strong);border-right:1px solid var(--line-strong);}
+
+  /* Detail-Popup pro Teil (langes Drücken auf den Namen) */
+  .overlay-center{align-items:center;}
+  .item-popup{background:var(--card);border-radius:20px;padding:24px;max-width:300px;width:88%;margin:auto;text-align:center;}
+  .item-popup-photo{aspect-ratio:4/3;border:1.5px dashed var(--line-strong);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--accent);background:var(--zebra);margin-bottom:14px;}
+  .item-popup-photo svg{width:40px;height:40px;}
+  .item-popup-photo span{font-size:11px;color:var(--muted);letter-spacing:0.03em;}
+  .item-popup-name{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;}
+  .item-popup-unit{font-size:12.5px;color:var(--muted);margin:2px 0 14px 0;}
+  .item-popup .qty-ctl{margin:0 auto;}
+
+  /* Bestellung prüfen (Bestellschein-Vorschau vor dem Abschicken) */
+  .review-head{padding:4px 4px 14px 4px;border-bottom:2px dashed var(--line-strong);margin-bottom:14px;}
+  .review-head .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+  .review-head h3{font-size:19px;margin-top:4px;}
+  .review-meta{font-size:13px;color:var(--muted);margin:0 4px 14px 4px;}
+  .review-meta b{color:var(--ink);}
+  .review-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:18px;}
+  .review-table th{text-align:left;font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);padding:8px 4px;border-bottom:1.5px solid var(--line-strong);}
+  .review-table th.num,.review-table td.num{text-align:right;}
+  .review-table td{padding:7px 4px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;}
+
   .order-footer{position:fixed;left:0;right:0;bottom:0;background:var(--card);box-shadow:0 -6px 20px rgba(23,36,45,0.08);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);z-index:15;max-width:720px;margin:0 auto;border-radius:16px 16px 0 0;}
   .submit-btn{background:#FFEE00;color:#0B2A42;border:none;padding:12px 22px;border-radius:999px;font-family:'Space Grotesk',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;}
-  .submit-btn:disabled{background:#CBD5E1;color:#F8FAFC;cursor:not-allowed;}
+  .submit-btn:disabled{background:var(--disabled-bg);color:var(--disabled-fg);cursor:not-allowed;}
 
   /* Bestätigungs-Ticket */
   .overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:30;display:flex;align-items:flex-end;justify-content:center;}
@@ -128,7 +175,7 @@
   .order-items li{margin-left:18px;}
   .order-time{font-size:11.5px;color:var(--muted);margin-bottom:4px;}
   .advance-btn{width:100%;background:#FFEE00;color:#0B2A42;border:none;padding:12px;border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;margin-top:10px;}
-  .advance-btn:active{background:var(--accent);color:#fff;}
+  .advance-btn:active{background:var(--accent-solid);color:#fff;}
   .done-label{font-size:12.5px;color:var(--green);font-weight:700;margin-top:8px;}
   .empty-state{text-align:center;color:var(--muted);padding:44px 10px;font-size:13.5px;}
   .waiting-note{font-size:12px;color:#92400E;background:#FEF3C7;padding:10px 12px;border-radius:12px;margin-bottom:12px;}
@@ -139,24 +186,24 @@
   .loading{color:var(--muted);text-align:center;padding:60px 20px;font-size:13px;}
 
   /* Segmented control (Lager) */
-  .seg-control{display:flex;background:#E8ECEF;border-radius:12px;padding:4px;margin:12px 0 16px 0;}
+  .seg-control{display:flex;background:var(--surface-2);border-radius:12px;padding:4px;margin:12px 0 16px 0;}
   .seg-control button{flex:1;border:none;background:transparent;padding:10px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);}
   .seg-control button.active{background:var(--card);color:var(--ink);box-shadow:0 2px 6px rgba(23,36,45,0.12);}
 
   /* Inventur */
   .inv-list{display:flex;flex-direction:column;gap:10px;}
   .inv-row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);}
-  .inv-icon{width:40px;height:40px;background:#FFF9C4;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;}
+  .inv-icon{width:40px;height:40px;background:var(--icon-tile);border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;}
   .inv-icon svg{width:22px;height:22px;}
   .inv-main{flex:1;}
   .inv-name{font-size:14px;font-weight:600;}
   .inv-qty{font-size:12.5px;color:var(--muted);margin-top:2px;}
   .inv-qty.stock-low{color:#B45309;font-weight:700;}
   .inv-qty.stock-missing{color:var(--red);font-weight:700;}
-  .inv-qty .tag{margin-left:6px;background:#F1F4F6;border-radius:999px;padding:2px 8px;font-size:10.5px;}
+  .inv-qty .tag{margin-left:6px;background:var(--surface-2);border-radius:999px;padding:2px 8px;font-size:10.5px;}
   .inv-actions{display:flex;gap:5px;flex:none;}
-  .inv-actions button{background:#F1F4F6;color:var(--ink);border:none;border-radius:9px;width:32px;height:32px;font-size:15px;font-weight:700;cursor:pointer;}
-  .inv-actions button:active{background:var(--accent);color:#fff;}
+  .inv-actions button{background:var(--surface-2);color:var(--ink);border:none;border-radius:9px;width:32px;height:32px;font-size:15px;font-weight:700;cursor:pointer;}
+  .inv-actions button:active{background:var(--accent-solid);color:#fff;}
   .inv-restock{width:auto !important;padding:0 10px !important;font-size:11.5px !important;font-family:'Inter',sans-serif !important;}
 
   /* Chef */
@@ -169,7 +216,6 @@
   @media (min-width: 900px){
     main{max-width:900px;}
     .order-footer{max-width:900px;}
-    .catalog-list{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-items:start;}
     .inv-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;}
   }
 </style>
@@ -225,17 +271,25 @@ function clearSession(){
   try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
 }
 
+const CATEGORIES = [
+  {id:'rahmen', name:'Rahmen & Streben'},
+  {id:'boeden', name:'Böden & Beläge'},
+  {id:'gelaender', name:'Geländer & Absturzsicherung'},
+  {id:'verbindung', name:'Verbindungstechnik'},
+  {id:'zubehoer', name:'Zubehör'},
+];
+
 const CATALOG = [
-  {id:'rahmen20', name:'Vertikalrahmen 2,00 m', unit:'Stk', icon:'frame'},
-  {id:'rahmen10', name:'Vertikalrahmen 1,00 m', unit:'Stk', icon:'frame'},
-  {id:'diagonale', name:'Diagonalstrebe', unit:'Stk', icon:'diag'},
-  {id:'stahlboden', name:'Stahlboden 3,07 m', unit:'Stk', icon:'plank'},
-  {id:'alubohle', name:'Alu-Bohle 2,50 m', unit:'Stk', icon:'plank'},
-  {id:'gelaender', name:'Geländerholm', unit:'Stk', icon:'rail'},
-  {id:'bordbrett', name:'Bordbrett', unit:'Stk', icon:'board'},
-  {id:'spindel', name:'Fußspindel', unit:'Stk', icon:'spindle'},
-  {id:'kupplung', name:'Kupplung (Normal)', unit:'Stk', icon:'clamp'},
-  {id:'leiter', name:'Durchstiegsleiter', unit:'Stk', icon:'ladder'},
+  {id:'rahmen20', name:'Vertikalrahmen 2,00 m', unit:'Stk', icon:'frame', cat:'rahmen'},
+  {id:'rahmen10', name:'Vertikalrahmen 1,00 m', unit:'Stk', icon:'frame', cat:'rahmen'},
+  {id:'diagonale', name:'Diagonalstrebe', unit:'Stk', icon:'diag', cat:'rahmen'},
+  {id:'stahlboden', name:'Stahlboden 3,07 m', unit:'Stk', icon:'plank', cat:'boeden'},
+  {id:'alubohle', name:'Alu-Bohle 2,50 m', unit:'Stk', icon:'plank', cat:'boeden'},
+  {id:'gelaender', name:'Geländerholm', unit:'Stk', icon:'rail', cat:'gelaender'},
+  {id:'bordbrett', name:'Bordbrett', unit:'Stk', icon:'board', cat:'gelaender'},
+  {id:'spindel', name:'Fußspindel', unit:'Stk', icon:'spindle', cat:'verbindung'},
+  {id:'kupplung', name:'Kupplung (Normal)', unit:'Stk', icon:'clamp', cat:'verbindung'},
+  {id:'leiter', name:'Durchstiegsleiter', unit:'Stk', icon:'ladder', cat:'zubehoer'},
 ];
 
 const DEFAULT_INVENTORY = {
@@ -273,6 +327,7 @@ const state = {
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
   calEditId:null, calDraft:null, calWarn:'',
+  itemPopup:null, orderReview:null,
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
@@ -356,7 +411,7 @@ function loginHTML(){
           <input id="chefPwInput" type="password" placeholder="Passwort">
         </div>
         <div class="role-grid">
-          <button class="role-btn" data-action="chef-pw-ok" style="justify-content:center;background:var(--orange);color:white;">Anmelden</button>
+          <button class="role-btn" data-action="chef-pw-ok" style="justify-content:center;background:var(--accent-solid);color:white;">Anmelden</button>
           <button class="role-btn" data-action="chef-pw-back" style="justify-content:center;">Zurück</button>
         </div>
         ${state.loginWarn? `<div class="warn">${state.loginWarn}</div>`:''}
@@ -386,13 +441,39 @@ function loginHTML(){
   </div>`;
 }
 
+function qtyControlHTML(it){
+  const q = state.cart[it.id]||0;
+  return `<div class="qty-ctl">
+    <button type="button" data-action="qty" data-id="${it.id}" data-delta="-1" aria-label="Menge verringern">−</button>
+    <div class="qty-val">${q}</div>
+    <button type="button" data-action="qty" data-id="${it.id}" data-delta="1" aria-label="Menge erhöhen">+</button>
+  </div>`;
+}
+
 function catalogHTML(){
   const mine = state.orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id).slice(0,5);
   const count = cartCount();
   const aktive = state.projects.filter(p=>p.aktiv);
   const freiGewaehlt = !aktive.length || state.selProjekt==='_frei';
+
+  let rows = '';
+  let rowIdx = 0;
+  CATEGORIES.forEach(cat=>{
+    const items = CATALOG.filter(it=>it.cat===cat.id);
+    if(!items.length) return;
+    rows += `<tr class="cat-row"><td colspan="3">${cat.name}</td></tr>`;
+    items.forEach(it=>{
+      rowIdx++;
+      rows += `<tr class="${rowIdx%2? 'row-alt':''}">
+        <td class="t-name" data-longpress="${it.id}"><span class="t-icon">${ICONS[it.icon]}</span>${it.name}</td>
+        <td class="t-unit">${it.unit}</td>
+        <td>${qtyControlHTML(it)}</td>
+      </tr>`;
+    });
+  });
+
   return `<h2 class="view-title">Neue Bestellung</h2>
-  <p class="view-sub">Teile auswählen – geht sofort an Lager &amp; Fahrer.</p>
+  <p class="view-sub">Teile auswählen – geht sofort an Lager &amp; Fahrer. Name antippen und halten zeigt Details.</p>
   ${aktive.length? `<div class="field">
     <label>Bauvorhaben *</label>
     <select id="projektSelect">
@@ -407,28 +488,55 @@ function catalogHTML(){
   </div>
   <button class="loc-btn" data-action="use-location">📍 Meinen Standort als Adresse übernehmen</button>`:''}
   <div id="ortWarnArea"></div>
-  <div class="catalog-list">${CATALOG.map(it=>{
-    const qty = state.cart[it.id]||0;
-    return `<div class="order-row">
-      <div class="order-row-icon">${ICONS[it.icon]}</div>
-      <div class="order-row-main">
-        <div class="order-row-name">${it.name}</div>
-        <div class="order-row-unit">${it.unit}</div>
-      </div>
-      <div class="stepper">
-        <button data-action="qty" data-id="${it.id}" data-delta="-1">−</button>
-        <div class="qty">${qty}</div>
-        <button data-action="qty" data-id="${it.id}" data-delta="1">+</button>
-      </div>
-    </div>`;
-  }).join('')}</div>
+  <div class="tbl-wrap"><table class="order-table">
+    <thead><tr><th>Teil</th><th>Einheit</th><th style="text-align:right;">Menge</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>
   <div class="mine-section">
     <h3>Meine letzten Bestellungen</h3>
     ${mine.length? mine.map(o=>orderCardHTML(o,null)).join('') : '<div class="empty-state" style="padding:20px 0;">Du hast noch nichts bestellt.</div>'}
   </div>
   <div class="order-footer">
-    <span>${count? count+' Teile ausgewählt' : 'Noch keine Teile ausgewählt'}</span>
-    <button class="submit-btn" data-action="submit-order" ${count? '':'disabled'}>Abschicken</button>
+    <span>${count? count+' Stk ausgewählt' : 'Noch keine Menge eingetragen'}</span>
+    <button class="submit-btn" data-action="open-order-review" ${count? '':'disabled'}>Bestellung prüfen</button>
+  </div>`;
+}
+
+function itemPopupHTML(){
+  const it = CATALOG.find(c=>c.id===state.itemPopup);
+  if(!it) return '';
+  return `<div class="overlay overlay-center" data-action="close-item-popup-bg">
+    <div class="item-popup">
+      <div class="item-popup-photo">${ICONS[it.icon]}<span>Foto folgt</span></div>
+      <div class="item-popup-name">${it.name}</div>
+      <div class="item-popup-unit">${it.unit}</div>
+      ${qtyControlHTML(it)}
+      <button class="refresh-btn" data-action="close-item-popup" style="margin-top:16px;width:100%;">Schließen</button>
+    </div>
+  </div>`;
+}
+
+function orderReviewHTML(){
+  if(!state.orderReview) return '';
+  const items = Object.entries(state.cart).filter(([id,q])=>q>0).map(([id,q])=>{
+    const it = CATALOG.find(c=>c.id===id);
+    return {name:it.name, unit:it.unit, qty:q};
+  });
+  const today = new Date().toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'});
+  return `<div class="overlay" data-action="close-order-review-bg">
+    <div class="drawer">
+      <div class="review-head">
+        <div class="eyebrow">Bestellschein · Entwurf</div>
+        <h3>Bestellung prüfen</h3>
+      </div>
+      <div class="review-meta">Baustelle: <b>${state.orderReview.ort}</b> · Datum: <b>${today}</b></div>
+      ${items.length? `<table class="review-table">
+        <thead><tr><th>Teil</th><th class="num">Menge</th></tr></thead>
+        <tbody>${items.map(i=>`<tr><td>${i.name}</td><td class="num">${i.qty} ${i.unit}</td></tr>`).join('')}</tbody>
+      </table>` : '<div class="empty-state">Keine Teile mehr ausgewählt.</div>'}
+      <button class="submit-btn" data-action="submit-order-final" style="width:100%;" ${items.length? '':'disabled'}>Bestellung verbindlich abschicken</button>
+      <button class="refresh-btn" data-action="close-order-review" style="width:100%;margin-top:10px;">Zurück zur Liste</button>
+    </div>
   </div>`;
 }
 
@@ -664,17 +772,20 @@ function render(){
       <div style="display:flex;align-items:center;gap:12px;">
         <div class="who"><b>${state.name}</b><br><a data-action="logout">Abmelden / Rolle wechseln</a></div>
         <div class="menu-wrap">
-          <button class="menu-btn" data-action="menu-toggle" aria-label="Menü" style="background:#F1F4F6;color:var(--ink);">☰</button>
+          <button class="menu-btn" data-action="menu-toggle" aria-label="Menü" style="background:var(--surface-2);color:var(--ink);">☰</button>
           ${menuDropdownHTML()}
         </div>
       </div>
     </header>
     <main>${mainHTML}</main>
+    ${state.itemPopup ? itemPopupHTML() : ''}
+    ${state.orderReview ? orderReviewHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
 }
 
-async function submitOrder(){
+function openOrderReview(){
+  if(cartCount()===0) return;
   let ort='', coords=null, projektId=null;
   const sel = document.getElementById('projektSelect');
   if(sel && sel.value!=='_frei'){
@@ -691,11 +802,18 @@ async function submitOrder(){
       return;
     }
   }
+  state.orderReview = {ort, coords, projektId};
+  render();
+}
+
+async function submitOrderFinal(){
+  if(!state.orderReview) return;
+  const {ort, coords, projektId} = state.orderReview;
   const items = Object.entries(state.cart).filter(([id,q])=>q>0).map(([id,q])=>{
     const it = CATALOG.find(c=>c.id===id);
     return {id:it.id, name:it.name, unit:it.unit, qty:q};
   });
-  if(items.length===0) return;
+  if(items.length===0){ state.orderReview=null; render(); return; }
 
   const order = {
     id: state.orderCounter++,
@@ -710,6 +828,7 @@ async function submitOrder(){
   state.orders.push(order);
   state.cart = {};
   state.confirmOrder = order;
+  state.orderReview = null;
   if(!projektId) state.baustelleOrt = ort;
   await saveShared();
   render();
@@ -753,7 +872,10 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     state.cart[id] = Math.max(0, cur+delta);
     render();
   }
-  if(action==='submit-order'){ await submitOrder(); }
+  if(action==='open-order-review'){ openOrderReview(); }
+  if(action==='close-order-review' || (action==='close-order-review-bg' && e.target===el)){ state.orderReview=null; render(); }
+  if(action==='submit-order-final'){ await submitOrderFinal(); }
+  if(action==='close-item-popup' || (action==='close-item-popup-bg' && e.target===el)){ state.itemPopup=null; render(); }
   if(action==='close-confirm' || (action==='close-confirm-bg' && e.target===el)){ state.confirmOrder=null; render(); }
   if(action==='advance'){
     const id = parseInt(el.dataset.order,10);
@@ -913,8 +1035,33 @@ document.getElementById('app').addEventListener('input', (e)=>{
   }
 });
 
+// Name antippen und halten öffnet das Detail-Popup (Foto/Menge) --
+// nützlich sobald echte Teile-Fotos zur Sicherheit dabei sind.
+let lpTimer=null, lpStartX=0, lpStartY=0, lpId=null;
+function clearLongPress(){ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } lpId=null; }
+document.getElementById('app').addEventListener('pointerdown', (e)=>{
+  const cell = e.target.closest('[data-longpress]');
+  if(!cell) return;
+  lpId = cell.dataset.longpress;
+  lpStartX = e.clientX; lpStartY = e.clientY;
+  lpTimer = setTimeout(()=>{
+    lpTimer = null;
+    state.itemPopup = lpId;
+    render();
+  }, 480);
+});
+document.getElementById('app').addEventListener('pointermove', (e)=>{
+  if(!lpTimer) return;
+  if(Math.abs(e.clientX-lpStartX)>10 || Math.abs(e.clientY-lpStartY)>10) clearLongPress();
+});
+document.getElementById('app').addEventListener('pointerup', clearLongPress);
+document.getElementById('app').addEventListener('pointercancel', clearLongPress);
+document.getElementById('app').addEventListener('contextmenu', (e)=>{
+  if(e.target.closest('[data-longpress]')) e.preventDefault();
+});
+
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar') || state.confirmOrder) return;
+  if((!state.loggedIn && state.view!=='calendar') || state.confirmOrder || state.orderReview || state.itemPopup) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
