@@ -55,6 +55,42 @@ immer in ALLEN fünf Sprachblöcken im `T`-Objekt ergänzen (gleicher
 Schlüssel überall), sonst fällt die Anzeige auf Deutsch zurück (kein
 Absturz, aber inkonsistent).
 
+## Teile leichter finden (Suche, Häufigkeits-Sortierung, Systeme)
+
+Da über die Zeit sehr viele Teile aus mehreren Gerüst-Systemen dazu-
+kommen sollen (Kunde hat Lieferscheine für "Modul", "SL70/SL100" und
+"Tribünen" geschickt, je 30-50 Teile-Arten mit oft 5-8 Längen-Varianten
+– das wird schnell eine Liste mit 150-300+ Positionen), gibt es in der
+Baustellen-Bestellliste (`catalogHTML()`) drei Bausteine dagegen:
+
+- **Häufigkeits-Sortierung** (`itemOrderCounts()`): zählt firmenweit,
+  wie oft jedes Teil schon bestellt wurde (Anzahl Bestellungen, nicht
+  Menge, damit ein Großauftrag die Reihenfolge nicht verzerrt). Teile
+  werden innerhalb ihrer Kategorie danach sortiert; ein extra Abschnitt
+  "⭐ Häufig bestellt" ganz oben zeigt zusätzlich die Top 5 firmenweit
+  (nur wenn schon Bestellhistorie existiert).
+- **Suchfeld** (`#catalogSearch`, `state.catalogSearch`): filtert per
+  Tippen auf den (übersetzten) Teile-Namen; zeigt bei Treffern eine
+  flache, nach Häufigkeit sortierte Liste ohne Kategorie-Überschriften.
+- **System-Auswahl** (`SYSTEMS`-Array, `state.systemSel`): aktuell nur
+  ein Eintrag ("Modul"), daher bleibt der Auswahl-Reiter unsichtbar
+  (`SYSTEMS.length>1`-Prüfung). Sobald ein zweites System (z. B.
+  "SL70/SL100" oder "Tribünen") als Eintrag ergänzt wird und die
+  CATALOG-Teile ein passendes `system`-Feld bekommen, erscheint der
+  Reiter automatisch.
+
+**Geplant, noch nicht umgesetzt:** Die echten Teile aus den drei
+gelieferten Lieferscheinen (Modul, SL70/SL100, Tribünen) eintragen –
+bewusst als eigener, späterer Schritt, weil das viele Positionen sind
+und jede einzelne in alle 5 Sprachen übersetzt werden muss. Offene
+Design-Frage dabei: Längen-Varianten (z. B. Diagonale in 6 Längen)
+vorerst als eigene Katalog-Zeile wie heute bei den Rahmen (aktuelle
+Richtung) oder Teil-dann-Länge als zweistufige Auswahl. Bei SL70/SL100
+gibt es laut Lieferschein pro Zeile zwei Stück-Spalten (SL70 *und*
+SL100 getrennt) und einige Teile haben statt fester Längen-Liste ein
+freies "Länge = ___"-Feld (v. a. Kupplungen/Rohre) – beides beim
+Eintragen der echten Daten berücksichtigen.
+
 ## PWA / „Wie eine App" nutzbar
 
 Die Datei bindet eine `manifest.json` sowie `icon-192.png`/`icon-512.png`

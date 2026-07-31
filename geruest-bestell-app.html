@@ -98,6 +98,8 @@
   .addr-sug div{padding:10px 12px;font-size:13px;cursor:pointer;border-bottom:1px solid var(--line);}
   .addr-sug div:last-child{border-bottom:none;}
   .addr-sug div:active{background:var(--accent-soft);}
+  .katalog-search{width:100%;border:1.5px solid var(--line-strong);border-radius:10px;padding:11px 12px;font-size:14px;margin:0 0 12px 0;background:var(--card);color:var(--ink);font-family:inherit;}
+  .katalog-search:focus{outline:none;border-color:var(--accent);}
 
   /* Bestellliste als Tabelle (kein Warenkorb) -- Name antippen+halten
      zeigt ein Detail-Popup, praktisch sobald echte Teile-Fotos da sind. */
@@ -380,6 +382,8 @@ de:{
   item_diagonale:'Diagonalstrebe', item_stahlboden:'Stahlboden 3,07 m', item_alubohle:'Alu-Bohle 2,50 m',
   item_gelaender:'Geländerholm', item_bordbrett:'Bordbrett', item_spindel:'Fußspindel',
   item_kupplung:'Kupplung (Normal)', item_leiter:'Durchstiegsleiter',
+  sys_modul:'Modul', searchPlaceholder:'Teil suchen…', searchNoResults:'Keine Teile gefunden.',
+  favTitle:'⭐ Häufig bestellt',
 },
 pl:{
   appName:'Zamówienie rusztowania', menuAria:'Menu', menuCalendar:'📅 Kalendarz',
@@ -463,6 +467,8 @@ pl:{
   item_diagonale:'Stężenie ukośne', item_stahlboden:'Pomost stalowy 3,07 m', item_alubohle:'Bohla aluminiowa 2,50 m',
   item_gelaender:'Poręcz', item_bordbrett:'Bortnica', item_spindel:'Śruba rzymska (stopa)',
   item_kupplung:'Złącze normalne', item_leiter:'Drabinka włazowa',
+  sys_modul:'Modul', searchPlaceholder:'Szukaj części…', searchNoResults:'Nie znaleziono żadnych części.',
+  favTitle:'⭐ Często zamawiane',
 },
 sk:{
   appName:'Objednávka lešenia', menuAria:'Menu', menuCalendar:'📅 Kalendár',
@@ -546,6 +552,8 @@ sk:{
   item_diagonale:'Diagonálna vzpera', item_stahlboden:'Oceľová podlaha 3,07 m', item_alubohle:'Hliníková fošňa 2,50 m',
   item_gelaender:'Zábradlová tyč', item_bordbrett:'Okrajová doska', item_spindel:'Pätková skrutka',
   item_kupplung:'Spojka (normálna)', item_leiter:'Priechodový rebrík',
+  sys_modul:'Modul', searchPlaceholder:'Hľadať diel…', searchNoResults:'Nenašli sa žiadne diely.',
+  favTitle:'⭐ Často objednávané',
 },
 hr:{
   appName:'Narudžba skele', menuAria:'Izbornik', menuCalendar:'📅 Kalendar',
@@ -629,6 +637,8 @@ hr:{
   item_diagonale:'Dijagonalna spona', item_stahlboden:'Čelična podna ploča 3,07 m', item_alubohle:'Aluminijska podnica 2,50 m',
   item_gelaender:'Rukohvat ograde', item_bordbrett:'Rubna daska', item_spindel:'Podnožna vijčana noga',
   item_kupplung:'Spojnica (normalna)', item_leiter:'Prolazne ljestve',
+  sys_modul:'Modul', searchPlaceholder:'Pretraži dio…', searchNoResults:'Nema pronađenih dijelova.',
+  favTitle:'⭐ Često naručivano',
 },
 en:{
   appName:'Scaffold Order', menuAria:'Menu', menuCalendar:'📅 Calendar',
@@ -712,6 +722,8 @@ en:{
   item_diagonale:'Diagonal brace', item_stahlboden:'Steel deck board 3.07 m', item_alubohle:'Aluminium plank 2.50 m',
   item_gelaender:'Guardrail tube', item_bordbrett:'Toe board', item_spindel:'Base jack',
   item_kupplung:'Standard coupler', item_leiter:'Access ladder',
+  sys_modul:'Modul', searchPlaceholder:'Search parts…', searchNoResults:'No parts found.',
+  favTitle:'⭐ Frequently ordered',
 },
 };
 
@@ -734,6 +746,14 @@ function resolvedItem(i){
 function statusLabel(status){ return t('status'+slug(status)); }
 function stepLabel(status){ return t('step'+slug(status)); }
 
+// Gerüst-Systeme (z.B. Modul, SL70/SL100, Tribünen). Aktuell nur eins --
+// die Auswahl-Reiter erscheinen automatisch, sobald ein zweites System
+// dazukommt (siehe catalogHTML). Neues System: hier eine Zeile ergänzen
+// und den Teilen unten das passende system-Feld geben.
+const SYSTEMS = [
+  {id:'modul', nameKey:'sys_modul'},
+];
+
 const CATEGORIES = [
   {id:'rahmen', name:'Rahmen & Streben'},
   {id:'boeden', name:'Böden & Beläge'},
@@ -743,16 +763,16 @@ const CATEGORIES = [
 ];
 
 const CATALOG = [
-  {id:'rahmen20', name:'Vertikalrahmen 2,00 m', unit:'Stk', icon:'frame', cat:'rahmen'},
-  {id:'rahmen10', name:'Vertikalrahmen 1,00 m', unit:'Stk', icon:'frame', cat:'rahmen'},
-  {id:'diagonale', name:'Diagonalstrebe', unit:'Stk', icon:'diag', cat:'rahmen'},
-  {id:'stahlboden', name:'Stahlboden 3,07 m', unit:'Stk', icon:'plank', cat:'boeden'},
-  {id:'alubohle', name:'Alu-Bohle 2,50 m', unit:'Stk', icon:'plank', cat:'boeden'},
-  {id:'gelaender', name:'Geländerholm', unit:'Stk', icon:'rail', cat:'gelaender'},
-  {id:'bordbrett', name:'Bordbrett', unit:'Stk', icon:'board', cat:'gelaender'},
-  {id:'spindel', name:'Fußspindel', unit:'Stk', icon:'spindle', cat:'verbindung'},
-  {id:'kupplung', name:'Kupplung (Normal)', unit:'Stk', icon:'clamp', cat:'verbindung'},
-  {id:'leiter', name:'Durchstiegsleiter', unit:'Stk', icon:'ladder', cat:'zubehoer'},
+  {id:'rahmen20', name:'Vertikalrahmen 2,00 m', unit:'Stk', icon:'frame', cat:'rahmen', system:'modul'},
+  {id:'rahmen10', name:'Vertikalrahmen 1,00 m', unit:'Stk', icon:'frame', cat:'rahmen', system:'modul'},
+  {id:'diagonale', name:'Diagonalstrebe', unit:'Stk', icon:'diag', cat:'rahmen', system:'modul'},
+  {id:'stahlboden', name:'Stahlboden 3,07 m', unit:'Stk', icon:'plank', cat:'boeden', system:'modul'},
+  {id:'alubohle', name:'Alu-Bohle 2,50 m', unit:'Stk', icon:'plank', cat:'boeden', system:'modul'},
+  {id:'gelaender', name:'Geländerholm', unit:'Stk', icon:'rail', cat:'gelaender', system:'modul'},
+  {id:'bordbrett', name:'Bordbrett', unit:'Stk', icon:'board', cat:'gelaender', system:'modul'},
+  {id:'spindel', name:'Fußspindel', unit:'Stk', icon:'spindle', cat:'verbindung', system:'modul'},
+  {id:'kupplung', name:'Kupplung (Normal)', unit:'Stk', icon:'clamp', cat:'verbindung', system:'modul'},
+  {id:'leiter', name:'Durchstiegsleiter', unit:'Stk', icon:'ladder', cat:'zubehoer', system:'modul'},
 ];
 
 const DEFAULT_INVENTORY = {
@@ -792,10 +812,21 @@ const state = {
   calEditId:null, calDraft:null, calWarn:'',
   itemPopup:null, orderReview:null,
   lang:'de', langMenuOpen:false,
+  catalogSearch:'', systemSel: SYSTEMS[0].id,
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
 function cartCount(){ return Object.values(state.cart).reduce((a,b)=>a+b,0); }
+
+// Wie oft wurde ein Teil bisher firmenweit bestellt? Zählt Bestell-
+// Häufigkeit (nicht Menge), damit ein einzelner Großauftrag die
+// Reihenfolge nicht verzerrt. Wird genutzt, um häufig gebrauchte Teile
+// automatisch weiter oben in der Liste zu zeigen.
+function itemOrderCounts(){
+  const counts = {};
+  state.orders.forEach(o=> o.items.forEach(it=>{ counts[it.id] = (counts[it.id]||0) + 1; }));
+  return counts;
+}
 
 async function loadShared(){
   if(!supabaseClient){
@@ -929,27 +960,55 @@ function qtyControlHTML(it){
   </div>`;
 }
 
+function catalogRowHTML(it, alt){
+  return `<tr class="${alt? 'row-alt':''}">
+    <td class="t-name" data-longpress="${it.id}"><span class="t-icon">${ICONS[it.icon]}</span>${itemName(it)}</td>
+    <td class="t-unit">${unitLabel(it.unit)}</td>
+    <td>${qtyControlHTML(it)}</td>
+  </tr>`;
+}
+
 function catalogHTML(){
   const mine = state.orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id).slice(0,5);
   const count = cartCount();
   const aktive = state.projects.filter(p=>p.aktiv);
   const freiGewaehlt = !aktive.length || state.selProjekt==='_frei';
+  const counts = itemOrderCounts();
+  const search = state.catalogSearch.trim().toLowerCase();
+  const systemItems = SYSTEMS.length>1 ? CATALOG.filter(it=>it.system===state.systemSel) : CATALOG;
 
   let rows = '';
   let rowIdx = 0;
-  CATEGORIES.forEach(cat=>{
-    const items = CATALOG.filter(it=>it.cat===cat.id);
-    if(!items.length) return;
-    rows += `<tr class="cat-row"><td colspan="3">${catName(cat)}</td></tr>`;
-    items.forEach(it=>{
-      rowIdx++;
-      rows += `<tr class="${rowIdx%2? 'row-alt':''}">
-        <td class="t-name" data-longpress="${it.id}"><span class="t-icon">${ICONS[it.icon]}</span>${itemName(it)}</td>
-        <td class="t-unit">${unitLabel(it.unit)}</td>
-        <td>${qtyControlHTML(it)}</td>
-      </tr>`;
+  if(search){
+    const matches = systemItems
+      .filter(it=>itemName(it).toLowerCase().includes(search))
+      .sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
+    rows = matches.length
+      ? matches.map(it=>{ rowIdx++; return catalogRowHTML(it, rowIdx%2===0); }).join('')
+      : `<tr><td colspan="3" class="empty-state">${t('searchNoResults')}</td></tr>`;
+  } else {
+    const favIds = Object.keys(counts)
+      .filter(id=>systemItems.some(it=>it.id===id))
+      .sort((a,b)=>counts[b]-counts[a])
+      .slice(0,5);
+    if(favIds.length){
+      rows += `<tr class="cat-row"><td colspan="3">${t('favTitle')}</td></tr>`;
+      favIds.forEach(id=>{
+        const it = systemItems.find(x=>x.id===id);
+        rowIdx++;
+        rows += catalogRowHTML(it, rowIdx%2===0);
+      });
+    }
+    CATEGORIES.forEach(cat=>{
+      const items = systemItems.filter(it=>it.cat===cat.id).sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
+      if(!items.length) return;
+      rows += `<tr class="cat-row"><td colspan="3">${catName(cat)}</td></tr>`;
+      items.forEach(it=>{
+        rowIdx++;
+        rows += catalogRowHTML(it, rowIdx%2===0);
+      });
     });
-  });
+  }
 
   return `<h2 class="view-title">${t('catalogTitle')}</h2>
   <p class="view-sub">${t('catalogSub')}</p>
@@ -967,6 +1026,8 @@ function catalogHTML(){
   </div>
   <button class="loc-btn" data-action="use-location">${t('locBtn')}</button>`:''}
   <div id="ortWarnArea"></div>
+  ${SYSTEMS.length>1? `<div class="seg-control">${SYSTEMS.map(s=>`<button class="${state.systemSel===s.id?'active':''}" data-action="system-tab" data-sys="${s.id}">${t(s.nameKey)}</button>`).join('')}</div>`:''}
+  <input class="katalog-search" id="catalogSearch" placeholder="${t('searchPlaceholder')}" value="${state.catalogSearch.replace(/"/g,'&quot;')}" autocomplete="off">
   <div class="tbl-wrap"><table class="order-table">
     <thead><tr><th>${t('thTeil')}</th><th>${t('thEinheit')}</th><th style="text-align:right;">${t('thMenge')}</th></tr></thead>
     <tbody>${rows}</tbody>
@@ -1403,6 +1464,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     }, {enableHighAccuracy:true, timeout:10000});
   }
   if(action==='lager-tab'){ state.lagerTab = el.dataset.tab; render(); }
+  if(action==='system-tab'){ state.systemSel = el.dataset.sys; render(); }
   if(action==='chef-tab'){ state.chefTab = el.dataset.tab; render(); }
   if(action==='add-projekt'){
     const n = document.getElementById('pvName'), a = document.getElementById('pvAdresse');
@@ -1522,6 +1584,12 @@ document.getElementById('app').addEventListener('input', (e)=>{
   if(e.target.id==='projektSelect'){
     state.selProjekt = e.target.value;
     render();
+  }
+  if(e.target.id==='catalogSearch'){
+    state.catalogSearch = e.target.value;
+    render();
+    const s = document.getElementById('catalogSearch');
+    if(s){ s.focus(); s.selectionStart = s.selectionEnd = s.value.length; }
   }
 });
 
