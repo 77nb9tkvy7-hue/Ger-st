@@ -58,6 +58,7 @@
   .top-nav-logo{height:28px;width:auto;border-radius:6px;}
   .menu-wrap{position:relative;}
   .menu-btn{background:rgba(255,255,255,0.18);border:none;color:#fff;width:38px;height:38px;border-radius:10px;font-size:19px;cursor:pointer;line-height:1;}
+  .top-nav.on-light .menu-btn{background:var(--surface-2);color:var(--ink);}
   .menu-dropdown{position:absolute;top:46px;right:0;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:220px;overflow:hidden;z-index:41;}
   .menu-dropdown button{display:block;width:100%;text-align:left;background:none;border:none;padding:13px 14px;font-size:13.5px;color:var(--ink);cursor:pointer;font-family:'Inter',sans-serif;}
   .menu-dropdown button:active{background:var(--accent-soft);}
@@ -271,6 +272,468 @@ function clearSession(){
   try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
 }
 
+// ---- Sprachen --------------------------------------------------------
+// Deutsch ist Standard. Auswahl wird pro Gerät gespeichert (localStorage),
+// damit man sie nicht bei jedem Besuch neu einstellen muss.
+const LANGS = [
+  {code:'de', label:'Deutsch',     flag:'🇩🇪'},
+  {code:'pl', label:'Polski',      flag:'🇵🇱'},
+  {code:'sk', label:'Slovenčina',  flag:'🇸🇰'},
+  {code:'hr', label:'Hrvatski',    flag:'🇭🇷'},
+  {code:'en', label:'English',     flag:'🇬🇧'},
+];
+const LANG_KEY = 'geruest-lang';
+function loadLang(){
+  try{ const v = localStorage.getItem(LANG_KEY); if(LANGS.some(l=>l.code===v)) return v; }catch(e){}
+  return 'de';
+}
+function saveLang(code){ try{ localStorage.setItem(LANG_KEY, code); }catch(e){} }
+
+const WEEKDAYS = {
+  de:['So','Mo','Di','Mi','Do','Fr','Sa'],
+  pl:['Nd','Pn','Wt','Śr','Cz','Pt','So'],
+  sk:['Ne','Po','Ut','St','Št','Pi','So'],
+  hr:['Ne','Po','Ut','Sr','Če','Pe','Su'],
+  en:['Su','Mo','Tu','We','Th','Fr','Sa'],
+};
+
+const T = {
+de:{
+  appName:'Gerüst-Bestellung', menuAria:'Menü', menuCalendar:'📅 Kalender',
+  menuBackToApp:'🔑 Zur Anmeldung / Bestellung', menuLangLabel:'Sprache',
+  loadingText:'Lade Daten…',
+  offlineError:'Keine Internet-Verbindung zum Speicher.<br>Bitte Internet prüfen und Seite neu laden.',
+  chefAreaTitle:'Chef-Bereich', chefAreaSub:'Bitte das Chef-Passwort eingeben',
+  pwLabel:'Passwort', pwPlaceholder:'Passwort', loginBtn:'Anmelden', backBtn:'Zurück',
+  loginSub:'Anmelden und Rolle wählen', nameLabel:'Dein Name', selectPlaceholder:'Bitte wählen…',
+  roleBaustelle:'Baustelle', roleBaustelleSub:'Teile bestellen',
+  roleLager:'Lager', roleLagerSub:'Bestellungen & Inventur',
+  roleFahrer:'Fahrer', roleFahrerSub:'Ausliefern',
+  roleChef:'Chef', roleChefSub:'Alles einsehen',
+  warnSelectName:'Bitte Namen auswählen.', warnWrongPw:'Falsches Passwort.',
+  roleLabelBaustelle:'Baustelle', roleLabelLager:'Lager', roleLabelFahrer:'Fahrer',
+  roleLabelChef:'Chef · Übersicht', logoutLink:'Abmelden / Rolle wechseln',
+  catalogTitle:'Neue Bestellung',
+  catalogSub:'Teile auswählen – geht sofort an Lager & Fahrer. Name antippen und halten zeigt Details.',
+  projektLabel:'Bauvorhaben *', projektFreeOption:'Andere Adresse (selbst eingeben)',
+  ortLabel:'Baustelle / Ort *', ortPlaceholder:'z. B. Musterstraße 12',
+  locBtn:'📍 Meinen Standort als Adresse übernehmen',
+  thTeil:'Teil', thEinheit:'Einheit', thMenge:'Menge',
+  mineTitle:'Meine letzten Bestellungen', mineEmpty:'Du hast noch nichts bestellt.',
+  footerEmpty:'Noch keine Menge eingetragen', footerCount:'{n} Stk ausgewählt',
+  reviewBtn:'Bestellung prüfen', warnOrt:'Bitte Baustelle / Ort eingeben.',
+  qtyMinusAria:'Menge verringern', qtyPlusAria:'Menge erhöhen',
+  fotoFolgt:'Foto folgt', closeBtn:'Schließen',
+  reviewEyebrow:'Bestellschein · Entwurf', reviewTitle:'Bestellung prüfen',
+  reviewBaustelle:'Baustelle:', reviewDatum:'Datum:',
+  reviewEmpty:'Keine Teile mehr ausgewählt.',
+  reviewSubmitBtn:'Bestellung verbindlich abschicken', reviewBackBtn:'Zurück zur Liste',
+  lieferscheinLabel:'LIEFERSCHEIN Nr.', baustelleLabel:'Baustelle',
+  bestelltVonLabel:'Bestellt von', zeitLabel:'Zeit', fertigBtn:'Fertig',
+  bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
+  mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
+  stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  lagerTitle:'Lager', tabBestellungen:'Bestellungen', tabInventur:'Inventur',
+  lagerBestellSub:'Eingehende Bestellungen bearbeiten und für den Fahrer bereitstellen.',
+  lagerEmptyOrders:'Noch keine Bestellungen eingegangen.',
+  lagerInventurSub:'Aktueller Bestand. Wird bei „Bereit melden" automatisch abgezogen.',
+  refreshBtn:'↻ Aktualisieren',
+  fahrerTitle:'Fahrer', fahrerSub:'Was wohin muss – und wann es bestellt wurde.',
+  waitingNote:'{n} Bestellung(en) warten noch auf das Lager.',
+  fahrerEmptyReady:'Aktuell keine Bestellungen zur Abholung bereit.',
+  chefViewTitle:'Chef', tabUebersicht:'Übersicht', tabBauvorhaben:'Bauvorhaben',
+  chefOverviewSub:'Gesamtüberblick über alle Bestellungen und den Lagerbestand.',
+  allOrdersHeading:'Alle Bestellungen', chefEmptyOrders:'Noch keine Bestellungen.',
+  lagerbestandHeading:'Lagerbestand',
+  projekteSub:'Bauvorhaben anlegen – die Baustelle wählt beim Bestellen dann einfach aus der Liste.',
+  pvNameLabel:'Name des Bauvorhabens', pvNamePlaceholder:'z. B. Frauenkirche',
+  pvAdresseLabel:'Adresse', pvAdressePlaceholder:'z. B. Frauenplatz 12, München',
+  pvAddBtn:'+ Bauvorhaben anlegen', pvWarnFields:'Bitte Name und Adresse eingeben.',
+  pvEmptyActive:'Noch keine aktiven Bauvorhaben.', pvAbgeschlossenHeading:'Abgeschlossen',
+  pvVorOrt:'Vor Ort (geliefert):', pvBestelltUnterwegs:'Bestellt / unterwegs:',
+  pvBestellungenPrefix:'Bestellungen:',
+  pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
+  pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  pvAlsFertigBtn:'Als fertig markieren', pvWiederAktivBtn:'Wieder aktivieren',
+  calTitle:'Kalender',
+  calSub:'Wer wann wo im Einsatz sein soll. Zum Bestellen bitte oben im Menü anmelden.',
+  calPwLabel:'Chef-Passwort', calUnlockBtn:'Freischalten', calCancelBtn:'Abbrechen',
+  calDateLabel:'Datum', calPersonLabel:'Mitarbeiter',
+  calOrtLabel:'Ort / Baustelle', calOrtPlaceholder:'z. B. BV 101 – Frauenkirche',
+  calNotizLabel:'Notiz (optional)', calNotizPlaceholder:'z. B. ganztags, ab 7 Uhr',
+  calSaveBtn:'Speichern', calAddBtn:'+ Termin hinzufügen',
+  calLockBtn:'🔒 Sperren', calEditPwBtn:'🔒 Termine bearbeiten (Chef-Passwort)',
+  calEditBtn:'Bearbeiten', calDeleteBtn:'Löschen',
+  calWarnFields:'Bitte Datum, Mitarbeiter und Ort ausfüllen.',
+  calEmpty:'Noch keine Termine eingetragen.',
+  locNoSupport:'Standort wird von diesem Browser nicht unterstützt.',
+  locFetching:'Standort wird ermittelt…',
+  locFailed:'Standort nicht verfügbar. Bitte die Standort-Freigabe im Browser erlauben oder die Adresse eintippen.',
+  unitStk:'Stk',
+  statusNeu:'Neu', statusInBearbeitung:'In Bearbeitung', statusBereitzurAbholung:'Bereit zur Abholung',
+  statusBeladen:'Beladen', statusUnterwegs:'Unterwegs', statusGeliefert:'Geliefert',
+  stepNeu:'Bearbeitung starten', stepInBearbeitung:'Bereit melden', stepBereitzurAbholung:'Verladen',
+  stepBeladen:'Losfahren', stepUnterwegs:'Lieferung bestätigen',
+  cat_rahmen:'Rahmen & Streben', cat_boeden:'Böden & Beläge',
+  cat_gelaender:'Geländer & Absturzsicherung', cat_verbindung:'Verbindungstechnik', cat_zubehoer:'Zubehör',
+  item_rahmen20:'Vertikalrahmen 2,00 m', item_rahmen10:'Vertikalrahmen 1,00 m',
+  item_diagonale:'Diagonalstrebe', item_stahlboden:'Stahlboden 3,07 m', item_alubohle:'Alu-Bohle 2,50 m',
+  item_gelaender:'Geländerholm', item_bordbrett:'Bordbrett', item_spindel:'Fußspindel',
+  item_kupplung:'Kupplung (Normal)', item_leiter:'Durchstiegsleiter',
+},
+pl:{
+  appName:'Zamówienie rusztowania', menuAria:'Menu', menuCalendar:'📅 Kalendarz',
+  menuBackToApp:'🔑 Do logowania / zamówień', menuLangLabel:'Język',
+  loadingText:'Ładowanie danych…',
+  offlineError:'Brak połączenia z serwerem.<br>Sprawdź internet i odśwież stronę.',
+  chefAreaTitle:'Strefa szefa', chefAreaSub:'Podaj hasło szefa',
+  pwLabel:'Hasło', pwPlaceholder:'Hasło', loginBtn:'Zaloguj', backBtn:'Wstecz',
+  loginSub:'Zaloguj się i wybierz rolę', nameLabel:'Twoje imię', selectPlaceholder:'Wybierz…',
+  roleBaustelle:'Budowa', roleBaustelleSub:'Zamawianie części',
+  roleLager:'Magazyn', roleLagerSub:'Zamówienia i inwentarz',
+  roleFahrer:'Kierowca', roleFahrerSub:'Dostawa',
+  roleChef:'Szef', roleChefSub:'Podgląd wszystkiego',
+  warnSelectName:'Wybierz imię.', warnWrongPw:'Błędne hasło.',
+  roleLabelBaustelle:'Budowa', roleLabelLager:'Magazyn', roleLabelFahrer:'Kierowca',
+  roleLabelChef:'Szef · Przegląd', logoutLink:'Wyloguj / zmień rolę',
+  catalogTitle:'Nowe zamówienie',
+  catalogSub:'Wybierz części – trafi od razu do magazynu i kierowcy. Naciśnij i przytrzymaj nazwę, aby zobaczyć szczegóły.',
+  projektLabel:'Budowa (obiekt) *', projektFreeOption:'Inny adres (wpisz ręcznie)',
+  ortLabel:'Budowa / adres *', ortPlaceholder:'np. Musterstraße 12',
+  locBtn:'📍 Użyj mojej lokalizacji jako adresu',
+  thTeil:'Część', thEinheit:'Jedn.', thMenge:'Ilość',
+  mineTitle:'Moje ostatnie zamówienia', mineEmpty:'Nie masz jeszcze żadnych zamówień.',
+  footerEmpty:'Nie wybrano jeszcze żadnej ilości', footerCount:'wybrano {n} szt.',
+  reviewBtn:'Sprawdź zamówienie', warnOrt:'Podaj budowę / adres.',
+  qtyMinusAria:'Zmniejsz ilość', qtyPlusAria:'Zwiększ ilość',
+  fotoFolgt:'Zdjęcie wkrótce', closeBtn:'Zamknij',
+  reviewEyebrow:'Dowód zamówienia · szkic', reviewTitle:'Sprawdź zamówienie',
+  reviewBaustelle:'Budowa:', reviewDatum:'Data:',
+  reviewEmpty:'Nie wybrano już żadnych części.',
+  reviewSubmitBtn:'Wyślij zamówienie ostatecznie', reviewBackBtn:'Wróć do listy',
+  lieferscheinLabel:'DOWÓD DOSTAWY Nr.', baustelleLabel:'Budowa',
+  bestelltVonLabel:'Zamówił(a)', zeitLabel:'Czas', fertigBtn:'Gotowe',
+  bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
+  mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
+  stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  lagerTitle:'Magazyn', tabBestellungen:'Zamówienia', tabInventur:'Inwentarz',
+  lagerBestellSub:'Obsłuż napływające zamówienia i przygotuj dla kierowcy.',
+  lagerEmptyOrders:'Nie wpłynęły jeszcze żadne zamówienia.',
+  lagerInventurSub:'Aktualny stan magazynu. Przy „Zgłoś gotowość" jest automatycznie odejmowany.',
+  refreshBtn:'↻ Odśwież',
+  fahrerTitle:'Kierowca', fahrerSub:'Co i dokąd trzeba zawieźć – i kiedy zamówiono.',
+  waitingNote:'{n} zamówień czeka jeszcze na magazyn.',
+  fahrerEmptyReady:'Obecnie brak zamówień gotowych do odbioru.',
+  chefViewTitle:'Szef', tabUebersicht:'Przegląd', tabBauvorhaben:'Budowy',
+  chefOverviewSub:'Pełny przegląd wszystkich zamówień i stanu magazynu.',
+  allOrdersHeading:'Wszystkie zamówienia', chefEmptyOrders:'Brak zamówień.',
+  lagerbestandHeading:'Stan magazynu',
+  projekteSub:'Utwórz budowę – przy zamawianiu budowa wybierze ją po prostu z listy.',
+  pvNameLabel:'Nazwa budowy', pvNamePlaceholder:'np. Frauenkirche',
+  pvAdresseLabel:'Adres', pvAdressePlaceholder:'np. Frauenplatz 12, Monachium',
+  pvAddBtn:'+ Utwórz budowę', pvWarnFields:'Podaj nazwę i adres.',
+  pvEmptyActive:'Brak aktywnych budów.', pvAbgeschlossenHeading:'Zakończone',
+  pvVorOrt:'Na miejscu (dostarczone):', pvBestelltUnterwegs:'Zamówione / w drodze:',
+  pvBestellungenPrefix:'Zamówienia:',
+  pvKeineBestellungen:'Brak zamówień dla tej budowy.',
+  pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  pvAlsFertigBtn:'Oznacz jako zakończoną', pvWiederAktivBtn:'Aktywuj ponownie',
+  calTitle:'Kalendarz',
+  calSub:'Kto, kiedy i gdzie ma pracować. Aby zamawiać, zaloguj się w menu powyżej.',
+  calPwLabel:'Hasło szefa', calUnlockBtn:'Odblokuj', calCancelBtn:'Anuluj',
+  calDateLabel:'Data', calPersonLabel:'Pracownik',
+  calOrtLabel:'Miejsce / budowa', calOrtPlaceholder:'np. BV 101 – Frauenkirche',
+  calNotizLabel:'Notatka (opcjonalnie)', calNotizPlaceholder:'np. cały dzień, od 7:00',
+  calSaveBtn:'Zapisz', calAddBtn:'+ Dodaj termin',
+  calLockBtn:'🔒 Zablokuj', calEditPwBtn:'🔒 Edytuj terminy (hasło szefa)',
+  calEditBtn:'Edytuj', calDeleteBtn:'Usuń',
+  calWarnFields:'Podaj datę, pracownika i miejsce.',
+  calEmpty:'Brak wpisanych terminów.',
+  locNoSupport:'Ta przeglądarka nie obsługuje lokalizacji.',
+  locFetching:'Ustalanie lokalizacji…',
+  locFailed:'Lokalizacja niedostępna. Zezwól na dostęp do lokalizacji lub wpisz adres ręcznie.',
+  unitStk:'szt.',
+  statusNeu:'Nowe', statusInBearbeitung:'W realizacji', statusBereitzurAbholung:'Gotowe do odbioru',
+  statusBeladen:'Załadowane', statusUnterwegs:'W drodze', statusGeliefert:'Dostarczone',
+  stepNeu:'Rozpocznij realizację', stepInBearbeitung:'Zgłoś gotowość', stepBereitzurAbholung:'Załaduj',
+  stepBeladen:'Wyjazd', stepUnterwegs:'Potwierdź dostawę',
+  cat_rahmen:'Ramy i stężenia', cat_boeden:'Pomosty i okładziny',
+  cat_gelaender:'Poręcze i zabezpieczenia', cat_verbindung:'Technika łączenia', cat_zubehoer:'Akcesoria',
+  item_rahmen20:'Rama pionowa 2,00 m', item_rahmen10:'Rama pionowa 1,00 m',
+  item_diagonale:'Stężenie ukośne', item_stahlboden:'Pomost stalowy 3,07 m', item_alubohle:'Bohla aluminiowa 2,50 m',
+  item_gelaender:'Poręcz', item_bordbrett:'Bortnica', item_spindel:'Śruba rzymska (stopa)',
+  item_kupplung:'Złącze normalne', item_leiter:'Drabinka włazowa',
+},
+sk:{
+  appName:'Objednávka lešenia', menuAria:'Menu', menuCalendar:'📅 Kalendár',
+  menuBackToApp:'🔑 Na prihlásenie / objednávku', menuLangLabel:'Jazyk',
+  loadingText:'Načítavam dáta…',
+  offlineError:'Žiadne pripojenie k úložisku.<br>Skontrolujte internet a znova načítajte stránku.',
+  chefAreaTitle:'Sekcia šéfa', chefAreaSub:'Zadajte heslo šéfa',
+  pwLabel:'Heslo', pwPlaceholder:'Heslo', loginBtn:'Prihlásiť', backBtn:'Späť',
+  loginSub:'Prihláste sa a vyberte rolu', nameLabel:'Tvoje meno', selectPlaceholder:'Vyberte…',
+  roleBaustelle:'Stavenisko', roleBaustelleSub:'Objednať diely',
+  roleLager:'Sklad', roleLagerSub:'Objednávky a inventúra',
+  roleFahrer:'Vodič', roleFahrerSub:'Doručovanie',
+  roleChef:'Šéf', roleChefSub:'Prehľad všetkého',
+  warnSelectName:'Vyberte meno.', warnWrongPw:'Nesprávne heslo.',
+  roleLabelBaustelle:'Stavenisko', roleLabelLager:'Sklad', roleLabelFahrer:'Vodič',
+  roleLabelChef:'Šéf · Prehľad', logoutLink:'Odhlásiť / zmeniť rolu',
+  catalogTitle:'Nová objednávka',
+  catalogSub:'Vyberte diely – ide hneď na sklad a k vodičovi. Podržaním názvu zobrazíte detaily.',
+  projektLabel:'Stavba *', projektFreeOption:'Iná adresa (zadať ručne)',
+  ortLabel:'Stavenisko / adresa *', ortPlaceholder:'napr. Musterstraße 12',
+  locBtn:'📍 Použiť moju polohu ako adresu',
+  thTeil:'Diel', thEinheit:'Jednotka', thMenge:'Množstvo',
+  mineTitle:'Moje posledné objednávky', mineEmpty:'Zatiaľ ste nič neobjednali.',
+  footerEmpty:'Zatiaľ nezadané žiadne množstvo', footerCount:'vybraných {n} ks',
+  reviewBtn:'Skontrolovať objednávku', warnOrt:'Zadajte stavenisko / adresu.',
+  qtyMinusAria:'Znížiť množstvo', qtyPlusAria:'Zvýšiť množstvo',
+  fotoFolgt:'Foto čoskoro', closeBtn:'Zavrieť',
+  reviewEyebrow:'Dodací list · návrh', reviewTitle:'Skontrolovať objednávku',
+  reviewBaustelle:'Stavenisko:', reviewDatum:'Dátum:',
+  reviewEmpty:'Už nie sú vybrané žiadne diely.',
+  reviewSubmitBtn:'Záväzne odoslať objednávku', reviewBackBtn:'Späť na zoznam',
+  lieferscheinLabel:'DODACÍ LIST č.', baustelleLabel:'Stavenisko',
+  bestelltVonLabel:'Objednal(a)', zeitLabel:'Čas', fertigBtn:'Hotovo',
+  bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
+  mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
+  stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  lagerTitle:'Sklad', tabBestellungen:'Objednávky', tabInventur:'Inventúra',
+  lagerBestellSub:'Spracujte prichádzajúce objednávky a pripravte ich pre vodiča.',
+  lagerEmptyOrders:'Zatiaľ neprišli žiadne objednávky.',
+  lagerInventurSub:'Aktuálny stav skladu. Pri „Nahlásiť pripravené" sa automaticky odpočíta.',
+  refreshBtn:'↻ Obnoviť',
+  fahrerTitle:'Vodič', fahrerSub:'Čo a kam treba doviezť – a kedy bolo objednané.',
+  waitingNote:'{n} objednávok ešte čaká na sklad.',
+  fahrerEmptyReady:'Momentálne žiadne objednávky pripravené na vyzdvihnutie.',
+  chefViewTitle:'Šéf', tabUebersicht:'Prehľad', tabBauvorhaben:'Stavby',
+  chefOverviewSub:'Celkový prehľad všetkých objednávok a stavu skladu.',
+  allOrdersHeading:'Všetky objednávky', chefEmptyOrders:'Zatiaľ žiadne objednávky.',
+  lagerbestandHeading:'Stav skladu',
+  projekteSub:'Vytvorte stavbu – stavenisko si ju potom pri objednávaní jednoducho vyberie zo zoznamu.',
+  pvNameLabel:'Názov stavby', pvNamePlaceholder:'napr. Frauenkirche',
+  pvAdresseLabel:'Adresa', pvAdressePlaceholder:'napr. Frauenplatz 12, Mníchov',
+  pvAddBtn:'+ Vytvoriť stavbu', pvWarnFields:'Zadajte názov a adresu.',
+  pvEmptyActive:'Zatiaľ žiadne aktívne stavby.', pvAbgeschlossenHeading:'Dokončené',
+  pvVorOrt:'Na mieste (doručené):', pvBestelltUnterwegs:'Objednané / na ceste:',
+  pvBestellungenPrefix:'Objednávky:',
+  pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
+  pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  pvAlsFertigBtn:'Označiť ako dokončenú', pvWiederAktivBtn:'Znova aktivovať',
+  calTitle:'Kalendár',
+  calSub:'Kto má byť kedy a kde nasadený. Na objednávanie sa prosím prihláste hore v menu.',
+  calPwLabel:'Heslo šéfa', calUnlockBtn:'Odomknúť', calCancelBtn:'Zrušiť',
+  calDateLabel:'Dátum', calPersonLabel:'Zamestnanec',
+  calOrtLabel:'Miesto / stavenisko', calOrtPlaceholder:'napr. BV 101 – Frauenkirche',
+  calNotizLabel:'Poznámka (voliteľné)', calNotizPlaceholder:'napr. celý deň, od 7:00',
+  calSaveBtn:'Uložiť', calAddBtn:'+ Pridať termín',
+  calLockBtn:'🔒 Uzamknúť', calEditPwBtn:'🔒 Upraviť termíny (heslo šéfa)',
+  calEditBtn:'Upraviť', calDeleteBtn:'Zmazať',
+  calWarnFields:'Zadajte dátum, zamestnanca a miesto.',
+  calEmpty:'Zatiaľ žiadne zadané termíny.',
+  locNoSupport:'Tento prehliadač nepodporuje polohu.',
+  locFetching:'Zisťujem polohu…',
+  locFailed:'Poloha nedostupná. Povoľte prosím prístup k polohe v prehliadači alebo zadajte adresu ručne.',
+  unitStk:'ks',
+  statusNeu:'Nová', statusInBearbeitung:'Spracováva sa', statusBereitzurAbholung:'Pripravené na vyzdvihnutie',
+  statusBeladen:'Naložené', statusUnterwegs:'Na ceste', statusGeliefert:'Doručené',
+  stepNeu:'Začať spracovanie', stepInBearbeitung:'Nahlásiť pripravené', stepBereitzurAbholung:'Naložiť',
+  stepBeladen:'Vyraziť', stepUnterwegs:'Potvrdiť doručenie',
+  cat_rahmen:'Rámy a vzpery', cat_boeden:'Podlahy a obklady',
+  cat_gelaender:'Zábradlia a zabezpečenie proti pádu', cat_verbindung:'Spojovacia technika', cat_zubehoer:'Príslušenstvo',
+  item_rahmen20:'Rámová stojka 2,00 m', item_rahmen10:'Rámová stojka 1,00 m',
+  item_diagonale:'Diagonálna vzpera', item_stahlboden:'Oceľová podlaha 3,07 m', item_alubohle:'Hliníková fošňa 2,50 m',
+  item_gelaender:'Zábradlová tyč', item_bordbrett:'Okrajová doska', item_spindel:'Pätková skrutka',
+  item_kupplung:'Spojka (normálna)', item_leiter:'Priechodový rebrík',
+},
+hr:{
+  appName:'Narudžba skele', menuAria:'Izbornik', menuCalendar:'📅 Kalendar',
+  menuBackToApp:'🔑 Na prijavu / narudžbu', menuLangLabel:'Jezik',
+  loadingText:'Učitavanje podataka…',
+  offlineError:'Nema internetske veze s pohranom.<br>Provjerite internet i ponovno učitajte stranicu.',
+  chefAreaTitle:'Područje šefa', chefAreaSub:'Unesite lozinku šefa',
+  pwLabel:'Lozinka', pwPlaceholder:'Lozinka', loginBtn:'Prijava', backBtn:'Natrag',
+  loginSub:'Prijavite se i odaberite ulogu', nameLabel:'Tvoje ime', selectPlaceholder:'Odaberi…',
+  roleBaustelle:'Gradilište', roleBaustelleSub:'Naruči dijelove',
+  roleLager:'Skladište', roleLagerSub:'Narudžbe i inventura',
+  roleFahrer:'Vozač', roleFahrerSub:'Dostava',
+  roleChef:'Šef', roleChefSub:'Pregled svega',
+  warnSelectName:'Odaberite ime.', warnWrongPw:'Pogrešna lozinka.',
+  roleLabelBaustelle:'Gradilište', roleLabelLager:'Skladište', roleLabelFahrer:'Vozač',
+  roleLabelChef:'Šef · Pregled', logoutLink:'Odjava / promjena uloge',
+  catalogTitle:'Nova narudžba',
+  catalogSub:'Odaberite dijelove – ide odmah u skladište i vozaču. Dodirnite i držite naziv za detalje.',
+  projektLabel:'Gradilište (projekt) *', projektFreeOption:'Druga adresa (unesi ručno)',
+  ortLabel:'Gradilište / adresa *', ortPlaceholder:'npr. Musterstraße 12',
+  locBtn:'📍 Koristi moju lokaciju kao adresu',
+  thTeil:'Dio', thEinheit:'Jed.', thMenge:'Količina',
+  mineTitle:'Moje posljednje narudžbe', mineEmpty:'Još niste ništa naručili.',
+  footerEmpty:'Još nije unesena količina', footerCount:'odabrano {n} kom',
+  reviewBtn:'Provjeri narudžbu', warnOrt:'Unesite gradilište / adresu.',
+  qtyMinusAria:'Smanji količinu', qtyPlusAria:'Povećaj količinu',
+  fotoFolgt:'Fotografija uskoro', closeBtn:'Zatvori',
+  reviewEyebrow:'Otpremnica · nacrt', reviewTitle:'Provjeri narudžbu',
+  reviewBaustelle:'Gradilište:', reviewDatum:'Datum:',
+  reviewEmpty:'Nema više odabranih dijelova.',
+  reviewSubmitBtn:'Pošalji narudžbu obvezujuće', reviewBackBtn:'Natrag na popis',
+  lieferscheinLabel:'OTPREMNICA br.', baustelleLabel:'Gradilište',
+  bestelltVonLabel:'Naručio/la', zeitLabel:'Vrijeme', fertigBtn:'Gotovo',
+  bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
+  mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
+  stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  lagerTitle:'Skladište', tabBestellungen:'Narudžbe', tabInventur:'Inventura',
+  lagerBestellSub:'Obradite pristigle narudžbe i pripremite ih za vozača.',
+  lagerEmptyOrders:'Još nije stigla nijedna narudžba.',
+  lagerInventurSub:'Trenutno stanje skladišta. Kod „Označi spremno" se automatski oduzima.',
+  refreshBtn:'↻ Osvježi',
+  fahrerTitle:'Vozač', fahrerSub:'Što i kamo treba – i kada je naručeno.',
+  waitingNote:'{n} narudžbi još čeka skladište.',
+  fahrerEmptyReady:'Trenutno nema narudžbi spremnih za preuzimanje.',
+  chefViewTitle:'Šef', tabUebersicht:'Pregled', tabBauvorhaben:'Gradilišta',
+  chefOverviewSub:'Cjelokupni pregled svih narudžbi i stanja skladišta.',
+  allOrdersHeading:'Sve narudžbe', chefEmptyOrders:'Još nema narudžbi.',
+  lagerbestandHeading:'Stanje skladišta',
+  projekteSub:'Kreirajte gradilište – kod naručivanja ga gradilište samo odabere s popisa.',
+  pvNameLabel:'Naziv gradilišta', pvNamePlaceholder:'npr. Frauenkirche',
+  pvAdresseLabel:'Adresa', pvAdressePlaceholder:'npr. Frauenplatz 12, München',
+  pvAddBtn:'+ Kreiraj gradilište', pvWarnFields:'Unesite naziv i adresu.',
+  pvEmptyActive:'Još nema aktivnih gradilišta.', pvAbgeschlossenHeading:'Završeno',
+  pvVorOrt:'Na mjestu (isporučeno):', pvBestelltUnterwegs:'Naručeno / u dostavi:',
+  pvBestellungenPrefix:'Narudžbe:',
+  pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
+  pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  pvAlsFertigBtn:'Označi kao završeno', pvWiederAktivBtn:'Ponovno aktiviraj',
+  calTitle:'Kalendar',
+  calSub:'Tko treba biti kada i gdje. Za naručivanje se prijavite gore u izborniku.',
+  calPwLabel:'Lozinka šefa', calUnlockBtn:'Otključaj', calCancelBtn:'Odustani',
+  calDateLabel:'Datum', calPersonLabel:'Zaposlenik',
+  calOrtLabel:'Mjesto / gradilište', calOrtPlaceholder:'npr. BV 101 – Frauenkirche',
+  calNotizLabel:'Napomena (neobavezno)', calNotizPlaceholder:'npr. cijeli dan, od 7 sati',
+  calSaveBtn:'Spremi', calAddBtn:'+ Dodaj termin',
+  calLockBtn:'🔒 Zaključaj', calEditPwBtn:'🔒 Uredi termine (lozinka šefa)',
+  calEditBtn:'Uredi', calDeleteBtn:'Izbriši',
+  calWarnFields:'Unesite datum, zaposlenika i mjesto.',
+  calEmpty:'Još nema unesenih termina.',
+  locNoSupport:'Ovaj preglednik ne podržava lokaciju.',
+  locFetching:'Utvrđivanje lokacije…',
+  locFailed:'Lokacija nije dostupna. Dopustite pristup lokaciji u pregledniku ili unesite adresu ručno.',
+  unitStk:'kom',
+  statusNeu:'Novo', statusInBearbeitung:'U obradi', statusBereitzurAbholung:'Spremno za preuzimanje',
+  statusBeladen:'Utovareno', statusUnterwegs:'U dostavi', statusGeliefert:'Isporučeno',
+  stepNeu:'Započni obradu', stepInBearbeitung:'Označi spremno', stepBereitzurAbholung:'Utovari',
+  stepBeladen:'Kreni', stepUnterwegs:'Potvrdi isporuku',
+  cat_rahmen:'Okviri i spone', cat_boeden:'Podovi i obloge',
+  cat_gelaender:'Ograde i zaštita od pada', cat_verbindung:'Spojna tehnika', cat_zubehoer:'Pribor',
+  item_rahmen20:'Okvir 2,00 m', item_rahmen10:'Okvir 1,00 m',
+  item_diagonale:'Dijagonalna spona', item_stahlboden:'Čelična podna ploča 3,07 m', item_alubohle:'Aluminijska podnica 2,50 m',
+  item_gelaender:'Rukohvat ograde', item_bordbrett:'Rubna daska', item_spindel:'Podnožna vijčana noga',
+  item_kupplung:'Spojnica (normalna)', item_leiter:'Prolazne ljestve',
+},
+en:{
+  appName:'Scaffold Order', menuAria:'Menu', menuCalendar:'📅 Calendar',
+  menuBackToApp:'🔑 To login / order', menuLangLabel:'Language',
+  loadingText:'Loading data…',
+  offlineError:'No internet connection to storage.<br>Please check your connection and reload the page.',
+  chefAreaTitle:'Boss area', chefAreaSub:'Please enter the boss password',
+  pwLabel:'Password', pwPlaceholder:'Password', loginBtn:'Log in', backBtn:'Back',
+  loginSub:'Log in and choose a role', nameLabel:'Your name', selectPlaceholder:'Please choose…',
+  roleBaustelle:'Site', roleBaustelleSub:'Order parts',
+  roleLager:'Warehouse', roleLagerSub:'Orders & stock',
+  roleFahrer:'Driver', roleFahrerSub:'Deliver',
+  roleChef:'Boss', roleChefSub:'See everything',
+  warnSelectName:'Please choose a name.', warnWrongPw:'Wrong password.',
+  roleLabelBaustelle:'Site', roleLabelLager:'Warehouse', roleLabelFahrer:'Driver',
+  roleLabelChef:'Boss · Overview', logoutLink:'Log out / switch role',
+  catalogTitle:'New order',
+  catalogSub:'Choose parts – goes straight to the warehouse & driver. Press and hold a name for details.',
+  projektLabel:'Project *', projektFreeOption:'Other address (enter manually)',
+  ortLabel:'Site / address *', ortPlaceholder:'e.g. Musterstraße 12',
+  locBtn:'📍 Use my location as the address',
+  thTeil:'Part', thEinheit:'Unit', thMenge:'Qty',
+  mineTitle:'My recent orders', mineEmpty:'You haven\'t ordered anything yet.',
+  footerEmpty:'No quantity selected yet', footerCount:'{n} selected',
+  reviewBtn:'Review order', warnOrt:'Please enter the site / address.',
+  qtyMinusAria:'Decrease quantity', qtyPlusAria:'Increase quantity',
+  fotoFolgt:'Photo coming soon', closeBtn:'Close',
+  reviewEyebrow:'Order slip · draft', reviewTitle:'Review order',
+  reviewBaustelle:'Site:', reviewDatum:'Date:',
+  reviewEmpty:'No parts selected anymore.',
+  reviewSubmitBtn:'Place order now', reviewBackBtn:'Back to list',
+  lieferscheinLabel:'DELIVERY NOTE No.', baustelleLabel:'Site',
+  bestelltVonLabel:'Ordered by', zeitLabel:'Time', fertigBtn:'Done',
+  bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
+  mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
+  stockMissingLabel:'Missing:', stockLow:'Stock low',
+  lagerTitle:'Warehouse', tabBestellungen:'Orders', tabInventur:'Stock',
+  lagerBestellSub:'Process incoming orders and prepare them for the driver.',
+  lagerEmptyOrders:'No orders received yet.',
+  lagerInventurSub:'Current stock. Automatically deducted at "Mark ready".',
+  refreshBtn:'↻ Refresh',
+  fahrerTitle:'Driver', fahrerSub:'What needs to go where – and when it was ordered.',
+  waitingNote:'{n} order(s) still waiting on the warehouse.',
+  fahrerEmptyReady:'No orders currently ready for pickup.',
+  chefViewTitle:'Boss', tabUebersicht:'Overview', tabBauvorhaben:'Projects',
+  chefOverviewSub:'Full overview of all orders and warehouse stock.',
+  allOrdersHeading:'All orders', chefEmptyOrders:'No orders yet.',
+  lagerbestandHeading:'Warehouse stock',
+  projekteSub:'Create a project – the site then simply picks it from a list when ordering.',
+  pvNameLabel:'Project name', pvNamePlaceholder:'e.g. Frauenkirche',
+  pvAdresseLabel:'Address', pvAdressePlaceholder:'e.g. Frauenplatz 12, Munich',
+  pvAddBtn:'+ Create project', pvWarnFields:'Please enter a name and address.',
+  pvEmptyActive:'No active projects yet.', pvAbgeschlossenHeading:'Completed',
+  pvVorOrt:'On site (delivered):', pvBestelltUnterwegs:'Ordered / en route:',
+  pvBestellungenPrefix:'Orders:',
+  pvKeineBestellungen:'No orders for this project yet.',
+  pvAktivBadge:'Active', pvFertigBadge:'Done',
+  pvAlsFertigBtn:'Mark as done', pvWiederAktivBtn:'Reactivate',
+  calTitle:'Calendar',
+  calSub:'Who should be where and when. To place orders, please log in via the menu above.',
+  calPwLabel:'Boss password', calUnlockBtn:'Unlock', calCancelBtn:'Cancel',
+  calDateLabel:'Date', calPersonLabel:'Employee',
+  calOrtLabel:'Location / site', calOrtPlaceholder:'e.g. BV 101 – Frauenkirche',
+  calNotizLabel:'Note (optional)', calNotizPlaceholder:'e.g. all day, from 7am',
+  calSaveBtn:'Save', calAddBtn:'+ Add entry',
+  calLockBtn:'🔒 Lock', calEditPwBtn:'🔒 Edit entries (boss password)',
+  calEditBtn:'Edit', calDeleteBtn:'Delete',
+  calWarnFields:'Please fill in date, employee and location.',
+  calEmpty:'No entries yet.',
+  locNoSupport:'Location is not supported by this browser.',
+  locFetching:'Getting location…',
+  locFailed:'Location unavailable. Please allow location access in your browser or type the address.',
+  unitStk:'pcs',
+  statusNeu:'New', statusInBearbeitung:'In progress', statusBereitzurAbholung:'Ready for pickup',
+  statusBeladen:'Loaded', statusUnterwegs:'En route', statusGeliefert:'Delivered',
+  stepNeu:'Start processing', stepInBearbeitung:'Mark ready', stepBereitzurAbholung:'Load',
+  stepBeladen:'Depart', stepUnterwegs:'Confirm delivery',
+  cat_rahmen:'Frames & braces', cat_boeden:'Decks & boards',
+  cat_gelaender:'Guardrails & fall protection', cat_verbindung:'Connectors', cat_zubehoer:'Accessories',
+  item_rahmen20:'Vertical frame 2.00 m', item_rahmen10:'Vertical frame 1.00 m',
+  item_diagonale:'Diagonal brace', item_stahlboden:'Steel deck board 3.07 m', item_alubohle:'Aluminium plank 2.50 m',
+  item_gelaender:'Guardrail tube', item_bordbrett:'Toe board', item_spindel:'Base jack',
+  item_kupplung:'Standard coupler', item_leiter:'Access ladder',
+},
+};
+
+function t(key, vars){
+  let s = (T[state.lang] && T[state.lang][key]) ?? T.de[key] ?? key;
+  if(vars) Object.keys(vars).forEach(k=>{ s = s.replace(new RegExp('\\{'+k+'\\}','g'), vars[k]); });
+  return s;
+}
+function catName(cat){ return t('cat_'+cat.id); }
+function itemName(it){ return t('item_'+it.id); }
+function unitLabel(u){ return u==='Stk' ? t('unitStk') : u; }
+// Bestellte Positionen sind mit deutschem Namen/Einheit gespeichert
+// (Roh-Datensatz, sprachunabhängig) -- zur Anzeige immer über die
+// aktuelle Sprache auflösen, mit Rückfall auf den gespeicherten Text
+// falls das Teil später aus dem Katalog entfernt wurde.
+function resolvedItem(i){
+  const cat = CATALOG.find(c=>c.id===i.id);
+  return cat ? {name:itemName(cat), unit:unitLabel(cat.unit)} : {name:i.name, unit:i.unit};
+}
+function statusLabel(status){ return t('status'+slug(status)); }
+function stepLabel(status){ return t('step'+slug(status)); }
+
 const CATEGORIES = [
   {id:'rahmen', name:'Rahmen & Streben'},
   {id:'boeden', name:'Böden & Beläge'},
@@ -316,7 +779,7 @@ const NEXT_STEP = {
   'Beladen': {label:'Losfahren', next:'Unterwegs', role:'fahrer'},
   'Unterwegs': {label:'Lieferung bestätigen', next:'Geliefert', role:'fahrer'},
 };
-const ROLE_LABEL = {baustelle:'Baustelle', lager:'Lager', fahrer:'Fahrer', chef:'Chef · Übersicht'};
+function roleLabel(role){ return t('roleLabel'+role.charAt(0).toUpperCase()+role.slice(1)); }
 
 const state = {
   loggedIn:false, name:'', role:null,
@@ -328,6 +791,7 @@ const state = {
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
   calEditId:null, calDraft:null, calWarn:'',
   itemPopup:null, orderReview:null,
+  lang:'de', langMenuOpen:false,
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
@@ -336,7 +800,7 @@ function cartCount(){ return Object.values(state.cart).reduce((a,b)=>a+b,0); }
 async function loadShared(){
   if(!supabaseClient){
     document.getElementById('app').innerHTML =
-      '<div class="loading">Keine Internet-Verbindung zum Speicher.<br>Bitte Internet prüfen und Seite neu laden.</div>';
+      `<div class="loading">${t('offlineError')}</div>`;
     throw new Error('Supabase-Bibliothek nicht geladen');
   }
   try{
@@ -386,16 +850,31 @@ function menuDropdownHTML(){
   if(!state.menuOpen) return '';
   return `<div class="menu-dropdown">
     ${state.view==='calendar'
-      ? `<button data-action="go-app">🔑 Zur Anmeldung / Bestellung</button>`
-      : `<button data-action="go-calendar">📅 Kalender</button>`}
+      ? `<button data-action="go-app">${t('menuBackToApp')}</button>`
+      : `<button data-action="go-calendar">${t('menuCalendar')}</button>`}
+  </div>`;
+}
+function langDropdownHTML(){
+  if(!state.langMenuOpen) return '';
+  return `<div class="menu-dropdown">
+    ${LANGS.map(l=>`<button data-action="set-lang" data-lang="${l.code}" style="display:flex;align-items:center;gap:10px;${l.code===state.lang?'font-weight:700;':''}">${l.flag} ${l.label}${l.code===state.lang?' ✓':''}</button>`).join('')}
+  </div>`;
+}
+function langMenuBtnHTML(bg){
+  return `<div class="menu-wrap">
+    <button class="menu-btn" data-action="lang-toggle" aria-label="${t('menuLangLabel')}" ${bg?`style="background:${bg};color:var(--ink);"`:''}>🌐</button>
+    ${langDropdownHTML()}
   </div>`;
 }
 function topNavHTML(mode){
   return `<div class="top-nav ${mode==='dark'?'on-dark':'on-light'}">
     <img src="logo.png" alt="SGM" class="top-nav-logo">
-    <div class="menu-wrap">
-      <button class="menu-btn" data-action="menu-toggle" aria-label="Menü">☰</button>
-      ${menuDropdownHTML()}
+    <div style="display:flex;align-items:center;gap:8px;">
+      ${langMenuBtnHTML()}
+      <div class="menu-wrap">
+        <button class="menu-btn" data-action="menu-toggle" aria-label="${t('menuAria')}">☰</button>
+        ${menuDropdownHTML()}
+      </div>
     </div>
   </div>`;
 }
@@ -404,15 +883,15 @@ function loginHTML(){
   if(state.askChefPw){
     return `${topNavHTML('dark')}<div class="login-wrap">
       <div class="login-card">
-        <h1>Chef-Bereich</h1>
-        <div class="sub">Bitte das Chef-Passwort eingeben</div>
+        <h1>${t('chefAreaTitle')}</h1>
+        <div class="sub">${t('chefAreaSub')}</div>
         <div class="field">
-          <label>Passwort</label>
-          <input id="chefPwInput" type="password" placeholder="Passwort">
+          <label>${t('pwLabel')}</label>
+          <input id="chefPwInput" type="password" placeholder="${t('pwPlaceholder')}">
         </div>
         <div class="role-grid">
-          <button class="role-btn" data-action="chef-pw-ok" style="justify-content:center;background:var(--accent-solid);color:white;">Anmelden</button>
-          <button class="role-btn" data-action="chef-pw-back" style="justify-content:center;">Zurück</button>
+          <button class="role-btn" data-action="chef-pw-ok" style="justify-content:center;background:var(--accent-solid);color:white;">${t('loginBtn')}</button>
+          <button class="role-btn" data-action="chef-pw-back" style="justify-content:center;">${t('backBtn')}</button>
         </div>
         ${state.loginWarn? `<div class="warn">${state.loginWarn}</div>`:''}
       </div>
@@ -421,20 +900,20 @@ function loginHTML(){
   return `${topNavHTML('dark')}<div class="login-wrap">
     <div class="login-card">
       <img class="login-logo" src="logo.png" alt="SGM">
-      <h1>Gerüst-Bestellung</h1>
-      <div class="sub">Anmelden und Rolle wählen</div>
+      <h1>${t('appName')}</h1>
+      <div class="sub">${t('loginSub')}</div>
       <div class="field">
-        <label>Dein Name</label>
+        <label>${t('nameLabel')}</label>
         <select id="loginName">
-          <option value="" ${state.name?'':'selected'} disabled>Bitte wählen…</option>
+          <option value="" ${state.name?'':'selected'} disabled>${t('selectPlaceholder')}</option>
           ${EMPLOYEES.map(e=>`<option value="${e.name}" ${state.name===e.name?'selected':''}>${e.name}</option>`).join('')}
         </select>
       </div>
       <div class="role-grid">
-        <button class="role-btn" data-action="login" data-role="baustelle">${helmetIcon()}<div>Baustelle<small>Teile bestellen</small></div></button>
-        <button class="role-btn" data-action="login" data-role="lager">${warehouseIcon()}<div>Lager<small>Bestellungen &amp; Inventur</small></div></button>
-        <button class="role-btn" data-action="login" data-role="fahrer">${truckIcon()}<div>Fahrer<small>Ausliefern</small></div></button>
-        <button class="role-btn" data-action="login" data-role="chef">${chefIcon()}<div>Chef<small>Alles einsehen</small></div></button>
+        <button class="role-btn" data-action="login" data-role="baustelle">${helmetIcon()}<div>${t('roleBaustelle')}<small>${t('roleBaustelleSub')}</small></div></button>
+        <button class="role-btn" data-action="login" data-role="lager">${warehouseIcon()}<div>${t('roleLager')}<small>${t('roleLagerSub')}</small></div></button>
+        <button class="role-btn" data-action="login" data-role="fahrer">${truckIcon()}<div>${t('roleFahrer')}<small>${t('roleFahrerSub')}</small></div></button>
+        <button class="role-btn" data-action="login" data-role="chef">${chefIcon()}<div>${t('roleChef')}<small>${t('roleChefSub')}</small></div></button>
       </div>
       ${state.loginWarn? `<div class="warn">${state.loginWarn}</div>`:''}
     </div>
@@ -444,9 +923,9 @@ function loginHTML(){
 function qtyControlHTML(it){
   const q = state.cart[it.id]||0;
   return `<div class="qty-ctl">
-    <button type="button" data-action="qty" data-id="${it.id}" data-delta="-1" aria-label="Menge verringern">−</button>
+    <button type="button" data-action="qty" data-id="${it.id}" data-delta="-1" aria-label="${t('qtyMinusAria')}">−</button>
     <div class="qty-val">${q}</div>
-    <button type="button" data-action="qty" data-id="${it.id}" data-delta="1" aria-label="Menge erhöhen">+</button>
+    <button type="button" data-action="qty" data-id="${it.id}" data-delta="1" aria-label="${t('qtyPlusAria')}">+</button>
   </div>`;
 }
 
@@ -461,44 +940,44 @@ function catalogHTML(){
   CATEGORIES.forEach(cat=>{
     const items = CATALOG.filter(it=>it.cat===cat.id);
     if(!items.length) return;
-    rows += `<tr class="cat-row"><td colspan="3">${cat.name}</td></tr>`;
+    rows += `<tr class="cat-row"><td colspan="3">${catName(cat)}</td></tr>`;
     items.forEach(it=>{
       rowIdx++;
       rows += `<tr class="${rowIdx%2? 'row-alt':''}">
-        <td class="t-name" data-longpress="${it.id}"><span class="t-icon">${ICONS[it.icon]}</span>${it.name}</td>
-        <td class="t-unit">${it.unit}</td>
+        <td class="t-name" data-longpress="${it.id}"><span class="t-icon">${ICONS[it.icon]}</span>${itemName(it)}</td>
+        <td class="t-unit">${unitLabel(it.unit)}</td>
         <td>${qtyControlHTML(it)}</td>
       </tr>`;
     });
   });
 
-  return `<h2 class="view-title">Neue Bestellung</h2>
-  <p class="view-sub">Teile auswählen – geht sofort an Lager &amp; Fahrer. Name antippen und halten zeigt Details.</p>
+  return `<h2 class="view-title">${t('catalogTitle')}</h2>
+  <p class="view-sub">${t('catalogSub')}</p>
   ${aktive.length? `<div class="field">
-    <label>Bauvorhaben *</label>
+    <label>${t('projektLabel')}</label>
     <select id="projektSelect">
       ${aktive.map(p=>`<option value="${p.id}" ${String(state.selProjekt)===String(p.id)?'selected':''}>BV ${p.id} – ${p.name}</option>`).join('')}
-      <option value="_frei" ${state.selProjekt==='_frei'?'selected':''}>Andere Adresse (selbst eingeben)</option>
+      <option value="_frei" ${state.selProjekt==='_frei'?'selected':''}>${t('projektFreeOption')}</option>
     </select>
   </div>`:''}
   ${freiGewaehlt? `<div class="field">
-    <label>Baustelle / Ort *</label>
-    <input id="baustelleOrtInput" placeholder="z. B. Musterstraße 12" value="${state.baustelleOrt}" autocomplete="off">
+    <label>${t('ortLabel')}</label>
+    <input id="baustelleOrtInput" placeholder="${t('ortPlaceholder')}" value="${state.baustelleOrt}" autocomplete="off">
     <div id="addrSuggestions"></div>
   </div>
-  <button class="loc-btn" data-action="use-location">📍 Meinen Standort als Adresse übernehmen</button>`:''}
+  <button class="loc-btn" data-action="use-location">${t('locBtn')}</button>`:''}
   <div id="ortWarnArea"></div>
   <div class="tbl-wrap"><table class="order-table">
-    <thead><tr><th>Teil</th><th>Einheit</th><th style="text-align:right;">Menge</th></tr></thead>
+    <thead><tr><th>${t('thTeil')}</th><th>${t('thEinheit')}</th><th style="text-align:right;">${t('thMenge')}</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>
   <div class="mine-section">
-    <h3>Meine letzten Bestellungen</h3>
-    ${mine.length? mine.map(o=>orderCardHTML(o,null)).join('') : '<div class="empty-state" style="padding:20px 0;">Du hast noch nichts bestellt.</div>'}
+    <h3>${t('mineTitle')}</h3>
+    ${mine.length? mine.map(o=>orderCardHTML(o,null)).join('') : `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>`}
   </div>
   <div class="order-footer">
-    <span>${count? count+' Stk ausgewählt' : 'Noch keine Menge eingetragen'}</span>
-    <button class="submit-btn" data-action="open-order-review" ${count? '':'disabled'}>Bestellung prüfen</button>
+    <span>${count? t('footerCount',{n:count}) : t('footerEmpty')}</span>
+    <button class="submit-btn" data-action="open-order-review" ${count? '':'disabled'}>${t('reviewBtn')}</button>
   </div>`;
 }
 
@@ -507,11 +986,11 @@ function itemPopupHTML(){
   if(!it) return '';
   return `<div class="overlay overlay-center" data-action="close-item-popup-bg">
     <div class="item-popup">
-      <div class="item-popup-photo">${ICONS[it.icon]}<span>Foto folgt</span></div>
-      <div class="item-popup-name">${it.name}</div>
-      <div class="item-popup-unit">${it.unit}</div>
+      <div class="item-popup-photo">${ICONS[it.icon]}<span>${t('fotoFolgt')}</span></div>
+      <div class="item-popup-name">${itemName(it)}</div>
+      <div class="item-popup-unit">${unitLabel(it.unit)}</div>
       ${qtyControlHTML(it)}
-      <button class="refresh-btn" data-action="close-item-popup" style="margin-top:16px;width:100%;">Schließen</button>
+      <button class="refresh-btn" data-action="close-item-popup" style="margin-top:16px;width:100%;">${t('closeBtn')}</button>
     </div>
   </div>`;
 }
@@ -520,22 +999,22 @@ function orderReviewHTML(){
   if(!state.orderReview) return '';
   const items = Object.entries(state.cart).filter(([id,q])=>q>0).map(([id,q])=>{
     const it = CATALOG.find(c=>c.id===id);
-    return {name:it.name, unit:it.unit, qty:q};
+    return {name:itemName(it), unit:unitLabel(it.unit), qty:q};
   });
   const today = new Date().toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'});
   return `<div class="overlay" data-action="close-order-review-bg">
     <div class="drawer">
       <div class="review-head">
-        <div class="eyebrow">Bestellschein · Entwurf</div>
-        <h3>Bestellung prüfen</h3>
+        <div class="eyebrow">${t('reviewEyebrow')}</div>
+        <h3>${t('reviewTitle')}</h3>
       </div>
-      <div class="review-meta">Baustelle: <b>${state.orderReview.ort}</b> · Datum: <b>${today}</b></div>
+      <div class="review-meta">${t('reviewBaustelle')} <b>${state.orderReview.ort}</b> · ${t('reviewDatum')} <b>${today}</b></div>
       ${items.length? `<table class="review-table">
-        <thead><tr><th>Teil</th><th class="num">Menge</th></tr></thead>
+        <thead><tr><th>${t('thTeil')}</th><th class="num">${t('thMenge')}</th></tr></thead>
         <tbody>${items.map(i=>`<tr><td>${i.name}</td><td class="num">${i.qty} ${i.unit}</td></tr>`).join('')}</tbody>
-      </table>` : '<div class="empty-state">Keine Teile mehr ausgewählt.</div>'}
-      <button class="submit-btn" data-action="submit-order-final" style="width:100%;" ${items.length? '':'disabled'}>Bestellung verbindlich abschicken</button>
-      <button class="refresh-btn" data-action="close-order-review" style="width:100%;margin-top:10px;">Zurück zur Liste</button>
+      </table>` : `<div class="empty-state">${t('reviewEmpty')}</div>`}
+      <button class="submit-btn" data-action="submit-order-final" style="width:100%;" ${items.length? '':'disabled'}>${t('reviewSubmitBtn')}</button>
+      <button class="refresh-btn" data-action="close-order-review" style="width:100%;margin-top:10px;">${t('reviewBackBtn')}</button>
     </div>
   </div>`;
 }
@@ -544,20 +1023,20 @@ function confirmHTML(o){
   return `<div class="overlay" data-action="close-confirm-bg">
     <div class="drawer" style="padding-bottom:24px;">
       <div class="ticket">
-        <div class="stamp">${o.status}</div>
+        <div class="stamp">${statusLabel(o.status)}</div>
         <div class="ticket-top">
-          <div style="font-size:11px;color:var(--steel);">LIEFERSCHEIN Nr.</div>
+          <div style="font-size:11px;color:var(--steel);">${t('lieferscheinLabel')}</div>
           <div class="ticket-order-no">#${o.id}</div>
         </div>
         <div class="ticket-body">
-          <div class="ticket-row"><span>Baustelle</span><span>${o.baustelle}</span></div>
-          <div class="ticket-row"><span>Bestellt von</span><span>${o.person}</span></div>
-          <div class="ticket-row"><span>Zeit</span><span>${o.time}</span></div>
+          <div class="ticket-row"><span>${t('baustelleLabel')}</span><span>${o.baustelle}</span></div>
+          <div class="ticket-row"><span>${t('bestelltVonLabel')}</span><span>${o.person}</span></div>
+          <div class="ticket-row"><span>${t('zeitLabel')}</span><span>${o.time}</span></div>
           <div style="border-top:1px solid var(--concrete);margin:10px 0;"></div>
-          <ul class="order-items">${o.items.map(i=>`<li>${i.qty} ${i.unit} — ${i.name}</li>`).join('')}</ul>
+          <ul class="order-items">${o.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>
         </div>
       </div>
-      <button class="submit-btn" data-action="close-confirm" style="width:100%;max-width:340px;margin:16px auto 0 auto;display:block;">Fertig</button>
+      <button class="submit-btn" data-action="close-confirm" style="width:100%;max-width:340px;margin:16px auto 0 auto;display:block;">${t('fertigBtn')}</button>
     </div>
   </div>`;
 }
@@ -571,27 +1050,27 @@ function orderCardHTML(o, role){
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.baustelle)}`;
   return `<div class="order-card ${statusClass}">
     <div class="order-head">
-      <div><div class="no">#${o.id}</div><div class="site">${o.baustelle} · bestellt von ${o.person}</div></div>
-      <div class="status-badge ${statusClass}">${o.status}</div>
+      <div><div class="no">#${o.id}</div><div class="site">${o.baustelle} · ${t('bestelltVonInline')} ${o.person}</div></div>
+      <div class="status-badge ${statusClass}">${statusLabel(o.status)}</div>
     </div>
-    <div class="order-time">Bestellt: ${o.time}</div>
-    <ul class="order-items">${o.items.map(i=>`<li>${i.qty} ${i.unit} — ${i.name}</li>`).join('')}</ul>
-    <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">🗺️ In Google Maps öffnen</a>
-    ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${step.label}</button>` : ''}
-    ${o.status==='Geliefert'? '<div class="done-label">✓ Geliefert</div>' : ''}
+    <div class="order-time">${t('bestelltPrefix')} ${o.time}</div>
+    <ul class="order-items">${o.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>
+    <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
+    ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
+    ${o.status==='Geliefert'? `<div class="done-label">${t('geliefertLabel')}</div>` : ''}
   </div>`;
 }
 
 function inventoryRowHTML(it, editable){
   const qty = state.inventory[it.id] ?? 0;
   let qtyClass='', tag='';
-  if(qty<0){ qtyClass='stock-missing'; tag=`Fehlt: ${-qty} ${it.unit}`; }
-  else if(qty<10){ qtyClass='stock-low'; tag='Bestand niedrig'; }
+  if(qty<0){ qtyClass='stock-missing'; tag=`${t('stockMissingLabel')} ${-qty} ${unitLabel(it.unit)}`; }
+  else if(qty<10){ qtyClass='stock-low'; tag=t('stockLow'); }
   return `<div class="inv-row">
     <div class="inv-icon">${ICONS[it.icon]}</div>
     <div class="inv-main">
-      <div class="inv-name">${it.name}</div>
-      <div class="inv-qty ${qtyClass}">${qty} ${it.unit} ${tag? `<span class="tag">${tag}</span>`:''}</div>
+      <div class="inv-name">${itemName(it)}</div>
+      <div class="inv-qty ${qtyClass}">${qty} ${unitLabel(it.unit)} ${tag? `<span class="tag">${tag}</span>`:''}</div>
     </div>
     ${editable? `<div class="inv-actions">
       <button data-action="inv" data-id="${it.id}" data-delta="-1">−</button>
@@ -607,16 +1086,16 @@ function inventoryTableHTML(editable){
 function lagerHTML(){
   const tab = state.lagerTab;
   const orders = [...state.orders].sort((a,b)=>a.id-b.id);
-  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">↻ Aktualisieren</button></div>
-  <h2 class="view-title">Lager</h2>
+  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
+  <h2 class="view-title">${t('lagerTitle')}</h2>
   <div class="seg-control">
-    <button class="${tab==='bestellungen'?'active':''}" data-action="lager-tab" data-tab="bestellungen">Bestellungen</button>
-    <button class="${tab==='inventur'?'active':''}" data-action="lager-tab" data-tab="inventur">Inventur</button>
+    <button class="${tab==='bestellungen'?'active':''}" data-action="lager-tab" data-tab="bestellungen">${t('tabBestellungen')}</button>
+    <button class="${tab==='inventur'?'active':''}" data-action="lager-tab" data-tab="inventur">${t('tabInventur')}</button>
   </div>
   ${tab==='bestellungen'
-    ? `<p class="view-sub">Eingehende Bestellungen bearbeiten und für den Fahrer bereitstellen.</p>
-       ${orders.length? orders.map(o=>orderCardHTML(o,'lager')).join('') : '<div class="empty-state">Noch keine Bestellungen eingegangen.</div>'}`
-    : `<p class="view-sub">Aktueller Bestand. Wird bei „Bereit melden" automatisch abgezogen.</p>
+    ? `<p class="view-sub">${t('lagerBestellSub')}</p>
+       ${orders.length? orders.map(o=>orderCardHTML(o,'lager')).join('') : `<div class="empty-state">${t('lagerEmptyOrders')}</div>`}`
+    : `<p class="view-sub">${t('lagerInventurSub')}</p>
        ${inventoryTableHTML(true)}`
   }`;
 }
@@ -625,11 +1104,11 @@ function fahrerHTML(){
   const all = [...state.orders].sort((a,b)=>a.id-b.id);
   const ready = all.filter(o=>STATUS_FLOW.indexOf(o.status)>=2);
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
-  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">↻ Aktualisieren</button></div>
-  <h2 class="view-title">Fahrer</h2>
-  <p class="view-sub">Was wohin muss – und wann es bestellt wurde.</p>
-  ${waiting.length? `<div class="waiting-note">${waiting.length} Bestellung(en) warten noch auf das Lager.</div>`:''}
-  ${ready.length? ready.map(o=>orderCardHTML(o,'fahrer')).join('') : '<div class="empty-state">Aktuell keine Bestellungen zur Abholung bereit.</div>'}`;
+  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
+  <h2 class="view-title">${t('fahrerTitle')}</h2>
+  <p class="view-sub">${t('fahrerSub')}</p>
+  ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
+  ${ready.length? ready.map(o=>orderCardHTML(o,'fahrer')).join('') : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}`;
 }
 
 function projektCardHTML(p){
@@ -637,38 +1116,42 @@ function projektCardHTML(p){
   const geliefert = {}, offen = {};
   orders.forEach(o=>{
     const ziel = o.status==='Geliefert' ? geliefert : offen;
-    o.items.forEach(it=>{ ziel[it.name] = (ziel[it.name]||0) + it.qty; });
+    o.items.forEach(it=>{ ziel[it.id] = (ziel[it.id]||0) + it.qty; });
   });
+  const line = (id,q)=>{
+    const cat = CATALOG.find(c=>c.id===id);
+    return `<li>${q} ${cat? unitLabel(cat.unit):''} — ${cat? itemName(cat):id}</li>`;
+  };
   const mapsUrl = p.coords
     ? `https://www.google.com/maps?q=${p.coords.lat},${p.coords.lon}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse)}`;
   return `<div class="order-card ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">
     <div class="order-head">
       <div><div class="no">BV ${p.id} – ${p.name}</div><div class="site">${p.adresse}</div></div>
-      <div class="status-badge ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">${p.aktiv?'Aktiv':'Fertig'}</div>
+      <div class="status-badge ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">${p.aktiv?t('pvAktivBadge'):t('pvFertigBadge')}</div>
     </div>
-    ${Object.keys(geliefert).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">Vor Ort (geliefert):</div>
-      <ul class="order-items">${Object.entries(geliefert).map(([n,q])=>`<li>${q} Stk — ${n}</li>`).join('')}</ul>`:''}
-    ${Object.keys(offen).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">Bestellt / unterwegs:</div>
-      <ul class="order-items">${Object.entries(offen).map(([n,q])=>`<li>${q} Stk — ${n}</li>`).join('')}</ul>`:''}
-    <div class="order-time">${orders.length? 'Bestellungen: '+orders.map(o=>'#'+o.id+' ('+o.status+')').join(', ') : 'Noch keine Bestellungen zu diesem Bauvorhaben.'}</div>
-    <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">🗺️ In Google Maps öffnen</a>
-    <button class="refresh-btn" data-action="projekt-toggle" data-id="${p.id}" style="margin-top:10px;">${p.aktiv? 'Als fertig markieren':'Wieder aktivieren'}</button>
+    ${Object.keys(geliefert).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">${t('pvVorOrt')}</div>
+      <ul class="order-items">${Object.entries(geliefert).map(([id,q])=>line(id,q)).join('')}</ul>`:''}
+    ${Object.keys(offen).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">${t('pvBestelltUnterwegs')}</div>
+      <ul class="order-items">${Object.entries(offen).map(([id,q])=>line(id,q)).join('')}</ul>`:''}
+    <div class="order-time">${orders.length? t('pvBestellungenPrefix')+' '+orders.map(o=>'#'+o.id+' ('+statusLabel(o.status)+')').join(', ') : t('pvKeineBestellungen')}</div>
+    <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
+    <button class="refresh-btn" data-action="projekt-toggle" data-id="${p.id}" style="margin-top:10px;">${p.aktiv? t('pvAlsFertigBtn'):t('pvWiederAktivBtn')}</button>
   </div>`;
 }
 
 function projekteHTML(){
   const aktive = state.projects.filter(p=>p.aktiv);
   const fertig = state.projects.filter(p=>!p.aktiv);
-  return `<p class="view-sub">Bauvorhaben anlegen – die Baustelle wählt beim Bestellen dann einfach aus der Liste.</p>
+  return `<p class="view-sub">${t('projekteSub')}</p>
   <div class="order-card">
-    <div class="field"><label>Name des Bauvorhabens</label><input id="pvName" placeholder="z. B. Frauenkirche" autocomplete="off"></div>
-    <div class="field"><label>Adresse</label><input id="pvAdresse" placeholder="z. B. Frauenplatz 12, München" autocomplete="off"></div>
+    <div class="field"><label>${t('pvNameLabel')}</label><input id="pvName" placeholder="${t('pvNamePlaceholder')}" autocomplete="off"></div>
+    <div class="field"><label>${t('pvAdresseLabel')}</label><input id="pvAdresse" placeholder="${t('pvAdressePlaceholder')}" autocomplete="off"></div>
     <div id="pvWarn"></div>
-    <button class="advance-btn" data-action="add-projekt">+ Bauvorhaben anlegen</button>
+    <button class="advance-btn" data-action="add-projekt">${t('pvAddBtn')}</button>
   </div>
-  ${aktive.length? aktive.map(projektCardHTML).join('') : '<div class="empty-state">Noch keine aktiven Bauvorhaben.</div>'}
-  ${fertig.length? `<h3 style="margin-top:24px;font-size:15px;">Abgeschlossen</h3>${fertig.map(projektCardHTML).join('')}`:''}`;
+  ${aktive.length? aktive.map(projektCardHTML).join('') : `<div class="empty-state">${t('pvEmptyActive')}</div>`}
+  ${fertig.length? `<h3 style="margin-top:24px;font-size:15px;">${t('pvAbgeschlossenHeading')}</h3>${fertig.map(projektCardHTML).join('')}`:''}`;
 }
 
 function chefHTML(){
@@ -676,24 +1159,24 @@ function chefHTML(){
   const orders = [...state.orders].sort((a,b)=>a.id-b.id);
   const counts = {};
   STATUS_FLOW.forEach(s=> counts[s] = orders.filter(o=>o.status===s).length);
-  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">↻ Aktualisieren</button></div>
-  <h2 class="view-title">Chef</h2>
+  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
+  <h2 class="view-title">${t('chefViewTitle')}</h2>
   <div class="seg-control">
-    <button class="${tab==='uebersicht'?'active':''}" data-action="chef-tab" data-tab="uebersicht">Übersicht</button>
-    <button class="${tab==='bauvorhaben'?'active':''}" data-action="chef-tab" data-tab="bauvorhaben">Bauvorhaben</button>
+    <button class="${tab==='uebersicht'?'active':''}" data-action="chef-tab" data-tab="uebersicht">${t('tabUebersicht')}</button>
+    <button class="${tab==='bauvorhaben'?'active':''}" data-action="chef-tab" data-tab="bauvorhaben">${t('tabBauvorhaben')}</button>
   </div>
   ${tab==='bauvorhaben' ? projekteHTML() : `
-  <p class="view-sub">Gesamtüberblick über alle Bestellungen und den Lagerbestand.</p>
-  <div class="stat-row">${STATUS_FLOW.map(s=>`<div class="stat-chip"><b>${counts[s]}</b><span>${s}</span></div>`).join('')}</div>
-  <h3 style="margin-top:22px;font-size:15px;">Alle Bestellungen</h3>
-  ${orders.length? orders.map(o=>orderCardHTML(o,null)).join('') : '<div class="empty-state">Noch keine Bestellungen.</div>'}
-  <h3 style="margin-top:26px;font-size:15px;">Lagerbestand</h3>
+  <p class="view-sub">${t('chefOverviewSub')}</p>
+  <div class="stat-row">${STATUS_FLOW.map(s=>`<div class="stat-chip"><b>${counts[s]}</b><span>${statusLabel(s)}</span></div>`).join('')}</div>
+  <h3 style="margin-top:22px;font-size:15px;">${t('allOrdersHeading')}</h3>
+  ${orders.length? orders.map(o=>orderCardHTML(o,null)).join('') : `<div class="empty-state">${t('chefEmptyOrders')}</div>`}
+  <h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
   ${inventoryTableHTML(false)}`}`;
 }
 
 function formatDateDE(iso){
   const [y,m,d] = iso.split('-');
-  const wt = ['So','Mo','Di','Mi','Do','Fr','Sa'][new Date(iso+'T00:00:00').getDay()];
+  const wt = (WEEKDAYS[state.lang]||WEEKDAYS.de)[new Date(iso+'T00:00:00').getDay()];
   return `${wt}, ${d}.${m}.${y}`;
 }
 
@@ -706,32 +1189,32 @@ function calendarPageHTML(){
 
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
     <main style="padding:0;max-width:720px;margin:0 auto;">
-      <h2 class="view-title">Kalender</h2>
-      <p class="view-sub">Wer wann wo im Einsatz sein soll. Zum Bestellen bitte oben im Menü anmelden.</p>
+      <h2 class="view-title">${t('calTitle')}</h2>
+      <p class="view-sub">${t('calSub')}</p>
 
       ${state.calAskPw? `<div class="order-card">
-        <div class="field"><label>Chef-Passwort</label><input id="calPwInput" type="password" placeholder="Passwort"></div>
+        <div class="field"><label>${t('calPwLabel')}</label><input id="calPwInput" type="password" placeholder="${t('pwPlaceholder')}"></div>
         <div id="calPwWarn"></div>
-        <button class="advance-btn" data-action="cal-unlock-ok">Freischalten</button>
-        <button class="refresh-btn" data-action="cal-unlock-cancel" style="margin-top:8px;">Abbrechen</button>
+        <button class="advance-btn" data-action="cal-unlock-ok">${t('calUnlockBtn')}</button>
+        <button class="refresh-btn" data-action="cal-unlock-cancel" style="margin-top:8px;">${t('calCancelBtn')}</button>
       </div>` : ''}
 
       ${state.calUnlocked? `<div class="order-card">
-        <div class="field"><label>Datum</label><input type="date" id="calDate" value="${d.date||''}"></div>
-        <div class="field"><label>Mitarbeiter</label>
+        <div class="field"><label>${t('calDateLabel')}</label><input type="date" id="calDate" value="${d.date||''}"></div>
+        <div class="field"><label>${t('calPersonLabel')}</label>
           <select id="calPerson">
-            <option value="" ${d.person?'':'selected'} disabled>Bitte wählen…</option>
+            <option value="" ${d.person?'':'selected'} disabled>${t('selectPlaceholder')}</option>
             ${EMPLOYEES.map(e=>`<option value="${e.name}" ${d.person===e.name?'selected':''}>${e.name}</option>`).join('')}
           </select>
         </div>
-        <div class="field"><label>Ort / Baustelle</label><input id="calOrt" placeholder="z. B. BV 101 – Frauenkirche" value="${d.ort? d.ort.replace(/"/g,'&quot;'):''}"></div>
-        <div class="field"><label>Notiz (optional)</label><input id="calNotiz" placeholder="z. B. ganztags, ab 7 Uhr" value="${d.notiz? d.notiz.replace(/"/g,'&quot;'):''}"></div>
+        <div class="field"><label>${t('calOrtLabel')}</label><input id="calOrt" placeholder="${t('calOrtPlaceholder')}" value="${d.ort? d.ort.replace(/"/g,'&quot;'):''}"></div>
+        <div class="field"><label>${t('calNotizLabel')}</label><input id="calNotiz" placeholder="${t('calNotizPlaceholder')}" value="${d.notiz? d.notiz.replace(/"/g,'&quot;'):''}"></div>
         ${state.calWarn? `<div class="warn">${state.calWarn}</div>`:''}
-        <button class="advance-btn" data-action="cal-save">${state.calEditId? 'Speichern' : '+ Termin hinzufügen'}</button>
-        ${state.calEditId? `<button class="refresh-btn" data-action="cal-cancel-edit" style="margin-top:8px;">Abbrechen</button>`:''}
+        <button class="advance-btn" data-action="cal-save">${state.calEditId? t('calSaveBtn') : t('calAddBtn')}</button>
+        ${state.calEditId? `<button class="refresh-btn" data-action="cal-cancel-edit" style="margin-top:8px;">${t('calCancelBtn')}</button>`:''}
       </div>
-      <button class="refresh-btn" data-action="cal-lock" style="margin-bottom:14px;">🔒 Sperren</button>`
-      : `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">🔒 Termine bearbeiten (Chef-Passwort)</button>`}
+      <button class="refresh-btn" data-action="cal-lock" style="margin-bottom:14px;">${t('calLockBtn')}</button>`
+      : `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>`}
 
       ${dates.length? dates.map(dt=>`
         <h3 style="margin-top:18px;font-size:14px;">${formatDateDE(dt)}</h3>
@@ -742,18 +1225,18 @@ function calendarPageHTML(){
             </div>
             ${e.notiz? `<div class="order-time">${e.notiz}</div>`:''}
             ${state.calUnlocked? `<div style="display:flex;gap:8px;margin-top:8px;">
-              <button class="refresh-btn" data-action="cal-edit" data-id="${e.id}">Bearbeiten</button>
-              <button class="refresh-btn" data-action="cal-delete" data-id="${e.id}" style="color:var(--red);border-color:var(--red);">Löschen</button>
+              <button class="refresh-btn" data-action="cal-edit" data-id="${e.id}">${t('calEditBtn')}</button>
+              <button class="refresh-btn" data-action="cal-delete" data-id="${e.id}" style="color:var(--red);border-color:var(--red);">${t('calDeleteBtn')}</button>
             </div>`:''}
           </div>
         `).join('')}
-      `).join('') : '<div class="empty-state">Noch keine Termine eingetragen.</div>'}
+      `).join('') : `<div class="empty-state">${t('calEmpty')}</div>`}
     </main>
   </div>`;
 }
 
 function render(){
-  if(state.loading){ document.getElementById('app').innerHTML = '<div class="loading">Lade Daten…</div>'; return; }
+  if(state.loading){ document.getElementById('app').innerHTML = `<div class="loading">${t('loadingText')}</div>`; return; }
   if(state.view==='calendar'){ document.getElementById('app').innerHTML = calendarPageHTML(); return; }
   if(!state.loggedIn){ document.getElementById('app').innerHTML = loginHTML(); return; }
 
@@ -767,12 +1250,13 @@ function render(){
     <header class="chrome">
       <div class="brand">
         <img class="brand-mark" src="logo.png" alt="SGM">
-        <div><h1>Gerüst-Bestellung</h1><span>${ROLE_LABEL[state.role]}</span></div>
+        <div><h1>${t('appName')}</h1><span>${roleLabel(state.role)}</span></div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;">
-        <div class="who"><b>${state.name}</b><br><a data-action="logout">Abmelden / Rolle wechseln</a></div>
+        <div class="who"><b>${state.name}</b><br><a data-action="logout">${t('logoutLink')}</a></div>
+        ${langMenuBtnHTML('var(--surface-2)')}
         <div class="menu-wrap">
-          <button class="menu-btn" data-action="menu-toggle" aria-label="Menü" style="background:var(--surface-2);color:var(--ink);">☰</button>
+          <button class="menu-btn" data-action="menu-toggle" aria-label="${t('menuAria')}" style="background:var(--surface-2);color:var(--ink);">☰</button>
           ${menuDropdownHTML()}
         </div>
       </div>
@@ -798,7 +1282,7 @@ function openOrderReview(){
     coords = state.baustelleCoords || null;
     if(!ort){
       const w = document.getElementById('ortWarnArea');
-      if(w) w.innerHTML = '<div class="warn">Bitte Baustelle / Ort eingeben.</div>';
+      if(w) w.innerHTML = `<div class="warn">${t('warnOrt')}</div>`;
       return;
     }
   }
@@ -837,7 +1321,9 @@ async function submitOrderFinal(){
 document.getElementById('app').addEventListener('click', async (e)=>{
   const el = e.target.closest('[data-action]');
   if(!el){
-    if(state.menuOpen && !e.target.closest('.menu-wrap')){ state.menuOpen=false; render(); }
+    if((state.menuOpen || state.langMenuOpen) && !e.target.closest('.menu-wrap')){
+      state.menuOpen=false; state.langMenuOpen=false; render();
+    }
     return;
   }
   const action = el.dataset.action;
@@ -846,7 +1332,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const nameSel = document.getElementById('loginName');
     const name = nameSel? nameSel.value : '';
     const emp = EMPLOYEES.find(e=>e.name===name);
-    if(!emp){ state.loginWarn='Bitte Namen auswählen.'; render(); return; }
+    if(!emp){ state.loginWarn=t('warnSelectName'); render(); return; }
     state.name = name;
     state.loginWarn='';
     if(el.dataset.role==='chef'){ state.askChefPw = true; render(); return; }
@@ -860,7 +1346,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       state.askChefPw=false; state.loginWarn=''; state.role='chef'; state.loggedIn=true;
       saveSession();
     } else {
-      state.loginWarn='Falsches Passwort.';
+      state.loginWarn=t('warnWrongPw');
     }
     render();
   }
@@ -892,8 +1378,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   }
   if(action==='use-location'){
     const warn = (msg)=>{ const w=document.getElementById('ortWarnArea'); if(w) w.innerHTML = `<div class="warn">${msg}</div>`; };
-    if(!navigator.geolocation){ warn('Standort wird von diesem Browser nicht unterstützt.'); return; }
-    el.textContent = 'Standort wird ermittelt…';
+    if(!navigator.geolocation){ warn(t('locNoSupport')); return; }
+    el.textContent = t('locFetching');
     navigator.geolocation.getCurrentPosition(async (pos)=>{
       const lat = pos.coords.latitude, lon = pos.coords.longitude;
       state.baustelleCoords = {lat, lon};
@@ -912,8 +1398,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       state.baustelleOrt = text;
       render();
     }, ()=>{
-      warn('Standort nicht verfügbar. Bitte die Standort-Freigabe im Browser erlauben oder die Adresse eintippen.');
-      el.textContent = '📍 Meinen Standort als Adresse übernehmen';
+      warn(t('locFailed'));
+      el.textContent = t('locBtn');
     }, {enableHighAccuracy:true, timeout:10000});
   }
   if(action==='lager-tab'){ state.lagerTab = el.dataset.tab; render(); }
@@ -922,7 +1408,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const n = document.getElementById('pvName'), a = document.getElementById('pvAdresse');
     const name = (n? n.value : '').trim(), adresse = (a? a.value : '').trim();
     const w = document.getElementById('pvWarn');
-    if(!name || !adresse){ if(w) w.innerHTML = '<div class="warn">Bitte Name und Adresse eingeben.</div>'; return; }
+    if(!name || !adresse){ if(w) w.innerHTML = `<div class="warn">${t('pvWarnFields')}</div>`; return; }
     state.projects.push({id: state.projektCounter++, name, adresse, coords:null, aktiv:true});
     await saveShared();
     render();
@@ -945,7 +1431,11 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   }
   if(action==='refresh'){ await loadShared(); render(); }
 
-  if(action==='menu-toggle'){ state.menuOpen = !state.menuOpen; render(); }
+  if(action==='menu-toggle'){ state.menuOpen = !state.menuOpen; state.langMenuOpen=false; render(); }
+  if(action==='lang-toggle'){ state.langMenuOpen = !state.langMenuOpen; state.menuOpen=false; render(); }
+  if(action==='set-lang'){
+    state.lang = el.dataset.lang; saveLang(state.lang); state.langMenuOpen=false; render();
+  }
   if(action==='go-calendar'){
     state.view='calendar'; state.menuOpen=false; state.calWarn='';
     await loadShared();
@@ -961,7 +1451,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       state.calUnlocked=true; state.calAskPw=false;
     } else {
       const w = document.getElementById('calPwWarn');
-      if(w) w.innerHTML = '<div class="warn">Falsches Passwort.</div>';
+      if(w) w.innerHTML = `<div class="warn">${t('warnWrongPw')}</div>`;
     }
     render();
   }
@@ -981,7 +1471,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const person = document.getElementById('calPerson').value;
     const ort = document.getElementById('calOrt').value.trim();
     const notiz = document.getElementById('calNotiz').value.trim();
-    if(!date || !person || !ort){ state.calWarn='Bitte Datum, Mitarbeiter und Ort ausfüllen.'; render(); return; }
+    if(!date || !person || !ort){ state.calWarn=t('calWarnFields'); render(); return; }
     if(state.calEditId){
       const entry = state.calendarEntries.find(x=>x.id===state.calEditId);
       if(entry){ entry.date=date; entry.person=person; entry.ort=ort; entry.notiz=notiz; }
@@ -1074,6 +1564,7 @@ if('serviceWorker' in navigator){
 }
 
 (async function init(){
+  state.lang = loadLang();
   restoreSession();
   await loadShared();
   state.loading = false;
