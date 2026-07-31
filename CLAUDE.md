@@ -33,6 +33,28 @@ Abfrage `state.calUnlocked`, gilt nur für die aktuelle Seitenladung, nicht
 dauerhaft gespeichert). Die Kalender-Daten (`calendarEntries`,
 `calCounter`) liegen im selben Supabase-Datensatz wie alles andere.
 
+## Sprachen
+
+Fünf Sprachen: Deutsch (Standard), Polnisch, Slowakisch, Kroatisch,
+Englisch (`LANGS`-Array, genau diese Reihenfolge – Kundenwunsch). Ein
+eigener Globus-Knopf (🌐, `langMenuBtnHTML()`) neben dem Menü-Knopf öffnet
+die Auswahl; die Wahl wird pro Gerät in `localStorage`
+(`geruest-lang`) gespeichert, damit sie nicht bei jedem Besuch neu
+eingestellt werden muss. Alle Oberflächentexte laufen über das `T`-
+Wörterbuch (ein Eintrag pro Sprache, gleiche Schlüssel) und die Funktion
+`t('schluessel', {platzhalter})`; Teile-Namen/Kategorien über
+`itemName()`/`catName()` (Schlüssel `item_<id>`/`cat_<id>`), Bestell-
+Status/Arbeitsschritte über `statusLabel()`/`stepLabel()` (nutzen
+intern `slug()` auf den – weiterhin deutschen – gespeicherten Status-
+Werten wie `'In Bearbeitung'`, damit alte Bestellungen/DB-Werte gültig
+bleiben und nur die ANZEIGE übersetzt wird). Bereits aufgegebene
+Bestellungen speichern Teile-Name/Einheit zwar auf Deutsch im
+Datensatz, werden aber beim Anzeigen live über `resolvedItem()` wieder
+in die aktuell eingestellte Sprache aufgelöst. Neue Übersetzungs-Strings
+immer in ALLEN fünf Sprachblöcken im `T`-Objekt ergänzen (gleicher
+Schlüssel überall), sonst fällt die Anzeige auf Deutsch zurück (kein
+Absturz, aber inkonsistent).
+
 ## PWA / „Wie eine App" nutzbar
 
 Die Datei bindet eine `manifest.json` sowie `icon-192.png`/`icon-512.png`
