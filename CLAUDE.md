@@ -239,10 +239,6 @@ Entscheidungen für die noch offenen Teile:
   + Datum + Teile wählen, wie beim normalen Bestellen). Erscheint als
   eigene, nach Datum sortierte "Geplant"-Liste bei Lager/Fahrer, getrennt
   von den dringenden/laufenden Bestellungen. Noch nicht umgesetzt.
-- **Fahrer-Status**: Jeder Fahrer stellt für sich selbst ein, wo er
-  gerade ist ("Am Lager – nichts zu tun" / "Unterwegs"); mehrere Fahrer
-  gleichzeitig möglich, jeder mit eigenem Status (nicht ein
-  gemeinsamer LKW-Status). Noch nicht umgesetzt.
 - **LKW-Logistik-Kalender**: Neuer, eigener Kalender nur für
   Lieferungen/Abholungen mit Datum UND Uhrzeit, verknüpft mit einem
   Bauvorhaben ("wann kann was geräumt werden") – getrennt vom
@@ -250,8 +246,8 @@ Entscheidungen für die noch offenen Teile:
   umgesetzt.
 
 Bereits umgesetzt aus dieser Anfrage: ausklappbare Kategorien,
-Paket-Umrechnung + druckbarer Lieferschein, Projekt-Farben (siehe
-unten).
+Paket-Umrechnung + druckbarer Lieferschein, Projekt-Farben,
+Fahrer-Status (siehe unten).
 
 ### Projekt-Farben (umgesetzt)
 
@@ -275,6 +271,24 @@ Fahrer-Ansicht (`fahrerHTML()`) jetzt zwei Reiter (`state.fahrerTab`,
 analog zum bestehenden Lager-/Chef-Reiter-Muster): "Lieferungen" (bisheriger
 Inhalt, unverändert) und "Bauvorhaben" (neu, `fahrerProjekteHTML()` –
 nur aktive Bauvorhaben, rein lesend).
+
+### Fahrer-Status (umgesetzt)
+
+Jeder Fahrer stellt für sich selbst ein, wo er gerade ist – nicht ein
+gemeinsamer LKW-Status, da mehrere Fahrer gleichzeitig unterwegs sein
+können. Gespeichert in `state.driverStatus` (geteilter Supabase-
+Datensatz, Feld `driverStatus`), ein Objekt keyed nach Mitarbeitername:
+`{status:'lager'|'unterwegs', time:'...'}` (Konstante
+`DRIVER_STATUSES`, Meta-Infos/Übersetzungs-Schlüssel in
+`driverStatusMeta()`).
+
+Jeder Fahrer sieht oben auf seiner eigenen Ansicht (`fahrerHTML()`,
+`myStatusWidgetHTML()`) zwei Knöpfe ("Am Lager – nichts zu tun" /
+"Unterwegs", Klick setzt `data-action="set-driver-status"`) sowie den
+Zeitpunkt der letzten Änderung. Chef (Reiter "Übersicht") und Lager
+(Reiter "Bestellungen") sehen eine Liste aller gesetzten Fahrer-Status
+(`driverStatusListHTML()`), damit erkennbar ist, welcher Fahrer gerade
+verfügbar ist.
 
 ## Stil-Vorgaben
 
