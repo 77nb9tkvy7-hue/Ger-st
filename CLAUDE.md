@@ -37,9 +37,10 @@ Start-Befüllung beim allerersten Laden (alte PINs als Start-Passwörter);
 im Klartext im Datensatz – gleiches Schutzniveau wie `CHEF_PASSWORD`,
 kein echter Sicherheitsmechanismus (Repo + Anon-Key sind öffentlich).
 
-Die Anmeldung wird per `localStorage` auf dem Gerät gespeichert und gilt
-bis zum Ende des Kalendertages – morgens einmal anmelden reicht
-(`saveSession`/`restoreSession`/`clearSession`). „Abmelden" löscht sie.
+Die Anmeldung wird per `localStorage` auf dem Gerät gespeichert und gilt,
+bis man sich ausdrücklich abmeldet – KEIN Ablauf am Tagesende mehr
+(Nutzerwunsch; `saveSession`/`restoreSession`/`clearSession`). „Abmelden"
+löscht sie.
 `enforceSession()` (nach jedem `loadShared()`) wirft automatisch raus,
 wenn der Chef die Person oder ihre aktuelle Rolle inzwischen entfernt hat.
 
