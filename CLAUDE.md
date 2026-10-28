@@ -239,11 +239,6 @@ Entscheidungen für die noch offenen Teile:
   + Datum + Teile wählen, wie beim normalen Bestellen). Erscheint als
   eigene, nach Datum sortierte "Geplant"-Liste bei Lager/Fahrer, getrennt
   von den dringenden/laufenden Bestellungen. Noch nicht umgesetzt.
-- **Projekt-Farben**: Farb-Badge auf den Bauvorhaben-Karten, nur vom
-  Chef änderbar. Grün = "da muss was hin" (Lieferung nötig), Hellblau =
-  "da muss was geräumt/abgeholt werden" (Abbau), Schwarz = nichts zu
-  tun. Bewusst eine einfache Farbliste, keine echte Karte. Noch nicht
-  umgesetzt.
 - **Fahrer-Status**: Jeder Fahrer stellt für sich selbst ein, wo er
   gerade ist ("Am Lager – nichts zu tun" / "Unterwegs"); mehrere Fahrer
   gleichzeitig möglich, jeder mit eigenem Status (nicht ein
@@ -255,7 +250,31 @@ Entscheidungen für die noch offenen Teile:
   umgesetzt.
 
 Bereits umgesetzt aus dieser Anfrage: ausklappbare Kategorien,
-Paket-Umrechnung + druckbarer Lieferschein (siehe oben).
+Paket-Umrechnung + druckbarer Lieferschein, Projekt-Farben (siehe
+unten).
+
+### Projekt-Farben (umgesetzt)
+
+Jedes Bauvorhaben (`state.projects[].farbe`, Werte `'gruen'`,
+`'hellblau'`, `'schwarz'` oder `null`/unbenannt) hat einen Status-Punkt
+("Status-Farbe") auf seiner Karte: Grün = "da muss was hin" (Lieferung
+nötig), Hellblau = "da muss was geräumt/abgeholt werden" (Abbau),
+Schwarz = nichts zu tun, kein Punkt = noch nicht gesetzt. Bewusst eine
+einfache Farbliste (Konstante `PROJECT_COLORS`, Meta-Infos inkl.
+Übersetzungs-Schlüssel in `projektColorMeta()`), keine echte Karte.
+
+Nur der Chef kann die Farbe ändern: In der Chef-Bauvorhaben-Ansicht
+(`projekteHTML()`, ruft `projektCardHTML(p, true)` auf) erscheinen
+anklickbare Farb-Kacheln (`data-action="set-projekt-color"`); Lager und
+Fahrer sehen nur den Status-Punkt (`projektCardHTML(p, false)` blendet
+Farb-Kacheln UND den "Als fertig markieren"-Knopf aus, da auch das eine
+Chef-Entscheidung ist).
+
+Damit die Fahrer die Farben überhaupt sehen können, hat die
+Fahrer-Ansicht (`fahrerHTML()`) jetzt zwei Reiter (`state.fahrerTab`,
+analog zum bestehenden Lager-/Chef-Reiter-Muster): "Lieferungen" (bisheriger
+Inhalt, unverändert) und "Bauvorhaben" (neu, `fahrerProjekteHTML()` –
+nur aktive Bauvorhaben, rein lesend).
 
 ## Stil-Vorgaben
 
