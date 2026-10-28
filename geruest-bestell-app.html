@@ -236,6 +236,12 @@
   .proj-color-swatch.proj-color-none{background:transparent;position:relative;}
   .proj-color-swatch.proj-color-none::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:2px;background:var(--line-strong);transform:rotate(45deg);}
 
+  /* Fahrer-Status: jeder Fahrer setzt seinen eigenen Status, Chef/Lager
+     sehen die Liste aller gesetzten Status. */
+  .driver-status-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+  .driver-status-row{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;}
+  .driver-status-name{font-weight:700;font-size:13.5px;}
+
   /* Lieferschein-Druck: immer weißer Hintergrund/schwarze Schrift,
      unabhängig vom Dunkelmodus -- feste Farben statt Variablen. */
   .print-btn{background:none;border:1.5px solid var(--line-strong);color:var(--muted);border-radius:999px;padding:6px 12px;font-size:11.5px;cursor:pointer;margin-top:8px;}
@@ -377,6 +383,9 @@ de:{
   waitingNote:'{n} Bestellung(en) warten noch auf das Lager.',
   fahrerEmptyReady:'Aktuell keine Bestellungen zur Abholung bereit.',
   tabLieferungen:'Lieferungen', fahrerProjekteSub:'Status der Bauvorhaben – vom Chef gesetzt.',
+  myStatusLabel:'Mein Status', driverStatusLager:'Am Lager – nichts zu tun', driverStatusUnterwegs:'Unterwegs',
+  statusUpdatedPrefix:'Zuletzt aktualisiert:',
+  fahrerStatusHeading:'Fahrer-Status', fahrerStatusEmpty:'Noch kein Fahrer hat einen Status gesetzt.',
   chefViewTitle:'Chef', tabUebersicht:'Übersicht', tabBauvorhaben:'Bauvorhaben',
   chefOverviewSub:'Gesamtüberblick über alle Bestellungen und den Lagerbestand.',
   allOrdersHeading:'Alle Bestellungen', chefEmptyOrders:'Noch keine Bestellungen.',
@@ -465,6 +474,9 @@ pl:{
   waitingNote:'{n} zamówień czeka jeszcze na magazyn.',
   fahrerEmptyReady:'Obecnie brak zamówień gotowych do odbioru.',
   tabLieferungen:'Dostawy', fahrerProjekteSub:'Status budów – ustawiony przez szefa.',
+  myStatusLabel:'Mój status', driverStatusLager:'W magazynie – nic do roboty', driverStatusUnterwegs:'W trasie',
+  statusUpdatedPrefix:'Ostatnia aktualizacja:',
+  fahrerStatusHeading:'Status kierowców', fahrerStatusEmpty:'Żaden kierowca nie ustawił jeszcze statusu.',
   chefViewTitle:'Szef', tabUebersicht:'Przegląd', tabBauvorhaben:'Budowy',
   chefOverviewSub:'Pełny przegląd wszystkich zamówień i stanu magazynu.',
   allOrdersHeading:'Wszystkie zamówienia', chefEmptyOrders:'Brak zamówień.',
@@ -553,6 +565,9 @@ sk:{
   waitingNote:'{n} objednávok ešte čaká na sklad.',
   fahrerEmptyReady:'Momentálne žiadne objednávky pripravené na vyzdvihnutie.',
   tabLieferungen:'Dodávky', fahrerProjekteSub:'Stav stavieb – nastavený šéfom.',
+  myStatusLabel:'Môj stav', driverStatusLager:'V sklade – nič na práci', driverStatusUnterwegs:'Na ceste',
+  statusUpdatedPrefix:'Naposledy aktualizované:',
+  fahrerStatusHeading:'Stav vodičov', fahrerStatusEmpty:'Žiadny vodič ešte nenastavil stav.',
   chefViewTitle:'Šéf', tabUebersicht:'Prehľad', tabBauvorhaben:'Stavby',
   chefOverviewSub:'Celkový prehľad všetkých objednávok a stavu skladu.',
   allOrdersHeading:'Všetky objednávky', chefEmptyOrders:'Zatiaľ žiadne objednávky.',
@@ -641,6 +656,9 @@ hr:{
   waitingNote:'{n} narudžbi još čeka skladište.',
   fahrerEmptyReady:'Trenutno nema narudžbi spremnih za preuzimanje.',
   tabLieferungen:'Isporuke', fahrerProjekteSub:'Status gradilišta – postavlja šef.',
+  myStatusLabel:'Moj status', driverStatusLager:'U skladištu – nema posla', driverStatusUnterwegs:'Na putu',
+  statusUpdatedPrefix:'Zadnje ažurirano:',
+  fahrerStatusHeading:'Status vozača', fahrerStatusEmpty:'Nijedan vozač još nije postavio status.',
   chefViewTitle:'Šef', tabUebersicht:'Pregled', tabBauvorhaben:'Gradilišta',
   chefOverviewSub:'Cjelokupni pregled svih narudžbi i stanja skladišta.',
   allOrdersHeading:'Sve narudžbe', chefEmptyOrders:'Još nema narudžbi.',
@@ -729,6 +747,9 @@ en:{
   waitingNote:'{n} order(s) still waiting on the warehouse.',
   fahrerEmptyReady:'No orders currently ready for pickup.',
   tabLieferungen:'Deliveries', fahrerProjekteSub:'Project status – set by the boss.',
+  myStatusLabel:'My status', driverStatusLager:'At the warehouse – nothing to do', driverStatusUnterwegs:'On the road',
+  statusUpdatedPrefix:'Last updated:',
+  fahrerStatusHeading:'Driver status', fahrerStatusEmpty:'No driver has set a status yet.',
   chefViewTitle:'Boss', tabUebersicht:'Overview', tabBauvorhaben:'Projects',
   chefOverviewSub:'Full overview of all orders and warehouse stock.',
   allOrdersHeading:'All orders', chefEmptyOrders:'No orders yet.',
@@ -875,6 +896,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', fahrerTab:'lieferungen', selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
+  driverStatus:{},
   calEditId:null, calDraft:null, calWarn:'',
   itemPopup:null, orderReview:null,
   lang:'de', langMenuOpen:false,
@@ -915,6 +937,7 @@ async function loadShared(){
       state.projektCounter = data.value.projektCounter || 101;
       state.calendarEntries = data.value.calendarEntries || [];
       state.calCounter = data.value.calCounter || 1;
+      state.driverStatus = data.value.driverStatus || {};
     } else {
       state.inventory = {...DEFAULT_INVENTORY};
       await saveShared();
@@ -932,7 +955,8 @@ async function saveShared(){
         key: STORAGE_KEY,
         value: {orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
                 projects:state.projects, projektCounter:state.projektCounter,
-                calendarEntries:state.calendarEntries, calCounter:state.calCounter},
+                calendarEntries:state.calendarEntries, calCounter:state.calCounter,
+                driverStatus:state.driverStatus},
       });
     if(error) throw error;
   }catch(e){ console.error('Speichern fehlgeschlagen', e); }
@@ -1259,16 +1283,59 @@ function lagerHTML(){
   </div>
   ${tab==='bestellungen'
     ? `<p class="view-sub">${t('lagerBestellSub')}</p>
+       <h3 style="font-size:15px;margin:0 0 8px 0;">${t('fahrerStatusHeading')}</h3>
+       ${driverStatusListHTML()}
+       <h3 style="font-size:15px;margin:22px 0 8px 0;">${t('allOrdersHeading')}</h3>
        ${orders.length? orders.map(o=>orderCardHTML(o,'lager')).join('') : `<div class="empty-state">${t('lagerEmptyOrders')}</div>`}`
     : `<p class="view-sub">${t('lagerInventurSub')}</p>
        ${inventoryTableHTML(true)}`
   }`;
 }
 
+// Fahrer-Status: jeder Fahrer stellt für sich selbst ein, wo er gerade
+// ist (nicht ein gemeinsamer LKW-Status, da mehrere Fahrer gleichzeitig
+// unterwegs sein können). Gespeichert in state.driverStatus, keyed per
+// Mitarbeitername: {status:'lager'|'unterwegs', time:'...'}.
+const DRIVER_STATUSES = ['lager','unterwegs'];
+function driverStatusMeta(s){
+  const map = {
+    lager:{key:'driverStatusLager', cls:'st-Geliefert'},
+    unterwegs:{key:'driverStatusUnterwegs', cls:'st-Unterwegs'},
+  };
+  return map[s] || null;
+}
+function myStatusWidgetHTML(){
+  const cur = state.driverStatus[state.name];
+  return `<div class="order-card" style="margin-bottom:16px;">
+    <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;">${t('myStatusLabel')}</div>
+    <div class="seg-control">
+      ${DRIVER_STATUSES.map(s=>{
+        const m = driverStatusMeta(s);
+        return `<button class="${cur&&cur.status===s?'active':''}" data-action="set-driver-status" data-status="${s}">${t(m.key)}</button>`;
+      }).join('')}
+    </div>
+    ${cur? `<div class="order-time" style="margin-top:8px;">${t('statusUpdatedPrefix')} ${cur.time}</div>`:''}
+  </div>`;
+}
+function driverStatusListHTML(){
+  const entries = Object.entries(state.driverStatus).filter(([,v])=>v && v.status);
+  if(!entries.length) return `<div class="empty-state">${t('fahrerStatusEmpty')}</div>`;
+  return `<div class="driver-status-list">
+    ${entries.map(([name,v])=>{
+      const m = driverStatusMeta(v.status);
+      return `<div class="driver-status-row">
+        <span class="driver-status-name">${name}</span>
+        <span class="status-badge ${m?m.cls:''}">${m?t(m.key):v.status}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
 function fahrerHTML(){
   const tab = state.fahrerTab;
   return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
   <h2 class="view-title">${t('fahrerTitle')}</h2>
+  ${myStatusWidgetHTML()}
   <div class="seg-control">
     <button class="${tab==='lieferungen'?'active':''}" data-action="fahrer-tab" data-tab="lieferungen">${t('tabLieferungen')}</button>
     <button class="${tab==='bauvorhaben'?'active':''}" data-action="fahrer-tab" data-tab="bauvorhaben">${t('tabBauvorhaben')}</button>
@@ -1375,6 +1442,8 @@ function chefHTML(){
   ${tab==='bauvorhaben' ? projekteHTML() : `
   <p class="view-sub">${t('chefOverviewSub')}</p>
   <div class="stat-row">${STATUS_FLOW.map(s=>`<div class="stat-chip"><b>${counts[s]}</b><span>${statusLabel(s)}</span></div>`).join('')}</div>
+  <h3 style="margin-top:22px;font-size:15px;">${t('fahrerStatusHeading')}</h3>
+  ${driverStatusListHTML()}
   <h3 style="margin-top:22px;font-size:15px;">${t('allOrdersHeading')}</h3>
   ${orders.length? orders.map(o=>orderCardHTML(o,null)).join('') : `<div class="empty-state">${t('chefEmptyOrders')}</div>`}
   <h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
@@ -1638,6 +1707,14 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='fahrer-tab'){ state.fahrerTab = el.dataset.tab; render(); }
+  if(action==='set-driver-status'){
+    state.driverStatus[state.name] = {
+      status: el.dataset.status,
+      time: new Date().toLocaleString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+    };
+    await saveShared();
+    render();
+  }
   if(action==='pick-addr'){
     state.baustelleOrt = el.dataset.text;
     state.baustelleCoords = {lat: parseFloat(el.dataset.lat), lon: parseFloat(el.dataset.lon)};
