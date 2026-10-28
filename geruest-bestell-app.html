@@ -236,6 +236,11 @@
   .proj-color-swatch.proj-color-none{background:transparent;position:relative;}
   .proj-color-swatch.proj-color-none::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:2px;background:var(--line-strong);transform:rotate(45deg);}
 
+  /* Personal: Rollen-Chips (mehrere pro Person an-/abwählbar) */
+  .role-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .role-chip{border:1.5px solid var(--line-strong);background:transparent;color:var(--muted);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;}
+  .role-chip.active{background:var(--accent-solid);border-color:var(--accent-solid);color:#fff;}
+
   /* Fahrer-Status: jeder Fahrer setzt seinen eigenen Status, Chef/Lager
      sehen die Liste aller gesetzten Status. */
   .driver-status-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
@@ -283,17 +288,27 @@ const STORAGE_KEY = 'shopfloor-data-v2';
 // zwischen den Anführungszeichen austauschen.
 const CHEF_PASSWORD = 'chef2026';
 
-// Festangestellte Mitarbeiter: Nur wer hier steht, kann sich anmelden.
-// Die PINs sind aktuell DEAKTIVIERT (Anmeldung nur per Namenswahl) und
-// bleiben für eine spätere Aktivierung stehen. Neue Mitarbeiter: einfach
-// eine Zeile nach dem gleichen Muster ergänzen.
-const EMPLOYEES = [
-  {name:'Jason',  pin:'1111'},
-  {name:'Max',    pin:'2222'},
-  {name:'Jochen', pin:'3333'},
-  {name:'Ludwig', pin:'4444'},
-  {name:'Chefin', pin:'5555'},
+// Mitarbeiter + Rollen (wie auf einem Discord-Server): Jeder meldet sich
+// mit Name + eigenem Passwort an und landet in der Rolle / den Rollen,
+// die der Chef ihm im Reiter "Personal" zugewiesen hat. Die echte Liste
+// liegt im gemeinsamen Supabase-Datensatz (state.employees) und wird vom
+// Chef in der App gepflegt. DEFAULT_EMPLOYEES ist nur die Start-Befüllung
+// beim allerersten Laden (wenn in Supabase noch keine Liste existiert).
+// Hinweis: Passwörter liegen im Klartext im Datensatz -- gleiches
+// Schutzniveau wie CHEF_PASSWORD, kein echter Sicherheitsmechanismus.
+const ROLES = ['baustelle','lager','fahrer','chef'];
+const DEFAULT_EMPLOYEES = [
+  {id:1, name:'Jason',  pw:'1111', roles:['baustelle']},
+  {id:2, name:'Max',    pw:'2222', roles:['baustelle']},
+  {id:3, name:'Jochen', pw:'3333', roles:['lager']},
+  {id:4, name:'Ludwig', pw:'4444', roles:['fahrer']},
+  {id:5, name:'Chefin', pw:'5555', roles:['chef']},
 ];
+function findEmployee(name){ return state.employees.find(e=>e.name===name); }
+function employeeRoles(name){
+  const e = findEmployee(name);
+  return e ? ROLES.filter(r=>e.roles.includes(r)) : [];
+}
 
 // Angemeldet bleiben: Die Anmeldung wird auf dem Handy gespeichert und
 // gilt bis zum Ende des Tages – morgens einmal anmelden reicht.
@@ -305,12 +320,21 @@ function restoreSession(){
   try{
     const s = JSON.parse(localStorage.getItem(SESSION_KEY));
     if(s && s.day===new Date().toDateString() && s.name && s.role){
-      state.name = s.name; state.role = s.role; state.loggedIn = true;
+      state.name = s.name; state.authName = s.name; state.role = s.role; state.loggedIn = true;
     }
   }catch(e){}
 }
 function clearSession(){
   try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+}
+// Nach jedem Laden prüfen, ob die gespeicherte Anmeldung noch gültig ist
+// (Chef könnte den Mitarbeiter entfernt oder ihm die Rolle entzogen haben).
+function enforceSession(){
+  if(!state.loggedIn) return;
+  if(!employeeRoles(state.name).includes(state.role)){
+    state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false;
+    clearSession();
+  }
 }
 
 // ---- Sprachen --------------------------------------------------------
@@ -346,14 +370,21 @@ de:{
   offlineError:'Keine Internet-Verbindung zum Speicher.<br>Bitte Internet prüfen und Seite neu laden.',
   chefAreaTitle:'Chef-Bereich', chefAreaSub:'Bitte das Chef-Passwort eingeben',
   pwLabel:'Passwort', pwPlaceholder:'Passwort', loginBtn:'Anmelden', backBtn:'Zurück',
-  loginSub:'Anmelden und Rolle wählen', nameLabel:'Dein Name', selectPlaceholder:'Bitte wählen…',
+  loginSub:'Name wählen und Passwort eingeben', nameLabel:'Dein Name', selectPlaceholder:'Bitte wählen…',
   roleBaustelle:'Baustelle', roleBaustelleSub:'Teile bestellen',
   roleLager:'Lager', roleLagerSub:'Bestellungen & Inventur',
   roleFahrer:'Fahrer', roleFahrerSub:'Ausliefern',
   roleChef:'Chef', roleChefSub:'Alles einsehen',
   warnSelectName:'Bitte Namen auswählen.', warnWrongPw:'Falsches Passwort.',
+  loginChooseRole:'Deine Rolle wählen', warnNoRoles:'Dir ist noch keine Rolle zugewiesen – bitte beim Chef melden.',
+  tabPersonal:'Personal', persSub:'Mitarbeiter anlegen, Rollen vergeben (mehrere möglich) und Passwörter setzen – wie Rollen auf einem Discord-Server.',
+  persNameLabel:'Name', persNamePlaceholder:'z. B. Thomas', persPwLabel:'Passwort', persRolesLabel:'Rollen',
+  persAddBtn:'+ Mitarbeiter anlegen', persWarnFields:'Bitte Name und Passwort eingeben.',
+  persWarnDuplicate:'Diesen Namen gibt es schon.', persWarnLastChef:'Der letzte Chef kann nicht entfernt werden.',
+  persSetPwBtn:'Passwort setzen', persNewPwPlaceholder:'Neues Passwort', persRemoveBtn:'Mitarbeiter entfernen',
+  persEmpty:'Noch keine Mitarbeiter.', persNoRoles:'Keine Rolle',
   roleLabelBaustelle:'Baustelle', roleLabelLager:'Lager', roleLabelFahrer:'Fahrer',
-  roleLabelChef:'Chef · Übersicht', logoutLink:'Abmelden / Rolle wechseln',
+  roleLabelChef:'Chef · Übersicht', logoutLink:'Abmelden', switchRoleLink:'Rolle wechseln',
   catalogTitle:'Neue Bestellung',
   catalogSub:'Teile auswählen – geht sofort an Lager & Fahrer. Name antippen und halten zeigt Details.',
   projektLabel:'Bauvorhaben *', projektFreeOption:'Andere Adresse (selbst eingeben)',
@@ -452,14 +483,21 @@ pl:{
   offlineError:'Brak połączenia z serwerem.<br>Sprawdź internet i odśwież stronę.',
   chefAreaTitle:'Strefa szefa', chefAreaSub:'Podaj hasło szefa',
   pwLabel:'Hasło', pwPlaceholder:'Hasło', loginBtn:'Zaloguj', backBtn:'Wstecz',
-  loginSub:'Zaloguj się i wybierz rolę', nameLabel:'Twoje imię', selectPlaceholder:'Wybierz…',
+  loginSub:'Wybierz imię i podaj hasło', nameLabel:'Twoje imię', selectPlaceholder:'Wybierz…',
   roleBaustelle:'Budowa', roleBaustelleSub:'Zamawianie części',
   roleLager:'Magazyn', roleLagerSub:'Zamówienia i inwentarz',
   roleFahrer:'Kierowca', roleFahrerSub:'Dostawa',
   roleChef:'Szef', roleChefSub:'Podgląd wszystkiego',
   warnSelectName:'Wybierz imię.', warnWrongPw:'Błędne hasło.',
+  loginChooseRole:'Wybierz swoją rolę', warnNoRoles:'Nie masz jeszcze przypisanej roli – zgłoś się do szefa.',
+  tabPersonal:'Personel', persSub:'Dodawaj pracowników, przydzielaj role (możliwych kilka) i ustawiaj hasła – jak role na serwerze Discord.',
+  persNameLabel:'Imię', persNamePlaceholder:'np. Thomas', persPwLabel:'Hasło', persRolesLabel:'Role',
+  persAddBtn:'+ Dodaj pracownika', persWarnFields:'Podaj imię i hasło.',
+  persWarnDuplicate:'To imię już istnieje.', persWarnLastChef:'Ostatniego szefa nie można usunąć.',
+  persSetPwBtn:'Ustaw hasło', persNewPwPlaceholder:'Nowe hasło', persRemoveBtn:'Usuń pracownika',
+  persEmpty:'Brak pracowników.', persNoRoles:'Brak roli',
   roleLabelBaustelle:'Budowa', roleLabelLager:'Magazyn', roleLabelFahrer:'Kierowca',
-  roleLabelChef:'Szef · Przegląd', logoutLink:'Wyloguj / zmień rolę',
+  roleLabelChef:'Szef · Przegląd', logoutLink:'Wyloguj', switchRoleLink:'Zmień rolę',
   catalogTitle:'Nowe zamówienie',
   catalogSub:'Wybierz części – trafi od razu do magazynu i kierowcy. Naciśnij i przytrzymaj nazwę, aby zobaczyć szczegóły.',
   projektLabel:'Budowa (obiekt) *', projektFreeOption:'Inny adres (wpisz ręcznie)',
@@ -558,14 +596,21 @@ sk:{
   offlineError:'Žiadne pripojenie k úložisku.<br>Skontrolujte internet a znova načítajte stránku.',
   chefAreaTitle:'Sekcia šéfa', chefAreaSub:'Zadajte heslo šéfa',
   pwLabel:'Heslo', pwPlaceholder:'Heslo', loginBtn:'Prihlásiť', backBtn:'Späť',
-  loginSub:'Prihláste sa a vyberte rolu', nameLabel:'Tvoje meno', selectPlaceholder:'Vyberte…',
+  loginSub:'Vyberte meno a zadajte heslo', nameLabel:'Tvoje meno', selectPlaceholder:'Vyberte…',
   roleBaustelle:'Stavenisko', roleBaustelleSub:'Objednať diely',
   roleLager:'Sklad', roleLagerSub:'Objednávky a inventúra',
   roleFahrer:'Vodič', roleFahrerSub:'Doručovanie',
   roleChef:'Šéf', roleChefSub:'Prehľad všetkého',
   warnSelectName:'Vyberte meno.', warnWrongPw:'Nesprávne heslo.',
+  loginChooseRole:'Vyberte svoju rolu', warnNoRoles:'Zatiaľ nemáte priradenú žiadnu rolu – obráťte sa na šéfa.',
+  tabPersonal:'Personál', persSub:'Pridávajte zamestnancov, prideľujte role (aj viacero) a nastavujte heslá – ako role na Discord serveri.',
+  persNameLabel:'Meno', persNamePlaceholder:'napr. Thomas', persPwLabel:'Heslo', persRolesLabel:'Role',
+  persAddBtn:'+ Pridať zamestnanca', persWarnFields:'Zadajte meno a heslo.',
+  persWarnDuplicate:'Toto meno už existuje.', persWarnLastChef:'Posledného šéfa nie je možné odstrániť.',
+  persSetPwBtn:'Nastaviť heslo', persNewPwPlaceholder:'Nové heslo', persRemoveBtn:'Odstrániť zamestnanca',
+  persEmpty:'Zatiaľ žiadni zamestnanci.', persNoRoles:'Žiadna rola',
   roleLabelBaustelle:'Stavenisko', roleLabelLager:'Sklad', roleLabelFahrer:'Vodič',
-  roleLabelChef:'Šéf · Prehľad', logoutLink:'Odhlásiť / zmeniť rolu',
+  roleLabelChef:'Šéf · Prehľad', logoutLink:'Odhlásiť', switchRoleLink:'Zmeniť rolu',
   catalogTitle:'Nová objednávka',
   catalogSub:'Vyberte diely – ide hneď na sklad a k vodičovi. Podržaním názvu zobrazíte detaily.',
   projektLabel:'Stavba *', projektFreeOption:'Iná adresa (zadať ručne)',
@@ -664,14 +709,21 @@ hr:{
   offlineError:'Nema internetske veze s pohranom.<br>Provjerite internet i ponovno učitajte stranicu.',
   chefAreaTitle:'Područje šefa', chefAreaSub:'Unesite lozinku šefa',
   pwLabel:'Lozinka', pwPlaceholder:'Lozinka', loginBtn:'Prijava', backBtn:'Natrag',
-  loginSub:'Prijavite se i odaberite ulogu', nameLabel:'Tvoje ime', selectPlaceholder:'Odaberi…',
+  loginSub:'Odaberite ime i unesite lozinku', nameLabel:'Tvoje ime', selectPlaceholder:'Odaberi…',
   roleBaustelle:'Gradilište', roleBaustelleSub:'Naruči dijelove',
   roleLager:'Skladište', roleLagerSub:'Narudžbe i inventura',
   roleFahrer:'Vozač', roleFahrerSub:'Dostava',
   roleChef:'Šef', roleChefSub:'Pregled svega',
   warnSelectName:'Odaberite ime.', warnWrongPw:'Pogrešna lozinka.',
+  loginChooseRole:'Odaberite svoju ulogu', warnNoRoles:'Još vam nije dodijeljena uloga – javite se šefu.',
+  tabPersonal:'Osoblje', persSub:'Dodajte zaposlenike, dodijelite uloge (moguće više) i postavite lozinke – kao uloge na Discord serveru.',
+  persNameLabel:'Ime', persNamePlaceholder:'npr. Thomas', persPwLabel:'Lozinka', persRolesLabel:'Uloge',
+  persAddBtn:'+ Dodaj zaposlenika', persWarnFields:'Unesite ime i lozinku.',
+  persWarnDuplicate:'Ovo ime već postoji.', persWarnLastChef:'Posljednjeg šefa nije moguće ukloniti.',
+  persSetPwBtn:'Postavi lozinku', persNewPwPlaceholder:'Nova lozinka', persRemoveBtn:'Ukloni zaposlenika',
+  persEmpty:'Još nema zaposlenika.', persNoRoles:'Bez uloge',
   roleLabelBaustelle:'Gradilište', roleLabelLager:'Skladište', roleLabelFahrer:'Vozač',
-  roleLabelChef:'Šef · Pregled', logoutLink:'Odjava / promjena uloge',
+  roleLabelChef:'Šef · Pregled', logoutLink:'Odjava', switchRoleLink:'Promijeni ulogu',
   catalogTitle:'Nova narudžba',
   catalogSub:'Odaberite dijelove – ide odmah u skladište i vozaču. Dodirnite i držite naziv za detalje.',
   projektLabel:'Gradilište (projekt) *', projektFreeOption:'Druga adresa (unesi ručno)',
@@ -770,14 +822,21 @@ en:{
   offlineError:'No internet connection to storage.<br>Please check your connection and reload the page.',
   chefAreaTitle:'Boss area', chefAreaSub:'Please enter the boss password',
   pwLabel:'Password', pwPlaceholder:'Password', loginBtn:'Log in', backBtn:'Back',
-  loginSub:'Log in and choose a role', nameLabel:'Your name', selectPlaceholder:'Please choose…',
+  loginSub:'Choose your name and enter your password', nameLabel:'Your name', selectPlaceholder:'Please choose…',
   roleBaustelle:'Site', roleBaustelleSub:'Order parts',
   roleLager:'Warehouse', roleLagerSub:'Orders & stock',
   roleFahrer:'Driver', roleFahrerSub:'Deliver',
   roleChef:'Boss', roleChefSub:'See everything',
   warnSelectName:'Please choose a name.', warnWrongPw:'Wrong password.',
+  loginChooseRole:'Choose your role', warnNoRoles:'You have not been assigned a role yet – please ask the boss.',
+  tabPersonal:'Staff', persSub:'Add staff, assign roles (several possible) and set passwords – like roles on a Discord server.',
+  persNameLabel:'Name', persNamePlaceholder:'e.g. Thomas', persPwLabel:'Password', persRolesLabel:'Roles',
+  persAddBtn:'+ Add staff member', persWarnFields:'Please enter a name and password.',
+  persWarnDuplicate:'This name already exists.', persWarnLastChef:'The last boss cannot be removed.',
+  persSetPwBtn:'Set password', persNewPwPlaceholder:'New password', persRemoveBtn:'Remove staff member',
+  persEmpty:'No staff yet.', persNoRoles:'No role',
   roleLabelBaustelle:'Site', roleLabelLager:'Warehouse', roleLabelFahrer:'Driver',
-  roleLabelChef:'Boss · Overview', logoutLink:'Log out / switch role',
+  roleLabelChef:'Boss · Overview', logoutLink:'Log out', switchRoleLink:'Switch role',
   catalogTitle:'New order',
   catalogSub:'Choose parts – goes straight to the warehouse & driver. Press and hold a name for details.',
   projektLabel:'Project *', projektFreeOption:'Other address (enter manually)',
@@ -968,6 +1027,7 @@ const state = {
   cart:{}, orders:[], orderCounter:1001, inventory:{...DEFAULT_INVENTORY},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
+  employees:[], empCounter:1, authName:null, persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
   projects:[], projektCounter:101, chefTab:'uebersicht', fahrerTab:'lieferungen', selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
@@ -1019,14 +1079,28 @@ async function loadShared(){
       state.planCounter = data.value.planCounter || 1;
       state.lkwEntries = data.value.lkwEntries || [];
       state.lkwCounter = data.value.lkwCounter || 1;
+      if(Array.isArray(data.value.employees) && data.value.employees.length){
+        state.employees = data.value.employees;
+        state.empCounter = data.value.empCounter || (Math.max(...state.employees.map(e=>e.id))+1);
+      } else {
+        // Älterer Datensatz ohne Mitarbeiterliste: einmalig mit der
+        // Start-Befüllung anlegen, damit sich überhaupt jemand anmelden kann.
+        state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
+        state.empCounter = DEFAULT_EMPLOYEES.length+1;
+        await saveShared();
+      }
     } else {
       state.inventory = {...DEFAULT_INVENTORY};
+      state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
+      state.empCounter = DEFAULT_EMPLOYEES.length+1;
       await saveShared();
     }
   }catch(e){
     console.error('Laden fehlgeschlagen', e);
     state.inventory = {...DEFAULT_INVENTORY};
+    if(!state.employees.length) state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
   }
+  enforceSession();
 }
 async function saveShared(){
   try{
@@ -1039,7 +1113,8 @@ async function saveShared(){
                 calendarEntries:state.calendarEntries, calCounter:state.calCounter,
                 driverStatus:state.driverStatus,
                 plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
-                lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter},
+                lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
+                employees:state.employees, empCounter:state.empCounter},
       });
     if(error) throw error;
   }catch(e){ console.error('Speichern fehlgeschlagen', e); }
@@ -1101,6 +1176,24 @@ function loginHTML(){
       </div>
     </div>`;
   }
+  // Stufe 2: Name + Passwort stimmen, Person hat mehrere Rollen -> nur
+  // die EIGENEN Rollen zur Auswahl anbieten.
+  if(state.authName){
+    const roles = employeeRoles(state.authName);
+    return `${topNavHTML('dark')}<div class="login-wrap">
+      <div class="login-card">
+        <img class="login-logo" src="logo.png" alt="SGM">
+        <h1>${state.authName}</h1>
+        <div class="sub">${t('loginChooseRole')}</div>
+        <div class="role-grid">
+          ${roles.map(r=>roleButtonHTML(r,'pick-role')).join('')}
+        </div>
+        <button class="role-btn" data-action="login-back" style="justify-content:center;width:100%;margin-top:10px;">${t('backBtn')}</button>
+        ${state.loginWarn? `<div class="warn">${state.loginWarn}</div>`:''}
+      </div>
+    </div>`;
+  }
+  // Stufe 1: Name wählen + eigenes Passwort eingeben.
   return `${topNavHTML('dark')}<div class="login-wrap">
     <div class="login-card">
       <img class="login-logo" src="logo.png" alt="SGM">
@@ -1110,18 +1203,36 @@ function loginHTML(){
         <label>${t('nameLabel')}</label>
         <select id="loginName">
           <option value="" ${state.name?'':'selected'} disabled>${t('selectPlaceholder')}</option>
-          ${EMPLOYEES.map(e=>`<option value="${e.name}" ${state.name===e.name?'selected':''}>${e.name}</option>`).join('')}
+          ${state.employees.map(e=>`<option value="${e.name}" ${state.name===e.name?'selected':''}>${e.name}</option>`).join('')}
         </select>
       </div>
-      <div class="role-grid">
-        <button class="role-btn" data-action="login" data-role="baustelle">${helmetIcon()}<div>${t('roleBaustelle')}<small>${t('roleBaustelleSub')}</small></div></button>
-        <button class="role-btn" data-action="login" data-role="lager">${warehouseIcon()}<div>${t('roleLager')}<small>${t('roleLagerSub')}</small></div></button>
-        <button class="role-btn" data-action="login" data-role="fahrer">${truckIcon()}<div>${t('roleFahrer')}<small>${t('roleFahrerSub')}</small></div></button>
-        <button class="role-btn" data-action="login" data-role="chef">${chefIcon()}<div>${t('roleChef')}<small>${t('roleChefSub')}</small></div></button>
+      <div class="field">
+        <label>${t('pwLabel')}</label>
+        <input id="loginPw" type="password" placeholder="${t('pwPlaceholder')}" autocomplete="current-password">
       </div>
+      <button class="role-btn" data-action="login" style="justify-content:center;width:100%;background:var(--accent-solid);color:white;">${t('loginBtn')}</button>
       ${state.loginWarn? `<div class="warn">${state.loginWarn}</div>`:''}
     </div>
   </div>`;
+}
+
+const ROLE_META = {
+  baustelle:{icon:helmetIcon,    key:'roleBaustelle', subKey:'roleBaustelleSub'},
+  lager:    {icon:warehouseIcon, key:'roleLager',     subKey:'roleLagerSub'},
+  fahrer:   {icon:truckIcon,     key:'roleFahrer',    subKey:'roleFahrerSub'},
+  chef:     {icon:chefIcon,      key:'roleChef',      subKey:'roleChefSub'},
+};
+function roleButtonHTML(role, action){
+  const m = ROLE_META[role];
+  return `<button class="role-btn" data-action="${action}" data-role="${role}">${m.icon()}<div>${t(m.key)}<small>${t(m.subKey)}</small></div></button>`;
+}
+// In eine Rolle einsteigen; Chef verlangt ZUSÄTZLICH das Chef-Passwort.
+function enterRole(role){
+  if(!employeeRoles(state.authName).includes(role)){ state.loginWarn=t('warnNoRoles'); render(); return; }
+  if(role==='chef'){ state.askChefPw=true; state.loginWarn=''; render(); return; }
+  state.role = role; state.loggedIn = true; state.loginWarn='';
+  saveSession();
+  render();
 }
 
 function qtyControlHTML(it){
@@ -1594,6 +1705,36 @@ function planenHTML(){
   ${geplantListHTML(true)}`;
 }
 
+// Reiter "Personal" (nur Chef): Mitarbeiter anlegen/entfernen, Rollen
+// an-/abwählen (mehrere pro Person möglich), Passwort neu setzen.
+function roleChipsHTML(activeRoles, action, extraAttrs){
+  return `<div class="role-chips">${ROLES.map(r=>`<button class="role-chip ${activeRoles.includes(r)?'active':''}" data-action="${action}" data-role="${r}" ${extraAttrs||''}>${t(ROLE_META[r].key)}</button>`).join('')}</div>`;
+}
+function personalHTML(){
+  const emps = [...state.employees].sort((a,b)=>a.name.localeCompare(b.name));
+  return `<p class="view-sub">${t('persSub')}</p>
+  <div class="order-card">
+    <div class="field"><label>${t('persNameLabel')}</label><input id="persName" placeholder="${t('persNamePlaceholder')}" value="${state.persDraftName.replace(/"/g,'&quot;')}" autocomplete="off"></div>
+    <div class="field"><label>${t('persPwLabel')}</label><input id="persPw" placeholder="${t('pwPlaceholder')}" value="${state.persDraftPw.replace(/"/g,'&quot;')}" autocomplete="off"></div>
+    <div class="field"><label>${t('persRolesLabel')}</label>${roleChipsHTML(state.persDraftRoles,'pers-draft-role')}</div>
+    ${state.persWarn? `<div class="warn">${state.persWarn}</div>`:''}
+    <button class="advance-btn" data-action="emp-add">${t('persAddBtn')}</button>
+  </div>
+  ${emps.length? emps.map(e=>`<div class="order-card">
+    <div class="order-head">
+      <div><div class="no">${e.name}</div><div class="site">${e.roles.length? e.roles.map(r=>t(ROLE_META[r].key)).join(' · ') : t('persNoRoles')}</div></div>
+    </div>
+    <div class="field" style="margin-top:8px;"><label>${t('persRolesLabel')}</label>${roleChipsHTML(e.roles,'emp-toggle-role',`data-id="${e.id}"`)}</div>
+    <div class="field"><label>${t('persPwLabel')}</label>
+      <div style="display:flex;gap:8px;">
+        <input id="empPw-${e.id}" placeholder="${t('persNewPwPlaceholder')}" autocomplete="off" style="flex:1;">
+        <button class="refresh-btn" data-action="emp-set-pw" data-id="${e.id}">${t('persSetPwBtn')}</button>
+      </div>
+    </div>
+    <button class="refresh-btn" data-action="emp-remove" data-id="${e.id}" style="color:var(--red);border-color:var(--red);">${t('persRemoveBtn')}</button>
+  </div>`).join('') : `<div class="empty-state">${t('persEmpty')}</div>`}`;
+}
+
 function fahrerProjekteHTML(){
   const aktive = state.projects.filter(p=>p.aktiv);
   return `<p class="view-sub">${t('fahrerProjekteSub')}</p>
@@ -1611,8 +1752,9 @@ function chefHTML(){
     <button class="${tab==='uebersicht'?'active':''}" data-action="chef-tab" data-tab="uebersicht">${t('tabUebersicht')}</button>
     <button class="${tab==='bauvorhaben'?'active':''}" data-action="chef-tab" data-tab="bauvorhaben">${t('tabBauvorhaben')}</button>
     <button class="${tab==='planen'?'active':''}" data-action="chef-tab" data-tab="planen">${t('tabPlanen')}</button>
+    <button class="${tab==='personal'?'active':''}" data-action="chef-tab" data-tab="personal">${t('tabPersonal')}</button>
   </div>
-  ${tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : `
+  ${tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
   <p class="view-sub">${t('chefOverviewSub')}</p>
   <div class="stat-row">${STATUS_FLOW.map(s=>`<div class="stat-chip"><b>${counts[s]}</b><span>${statusLabel(s)}</span></div>`).join('')}</div>
   <h3 style="margin-top:22px;font-size:15px;">${t('fahrerStatusHeading')}</h3>
@@ -1653,7 +1795,7 @@ function calendarPageHTML(){
         <div class="field"><label>${t('calPersonLabel')}</label>
           <select id="calPerson">
             <option value="" ${d.person?'':'selected'} disabled>${t('selectPlaceholder')}</option>
-            ${EMPLOYEES.map(e=>`<option value="${e.name}" ${d.person===e.name?'selected':''}>${e.name}</option>`).join('')}
+            ${state.employees.map(e=>`<option value="${e.name}" ${d.person===e.name?'selected':''}>${e.name}</option>`).join('')}
           </select>
         </div>
         <div class="field"><label>${t('calOrtLabel')}</label><input id="calOrt" placeholder="${t('calOrtPlaceholder')}" value="${d.ort? d.ort.replace(/"/g,'&quot;'):''}"></div>
@@ -1773,7 +1915,7 @@ function render(){
         <div><h1>${t('appName')}</h1><span>${roleLabel(state.role)}</span></div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;">
-        <div class="who"><b>${state.name}</b><br><a data-action="logout">${t('logoutLink')}</a></div>
+        <div class="who"><b>${state.name}</b><br>${employeeRoles(state.name).length>1? `<a data-action="switch-role">${t('switchRoleLink')}</a> · `:''}<a data-action="logout">${t('logoutLink')}</a></div>
         ${langMenuBtnHTML('var(--surface-2)')}
         <div class="menu-wrap">
           <button class="menu-btn" data-action="menu-toggle" aria-label="${t('menuAria')}" style="background:var(--surface-2);color:var(--ink);">☰</button>
@@ -1848,18 +1990,22 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   }
   const action = el.dataset.action;
 
+  // Anmeldung Stufe 1: Name + eigenes Passwort prüfen, dann je nach
+  // Anzahl der zugewiesenen Rollen direkt rein oder Rolle wählen lassen.
   if(action==='login'){
     const nameSel = document.getElementById('loginName');
+    const pwInput = document.getElementById('loginPw');
     const name = nameSel? nameSel.value : '';
-    const emp = EMPLOYEES.find(e=>e.name===name);
+    const emp = findEmployee(name);
     if(!emp){ state.loginWarn=t('warnSelectName'); render(); return; }
-    state.name = name;
-    state.loginWarn='';
-    if(el.dataset.role==='chef'){ state.askChefPw = true; render(); return; }
-    state.role = el.dataset.role; state.loggedIn = true;
-    saveSession();
-    render();
+    if(!pwInput || pwInput.value!==emp.pw){ state.name = name; state.loginWarn=t('warnWrongPw'); render(); return; }
+    const roles = employeeRoles(name);
+    if(!roles.length){ state.name = name; state.loginWarn=t('warnNoRoles'); render(); return; }
+    state.name = name; state.authName = name; state.loginWarn='';
+    if(roles.length===1) enterRole(roles[0]); else render();
   }
+  if(action==='pick-role'){ enterRole(el.dataset.role); }
+  if(action==='login-back'){ state.authName=null; state.loginWarn=''; render(); }
   if(action==='chef-pw-ok'){
     const pw = document.getElementById('chefPwInput');
     if(pw && pw.value===CHEF_PASSWORD){
@@ -1870,8 +2016,63 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     }
     render();
   }
-  if(action==='chef-pw-back'){ state.askChefPw=false; state.loginWarn=''; render(); }
-  if(action==='logout'){ state.loggedIn=false; state.role=null; state.askChefPw=false; clearSession(); render(); }
+  if(action==='chef-pw-back'){
+    state.askChefPw=false; state.loginWarn='';
+    // Nur eine Rolle (Chef) -> zurück zur Passwort-Eingabe, sonst zur Rollenwahl
+    if(employeeRoles(state.authName).length<=1) state.authName=null;
+    render();
+  }
+  if(action==='switch-role'){ state.loggedIn=false; state.role=null; state.askChefPw=false; state.loginWarn=''; clearSession(); render(); }
+  if(action==='logout'){ state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false; clearSession(); render(); }
+
+  // Personal (nur Chef): Mitarbeiter anlegen/entfernen, Rollen, Passwörter
+  if(action==='pers-draft-role'){
+    const r = el.dataset.role;
+    state.persDraftRoles = state.persDraftRoles.includes(r) ? state.persDraftRoles.filter(x=>x!==r) : [...state.persDraftRoles, r];
+    render();
+  }
+  if(action==='emp-add'){
+    const n = document.getElementById('persName'), p = document.getElementById('persPw');
+    const name = (n? n.value : '').trim(), pw = (p? p.value : '').trim();
+    if(!name || !pw){ state.persWarn=t('persWarnFields'); render(); return; }
+    if(findEmployee(name)){ state.persWarn=t('persWarnDuplicate'); render(); return; }
+    state.employees.push({id: state.empCounter++, name, pw, roles:[...state.persDraftRoles]});
+    state.persDraftRoles=[]; state.persDraftName=''; state.persDraftPw=''; state.persWarn='';
+    await saveShared();
+    render();
+  }
+  if(action==='emp-toggle-role'){
+    const emp = state.employees.find(e=>String(e.id)===el.dataset.id);
+    const r = el.dataset.role;
+    if(!emp) return;
+    if(emp.roles.includes(r)){
+      if(r==='chef' && state.employees.filter(e=>e.roles.includes('chef')).length<=1){ state.persWarn=t('persWarnLastChef'); render(); return; }
+      emp.roles = emp.roles.filter(x=>x!==r);
+    } else {
+      emp.roles = [...emp.roles, r];
+    }
+    state.persWarn='';
+    await saveShared();
+    render();
+  }
+  if(action==='emp-set-pw'){
+    const emp = state.employees.find(e=>String(e.id)===el.dataset.id);
+    const inp = document.getElementById('empPw-'+el.dataset.id);
+    const pw = (inp? inp.value : '').trim();
+    if(!emp || !pw){ state.persWarn=t('persWarnFields'); render(); return; }
+    emp.pw = pw; state.persWarn='';
+    await saveShared();
+    render();
+  }
+  if(action==='emp-remove'){
+    const emp = state.employees.find(e=>String(e.id)===el.dataset.id);
+    if(!emp) return;
+    if(emp.roles.includes('chef') && state.employees.filter(e=>e.roles.includes('chef')).length<=1){ state.persWarn=t('persWarnLastChef'); render(); return; }
+    state.employees = state.employees.filter(e=>e.id!==emp.id);
+    state.persWarn='';
+    await saveShared();
+    render();
+  }
   if(action==='qty'){
     const id = el.dataset.id, delta = parseInt(el.dataset.delta,10);
     const cur = state.cart[id]||0;
@@ -2126,6 +2327,8 @@ document.getElementById('app').addEventListener('input', (e)=>{
     state.selProjekt = e.target.value;
     render();
   }
+  if(e.target.id==='persName'){ state.persDraftName = e.target.value; }
+  if(e.target.id==='persPw'){ state.persDraftPw = e.target.value; }
   if(e.target.id==='planProjektSelect'){ state.planDraft.projekt = e.target.value; }
   if(e.target.id==='planDateInput'){ state.planDraft.date = e.target.value; }
   if(e.target.id==='catalogSearch'){
@@ -2162,7 +2365,7 @@ document.getElementById('app').addEventListener('contextmenu', (e)=>{
 });
 
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar') || state.confirmOrder || state.orderReview || state.itemPopup) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;

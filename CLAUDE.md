@@ -11,21 +11,44 @@ Die komplette App ist EINE Datei: `geruest-bestell-app.html`
 
 ## Anmeldung
 
-Nur festangestellte Mitarbeiter können sich anmelden: Name aus einer
-festen Liste wählen, dann Rolle wählen. Die Liste steht in der Konstante
-`EMPLOYEES` am Anfang des `<script>`-Blocks (Name + PIN pro Person, neue
-Mitarbeiter = neue Zeile). Die PIN-Prüfung ist auf Kundenwunsch aktuell
-DEAKTIVIERT (nur der Chef braucht sein Passwort); die PINs bleiben im
-Code für eine spätere Aktivierung stehen.
+Anmeldung mit **Name + eigenem Passwort**, Rollen werden vom Chef
+vergeben – "wie auf einem Discord-Server" (Nutzerwunsch). Ablauf
+(`loginHTML()`, Aktionen `login` / `pick-role` / `chef-pw-ok`):
+
+1. Name aus Liste wählen + Passwort eingeben.
+2. Hat die Person genau EINE Rolle, landet sie direkt darin. Hat sie
+   mehrere, bekommt sie nur IHRE Rollen zur Auswahl (`state.authName`
+   = Person ist authentifiziert, aber noch keine Rolle gewählt). Ohne
+   zugewiesene Rolle: Hinweis "bitte beim Chef melden".
+3. Rolle **Chef** verlangt ZUSÄTZLICH das Chef-Passwort (`CHEF_PASSWORD`,
+   ausdrücklicher Wunsch: doppelte Sicherung). Wer mehrere Rollen hat,
+   sieht im Header "Rolle wechseln" (`switch-role`, ohne erneutes
+   Passwort; Chef fragt trotzdem wieder das Chef-Passwort ab).
+
+Die Mitarbeiterliste liegt NICHT mehr im Code, sondern im gemeinsamen
+Supabase-Datensatz (`state.employees`, Einträge `{id, name, pw, roles[]}`,
+Zähler `state.empCounter`) und wird vom Chef im Reiter **"Personal"**
+gepflegt (`personalHTML()`: Mitarbeiter anlegen/entfernen, Rollen per
+Chip an-/abwählen – mehrere pro Person möglich –, Passwort neu setzen).
+Schutz: der letzte Chef kann weder entfernt noch seine Chef-Rolle
+abgewählt werden (`persWarnLastChef`). `DEFAULT_EMPLOYEES` ist nur die
+Start-Befüllung beim allerersten Laden (alte PINs als Start-Passwörter);
+`ROLES`/`ROLE_META` definieren die vier Rollen. Hinweis: Passwörter liegen
+im Klartext im Datensatz – gleiches Schutzniveau wie `CHEF_PASSWORD`,
+kein echter Sicherheitsmechanismus (Repo + Anon-Key sind öffentlich).
+
 Die Anmeldung wird per `localStorage` auf dem Gerät gespeichert und gilt
 bis zum Ende des Kalendertages – morgens einmal anmelden reicht
 (`saveSession`/`restoreSession`/`clearSession`). „Abmelden" löscht sie.
+`enforceSession()` (nach jedem `loadShared()`) wirft automatisch raus,
+wenn der Chef die Person oder ihre aktuelle Rolle inzwischen entfernt hat.
 
 ## Menü / Kalender (ohne Anmeldung erreichbar)
 
 Oben links sitzt das SGM-Logo, oben rechts ein Menü-Knopf (☰) – beides ist
 auch VOR der Anmeldung sichtbar (Funktion `topNavHTML()`). Im Menü gibt es
-aktuell nur den Punkt „Kalender" (`state.view = 'calendar'`). Der Kalender
+die Punkte „Kalender" (`state.view = 'calendar'`) und „LKW-Kalender"
+(`state.view = 'lkwkalender'`, siehe eigenen Abschnitt unten). Der Kalender
 zeigt, wer wann wo im Einsatz sein soll, und ist bewusst frei einsehbar
 (kein Login nötig). Einträge bearbeiten/anlegen/löschen kann nur, wer das
 Chef-Passwort eingibt (gleiche Konstante `CHEF_PASSWORD`, eigene Freischalt-
@@ -152,24 +175,30 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    Tippen (Nominatim-Suche, bevorzugt Umgebung des letzten GPS-Punkts)
    und einen Knopf „Meinen Standort als Adresse übernehmen" (GPS +
    Adress-Auflösung); Koordinaten werden mit der Bestellung gespeichert.
-2. **Lager** (z. B. Jochen): Zwei Reiter:
-   - "Bestellungen": eingehende Bestellungen, Buttons "Bearbeitung starten"
-     und "Bereit melden"
+2. **Lager** (z. B. Jochen): Drei Reiter:
+   - "Bestellungen": Fahrer-Status-Liste, dann eingehende Bestellungen
+     mit Buttons "Bearbeitung starten" und "Bereit melden"
+   - "Geplant": vom Chef geplante Lieferungen (nur lesen)
    - "Inventur": Bestand pro Teil mit +/− und "+10". Bei "Bereit melden"
      wird der Bestand automatisch abgezogen. Negativer Bestand wird rot
      als "Fehlt: X Stk" angezeigt.
-3. **Fahrer** (z. B. Ludwig): Sieht was wohin muss und wann bestellt wurde.
-   Kann erst handeln, wenn das Lager freigegeben hat.
+3. **Fahrer** (z. B. Ludwig): Oben "Mein Status" (Am Lager / Unterwegs),
+   darunter drei Reiter "Lieferungen" / "Geplant" / "Bauvorhaben".
+   Sieht was wohin muss und wann bestellt wurde. Kann erst handeln, wenn
+   das Lager freigegeben hat.
    Buttons: "Verladen" → "Losfahren" → "Lieferung bestätigen".
    Jede Bestellkarte (bei allen Rollen) hat einen Link „In Google Maps
    öffnen": mit GPS-Koordinaten, falls vorhanden, sonst per Adress-Suche.
-4. **Chef**: Zwei Reiter. „Übersicht": Statistik-Chips pro Status, alle
-   Bestellungen, kompletter Lagerbestand (nur lesen). „Bauvorhaben":
-   Bauvorhaben anlegen (Name + Adresse, automatische Nummer „BV 101"
-   aufwärts) und wie ein Ordner pro Bauvorhaben sehen, welche Teile
-   schon geliefert „vor Ort" sind, was bestellt/unterwegs ist und welche
-   Bestellungen dazugehören; Bauvorhaben können als fertig markiert und
-   reaktiviert werden. Die Rolle ist mit einem Passwort geschützt
+4. **Chef**: Vier Reiter. „Übersicht": Statistik-Chips pro Status,
+   Fahrer-Status-Liste, alle Bestellungen, kompletter Lagerbestand (nur
+   lesen). „Bauvorhaben": Bauvorhaben anlegen (Name + Adresse,
+   automatische Nummer „BV 101" aufwärts), Status-Farbe setzen und wie ein
+   Ordner pro Bauvorhaben sehen, welche Teile schon geliefert „vor Ort"
+   sind, was bestellt/unterwegs ist und welche Bestellungen dazugehören;
+   Bauvorhaben können als fertig markiert und reaktiviert werden.
+   „Planen": Lieferungen im Voraus planen. „Personal": Mitarbeiter,
+   Rollen und Passwörter verwalten (siehe „Anmeldung"). Die Rolle ist
+   zusätzlich zum eigenen Passwort mit dem Chef-Passwort geschützt
    (Konstante `CHEF_PASSWORD` am Anfang des `<script>`-Blocks). Hinweis:
    Prüfung läuft im Browser und das Repo ist öffentlich – einfacher
    Schutz, keine echte Sicherheitsmaßnahme.
@@ -200,7 +229,9 @@ Neu → In Bearbeitung → Bereit zur Abholung → Beladen → Unterwegs → Gel
 Die App nutzt Supabase als geteilten Online-Speicher (kostenlose Stufe).
 Alle Bestellungen und der Lagerbestand landen in einer Tabelle `app_state`
 (eine Zeile mit `key = 'shopfloor-data-v2'` und einer `jsonb`-Spalte `value`,
-die `{orders, counter, inventory, projects, projektCounter}` enthält). Dadurch sehen alle Rollen
+die `{orders, counter, inventory, projects, projektCounter, calendarEntries,
+calCounter, driverStatus, plannedDeliveries, planCounter, lkwEntries,
+lkwCounter, employees, empCounter}` enthält). Dadurch sehen alle Rollen
 (egal auf welchem Handy, auch über GitHub Pages) dieselben Daten.
 
 Die einzigen zwei Funktionen, die den Speicher anfassen, sind `loadShared()`
@@ -215,8 +246,6 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
 
 ## Geplante nächste Schritte
 
-- PIN-Prüfung beim Anmelden wieder aktivieren (Code ist vorhanden,
-  aktuell bewusst deaktiviert)
 - Baupläne pro Bauvorhaben hochladen (braucht Supabase Storage /
   Datei-Bucket – ausdrücklicher Wunsch des Nutzers für später)
 - Kalender-Bearbeitung: aktuell nur über das (gemeinsame) Chef-Passwort
