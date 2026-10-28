@@ -235,10 +235,6 @@ Nutzer hat mehrere größere Funktionen auf einmal angefragt; wird
 Stück für Stück umgesetzt (jedes Stück eigener Commit/PR). Geklärte
 Entscheidungen für die noch offenen Teile:
 
-- **Geplante Lieferungen**: Neue Planungs-Funktion beim Chef (Bauvorhaben
-  + Datum + Teile wählen, wie beim normalen Bestellen). Erscheint als
-  eigene, nach Datum sortierte "Geplant"-Liste bei Lager/Fahrer, getrennt
-  von den dringenden/laufenden Bestellungen. Noch nicht umgesetzt.
 - **LKW-Logistik-Kalender**: Neuer, eigener Kalender nur für
   Lieferungen/Abholungen mit Datum UND Uhrzeit, verknüpft mit einem
   Bauvorhaben ("wann kann was geräumt werden") – getrennt vom
@@ -247,7 +243,7 @@ Entscheidungen für die noch offenen Teile:
 
 Bereits umgesetzt aus dieser Anfrage: ausklappbare Kategorien,
 Paket-Umrechnung + druckbarer Lieferschein, Projekt-Farben,
-Fahrer-Status (siehe unten).
+Fahrer-Status, Geplante Lieferungen (siehe unten).
 
 ### Projekt-Farben (umgesetzt)
 
@@ -289,6 +285,29 @@ Zeitpunkt der letzten Änderung. Chef (Reiter "Übersicht") und Lager
 (Reiter "Bestellungen") sehen eine Liste aller gesetzten Fahrer-Status
 (`driverStatusListHTML()`), damit erkennbar ist, welcher Fahrer gerade
 verfügbar ist.
+
+### Geplante Lieferungen (umgesetzt)
+
+Der Chef kann Lieferungen im Voraus planen, getrennt von den
+dringenden/laufenden Bestellungen: eigener 3. Reiter "Planen" beim Chef
+(`chefHTML()`, Funktion `planenHTML()`) – Bauvorhaben wählen (nur
+aktive), Lieferdatum wählen, danach Teile auswählen über dieselbe
+Katalog-Tabelle wie beim normalen Bestellen (wiederverwendet
+`catSectionHTML()`/`catalogRowHTML()`/`qtyControlHTML()` und damit auch
+Suche + Häufigkeits-Sortierung + Systeme-Reiter, falls vorhanden; läuft
+über den gemeinsamen `state.cart`, da Chef und Baustelle nie gleich-
+zeitig eingeloggt sind). "Lieferung einplanen" legt einen Eintrag in
+`state.plannedDeliveries` an (`{id, projekt, date, items, person}`,
+eigener Zähler `state.planCounter`, im selben Supabase-Datensatz wie
+alles andere) und leert Formular + Warenkorb wieder.
+
+Lager (eigener 3. Reiter "Geplant") und Fahrer (eigener 3. Reiter
+"Geplant", neben "Lieferungen" und "Bauvorhaben") sehen dieselbe Liste
+rein lesend (`geplantListHTML(false)`), nach Datum sortiert
+(`geplantListHTML()`/`plannedDeliveryCardHTML()`). Nur der Chef sieht
+zusätzlich einen "Löschen"-Knopf pro Eintrag
+(`geplantListHTML(true)`, `data-action="delete-planned"`) direkt unter
+dem Planungs-Formular.
 
 ## Stil-Vorgaben
 
