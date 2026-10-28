@@ -311,15 +311,17 @@ function employeeRoles(name){
 }
 
 // Angemeldet bleiben: Die Anmeldung wird auf dem Handy gespeichert und
-// gilt bis zum Ende des Tages – morgens einmal anmelden reicht.
+// gilt, bis man sich ausdrücklich abmeldet (kein Ablauf am Tagesende --
+// Nutzerwunsch). Rausgeworfen wird man nur noch, wenn der Chef die
+// Person oder ihre Rolle entfernt (enforceSession).
 const SESSION_KEY = 'geruest-session';
 function saveSession(){
-  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({name:state.name, role:state.role, day:new Date().toDateString()})); }catch(e){}
+  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({name:state.name, role:state.role})); }catch(e){}
 }
 function restoreSession(){
   try{
     const s = JSON.parse(localStorage.getItem(SESSION_KEY));
-    if(s && s.day===new Date().toDateString() && s.name && s.role){
+    if(s && s.name && s.role){
       state.name = s.name; state.authName = s.name; state.role = s.role; state.loggedIn = true;
     }
   }catch(e){}
