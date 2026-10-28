@@ -340,7 +340,7 @@ const WEEKDAYS = {
 
 const T = {
 de:{
-  appName:'Gerüst-Bestellung', menuAria:'Menü', menuCalendar:'📅 Kalender',
+  appName:'Gerüst-Bestellung', menuAria:'Menü', menuCalendar:'📅 Kalender', menuLkwCalendar:'🚚 LKW-Kalender',
   menuBackToApp:'🔑 Zur Anmeldung / Bestellung', menuLangLabel:'Sprache',
   loadingText:'Lade Daten…',
   offlineError:'Keine Internet-Verbindung zum Speicher.<br>Bitte Internet prüfen und Seite neu laden.',
@@ -421,6 +421,12 @@ de:{
   calEditBtn:'Bearbeiten', calDeleteBtn:'Löschen',
   calWarnFields:'Bitte Datum, Mitarbeiter und Ort ausfüllen.',
   calEmpty:'Noch keine Termine eingetragen.',
+  lkwCalTitle:'LKW-Kalender',
+  lkwCalSub:'Wann kann bei welchem Bauvorhaben etwas geräumt oder geliefert werden. Zum Bestellen bitte oben im Menü anmelden.',
+  lkwTimeLabel:'Uhrzeit', lkwNotizPlaceholder:'z. B. Gerüst abbauen',
+  lkwNoProjects:'Erst ein Bauvorhaben anlegen, um einen Termin einzutragen.',
+  lkwWarnFields:'Bitte Datum, Uhrzeit und Bauvorhaben wählen.',
+  lkwCalEmpty:'Noch keine Termine eingetragen.',
   locNoSupport:'Standort wird von diesem Browser nicht unterstützt.',
   locFetching:'Standort wird ermittelt…',
   locFailed:'Standort nicht verfügbar. Bitte die Standort-Freigabe im Browser erlauben oder die Adresse eintippen.',
@@ -440,7 +446,7 @@ de:{
   printBtn:'🖨️ Lieferschein drucken', pkgOne:'Paket', pkgMany:'Pakete', pkgAnd:'und',
 },
 pl:{
-  appName:'Zamówienie rusztowania', menuAria:'Menu', menuCalendar:'📅 Kalendarz',
+  appName:'Zamówienie rusztowania', menuAria:'Menu', menuCalendar:'📅 Kalendarz', menuLkwCalendar:'🚚 Kalendarz ciężarówek',
   menuBackToApp:'🔑 Do logowania / zamówień', menuLangLabel:'Język',
   loadingText:'Ładowanie danych…',
   offlineError:'Brak połączenia z serwerem.<br>Sprawdź internet i odśwież stronę.',
@@ -521,6 +527,12 @@ pl:{
   calEditBtn:'Edytuj', calDeleteBtn:'Usuń',
   calWarnFields:'Podaj datę, pracownika i miejsce.',
   calEmpty:'Brak wpisanych terminów.',
+  lkwCalTitle:'Kalendarz ciężarówek',
+  lkwCalSub:'Kiedy i przy której budowie można coś odebrać lub dostarczyć. Aby zamawiać, zaloguj się w menu powyżej.',
+  lkwTimeLabel:'Godzina', lkwNotizPlaceholder:'np. demontaż rusztowania',
+  lkwNoProjects:'Najpierw utwórz budowę, aby dodać termin.',
+  lkwWarnFields:'Proszę wybrać datę, godzinę i budowę.',
+  lkwCalEmpty:'Brak wpisanych terminów.',
   locNoSupport:'Ta przeglądarka nie obsługuje lokalizacji.',
   locFetching:'Ustalanie lokalizacji…',
   locFailed:'Lokalizacja niedostępna. Zezwól na dostęp do lokalizacji lub wpisz adres ręcznie.',
@@ -540,7 +552,7 @@ pl:{
   printBtn:'🖨️ Drukuj dowód dostawy', pkgOne:'paczka', pkgMany:'paczki', pkgAnd:'i',
 },
 sk:{
-  appName:'Objednávka lešenia', menuAria:'Menu', menuCalendar:'📅 Kalendár',
+  appName:'Objednávka lešenia', menuAria:'Menu', menuCalendar:'📅 Kalendár', menuLkwCalendar:'🚚 Kalendár nákladných áut',
   menuBackToApp:'🔑 Na prihlásenie / objednávku', menuLangLabel:'Jazyk',
   loadingText:'Načítavam dáta…',
   offlineError:'Žiadne pripojenie k úložisku.<br>Skontrolujte internet a znova načítajte stránku.',
@@ -621,6 +633,12 @@ sk:{
   calEditBtn:'Upraviť', calDeleteBtn:'Zmazať',
   calWarnFields:'Zadajte dátum, zamestnanca a miesto.',
   calEmpty:'Zatiaľ žiadne zadané termíny.',
+  lkwCalTitle:'Kalendár nákladných áut',
+  lkwCalSub:'Kedy a pri ktorej stavbe sa dá niečo vyzdvihnúť alebo dodať. Pre objednávanie sa prosím prihláste hore v menu.',
+  lkwTimeLabel:'Čas', lkwNotizPlaceholder:'napr. demontáž lešenia',
+  lkwNoProjects:'Najprv vytvorte stavbu, aby ste mohli pridať termín.',
+  lkwWarnFields:'Prosím vyberte dátum, čas a stavbu.',
+  lkwCalEmpty:'Zatiaľ žiadne zadané termíny.',
   locNoSupport:'Tento prehliadač nepodporuje polohu.',
   locFetching:'Zisťujem polohu…',
   locFailed:'Poloha nedostupná. Povoľte prosím prístup k polohe v prehliadači alebo zadajte adresu ručne.',
@@ -640,7 +658,7 @@ sk:{
   printBtn:'🖨️ Vytlačiť dodací list', pkgOne:'balík', pkgMany:'balíky', pkgAnd:'a',
 },
 hr:{
-  appName:'Narudžba skele', menuAria:'Izbornik', menuCalendar:'📅 Kalendar',
+  appName:'Narudžba skele', menuAria:'Izbornik', menuCalendar:'📅 Kalendar', menuLkwCalendar:'🚚 Kalendar kamiona',
   menuBackToApp:'🔑 Na prijavu / narudžbu', menuLangLabel:'Jezik',
   loadingText:'Učitavanje podataka…',
   offlineError:'Nema internetske veze s pohranom.<br>Provjerite internet i ponovno učitajte stranicu.',
@@ -721,6 +739,12 @@ hr:{
   calEditBtn:'Uredi', calDeleteBtn:'Izbriši',
   calWarnFields:'Unesite datum, zaposlenika i mjesto.',
   calEmpty:'Još nema unesenih termina.',
+  lkwCalTitle:'Kalendar kamiona',
+  lkwCalSub:'Kada se na kojem gradilištu nešto može preuzeti ili dostaviti. Za naručivanje se prijavite gore u izborniku.',
+  lkwTimeLabel:'Vrijeme', lkwNotizPlaceholder:'npr. demontaža skele',
+  lkwNoProjects:'Prvo kreirajte gradilište kako biste dodali termin.',
+  lkwWarnFields:'Molimo odaberite datum, vrijeme i gradilište.',
+  lkwCalEmpty:'Još nema unesenih termina.',
   locNoSupport:'Ovaj preglednik ne podržava lokaciju.',
   locFetching:'Utvrđivanje lokacije…',
   locFailed:'Lokacija nije dostupna. Dopustite pristup lokaciji u pregledniku ili unesite adresu ručno.',
@@ -740,7 +764,7 @@ hr:{
   printBtn:'🖨️ Ispiši otpremnicu', pkgOne:'paket', pkgMany:'paketa', pkgAnd:'i',
 },
 en:{
-  appName:'Scaffold Order', menuAria:'Menu', menuCalendar:'📅 Calendar',
+  appName:'Scaffold Order', menuAria:'Menu', menuCalendar:'📅 Calendar', menuLkwCalendar:'🚚 Truck calendar',
   menuBackToApp:'🔑 To login / order', menuLangLabel:'Language',
   loadingText:'Loading data…',
   offlineError:'No internet connection to storage.<br>Please check your connection and reload the page.',
@@ -821,6 +845,12 @@ en:{
   calEditBtn:'Edit', calDeleteBtn:'Delete',
   calWarnFields:'Please fill in date, employee and location.',
   calEmpty:'No entries yet.',
+  lkwCalTitle:'Truck calendar',
+  lkwCalSub:'When something can be picked up or delivered at which project. Please log in via the menu above to order.',
+  lkwTimeLabel:'Time', lkwNotizPlaceholder:'e.g. dismantle scaffold',
+  lkwNoProjects:'Create a project first to add an entry.',
+  lkwWarnFields:'Please choose a date, time and project.',
+  lkwCalEmpty:'No entries yet.',
   locNoSupport:'Location is not supported by this browser.',
   locFetching:'Getting location…',
   locFailed:'Location unavailable. Please allow location access in your browser or type the address.',
@@ -944,6 +974,7 @@ const state = {
   driverStatus:{},
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
+  lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
   itemPopup:null, orderReview:null,
   lang:'de', langMenuOpen:false,
   catalogSearch:'', systemSel: SYSTEMS[0].id, collapsedCats:{},
@@ -986,6 +1017,8 @@ async function loadShared(){
       state.driverStatus = data.value.driverStatus || {};
       state.plannedDeliveries = data.value.plannedDeliveries || [];
       state.planCounter = data.value.planCounter || 1;
+      state.lkwEntries = data.value.lkwEntries || [];
+      state.lkwCounter = data.value.lkwCounter || 1;
     } else {
       state.inventory = {...DEFAULT_INVENTORY};
       await saveShared();
@@ -1005,7 +1038,8 @@ async function saveShared(){
                 projects:state.projects, projektCounter:state.projektCounter,
                 calendarEntries:state.calendarEntries, calCounter:state.calCounter,
                 driverStatus:state.driverStatus,
-                plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter},
+                plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
+                lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter},
       });
     if(error) throw error;
   }catch(e){ console.error('Speichern fehlgeschlagen', e); }
@@ -1018,11 +1052,11 @@ function chefIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="current
 
 function menuDropdownHTML(){
   if(!state.menuOpen) return '';
-  return `<div class="menu-dropdown">
-    ${state.view==='calendar'
-      ? `<button data-action="go-app">${t('menuBackToApp')}</button>`
-      : `<button data-action="go-calendar">${t('menuCalendar')}</button>`}
-  </div>`;
+  const items = [];
+  if(state.view!=='app') items.push(`<button data-action="go-app">${t('menuBackToApp')}</button>`);
+  if(state.view!=='calendar') items.push(`<button data-action="go-calendar">${t('menuCalendar')}</button>`);
+  if(state.view!=='lkwkalender') items.push(`<button data-action="go-lkwkalender">${t('menuLkwCalendar')}</button>`);
+  return `<div class="menu-dropdown">${items.join('')}</div>`;
 }
 function langDropdownHTML(){
   if(!state.langMenuOpen) return '';
@@ -1650,9 +1684,80 @@ function calendarPageHTML(){
   </div>`;
 }
 
+// LKW-Logistik-Kalender: eigener, von der Startseite/dem Menü aus frei
+// einsehbarer Kalender nur für Lieferungen/Abholungen mit Datum UND
+// Uhrzeit, verknüpft mit einem Bauvorhaben ("wann kann was geräumt
+// werden") -- getrennt vom bestehenden Mitarbeiter-Kalender, der
+// unverändert bleibt. Teilt sich die Bearbeiten-Freischaltung
+// (Chef-Passwort, state.calUnlocked/calAskPw) mit dem Mitarbeiter-
+// Kalender, damit man beim Wechseln nicht zweimal das Passwort
+// eingeben muss -- die Einträge selbst (state.lkwEntries) sind ein
+// komplett eigener Datensatz.
+function lkwKalenderPageHTML(){
+  const entries = [...state.lkwEntries].sort((a,b)=> a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+  const grouped = {};
+  entries.forEach(e=>{ (grouped[e.date] = grouped[e.date]||[]).push(e); });
+  const dates = Object.keys(grouped).sort();
+  const d = state.lkwDraft || {};
+  const projekte = state.projects;
+
+  return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
+    <main style="padding:0;max-width:720px;margin:0 auto;">
+      <h2 class="view-title">${t('lkwCalTitle')}</h2>
+      <p class="view-sub">${t('lkwCalSub')}</p>
+
+      ${state.calAskPw? `<div class="order-card">
+        <div class="field"><label>${t('calPwLabel')}</label><input id="calPwInput" type="password" placeholder="${t('pwPlaceholder')}"></div>
+        <div id="calPwWarn"></div>
+        <button class="advance-btn" data-action="cal-unlock-ok">${t('calUnlockBtn')}</button>
+        <button class="refresh-btn" data-action="cal-unlock-cancel" style="margin-top:8px;">${t('calCancelBtn')}</button>
+      </div>` : ''}
+
+      ${state.calUnlocked? `<div class="order-card">
+        ${projekte.length? `
+        <div class="field"><label>${t('calDateLabel')}</label><input type="date" id="lkwDate" value="${d.date||''}"></div>
+        <div class="field"><label>${t('lkwTimeLabel')}</label><input type="time" id="lkwTime" value="${d.time||''}"></div>
+        <div class="field"><label>${t('projektLabel')}</label>
+          <select id="lkwProjekt">
+            <option value="" ${d.projekt?'':'selected'} disabled>${t('selectPlaceholder')}</option>
+            ${projekte.map(p=>`<option value="${p.id}" ${String(d.projekt)===String(p.id)?'selected':''}>BV ${p.id} – ${p.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>${t('calNotizLabel')}</label><input id="lkwNotiz" placeholder="${t('lkwNotizPlaceholder')}" value="${d.notiz? d.notiz.replace(/"/g,'&quot;'):''}"></div>
+        ${state.lkwWarn? `<div class="warn">${state.lkwWarn}</div>`:''}
+        <button class="advance-btn" data-action="lkw-save">${state.lkwEditId? t('calSaveBtn') : t('calAddBtn')}</button>
+        ${state.lkwEditId? `<button class="refresh-btn" data-action="lkw-cancel-edit" style="margin-top:8px;">${t('calCancelBtn')}</button>`:''}
+        ` : `<div class="empty-state">${t('lkwNoProjects')}</div>`}
+      </div>
+      <button class="refresh-btn" data-action="cal-lock" style="margin-bottom:14px;">${t('calLockBtn')}</button>`
+      : `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>`}
+
+      ${dates.length? dates.map(dt=>`
+        <h3 style="margin-top:18px;font-size:14px;">${formatDateDE(dt)}</h3>
+        ${grouped[dt].map(e=>{
+          const proj = state.projects.find(p=>p.id===e.projekt);
+          return `
+          <div class="order-card">
+            <div class="order-head">
+              <div><div class="no">${e.time}</div><div class="site">${proj? `BV ${proj.id} – ${proj.name}` : ''}</div></div>
+            </div>
+            ${e.notiz? `<div class="order-time">${e.notiz}</div>`:''}
+            ${state.calUnlocked? `<div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="refresh-btn" data-action="lkw-edit" data-id="${e.id}">${t('calEditBtn')}</button>
+              <button class="refresh-btn" data-action="lkw-delete" data-id="${e.id}" style="color:var(--red);border-color:var(--red);">${t('calDeleteBtn')}</button>
+            </div>`:''}
+          </div>
+        `;
+        }).join('')}
+      `).join('') : `<div class="empty-state">${t('lkwCalEmpty')}</div>`}
+    </main>
+  </div>`;
+}
+
 function render(){
   if(state.loading){ document.getElementById('app').innerHTML = `<div class="loading">${t('loadingText')}</div>`; return; }
   if(state.view==='calendar'){ document.getElementById('app').innerHTML = calendarPageHTML(); return; }
+  if(state.view==='lkwkalender'){ document.getElementById('app').innerHTML = lkwKalenderPageHTML(); return; }
   if(!state.loggedIn){ document.getElementById('app').innerHTML = loginHTML(); return; }
 
   let mainHTML='';
@@ -1905,6 +2010,11 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     await loadShared();
     render();
   }
+  if(action==='go-lkwkalender'){
+    state.view='lkwkalender'; state.menuOpen=false; state.lkwWarn='';
+    await loadShared();
+    render();
+  }
   if(action==='go-app'){ state.view='app'; state.menuOpen=false; render(); }
 
   if(action==='cal-unlock-ask'){ state.calAskPw=true; render(); }
@@ -1944,6 +2054,35 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       state.calendarEntries.push({id: state.calCounter++, date, person, ort, notiz});
     }
     state.calDraft=null; state.calWarn='';
+    await saveShared();
+    render();
+  }
+
+  if(action==='lkw-cancel-edit'){ state.lkwEditId=null; state.lkwDraft=null; state.lkwWarn=''; render(); }
+  if(action==='lkw-edit'){
+    const entry = state.lkwEntries.find(x=>String(x.id)===el.dataset.id);
+    if(entry){ state.lkwEditId=entry.id; state.lkwDraft={...entry}; state.lkwWarn=''; render(); }
+  }
+  if(action==='lkw-delete'){
+    state.lkwEntries = state.lkwEntries.filter(x=>String(x.id)!==el.dataset.id);
+    await saveShared();
+    render();
+  }
+  if(action==='lkw-save'){
+    const date = document.getElementById('lkwDate').value;
+    const time = document.getElementById('lkwTime').value;
+    const projektSel = document.getElementById('lkwProjekt');
+    const projekt = projektSel && projektSel.value ? parseInt(projektSel.value,10) : null;
+    const notiz = document.getElementById('lkwNotiz').value.trim();
+    if(!date || !time || !projekt){ state.lkwWarn=t('lkwWarnFields'); render(); return; }
+    if(state.lkwEditId){
+      const entry = state.lkwEntries.find(x=>x.id===state.lkwEditId);
+      if(entry){ entry.date=date; entry.time=time; entry.projekt=projekt; entry.notiz=notiz; }
+      state.lkwEditId=null;
+    } else {
+      state.lkwEntries.push({id: state.lkwCounter++, date, time, projekt, notiz});
+    }
+    state.lkwDraft=null; state.lkwWarn='';
     await saveShared();
     render();
   }

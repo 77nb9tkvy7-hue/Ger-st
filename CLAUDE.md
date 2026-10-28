@@ -229,21 +229,13 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
 - Weitere Ideen: Realtime-Updates statt Polling (Supabase Realtime),
   Push-Benachrichtigungen, Export der Bestellungen als PDF/CSV.
 
-## Große Erweiterung in Arbeit (Chef/Lager/Fahrer)
+## Große Erweiterung Chef/Lager/Fahrer (umgesetzt)
 
-Nutzer hat mehrere größere Funktionen auf einmal angefragt; wird
-Stück für Stück umgesetzt (jedes Stück eigener Commit/PR). Geklärte
-Entscheidungen für die noch offenen Teile:
-
-- **LKW-Logistik-Kalender**: Neuer, eigener Kalender nur für
-  Lieferungen/Abholungen mit Datum UND Uhrzeit, verknüpft mit einem
-  Bauvorhaben ("wann kann was geräumt werden") – getrennt vom
-  bestehenden Mitarbeiter-Kalender, der unverändert bleibt. Noch nicht
-  umgesetzt.
-
-Bereits umgesetzt aus dieser Anfrage: ausklappbare Kategorien,
-Paket-Umrechnung + druckbarer Lieferschein, Projekt-Farben,
-Fahrer-Status, Geplante Lieferungen (siehe unten).
+Nutzer hatte mehrere größere Funktionen auf einmal angefragt; wurde
+Stück für Stück umgesetzt (jedes Stück eigener Commit/PR): ausklappbare
+Kategorien, Paket-Umrechnung + druckbarer Lieferschein, Projekt-Farben,
+Fahrer-Status, Geplante Lieferungen, LKW-Logistik-Kalender (Details zu
+den letzten vier siehe unten).
 
 ### Projekt-Farben (umgesetzt)
 
@@ -308,6 +300,30 @@ rein lesend (`geplantListHTML(false)`), nach Datum sortiert
 zusätzlich einen "Löschen"-Knopf pro Eintrag
 (`geplantListHTML(true)`, `data-action="delete-planned"`) direkt unter
 dem Planungs-Formular.
+
+### LKW-Logistik-Kalender (umgesetzt)
+
+Eigener, neuer Kalender nur für Lieferungen/Abholungen mit Datum UND
+Uhrzeit, verknüpft mit einem Bauvorhaben ("wann kann was geräumt
+werden") – komplett getrennt vom bestehenden Mitarbeiter-Kalender
+(eigener Datensatz `state.lkwEntries`/`state.lkwCounter`, eigene
+Funktion `lkwKalenderPageHTML()`), der unverändert bleibt.
+
+Erreichbar wie der Mitarbeiter-Kalender über einen eigenen Menüpunkt
+("🚚 LKW-Kalender", `topNavHTML()`/`menuDropdownHTML()`,
+`state.view='lkwkalender'`) – frei einsehbar auch ohne Anmeldung. Das
+Menü zeigt je nach aktueller Seite die jeweils anderen Ansichten an
+(z. B. auf dem Mitarbeiter-Kalender erscheinen "Zurück zur App" UND
+"LKW-Kalender", damit man direkt zwischen beiden wechseln kann).
+
+Bearbeiten (Termin mit Datum, Uhrzeit, Bauvorhaben-Auswahl und
+optionaler Notiz anlegen/bearbeiten/löschen) ist wie beim Mitarbeiter-
+Kalender nur mit dem Chef-Passwort freigeschaltet – beide Kalender
+teilen sich dieselbe Freischalt-Variable (`state.calUnlocked`/
+`calAskPw`), damit man das Passwort nicht zweimal eingeben muss, auch
+wenn die Termine selbst (`state.lkwEntries`) ein komplett eigener
+Datensatz sind. Ohne mindestens ein angelegtes Bauvorhaben zeigt das
+Formular einen Hinweis statt der leeren Auswahl.
 
 ## Stil-Vorgaben
 
