@@ -78,6 +78,39 @@ Baustellen-Bestellliste (`catalogHTML()`) drei Bausteine dagegen:
   "SL70/SL100" oder "Tribünen") als Eintrag ergänzt wird und die
   CATALOG-Teile ein passendes `system`-Feld bekommen, erscheint der
   Reiter automatisch.
+- **Ausklappbare Kategorien** (`state.collapsedCats`, `isCatCollapsed()`,
+  `catSectionHTML()`): Kategorien starten eingeklappt (nur Name +
+  Teile-Anzahl sichtbar, z. B. "RAHMEN & STREBEN (3)"), "Häufig
+  bestellt" startet aufgeklappt. Eine Kategorie mit Teilen im aktuellen
+  Warenkorb bleibt immer sichtbar, auch nach Zuklappen-Versuch.
+
+## Pakete auf dem Lieferschein
+
+Teile können ein optionales `pkg`-Feld bekommen (Stück pro Paket, z. B.
+`pkg:10` bei Stahlboden). `formatPackages(qty, item)` rechnet die
+bestellte Stückzahl in ganze Pakete + Rest um (z. B. 32 Stk bei
+`pkg:10` -> "3 Pakete und 2 Stk" statt einer Kommazahl wie "3,2
+Pakete"). Wird nur auf dem gedruckten Lieferschein verwendet (siehe
+unten), nicht in den normalen Bestellkarten in der App. Aktuell haben
+nur `stahlboden`/`alubohle` (pkg:10) und `kupplung` (pkg:50) zu
+Testzwecken ein `pkg`-Feld -- Platzhalterwerte, müssen beim Eintragen
+der echten Teile durch die tatsächlichen Paketgrößen ersetzt werden.
+
+## Lieferschein drucken
+
+Jede Bestellkarte hat einen Druck-Knopf (`data-action="print-order"`,
+Funktion `printOrder()`). Befüllt einen eigenen, normalerweise
+unsichtbaren Bereich (`<div id="printArea">`, direktes Geschwister von
+`#app` im `<body>`) mit einer sauberen, auf feste Farben (nicht die
+Theme-Variablen) gesetzten Lieferschein-Ansicht -- dadurch immer
+weißer Hintergrund/schwarze Schrift, unabhängig vom Dunkelmodus. Ruft
+danach `window.print()` auf; der Nutzer wählt im Browser-Druckdialog
+"Als PDF speichern" statt eines Druckers, um eine PDF-Datei zu
+bekommen (kein PDF-Code nötig). Eine `@media print`-Regel blendet den
+Rest der Seite (`#app`) komplett aus, sodass nur der Lieferschein mit
+den tatsächlich bestellten Teilen gedruckt wird. Mengen werden dabei
+über `formatPackages()` in Pakete umgerechnet, wenn das Teil ein
+`pkg`-Feld hat.
 
 **Geplant, noch nicht umgesetzt:** Die echten Teile aus den drei
 gelieferten Lieferscheinen (Modul, SL70/SL100, Tribünen) eintragen –
@@ -195,6 +228,34 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
   Mitarbeiter nicht – noch nicht umgesetzt, nur besprochen.
 - Weitere Ideen: Realtime-Updates statt Polling (Supabase Realtime),
   Push-Benachrichtigungen, Export der Bestellungen als PDF/CSV.
+
+## Große Erweiterung in Arbeit (Chef/Lager/Fahrer)
+
+Nutzer hat mehrere größere Funktionen auf einmal angefragt; wird
+Stück für Stück umgesetzt (jedes Stück eigener Commit/PR). Geklärte
+Entscheidungen für die noch offenen Teile:
+
+- **Geplante Lieferungen**: Neue Planungs-Funktion beim Chef (Bauvorhaben
+  + Datum + Teile wählen, wie beim normalen Bestellen). Erscheint als
+  eigene, nach Datum sortierte "Geplant"-Liste bei Lager/Fahrer, getrennt
+  von den dringenden/laufenden Bestellungen. Noch nicht umgesetzt.
+- **Projekt-Farben**: Farb-Badge auf den Bauvorhaben-Karten, nur vom
+  Chef änderbar. Grün = "da muss was hin" (Lieferung nötig), Hellblau =
+  "da muss was geräumt/abgeholt werden" (Abbau), Schwarz = nichts zu
+  tun. Bewusst eine einfache Farbliste, keine echte Karte. Noch nicht
+  umgesetzt.
+- **Fahrer-Status**: Jeder Fahrer stellt für sich selbst ein, wo er
+  gerade ist ("Am Lager – nichts zu tun" / "Unterwegs"); mehrere Fahrer
+  gleichzeitig möglich, jeder mit eigenem Status (nicht ein
+  gemeinsamer LKW-Status). Noch nicht umgesetzt.
+- **LKW-Logistik-Kalender**: Neuer, eigener Kalender nur für
+  Lieferungen/Abholungen mit Datum UND Uhrzeit, verknüpft mit einem
+  Bauvorhaben ("wann kann was geräumt werden") – getrennt vom
+  bestehenden Mitarbeiter-Kalender, der unverändert bleibt. Noch nicht
+  umgesetzt.
+
+Bereits umgesetzt aus dieser Anfrage: ausklappbare Kategorien,
+Paket-Umrechnung + druckbarer Lieferschein (siehe oben).
 
 ## Stil-Vorgaben
 

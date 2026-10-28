@@ -224,10 +224,29 @@
     .order-footer{max-width:900px;}
     .inv-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;}
   }
+
+  /* Lieferschein-Druck: immer weißer Hintergrund/schwarze Schrift,
+     unabhängig vom Dunkelmodus -- feste Farben statt Variablen. */
+  .print-btn{background:none;border:1.5px solid var(--line-strong);color:var(--muted);border-radius:999px;padding:6px 12px;font-size:11.5px;cursor:pointer;margin-top:8px;}
+  #printArea{display:none;}
+  #printArea .ls-logo{height:42px;margin-bottom:10px;}
+  #printArea h1{font-family:'Space Grotesk',sans-serif;font-size:20px;margin:0 0 16px 0;color:#111;}
+  #printArea table{width:100%;border-collapse:collapse;margin-bottom:14px;}
+  #printArea .ls-meta td{padding:3px 0;font-size:13px;color:#111;}
+  #printArea .ls-meta td:first-child{color:#555;width:140px;}
+  #printArea .ls-items th{text-align:left;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#555;border-bottom:2px solid #111;padding:6px 4px;}
+  #printArea .ls-items td{padding:7px 4px;border-bottom:1px solid #ccc;font-size:14px;color:#111;}
+  #printArea .ls-items td.ls-menge{text-align:right;white-space:nowrap;}
+  @media print{
+    html,body{background:#fff !important;}
+    body > *:not(#printArea){display:none !important;}
+    #printArea{display:block !important;background:#fff;color:#111;padding:16px;font-family:'Inter',sans-serif;}
+  }
 </style>
 </head>
 <body>
 <div id="app"><div class="loading">Lade Daten…</div></div>
+<div id="printArea"></div>
 
 <script>
 // ---- Supabase-Verbindung -------------------------------------------------
@@ -387,6 +406,7 @@ de:{
   item_kupplung:'Kupplung (Normal)', item_leiter:'Durchstiegsleiter',
   sys_modul:'Modul', searchPlaceholder:'Teil suchen…', searchNoResults:'Keine Teile gefunden.',
   favTitle:'⭐ Häufig bestellt',
+  printBtn:'🖨️ Lieferschein drucken', pkgOne:'Paket', pkgMany:'Pakete', pkgAnd:'und',
 },
 pl:{
   appName:'Zamówienie rusztowania', menuAria:'Menu', menuCalendar:'📅 Kalendarz',
@@ -472,6 +492,7 @@ pl:{
   item_kupplung:'Złącze normalne', item_leiter:'Drabinka włazowa',
   sys_modul:'Modul', searchPlaceholder:'Szukaj części…', searchNoResults:'Nie znaleziono żadnych części.',
   favTitle:'⭐ Często zamawiane',
+  printBtn:'🖨️ Drukuj dowód dostawy', pkgOne:'paczka', pkgMany:'paczki', pkgAnd:'i',
 },
 sk:{
   appName:'Objednávka lešenia', menuAria:'Menu', menuCalendar:'📅 Kalendár',
@@ -557,6 +578,7 @@ sk:{
   item_kupplung:'Spojka (normálna)', item_leiter:'Priechodový rebrík',
   sys_modul:'Modul', searchPlaceholder:'Hľadať diel…', searchNoResults:'Nenašli sa žiadne diely.',
   favTitle:'⭐ Často objednávané',
+  printBtn:'🖨️ Vytlačiť dodací list', pkgOne:'balík', pkgMany:'balíky', pkgAnd:'a',
 },
 hr:{
   appName:'Narudžba skele', menuAria:'Izbornik', menuCalendar:'📅 Kalendar',
@@ -642,6 +664,7 @@ hr:{
   item_kupplung:'Spojnica (normalna)', item_leiter:'Prolazne ljestve',
   sys_modul:'Modul', searchPlaceholder:'Pretraži dio…', searchNoResults:'Nema pronađenih dijelova.',
   favTitle:'⭐ Često naručivano',
+  printBtn:'🖨️ Ispiši otpremnicu', pkgOne:'paket', pkgMany:'paketa', pkgAnd:'i',
 },
 en:{
   appName:'Scaffold Order', menuAria:'Menu', menuCalendar:'📅 Calendar',
@@ -727,6 +750,7 @@ en:{
   item_kupplung:'Standard coupler', item_leiter:'Access ladder',
   sys_modul:'Modul', searchPlaceholder:'Search parts…', searchNoResults:'No parts found.',
   favTitle:'⭐ Frequently ordered',
+  printBtn:'🖨️ Print delivery note', pkgOne:'package', pkgMany:'packages', pkgAnd:'and',
 },
 };
 
@@ -749,6 +773,21 @@ function resolvedItem(i){
 function statusLabel(status){ return t('status'+slug(status)); }
 function stepLabel(status){ return t('step'+slug(status)); }
 
+// Für den Lieferschein: Stückzahl in ganze Pakete + Rest umrechnen
+// (z.B. 32 Stk bei 10 Stk/Paket -> "3 Pakete und 2 Stk"), statt einer
+// unpraktischen Kommazahl wie "3,2 Pakete". Teile ohne pkg-Feld liefern
+// null (werden ganz normal nur in Stück angezeigt).
+function formatPackages(qty, it){
+  if(!it || !it.pkg || qty<=0) return null;
+  const pkgCount = Math.floor(qty/it.pkg);
+  const rest = qty % it.pkg;
+  if(pkgCount===0) return null;
+  const pkgWord = pkgCount===1 ? t('pkgOne') : t('pkgMany');
+  return rest>0
+    ? `${pkgCount} ${pkgWord} ${t('pkgAnd')} ${rest} ${unitLabel(it.unit)}`
+    : `${pkgCount} ${pkgWord}`;
+}
+
 // Gerüst-Systeme (z.B. Modul, SL70/SL100, Tribünen). Aktuell nur eins --
 // die Auswahl-Reiter erscheinen automatisch, sobald ein zweites System
 // dazukommt (siehe catalogHTML). Neues System: hier eine Zeile ergänzen
@@ -769,14 +808,17 @@ const CATALOG = [
   {id:'rahmen20', name:'Vertikalrahmen 2,00 m', unit:'Stk', icon:'frame', cat:'rahmen', system:'modul'},
   {id:'rahmen10', name:'Vertikalrahmen 1,00 m', unit:'Stk', icon:'frame', cat:'rahmen', system:'modul'},
   {id:'diagonale', name:'Diagonalstrebe', unit:'Stk', icon:'diag', cat:'rahmen', system:'modul'},
-  {id:'stahlboden', name:'Stahlboden 3,07 m', unit:'Stk', icon:'plank', cat:'boeden', system:'modul'},
-  {id:'alubohle', name:'Alu-Bohle 2,50 m', unit:'Stk', icon:'plank', cat:'boeden', system:'modul'},
+  {id:'stahlboden', name:'Stahlboden 3,07 m', unit:'Stk', icon:'plank', cat:'boeden', system:'modul', pkg:10},
+  {id:'alubohle', name:'Alu-Bohle 2,50 m', unit:'Stk', icon:'plank', cat:'boeden', system:'modul', pkg:10},
   {id:'gelaender', name:'Geländerholm', unit:'Stk', icon:'rail', cat:'gelaender', system:'modul'},
   {id:'bordbrett', name:'Bordbrett', unit:'Stk', icon:'board', cat:'gelaender', system:'modul'},
   {id:'spindel', name:'Fußspindel', unit:'Stk', icon:'spindle', cat:'verbindung', system:'modul'},
-  {id:'kupplung', name:'Kupplung (Normal)', unit:'Stk', icon:'clamp', cat:'verbindung', system:'modul'},
+  {id:'kupplung', name:'Kupplung (Normal)', unit:'Stk', icon:'clamp', cat:'verbindung', system:'modul', pkg:50},
   {id:'leiter', name:'Durchstiegsleiter', unit:'Stk', icon:'ladder', cat:'zubehoer', system:'modul'},
 ];
+// pkg = Stück pro Paket (optional). Nur Beispielwerte zum Testen der
+// Paket-Umrechnung auf dem Lieferschein -- echte Paketgrößen kommen mit
+// der realen Teile-Liste und müssen hier pro Teil ersetzt werden.
 
 const DEFAULT_INVENTORY = {
   rahmen20:40, rahmen10:40, diagonale:60, stahlboden:35, alubohle:25,
@@ -1116,6 +1158,32 @@ function confirmHTML(o){
   </div>`;
 }
 
+function printOrder(id){
+  const o = state.orders.find(x=>x.id===id);
+  if(!o) return;
+  const rowsHtml = o.items.map(i=>{
+    const r = resolvedItem(i);
+    const cat = CATALOG.find(c=>c.id===i.id);
+    const pkg = formatPackages(i.qty, cat);
+    return `<tr><td>${r.name}</td><td class="ls-menge">${pkg || (i.qty+' '+r.unit)}</td></tr>`;
+  }).join('');
+  const area = document.getElementById('printArea');
+  area.innerHTML = `
+    <img class="ls-logo" src="logo.png" alt="SGM">
+    <h1>${t('lieferscheinLabel')} #${o.id}</h1>
+    <table class="ls-meta">
+      <tr><td>${t('baustelleLabel')}</td><td>${o.baustelle}</td></tr>
+      <tr><td>${t('bestelltVonLabel')}</td><td>${o.person}</td></tr>
+      <tr><td>${t('zeitLabel')}</td><td>${o.time}</td></tr>
+    </table>
+    <table class="ls-items">
+      <thead><tr><th>${t('thTeil')}</th><th class="ls-menge">${t('thMenge')}</th></tr></thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+  `;
+  window.print();
+}
+
 function orderCardHTML(o, role){
   const step = NEXT_STEP[o.status];
   const showBtn = role && step && step.role===role;
@@ -1131,6 +1199,7 @@ function orderCardHTML(o, role){
     <div class="order-time">${t('bestelltPrefix')} ${o.time}</div>
     <ul class="order-items">${o.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>
     <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
+    <button class="print-btn" data-action="print-order" data-order="${o.id}">${t('printBtn')}</button>
     ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
     ${o.status==='Geliefert'? `<div class="done-label">${t('geliefertLabel')}</div>` : ''}
   </div>`;
@@ -1484,6 +1553,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     state.collapsedCats[id] = !isCatCollapsed(id);
     render();
   }
+  if(action==='print-order'){ printOrder(parseInt(el.dataset.order,10)); }
   if(action==='chef-tab'){ state.chefTab = el.dataset.tab; render(); }
   if(action==='add-projekt'){
     const n = document.getElementById('pvName'), a = document.getElementById('pvAdresse');
