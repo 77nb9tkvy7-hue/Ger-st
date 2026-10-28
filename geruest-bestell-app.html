@@ -225,6 +225,17 @@
     .inv-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;}
   }
 
+  /* Projekt-Farben: Status-Punkt + Auswahl-Kacheln auf den Bauvorhaben-
+     Karten. Immer ein sichtbarer Rand, damit z.B. "schwarz" auch im
+     Dunkelmodus nicht mit dem Hintergrund verschmilzt. */
+  .proj-color-badge{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--muted);}
+  .proj-color-dot{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--line-strong);background:transparent;flex-shrink:0;}
+  .proj-color-picker{display:flex;gap:8px;margin-top:8px;}
+  .proj-color-swatch{width:26px;height:26px;border-radius:50%;border:2px solid var(--line-strong);cursor:pointer;padding:0;}
+  .proj-color-swatch.active{border-color:var(--ink);box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--ink);}
+  .proj-color-swatch.proj-color-none{background:transparent;position:relative;}
+  .proj-color-swatch.proj-color-none::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:2px;background:var(--line-strong);transform:rotate(45deg);}
+
   /* Lieferschein-Druck: immer weißer Hintergrund/schwarze Schrift,
      unabhängig vom Dunkelmodus -- feste Farben statt Variablen. */
   .print-btn{background:none;border:1.5px solid var(--line-strong);color:var(--muted);border-radius:999px;padding:6px 12px;font-size:11.5px;cursor:pointer;margin-top:8px;}
@@ -365,6 +376,7 @@ de:{
   fahrerTitle:'Fahrer', fahrerSub:'Was wohin muss – und wann es bestellt wurde.',
   waitingNote:'{n} Bestellung(en) warten noch auf das Lager.',
   fahrerEmptyReady:'Aktuell keine Bestellungen zur Abholung bereit.',
+  tabLieferungen:'Lieferungen', fahrerProjekteSub:'Status der Bauvorhaben – vom Chef gesetzt.',
   chefViewTitle:'Chef', tabUebersicht:'Übersicht', tabBauvorhaben:'Bauvorhaben',
   chefOverviewSub:'Gesamtüberblick über alle Bestellungen und den Lagerbestand.',
   allOrdersHeading:'Alle Bestellungen', chefEmptyOrders:'Noch keine Bestellungen.',
@@ -379,6 +391,7 @@ de:{
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
   pvAlsFertigBtn:'Als fertig markieren', pvWiederAktivBtn:'Wieder aktivieren',
+  pvColorNone:'Keine Angabe', pvColorGreen:'Lieferung nötig', pvColorBlue:'Abholung/Räumung nötig', pvColorBlack:'Nichts zu tun',
   calTitle:'Kalender',
   calSub:'Wer wann wo im Einsatz sein soll. Zum Bestellen bitte oben im Menü anmelden.',
   calPwLabel:'Chef-Passwort', calUnlockBtn:'Freischalten', calCancelBtn:'Abbrechen',
@@ -451,6 +464,7 @@ pl:{
   fahrerTitle:'Kierowca', fahrerSub:'Co i dokąd trzeba zawieźć – i kiedy zamówiono.',
   waitingNote:'{n} zamówień czeka jeszcze na magazyn.',
   fahrerEmptyReady:'Obecnie brak zamówień gotowych do odbioru.',
+  tabLieferungen:'Dostawy', fahrerProjekteSub:'Status budów – ustawiony przez szefa.',
   chefViewTitle:'Szef', tabUebersicht:'Przegląd', tabBauvorhaben:'Budowy',
   chefOverviewSub:'Pełny przegląd wszystkich zamówień i stanu magazynu.',
   allOrdersHeading:'Wszystkie zamówienia', chefEmptyOrders:'Brak zamówień.',
@@ -465,6 +479,7 @@ pl:{
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
   pvAlsFertigBtn:'Oznacz jako zakończoną', pvWiederAktivBtn:'Aktywuj ponownie',
+  pvColorNone:'Brak danych', pvColorGreen:'Potrzebna dostawa', pvColorBlue:'Potrzebny odbiór/sprzątanie', pvColorBlack:'Nic do zrobienia',
   calTitle:'Kalendarz',
   calSub:'Kto, kiedy i gdzie ma pracować. Aby zamawiać, zaloguj się w menu powyżej.',
   calPwLabel:'Hasło szefa', calUnlockBtn:'Odblokuj', calCancelBtn:'Anuluj',
@@ -537,6 +552,7 @@ sk:{
   fahrerTitle:'Vodič', fahrerSub:'Čo a kam treba doviezť – a kedy bolo objednané.',
   waitingNote:'{n} objednávok ešte čaká na sklad.',
   fahrerEmptyReady:'Momentálne žiadne objednávky pripravené na vyzdvihnutie.',
+  tabLieferungen:'Dodávky', fahrerProjekteSub:'Stav stavieb – nastavený šéfom.',
   chefViewTitle:'Šéf', tabUebersicht:'Prehľad', tabBauvorhaben:'Stavby',
   chefOverviewSub:'Celkový prehľad všetkých objednávok a stavu skladu.',
   allOrdersHeading:'Všetky objednávky', chefEmptyOrders:'Zatiaľ žiadne objednávky.',
@@ -551,6 +567,7 @@ sk:{
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
   pvAlsFertigBtn:'Označiť ako dokončenú', pvWiederAktivBtn:'Znova aktivovať',
+  pvColorNone:'Neurčené', pvColorGreen:'Potrebná dodávka', pvColorBlue:'Potrebné vyzdvihnutie/upratanie', pvColorBlack:'Nič k vybaveniu',
   calTitle:'Kalendár',
   calSub:'Kto má byť kedy a kde nasadený. Na objednávanie sa prosím prihláste hore v menu.',
   calPwLabel:'Heslo šéfa', calUnlockBtn:'Odomknúť', calCancelBtn:'Zrušiť',
@@ -623,6 +640,7 @@ hr:{
   fahrerTitle:'Vozač', fahrerSub:'Što i kamo treba – i kada je naručeno.',
   waitingNote:'{n} narudžbi još čeka skladište.',
   fahrerEmptyReady:'Trenutno nema narudžbi spremnih za preuzimanje.',
+  tabLieferungen:'Isporuke', fahrerProjekteSub:'Status gradilišta – postavlja šef.',
   chefViewTitle:'Šef', tabUebersicht:'Pregled', tabBauvorhaben:'Gradilišta',
   chefOverviewSub:'Cjelokupni pregled svih narudžbi i stanja skladišta.',
   allOrdersHeading:'Sve narudžbe', chefEmptyOrders:'Još nema narudžbi.',
@@ -637,6 +655,7 @@ hr:{
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
   pvAlsFertigBtn:'Označi kao završeno', pvWiederAktivBtn:'Ponovno aktiviraj',
+  pvColorNone:'Nije postavljeno', pvColorGreen:'Potrebna isporuka', pvColorBlue:'Potrebno preuzimanje/čišćenje', pvColorBlack:'Nema posla',
   calTitle:'Kalendar',
   calSub:'Tko treba biti kada i gdje. Za naručivanje se prijavite gore u izborniku.',
   calPwLabel:'Lozinka šefa', calUnlockBtn:'Otključaj', calCancelBtn:'Odustani',
@@ -709,6 +728,7 @@ en:{
   fahrerTitle:'Driver', fahrerSub:'What needs to go where – and when it was ordered.',
   waitingNote:'{n} order(s) still waiting on the warehouse.',
   fahrerEmptyReady:'No orders currently ready for pickup.',
+  tabLieferungen:'Deliveries', fahrerProjekteSub:'Project status – set by the boss.',
   chefViewTitle:'Boss', tabUebersicht:'Overview', tabBauvorhaben:'Projects',
   chefOverviewSub:'Full overview of all orders and warehouse stock.',
   allOrdersHeading:'All orders', chefEmptyOrders:'No orders yet.',
@@ -723,6 +743,7 @@ en:{
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
   pvAlsFertigBtn:'Mark as done', pvWiederAktivBtn:'Reactivate',
+  pvColorNone:'Not set', pvColorGreen:'Delivery needed', pvColorBlue:'Pickup/clearing needed', pvColorBlack:'Nothing to do',
   calTitle:'Calendar',
   calSub:'Who should be where and when. To place orders, please log in via the menu above.',
   calPwLabel:'Boss password', calUnlockBtn:'Unlock', calCancelBtn:'Cancel',
@@ -851,7 +872,7 @@ const state = {
   cart:{}, orders:[], orderCounter:1001, inventory:{...DEFAULT_INVENTORY},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
-  projects:[], projektCounter:101, chefTab:'uebersicht', selProjekt:'', lastGPS:null,
+  projects:[], projektCounter:101, chefTab:'uebersicht', fahrerTab:'lieferungen', selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
   calEditId:null, calDraft:null, calWarn:'',
@@ -1245,17 +1266,39 @@ function lagerHTML(){
 }
 
 function fahrerHTML(){
+  const tab = state.fahrerTab;
+  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
+  <h2 class="view-title">${t('fahrerTitle')}</h2>
+  <div class="seg-control">
+    <button class="${tab==='lieferungen'?'active':''}" data-action="fahrer-tab" data-tab="lieferungen">${t('tabLieferungen')}</button>
+    <button class="${tab==='bauvorhaben'?'active':''}" data-action="fahrer-tab" data-tab="bauvorhaben">${t('tabBauvorhaben')}</button>
+  </div>
+  ${tab==='bauvorhaben' ? fahrerProjekteHTML() : fahrerLieferungenHTML()}`;
+}
+
+function fahrerLieferungenHTML(){
   const all = [...state.orders].sort((a,b)=>a.id-b.id);
   const ready = all.filter(o=>STATUS_FLOW.indexOf(o.status)>=2);
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
-  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
-  <h2 class="view-title">${t('fahrerTitle')}</h2>
-  <p class="view-sub">${t('fahrerSub')}</p>
+  return `<p class="view-sub">${t('fahrerSub')}</p>
   ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
   ${ready.length? ready.map(o=>orderCardHTML(o,'fahrer')).join('') : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}`;
 }
 
-function projektCardHTML(p){
+// Status-Farbe pro Bauvorhaben (nur vom Chef änderbar, Fahrer sieht sie
+// nur): grün = "da muss was hin" (Lieferung nötig), hellblau = "da muss
+// was geräumt/abgeholt werden" (Abbau), schwarz = nichts zu tun.
+const PROJECT_COLORS = ['gruen','hellblau','schwarz'];
+function projektColorMeta(c){
+  const map = {
+    gruen:{hex:'#16A34A', key:'pvColorGreen'},
+    hellblau:{hex:'#38BDF8', key:'pvColorBlue'},
+    schwarz:{hex:'#111827', key:'pvColorBlack'},
+  };
+  return map[c] || {hex:null, key:'pvColorNone'};
+}
+
+function projektCardHTML(p, editable){
   const orders = state.orders.filter(o=>o.projekt===p.id).sort((a,b)=>a.id-b.id);
   const geliefert = {}, offen = {};
   orders.forEach(o=>{
@@ -1269,18 +1312,32 @@ function projektCardHTML(p){
   const mapsUrl = p.coords
     ? `https://www.google.com/maps?q=${p.coords.lat},${p.coords.lon}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse)}`;
+  const curMeta = projektColorMeta(p.farbe);
+  const colorBadge = `<div class="proj-color-badge">
+    <span class="proj-color-dot" style="${curMeta.hex?`background:${curMeta.hex};`:''}"></span>
+    <span>${t(curMeta.key)}</span>
+  </div>`;
+  const colorPicker = editable ? `<div class="proj-color-picker">
+    ${PROJECT_COLORS.map(c=>{
+      const m = projektColorMeta(c);
+      return `<button class="proj-color-swatch ${p.farbe===c?'active':''}" style="background:${m.hex};" data-action="set-projekt-color" data-id="${p.id}" data-color="${c}" title="${t(m.key)}" aria-label="${t(m.key)}"></button>`;
+    }).join('')}
+    <button class="proj-color-swatch proj-color-none ${!p.farbe?'active':''}" data-action="set-projekt-color" data-id="${p.id}" data-color="" title="${t('pvColorNone')}" aria-label="${t('pvColorNone')}"></button>
+  </div>` : '';
   return `<div class="order-card ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">
     <div class="order-head">
       <div><div class="no">BV ${p.id} – ${p.name}</div><div class="site">${p.adresse}</div></div>
       <div class="status-badge ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">${p.aktiv?t('pvAktivBadge'):t('pvFertigBadge')}</div>
     </div>
+    ${colorBadge}
+    ${colorPicker}
     ${Object.keys(geliefert).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">${t('pvVorOrt')}</div>
       <ul class="order-items">${Object.entries(geliefert).map(([id,q])=>line(id,q)).join('')}</ul>`:''}
     ${Object.keys(offen).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">${t('pvBestelltUnterwegs')}</div>
       <ul class="order-items">${Object.entries(offen).map(([id,q])=>line(id,q)).join('')}</ul>`:''}
     <div class="order-time">${orders.length? t('pvBestellungenPrefix')+' '+orders.map(o=>'#'+o.id+' ('+statusLabel(o.status)+')').join(', ') : t('pvKeineBestellungen')}</div>
     <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
-    <button class="refresh-btn" data-action="projekt-toggle" data-id="${p.id}" style="margin-top:10px;">${p.aktiv? t('pvAlsFertigBtn'):t('pvWiederAktivBtn')}</button>
+    ${editable? `<button class="refresh-btn" data-action="projekt-toggle" data-id="${p.id}" style="margin-top:10px;">${p.aktiv? t('pvAlsFertigBtn'):t('pvWiederAktivBtn')}</button>`:''}
   </div>`;
 }
 
@@ -1294,8 +1351,14 @@ function projekteHTML(){
     <div id="pvWarn"></div>
     <button class="advance-btn" data-action="add-projekt">${t('pvAddBtn')}</button>
   </div>
-  ${aktive.length? aktive.map(projektCardHTML).join('') : `<div class="empty-state">${t('pvEmptyActive')}</div>`}
-  ${fertig.length? `<h3 style="margin-top:24px;font-size:15px;">${t('pvAbgeschlossenHeading')}</h3>${fertig.map(projektCardHTML).join('')}`:''}`;
+  ${aktive.length? aktive.map(p=>projektCardHTML(p,true)).join('') : `<div class="empty-state">${t('pvEmptyActive')}</div>`}
+  ${fertig.length? `<h3 style="margin-top:24px;font-size:15px;">${t('pvAbgeschlossenHeading')}</h3>${fertig.map(p=>projektCardHTML(p,true)).join('')}`:''}`;
+}
+
+function fahrerProjekteHTML(){
+  const aktive = state.projects.filter(p=>p.aktiv);
+  return `<p class="view-sub">${t('fahrerProjekteSub')}</p>
+  ${aktive.length? aktive.map(p=>projektCardHTML(p,false)).join('') : `<div class="empty-state">${t('pvEmptyActive')}</div>`}`;
 }
 
 function chefHTML(){
@@ -1560,7 +1623,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const name = (n? n.value : '').trim(), adresse = (a? a.value : '').trim();
     const w = document.getElementById('pvWarn');
     if(!name || !adresse){ if(w) w.innerHTML = `<div class="warn">${t('pvWarnFields')}</div>`; return; }
-    state.projects.push({id: state.projektCounter++, name, adresse, coords:null, aktiv:true});
+    state.projects.push({id: state.projektCounter++, name, adresse, coords:null, aktiv:true, farbe:null});
     await saveShared();
     render();
   }
@@ -1569,6 +1632,12 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     if(p){ p.aktiv = !p.aktiv; await saveShared(); }
     render();
   }
+  if(action==='set-projekt-color'){
+    const p = state.projects.find(x=>String(x.id)===el.dataset.id);
+    if(p){ p.farbe = el.dataset.color || null; await saveShared(); }
+    render();
+  }
+  if(action==='fahrer-tab'){ state.fahrerTab = el.dataset.tab; render(); }
   if(action==='pick-addr'){
     state.baustelleOrt = el.dataset.text;
     state.baustelleCoords = {lat: parseFloat(el.dataset.lat), lon: parseFloat(el.dataset.lon)};
