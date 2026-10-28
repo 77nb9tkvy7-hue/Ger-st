@@ -109,7 +109,10 @@
   .order-table td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:middle;}
   .order-table tbody tr:last-child td{border-bottom:none;}
   .order-table tbody tr.row-alt{background:var(--zebra);}
-  .order-table tbody tr.cat-row td{background:var(--accent-soft);color:var(--accent-dark);font-weight:700;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;padding:7px 12px;}
+  .order-table tbody tr.cat-row td{background:var(--accent-soft);color:var(--accent-dark);font-weight:700;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;padding:7px 12px;cursor:pointer;-webkit-user-select:none;user-select:none;}
+  .order-table tbody tr.cat-row:active td{background:var(--accent-soft);filter:brightness(0.95);}
+  .cat-chevron{display:inline-block;width:14px;}
+  .cat-count{color:var(--accent-dark);opacity:0.65;font-weight:600;text-transform:none;letter-spacing:0;}
   .t-name{display:flex;align-items:center;gap:9px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
   .t-name:active{background:var(--accent-soft);}
   .t-icon{width:22px;height:22px;color:var(--accent);flex:none;}
@@ -812,7 +815,7 @@ const state = {
   calEditId:null, calDraft:null, calWarn:'',
   itemPopup:null, orderReview:null,
   lang:'de', langMenuOpen:false,
-  catalogSearch:'', systemSel: SYSTEMS[0].id,
+  catalogSearch:'', systemSel: SYSTEMS[0].id, collapsedCats:{},
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
@@ -968,6 +971,25 @@ function catalogRowHTML(it, alt){
   </tr>`;
 }
 
+// Kategorien starten eingeklappt (Liste soll kurz wirken), "Häufig
+// bestellt" startet aufgeklappt. Eine Kategorie mit Teilen im
+// aktuellen Warenkorb bleibt immer sichtbar, auch wenn zugeklappt,
+// damit man die eigene Auswahl nicht aus den Augen verliert.
+function isCatCollapsed(id){
+  if(Object.prototype.hasOwnProperty.call(state.collapsedCats, id)) return state.collapsedCats[id];
+  return id !== '_fav';
+}
+
+function catSectionHTML(id, label, items){
+  const hasCartItems = items.some(it=>(state.cart[it.id]||0)>0);
+  const open = !isCatCollapsed(id) || hasCartItems;
+  let rowIdx = 0;
+  const rows = open ? items.map(it=>{ rowIdx++; return catalogRowHTML(it, rowIdx%2===0); }).join('') : '';
+  return `<tr class="cat-row" data-action="cat-toggle" data-cat="${id}">
+    <td colspan="3"><span class="cat-chevron">${open?'▾':'▸'}</span>${label} <span class="cat-count">(${items.length})</span></td>
+  </tr>${rows}`;
+}
+
 function catalogHTML(){
   const mine = state.orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id).slice(0,5);
   const count = cartCount();
@@ -992,21 +1014,13 @@ function catalogHTML(){
       .sort((a,b)=>counts[b]-counts[a])
       .slice(0,5);
     if(favIds.length){
-      rows += `<tr class="cat-row"><td colspan="3">${t('favTitle')}</td></tr>`;
-      favIds.forEach(id=>{
-        const it = systemItems.find(x=>x.id===id);
-        rowIdx++;
-        rows += catalogRowHTML(it, rowIdx%2===0);
-      });
+      const favItems = favIds.map(id=>systemItems.find(x=>x.id===id));
+      rows += catSectionHTML('_fav', t('favTitle'), favItems);
     }
     CATEGORIES.forEach(cat=>{
       const items = systemItems.filter(it=>it.cat===cat.id).sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
       if(!items.length) return;
-      rows += `<tr class="cat-row"><td colspan="3">${catName(cat)}</td></tr>`;
-      items.forEach(it=>{
-        rowIdx++;
-        rows += catalogRowHTML(it, rowIdx%2===0);
-      });
+      rows += catSectionHTML(cat.id, catName(cat), items);
     });
   }
 
@@ -1465,6 +1479,11 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   }
   if(action==='lager-tab'){ state.lagerTab = el.dataset.tab; render(); }
   if(action==='system-tab'){ state.systemSel = el.dataset.sys; render(); }
+  if(action==='cat-toggle'){
+    const id = el.dataset.cat;
+    state.collapsedCats[id] = !isCatCollapsed(id);
+    render();
+  }
   if(action==='chef-tab'){ state.chefTab = el.dataset.tab; render(); }
   if(action==='add-projekt'){
     const n = document.getElementById('pvName'), a = document.getElementById('pvAdresse');
