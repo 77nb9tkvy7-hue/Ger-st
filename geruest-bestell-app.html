@@ -218,11 +218,86 @@
   .stat-chip b{display:block;font-family:'Space Grotesk',sans-serif;font-size:20px;}
   .stat-chip span{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
 
-  /* PC / breite Bildschirme */
+  /* Kartenlisten: am Handy eine Spalte, am PC mehrere nebeneinander */
+  .card-grid{display:grid;grid-template-columns:1fr;gap:12px;align-items:start;margin-bottom:12px;}
+  .card-grid > .order-card{margin-bottom:0;}
+
+  /* Widgets: kurze Info-Kacheln oben (Idee wie iPhone-Widgets) */
+  .widget-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 16px 0;}
+  .widget{--wc:var(--muted);display:flex;flex-direction:column;align-items:flex-start;text-align:left;background:var(--card);border:none;border-radius:20px;padding:14px 14px 13px 14px;box-shadow:var(--shadow);font-family:'Inter',sans-serif;color:var(--ink);min-height:104px;position:relative;overflow:hidden;}
+  button.widget{cursor:pointer;}
+  button.widget:active{transform:scale(0.98);}
+  .widget::after{content:'';position:absolute;inset:0;background:var(--wc);opacity:0.07;pointer-events:none;}
+  .w-top{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:0.01em;}
+  .w-dot{width:9px;height:9px;border-radius:50%;background:var(--wc);flex:none;}
+  .w-value{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;line-height:1.1;margin-top:8px;color:var(--wc);}
+  .w-value.small{font-size:17px;margin-top:10px;color:var(--ink);}
+  .w-detail{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .widget-grid.three{grid-template-columns:repeat(3,1fr);gap:8px;}
+  .widget-grid.three .widget{min-height:86px;padding:11px 10px;border-radius:16px;}
+  .widget-grid.three .w-value{font-size:24px;margin-top:6px;}
+  .widget-grid.three .w-top{font-size:10.5px;align-items:flex-start;}
+  .widget-grid.three .w-dot{margin-top:3px;}
+  .widget-grid.three .w-detail{font-size:10.5px;}
+  .w-green{--wc:#1E9E5A;} .w-blue{--wc:var(--blue);} .w-sky{--wc:#3AA0E6;} .w-amber{--wc:var(--amber);}
+  .w-red{--wc:var(--red);} .w-accent{--wc:var(--accent);} .w-grey{--wc:#7A8896;}
+  .w-dots{display:flex;gap:10px;margin-top:6px;font-size:12px;font-weight:700;color:var(--ink);}
+  .w-dots span{display:flex;align-items:center;gap:4px;}
+  .w-dots i{width:9px;height:9px;border-radius:50%;display:inline-block;}
+
+  /* Bauvorhaben-Liste (Chef): erst Liste mit Status-Farben, Antippen
+     öffnet die Detail-Ansicht */
+  .proj-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin:0 0 12px 0;}
+  .proj-legend span{display:flex;align-items:center;gap:6px;}
+  .proj-legend i{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .proj-list{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:16px;}
+  .proj-row{--pc:var(--line-strong);display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:none;border-radius:16px;padding:14px 14px 14px 0;box-shadow:var(--shadow);cursor:pointer;font-family:'Inter',sans-serif;color:var(--ink);overflow:hidden;}
+  .proj-row:active{transform:scale(0.99);}
+  .proj-row-bar{width:6px;align-self:stretch;background:var(--pc);border-radius:0 6px 6px 0;flex:none;}
+  .proj-row-main{flex:1;min-width:0;}
+  .proj-row-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15.5px;}
+  .proj-row-sub{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .proj-row-meta{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11.5px;color:var(--muted);margin-top:6px;}
+  .proj-row-meta .pill{display:inline-flex;align-items:center;gap:5px;font-weight:700;color:var(--ink);}
+  .proj-row-meta .pill i{width:9px;height:9px;border-radius:50%;background:var(--pc);display:inline-block;border:1px solid var(--line-strong);}
+  .proj-row-chev{font-size:22px;color:var(--muted);padding-right:4px;}
+  .order-card.proj-card::before{background:var(--pc,#94A3B8);width:6px;}
+  .back-link{background:none;border:none;color:var(--accent);font-size:13.5px;font-weight:600;cursor:pointer;padding:4px 0;margin:0 0 10px 0;font-family:'Inter',sans-serif;}
+  .section-h{font-size:15px;margin:22px 0 10px 0;}
+  .detail-grid{display:block;}
+  .drv-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .drv-row:last-child{border-bottom:none;}
+  .drv-row .drv-sub{font-size:11.5px;color:var(--muted);}
+  .drv-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+  .chip-btn{border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+  .chip-btn.primary{background:var(--accent-solid);border-color:var(--accent-solid);color:#fff;}
+  .chip-btn.done{background:var(--accent-soft);border-color:transparent;color:var(--accent-dark);cursor:default;}
+
+  /* Fahrer: Ziel antippen, wenn "Unterwegs" */
+  .ziel-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .ziel-chip{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+  .ziel-chip i{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid var(--line-strong);}
+  .ziel-chip.active{background:var(--accent-solid);border-color:var(--accent-solid);color:#fff;}
+  .sent-note{font-size:12px;color:var(--accent-dark);background:var(--accent-soft);border-radius:10px;padding:8px 10px;margin-top:10px;}
+
+  /* PC / breite Bildschirme (Chef im Büro) -- am Handy bleibt alles
+     wie gehabt, ab 900px wird es breiter und mehrspaltig. */
   @media (min-width: 900px){
-    main{max-width:900px;}
-    .order-footer{max-width:900px;}
+    main{max-width:1060px;padding:24px 28px 110px 28px;}
+    .order-footer{max-width:1060px;}
     .inv-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;}
+    .card-grid{grid-template-columns:1fr 1fr;}
+    .proj-list{grid-template-columns:1fr 1fr;}
+    .widget-grid{grid-template-columns:repeat(4,1fr);gap:14px;}
+    .view-title{font-size:28px;}
+  }
+  @media (min-width: 1280px){
+    main{max-width:1320px;}
+    .order-footer{max-width:1320px;}
+    .card-grid{grid-template-columns:repeat(3,1fr);}
+    .proj-list{grid-template-columns:repeat(3,1fr);}
+    .detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:22px;align-items:start;}
+    .detail-grid .section-h:first-child{margin-top:0;}
   }
 
   /* Projekt-Farben: Status-Punkt + Auswahl-Kacheln auf den Bauvorhaben-
@@ -385,6 +460,36 @@ de:{
   persWarnDuplicate:'Diesen Namen gibt es schon.', persWarnLastChef:'Der letzte Chef kann nicht entfernt werden.',
   persSetPwBtn:'Passwort setzen', persNewPwPlaceholder:'Neues Passwort', persRemoveBtn:'Mitarbeiter entfernen',
   persEmpty:'Noch keine Mitarbeiter.', persNoRoles:'Keine Rolle',
+  wUnterwegsZuDir:'Unterwegs zu dir',
+  wImLager:'Im Lager',
+  wGeliefert:'Geliefert',
+  wZuLaden:'Zu laden',
+  wAufLkw:'Auf dem LKW',
+  wZuRaeumen:'Zu räumen',
+  wNaechsteGeplant:'Nächste geplante Lieferung',
+  wNichtsGeplant:'Nichts geplant',
+  wNeu:'Neue Bestellungen',
+  wInArbeit:'In Bearbeitung',
+  wFehlt:'Fehlt im Lager',
+  wOffen:'Offene Bestellungen',
+  wOffenDetail:'{neu} neu · {unterwegs} unterwegs',
+  wFahrerUnterwegs:'Fahrer unterwegs',
+  wBauvorhaben:'Aktive Bauvorhaben',
+  driverZielLabel:'Wohin?',
+  driverSentBy:'Vom Chef geschickt ({name})',
+  driverNoZiel:'Ziel noch nicht gewählt',
+  pvListSub:'Bauvorhaben antippen: Details ansehen, Lieferung hinzufügen oder einen Fahrer hinschicken.',
+  pvBack:'← Alle Bauvorhaben',
+  pvNewHeading:'Neues Bauvorhaben',
+  pvOffeneBestellungen:'{n} offene Bestellung(en)',
+  pvGeplantCount:'{n} geplant',
+  pvFahrerHeading:'Fahrer',
+  pvSendDriverBtn:'Hierher schicken',
+  pvDriverHere:'Fährt hierher',
+  pvRecallBtn:'Zurückholen',
+  pvNoDrivers:'Noch keine Fahrer im Personal angelegt.',
+  pvAddDeliveryHeading:'Lieferung hinzufügen',
+  pvPlannedHeading:'Geplante Lieferungen hierher',
   roleLabelBaustelle:'Baustelle', roleLabelLager:'Lager', roleLabelFahrer:'Fahrer',
   roleLabelChef:'Chef · Übersicht', logoutLink:'Abmelden', switchRoleLink:'Rolle wechseln',
   catalogTitle:'Neue Bestellung',
@@ -498,6 +603,36 @@ pl:{
   persWarnDuplicate:'To imię już istnieje.', persWarnLastChef:'Ostatniego szefa nie można usunąć.',
   persSetPwBtn:'Ustaw hasło', persNewPwPlaceholder:'Nowe hasło', persRemoveBtn:'Usuń pracownika',
   persEmpty:'Brak pracowników.', persNoRoles:'Brak roli',
+  wUnterwegsZuDir:'W drodze do ciebie',
+  wImLager:'W magazynie',
+  wGeliefert:'Dostarczone',
+  wZuLaden:'Do załadunku',
+  wAufLkw:'Na ciężarówce',
+  wZuRaeumen:'Do sprzątnięcia',
+  wNaechsteGeplant:'Następna planowana dostawa',
+  wNichtsGeplant:'Nic nie zaplanowano',
+  wNeu:'Nowe zamówienia',
+  wInArbeit:'W realizacji',
+  wFehlt:'Brak w magazynie',
+  wOffen:'Otwarte zamówienia',
+  wOffenDetail:'{neu} nowe · {unterwegs} w drodze',
+  wFahrerUnterwegs:'Kierowcy w trasie',
+  wBauvorhaben:'Aktywne budowy',
+  driverZielLabel:'Dokąd?',
+  driverSentBy:'Wysłany przez szefa ({name})',
+  driverNoZiel:'Cel jeszcze nie wybrany',
+  pvListSub:'Dotknij budowy: szczegóły, dodanie dostawy lub wysłanie kierowcy.',
+  pvBack:'← Wszystkie budowy',
+  pvNewHeading:'Nowa budowa',
+  pvOffeneBestellungen:'{n} otwarte zamówienie(a)',
+  pvGeplantCount:'{n} zaplanowane',
+  pvFahrerHeading:'Kierowcy',
+  pvSendDriverBtn:'Wyślij tutaj',
+  pvDriverHere:'Jedzie tutaj',
+  pvRecallBtn:'Odwołaj',
+  pvNoDrivers:'Brak kierowców w personelu.',
+  pvAddDeliveryHeading:'Dodaj dostawę',
+  pvPlannedHeading:'Zaplanowane dostawy tutaj',
   roleLabelBaustelle:'Budowa', roleLabelLager:'Magazyn', roleLabelFahrer:'Kierowca',
   roleLabelChef:'Szef · Przegląd', logoutLink:'Wyloguj', switchRoleLink:'Zmień rolę',
   catalogTitle:'Nowe zamówienie',
@@ -611,6 +746,36 @@ sk:{
   persWarnDuplicate:'Toto meno už existuje.', persWarnLastChef:'Posledného šéfa nie je možné odstrániť.',
   persSetPwBtn:'Nastaviť heslo', persNewPwPlaceholder:'Nové heslo', persRemoveBtn:'Odstrániť zamestnanca',
   persEmpty:'Zatiaľ žiadni zamestnanci.', persNoRoles:'Žiadna rola',
+  wUnterwegsZuDir:'Na ceste k tebe',
+  wImLager:'V sklade',
+  wGeliefert:'Doručené',
+  wZuLaden:'Na naloženie',
+  wAufLkw:'Na aute',
+  wZuRaeumen:'Na upratanie',
+  wNaechsteGeplant:'Ďalšia plánovaná dodávka',
+  wNichtsGeplant:'Nič nenaplánované',
+  wNeu:'Nové objednávky',
+  wInArbeit:'V spracovaní',
+  wFehlt:'Chýba v sklade',
+  wOffen:'Otvorené objednávky',
+  wOffenDetail:'{neu} nové · {unterwegs} na ceste',
+  wFahrerUnterwegs:'Vodiči na ceste',
+  wBauvorhaben:'Aktívne stavby',
+  driverZielLabel:'Kam?',
+  driverSentBy:'Poslal šéf ({name})',
+  driverNoZiel:'Cieľ ešte nie je zvolený',
+  pvListSub:'Ťukni na stavbu: detaily, pridať dodávku alebo poslať vodiča.',
+  pvBack:'← Všetky stavby',
+  pvNewHeading:'Nová stavba',
+  pvOffeneBestellungen:'{n} otvorené objednávky',
+  pvGeplantCount:'{n} naplánované',
+  pvFahrerHeading:'Vodiči',
+  pvSendDriverBtn:'Poslať sem',
+  pvDriverHere:'Ide sem',
+  pvRecallBtn:'Odvolať',
+  pvNoDrivers:'V personáli zatiaľ nie sú vodiči.',
+  pvAddDeliveryHeading:'Pridať dodávku',
+  pvPlannedHeading:'Naplánované dodávky sem',
   roleLabelBaustelle:'Stavenisko', roleLabelLager:'Sklad', roleLabelFahrer:'Vodič',
   roleLabelChef:'Šéf · Prehľad', logoutLink:'Odhlásiť', switchRoleLink:'Zmeniť rolu',
   catalogTitle:'Nová objednávka',
@@ -724,6 +889,36 @@ hr:{
   persWarnDuplicate:'Ovo ime već postoji.', persWarnLastChef:'Posljednjeg šefa nije moguće ukloniti.',
   persSetPwBtn:'Postavi lozinku', persNewPwPlaceholder:'Nova lozinka', persRemoveBtn:'Ukloni zaposlenika',
   persEmpty:'Još nema zaposlenika.', persNoRoles:'Bez uloge',
+  wUnterwegsZuDir:'Na putu do tebe',
+  wImLager:'U skladištu',
+  wGeliefert:'Isporučeno',
+  wZuLaden:'Za utovar',
+  wAufLkw:'Na kamionu',
+  wZuRaeumen:'Za raščišćavanje',
+  wNaechsteGeplant:'Sljedeća planirana isporuka',
+  wNichtsGeplant:'Ništa planirano',
+  wNeu:'Nove narudžbe',
+  wInArbeit:'U obradi',
+  wFehlt:'Nedostaje u skladištu',
+  wOffen:'Otvorene narudžbe',
+  wOffenDetail:'{neu} novo · {unterwegs} na putu',
+  wFahrerUnterwegs:'Vozači na putu',
+  wBauvorhaben:'Aktivna gradilišta',
+  driverZielLabel:'Kamo?',
+  driverSentBy:'Poslao šef ({name})',
+  driverNoZiel:'Cilj još nije odabran',
+  pvListSub:'Dodirni gradilište: detalji, dodavanje isporuke ili slanje vozača.',
+  pvBack:'← Sva gradilišta',
+  pvNewHeading:'Novo gradilište',
+  pvOffeneBestellungen:'{n} otvorena narudžba(e)',
+  pvGeplantCount:'{n} planirano',
+  pvFahrerHeading:'Vozači',
+  pvSendDriverBtn:'Pošalji ovamo',
+  pvDriverHere:'Vozi ovamo',
+  pvRecallBtn:'Opozovi',
+  pvNoDrivers:'U osoblju još nema vozača.',
+  pvAddDeliveryHeading:'Dodaj isporuku',
+  pvPlannedHeading:'Planirane isporuke ovamo',
   roleLabelBaustelle:'Gradilište', roleLabelLager:'Skladište', roleLabelFahrer:'Vozač',
   roleLabelChef:'Šef · Pregled', logoutLink:'Odjava', switchRoleLink:'Promijeni ulogu',
   catalogTitle:'Nova narudžba',
@@ -837,6 +1032,36 @@ en:{
   persWarnDuplicate:'This name already exists.', persWarnLastChef:'The last boss cannot be removed.',
   persSetPwBtn:'Set password', persNewPwPlaceholder:'New password', persRemoveBtn:'Remove staff member',
   persEmpty:'No staff yet.', persNoRoles:'No role',
+  wUnterwegsZuDir:'On the way to you',
+  wImLager:'In the warehouse',
+  wGeliefert:'Delivered',
+  wZuLaden:'To load',
+  wAufLkw:'On the truck',
+  wZuRaeumen:'To clear',
+  wNaechsteGeplant:'Next planned delivery',
+  wNichtsGeplant:'Nothing planned',
+  wNeu:'New orders',
+  wInArbeit:'In progress',
+  wFehlt:'Missing in stock',
+  wOffen:'Open orders',
+  wOffenDetail:'{neu} new · {unterwegs} en route',
+  wFahrerUnterwegs:'Drivers on the road',
+  wBauvorhaben:'Active projects',
+  driverZielLabel:'Where to?',
+  driverSentBy:'Sent by the boss ({name})',
+  driverNoZiel:'No destination chosen yet',
+  pvListSub:'Tap a project: see details, add a delivery or send a driver.',
+  pvBack:'← All projects',
+  pvNewHeading:'New project',
+  pvOffeneBestellungen:'{n} open order(s)',
+  pvGeplantCount:'{n} planned',
+  pvFahrerHeading:'Drivers',
+  pvSendDriverBtn:'Send here',
+  pvDriverHere:'Heading here',
+  pvRecallBtn:'Call back',
+  pvNoDrivers:'No drivers in the staff list yet.',
+  pvAddDeliveryHeading:'Add delivery',
+  pvPlannedHeading:'Planned deliveries here',
   roleLabelBaustelle:'Site', roleLabelLager:'Warehouse', roleLabelFahrer:'Driver',
   roleLabelChef:'Boss · Overview', logoutLink:'Log out', switchRoleLink:'Switch role',
   catalogTitle:'New order',
@@ -1030,7 +1255,7 @@ const state = {
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
   employees:[], empCounter:1, authName:null, persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
-  projects:[], projektCounter:101, chefTab:'uebersicht', fahrerTab:'lieferungen', selProjekt:'', lastGPS:null,
+  projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
   driverStatus:{},
@@ -1311,6 +1536,7 @@ function catalogHTML(){
 
   return `<h2 class="view-title">${t('catalogTitle')}</h2>
   <p class="view-sub">${t('catalogSub')}</p>
+  ${widgetsHTML('baustelle')}
   ${aktive.length? `<div class="field">
     <label>${t('projektLabel')}</label>
     <select id="projektSelect">
@@ -1333,7 +1559,7 @@ function catalogHTML(){
   </table></div>
   <div class="mine-section">
     <h3>${t('mineTitle')}</h3>
-    ${mine.length? mine.map(o=>orderCardHTML(o,null)).join('') : `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>`}
+    ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>`}
   </div>
   <div class="order-footer">
     <span>${count? t('footerCount',{n:count}) : t('footerEmpty')}</span>
@@ -1475,6 +1701,7 @@ function lagerHTML(){
   const orders = [...state.orders].sort((a,b)=>a.id-b.id);
   return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
   <h2 class="view-title">${t('lagerTitle')}</h2>
+  ${widgetsHTML('lager')}
   <div class="seg-control">
     <button class="${tab==='bestellungen'?'active':''}" data-action="lager-tab" data-tab="bestellungen">${t('tabBestellungen')}</button>
     <button class="${tab==='geplant'?'active':''}" data-action="lager-tab" data-tab="geplant">${t('tabGeplant')}</button>
@@ -1485,7 +1712,7 @@ function lagerHTML(){
        <h3 style="font-size:15px;margin:0 0 8px 0;">${t('fahrerStatusHeading')}</h3>
        ${driverStatusListHTML()}
        <h3 style="font-size:15px;margin:22px 0 8px 0;">${t('allOrdersHeading')}</h3>
-       ${orders.length? orders.map(o=>orderCardHTML(o,'lager')).join('') : `<div class="empty-state">${t('lagerEmptyOrders')}</div>`}`
+       ${orders.length? `<div class="card-grid">${orders.map(o=>orderCardHTML(o,'lager')).join('')}</div>` : `<div class="empty-state">${t('lagerEmptyOrders')}</div>`}`
     : tab==='geplant'
     ? `<p class="view-sub">${t('plLagerSub')}</p>
        ${geplantListHTML(false)}`
@@ -1518,7 +1745,7 @@ function plannedDeliveryCardHTML(pd, editable){
 function geplantListHTML(editable){
   const sorted = [...state.plannedDeliveries].sort((a,b)=> a.date<b.date? -1 : a.date>b.date? 1 : a.id-b.id);
   if(!sorted.length) return `<div class="empty-state">${t('plEmpty')}</div>`;
-  return sorted.map(pd=>plannedDeliveryCardHTML(pd, editable)).join('');
+  return `<div class="card-grid">${sorted.map(pd=>plannedDeliveryCardHTML(pd, editable)).join('')}</div>`;
 }
 
 // Fahrer-Status: jeder Fahrer stellt für sich selbst ein, wo er gerade
@@ -1533,17 +1760,28 @@ function driverStatusMeta(s){
   };
   return map[s] || null;
 }
+// Bei "Unterwegs" tippt der Fahrer an, WOHIN (ziel = Bauvorhaben-ID).
+// Der Chef kann einen Fahrer auch selbst zu einem Bauvorhaben schicken
+// (Detail-Ansicht des Bauvorhabens) -- dann steht in "by" der Chef-Name.
 function myStatusWidgetHTML(){
   const cur = state.driverStatus[state.name];
+  const aktive = state.projects.filter(p=>p.aktiv);
+  const unterwegs = cur && cur.status==='unterwegs';
   return `<div class="order-card" style="margin-bottom:16px;">
     <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;">${t('myStatusLabel')}</div>
-    <div class="seg-control">
+    <div class="seg-control" style="margin-bottom:0;">
       ${DRIVER_STATUSES.map(s=>{
         const m = driverStatusMeta(s);
         return `<button class="${cur&&cur.status===s?'active':''}" data-action="set-driver-status" data-status="${s}">${t(m.key)}</button>`;
       }).join('')}
     </div>
-    ${cur? `<div class="order-time" style="margin-top:8px;">${t('statusUpdatedPrefix')} ${cur.time}</div>`:''}
+    ${unterwegs && cur.by? `<div class="sent-note">${t('driverSentBy',{name:cur.by})}</div>`:''}
+    ${unterwegs? `<div style="font-size:12px;font-weight:700;color:var(--muted);margin-top:12px;">${t('driverZielLabel')}</div>
+      ${aktive.length? `<div class="ziel-chips">${aktive.map(p=>{
+        const hex = projektColorMeta(p.farbe).hex;
+        return `<button class="ziel-chip ${cur.ziel===p.id?'active':''}" data-action="set-driver-ziel" data-id="${p.id}"><i style="${hex?`background:${hex};`:''}"></i>BV ${p.id} – ${p.name}</button>`;
+      }).join('')}</div>` : `<div class="order-time" style="margin-top:6px;">${t('pvEmptyActive')}</div>`}`:''}
+    ${cur? `<div class="order-time" style="margin-top:10px;">${t('statusUpdatedPrefix')} ${cur.time}</div>`:''}
   </div>`;
 }
 function driverStatusListHTML(){
@@ -1552,8 +1790,9 @@ function driverStatusListHTML(){
   return `<div class="driver-status-list">
     ${entries.map(([name,v])=>{
       const m = driverStatusMeta(v.status);
+      const ziel = v.status==='unterwegs' ? (v.ziel? '→ '+projektLabel(v.ziel) : t('driverNoZiel')) : '';
       return `<div class="driver-status-row">
-        <span class="driver-status-name">${name}</span>
+        <div><div class="driver-status-name">${name}</div>${ziel? `<div class="order-time" style="margin:2px 0 0 0;">${ziel}</div>`:''}</div>
         <span class="status-badge ${m?m.cls:''}">${m?t(m.key):v.status}</span>
       </div>`;
     }).join('')}
@@ -1564,6 +1803,7 @@ function fahrerHTML(){
   const tab = state.fahrerTab;
   return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
   <h2 class="view-title">${t('fahrerTitle')}</h2>
+  ${widgetsHTML('fahrer')}
   ${myStatusWidgetHTML()}
   <div class="seg-control">
     <button class="${tab==='lieferungen'?'active':''}" data-action="fahrer-tab" data-tab="lieferungen">${t('tabLieferungen')}</button>
@@ -1579,7 +1819,7 @@ function fahrerLieferungenHTML(){
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
   return `<p class="view-sub">${t('fahrerSub')}</p>
   ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
-  ${ready.length? ready.map(o=>orderCardHTML(o,'fahrer')).join('') : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}`;
+  ${ready.length? `<div class="card-grid">${ready.map(o=>orderCardHTML(o,'fahrer')).join('')}</div>` : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}`;
 }
 
 function fahrerGeplantHTML(){
@@ -1590,14 +1830,109 @@ function fahrerGeplantHTML(){
 // Status-Farbe pro Bauvorhaben (nur vom Chef änderbar, Fahrer sieht sie
 // nur): grün = "da muss was hin" (Lieferung nötig), hellblau = "da muss
 // was geräumt/abgeholt werden" (Abbau), schwarz = nichts zu tun.
+// Die gespeicherten Werte ('schwarz' usw.) bleiben gleich, nur die
+// angezeigten Töne sind auf das SG-Design abgestimmt; "nichts zu tun"
+// ist bewusst ein ruhiges Grau (Schwarz war im Dunkelmodus unsichtbar).
 const PROJECT_COLORS = ['gruen','hellblau','schwarz'];
 function projektColorMeta(c){
   const map = {
-    gruen:{hex:'#16A34A', key:'pvColorGreen'},
-    hellblau:{hex:'#38BDF8', key:'pvColorBlue'},
-    schwarz:{hex:'#111827', key:'pvColorBlack'},
+    gruen:{hex:'#1E9E5A', key:'pvColorGreen'},
+    hellblau:{hex:'#3AA0E6', key:'pvColorBlue'},
+    schwarz:{hex:'#7A8896', key:'pvColorBlack'},
   };
   return map[c] || {hex:null, key:'pvColorNone'};
+}
+function projektLabel(id){
+  const p = state.projects.find(x=>x.id===id);
+  return p ? `BV ${p.id} – ${p.name}` : '';
+}
+function todayISO(){
+  const d = new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+function nowStr(){
+  return new Date().toLocaleString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function nextPlanned(){
+  const today = todayISO();
+  return [...state.plannedDeliveries].filter(pd=>pd.date>=today).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id)[0] || null;
+}
+function driverNames(){
+  const names = state.employees.filter(e=>e.roles.includes('fahrer')).map(e=>e.name);
+  Object.keys(state.driverStatus).forEach(n=>{ if(!names.includes(n) && findEmployee(n)) names.push(n); });
+  return names;
+}
+
+// ---- Widgets: kurze Info-Kacheln oben, je Rolle das Wichtigste ----------
+function widgetTile(o){
+  const tag = o.tab ? 'button' : 'div';
+  const attrs = o.tab ? `data-action="widget-go" data-tab="${o.tab}"` : '';
+  return `<${tag} class="widget w-${o.tone||'grey'}" ${attrs}>
+    <div class="w-top"><span class="w-dot"></span>${o.label}</div>
+    <div class="w-value ${o.small?'small':''}">${o.value}</div>
+    ${o.detail? `<div class="w-detail">${o.detail}</div>`:''}
+  </${tag}>`;
+}
+function widgetsHTML(role){
+  const orders = state.orders;
+  const by = s=>orders.filter(o=>s.includes(o.status));
+  const firstLine = list=>list.length? `#${list[0].id} · ${list[0].baustelle}` : '';
+  const np = nextPlanned();
+  const planTile = tab=>widgetTile({tone:'grey', label:t('wNaechsteGeplant'), small:true,
+    value: np? formatDateDE(np.date) : t('wNichtsGeplant'), detail: np? projektLabel(np.projekt) : '', tab});
+  let tiles = [];
+  if(role==='baustelle'){
+    const mine = orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id);
+    if(!mine.length) return '';
+    const unterwegs = mine.filter(o=>['Beladen','Unterwegs'].includes(o.status));
+    const lager = mine.filter(o=>['Neu','In Bearbeitung','Bereit zur Abholung'].includes(o.status));
+    const geliefert = mine.filter(o=>o.status==='Geliefert');
+    tiles = [
+      widgetTile({tone:'blue', label:t('wUnterwegsZuDir'), value:unterwegs.length, detail:firstLine(unterwegs)}),
+      widgetTile({tone:'amber', label:t('wImLager'), value:lager.length, detail: lager.length? `#${lager[0].id} · ${statusLabel(lager[0].status)}` : ''}),
+      widgetTile({tone:'green', label:t('wGeliefert'), value:geliefert.length, detail:firstLine(geliefert)}),
+    ];
+  }
+  if(role==='fahrer'){
+    const laden = by(['Bereit zur Abholung']);
+    const lkw = by(['Beladen','Unterwegs']);
+    const raeumen = state.projects.filter(p=>p.aktiv && p.farbe==='hellblau');
+    tiles = [
+      widgetTile({tone:'accent', label:t('wZuLaden'), value:laden.length, detail:firstLine(laden), tab:'lieferungen'}),
+      widgetTile({tone:'blue', label:t('wAufLkw'), value:lkw.length, detail:firstLine(lkw), tab:'lieferungen'}),
+      widgetTile({tone:'sky', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
+      planTile('geplant'),
+    ];
+  }
+  if(role==='lager'){
+    const neu = by(['Neu']), arbeit = by(['In Bearbeitung']);
+    const fehlt = CATALOG.filter(it=>(state.inventory[it.id]??0)<0);
+    tiles = [
+      widgetTile({tone:'grey', label:t('wNeu'), value:neu.length, detail:firstLine(neu), tab:'bestellungen'}),
+      widgetTile({tone:'amber', label:t('wInArbeit'), value:arbeit.length, detail:firstLine(arbeit), tab:'bestellungen'}),
+      widgetTile({tone: fehlt.length?'red':'green', label:t('wFehlt'), value:fehlt.length, detail:fehlt.map(itemName).join(', '), tab:'inventur'}),
+      planTile('geplant'),
+    ];
+  }
+  if(role==='chef'){
+    const offen = orders.filter(o=>o.status!=='Geliefert');
+    const drivers = driverNames();
+    const unterwegs = drivers.filter(n=>state.driverStatus[n] && state.driverStatus[n].status==='unterwegs');
+    const aktive = state.projects.filter(p=>p.aktiv);
+    const cnt = c=>aktive.filter(p=>p.farbe===c).length;
+    const dots = `<div class="w-dots">${PROJECT_COLORS.map(c=>`<span><i style="background:${projektColorMeta(c).hex}"></i>${cnt(c)}</span>`).join('')}</div>`;
+    tiles = [
+      widgetTile({tone:'amber', label:t('wOffen'), value:offen.length,
+        detail:t('wOffenDetail',{neu:by(['Neu']).length, unterwegs:by(['Beladen','Unterwegs']).length})}),
+      widgetTile({tone:'blue', label:t('wFahrerUnterwegs'), value:`${unterwegs.length}/${drivers.length}`,
+        detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', ')}),
+      `<button class="widget w-green" data-action="widget-go" data-tab="bauvorhaben">
+        <div class="w-top"><span class="w-dot"></span>${t('wBauvorhaben')}</div>
+        <div class="w-value">${aktive.length}</div>${dots}</button>`,
+      planTile('planen'),
+    ];
+  }
+  return tiles.length? `<div class="widget-grid ${tiles.length===3?'three':''}">${tiles.join('')}</div>` : '';
 }
 
 function projektCardHTML(p, editable){
@@ -1626,7 +1961,7 @@ function projektCardHTML(p, editable){
     }).join('')}
     <button class="proj-color-swatch proj-color-none ${!p.farbe?'active':''}" data-action="set-projekt-color" data-id="${p.id}" data-color="" title="${t('pvColorNone')}" aria-label="${t('pvColorNone')}"></button>
   </div>` : '';
-  return `<div class="order-card ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">
+  return `<div class="order-card proj-card" style="${curMeta.hex?`--pc:${curMeta.hex};`:''}">
     <div class="order-head">
       <div><div class="no">BV ${p.id} – ${p.name}</div><div class="site">${p.adresse}</div></div>
       <div class="status-badge ${p.aktiv?'st-Unterwegs':'st-Geliefert'}">${p.aktiv?t('pvAktivBadge'):t('pvFertigBadge')}</div>
@@ -1643,26 +1978,87 @@ function projektCardHTML(p, editable){
   </div>`;
 }
 
+// Bauvorhaben (Chef): zuerst eine Liste mit Status-Farben, Antippen
+// öffnet die Detail-Ansicht (state.chefProjekt) mit Karte, Fahrer
+// hinschicken und Lieferung hinzufügen.
+function projektRowHTML(p){
+  const meta = projektColorMeta(p.farbe);
+  const offen = state.orders.filter(o=>o.projekt===p.id && o.status!=='Geliefert').length;
+  const geplant = state.plannedDeliveries.filter(pd=>pd.projekt===p.id && pd.date>=todayISO()).length;
+  const fahrer = Object.entries(state.driverStatus).filter(([,v])=>v && v.status==='unterwegs' && v.ziel===p.id).map(([n])=>n);
+  return `<button class="proj-row" data-action="open-projekt" data-id="${p.id}" style="${meta.hex?`--pc:${meta.hex};`:''}">
+    <span class="proj-row-bar"></span>
+    <div class="proj-row-main">
+      <div class="proj-row-title">BV ${p.id} – ${p.name}</div>
+      <div class="proj-row-sub">${p.adresse}</div>
+      <div class="proj-row-meta">
+        <span class="pill"><i></i>${t(meta.key)}</span>
+        ${offen? `<span>${t('pvOffeneBestellungen',{n:offen})}</span>`:''}
+        ${geplant? `<span>${t('pvGeplantCount',{n:geplant})}</span>`:''}
+        ${fahrer.length? `<span>🚚 ${fahrer.join(', ')}</span>`:''}
+      </div>
+    </div>
+    <span class="proj-row-chev">›</span>
+  </button>`;
+}
+
 function projekteHTML(){
+  const sel = state.projects.find(p=>p.id===state.chefProjekt);
+  if(sel) return projektDetailHTML(sel);
   const aktive = state.projects.filter(p=>p.aktiv);
   const fertig = state.projects.filter(p=>!p.aktiv);
-  return `<p class="view-sub">${t('projekteSub')}</p>
+  return `<p class="view-sub">${t('pvListSub')}</p>
+  <div class="proj-legend">${PROJECT_COLORS.map(c=>{ const m=projektColorMeta(c); return `<span><i style="background:${m.hex}"></i>${t(m.key)}</span>`; }).join('')}</div>
+  ${aktive.length? `<div class="proj-list">${aktive.map(projektRowHTML).join('')}</div>` : `<div class="empty-state">${t('pvEmptyActive')}</div>`}
+  ${fertig.length? `<h3 class="section-h">${t('pvAbgeschlossenHeading')}</h3><div class="proj-list">${fertig.map(projektRowHTML).join('')}</div>`:''}
+  <h3 class="section-h">${t('pvNewHeading')}</h3>
   <div class="order-card">
     <div class="field"><label>${t('pvNameLabel')}</label><input id="pvName" placeholder="${t('pvNamePlaceholder')}" autocomplete="off"></div>
     <div class="field"><label>${t('pvAdresseLabel')}</label><input id="pvAdresse" placeholder="${t('pvAdressePlaceholder')}" autocomplete="off"></div>
     <div id="pvWarn"></div>
     <button class="advance-btn" data-action="add-projekt">${t('pvAddBtn')}</button>
-  </div>
-  ${aktive.length? aktive.map(p=>projektCardHTML(p,true)).join('') : `<div class="empty-state">${t('pvEmptyActive')}</div>`}
-  ${fertig.length? `<h3 style="margin-top:24px;font-size:15px;">${t('pvAbgeschlossenHeading')}</h3>${fertig.map(p=>projektCardHTML(p,true)).join('')}`:''}`;
+  </div>`;
 }
 
-function planenHTML(){
-  const aktive = state.projects.filter(p=>p.aktiv);
-  if(!aktive.length){
-    return `<p class="view-sub">${t('plSub')}</p><div class="empty-state">${t('plNoActiveProjects')}</div>`;
-  }
-  const count = cartCount();
+function projektDriversHTML(p){
+  const names = driverNames();
+  if(!names.length) return `<div class="order-card"><div class="order-time">${t('pvNoDrivers')}</div></div>`;
+  return `<div class="order-card">${names.map(n=>{
+    const v = state.driverStatus[n];
+    const here = v && v.status==='unterwegs' && v.ziel===p.id;
+    let sub = t('driverStatusLager');
+    if(v && v.status==='unterwegs') sub = t('driverStatusUnterwegs') + (v.ziel? ' → '+projektLabel(v.ziel) : '');
+    if(!v) sub = '–';
+    return `<div class="drv-row">
+      <div><div class="driver-status-name">${n}</div><div class="drv-sub">${sub}</div></div>
+      <div class="drv-actions">
+        ${here
+          ? `<span class="chip-btn done">✓ ${t('pvDriverHere')}</span><button class="chip-btn" data-action="recall-driver" data-driver="${n}">${t('pvRecallBtn')}</button>`
+          : `<button class="chip-btn primary" data-action="send-driver" data-driver="${n}" data-id="${p.id}">${t('pvSendDriverBtn')}</button>`}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function projektDetailHTML(p){
+  const geplant = [...state.plannedDeliveries].filter(pd=>pd.projekt===p.id).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+  return `<button class="back-link" data-action="close-projekt">${t('pvBack')}</button>
+  <div class="detail-grid">
+    <div>
+      ${projektCardHTML(p,true)}
+      <h3 class="section-h">${t('pvFahrerHeading')}</h3>
+      ${projektDriversHTML(p)}
+      <h3 class="section-h">${t('pvPlannedHeading')}</h3>
+      ${geplant.length? geplant.map(pd=>plannedDeliveryCardHTML(pd,true)).join('') : `<div class="empty-state" style="padding:20px 10px;">${t('plEmpty')}</div>`}
+    </div>
+    <div>
+      <h3 class="section-h">${t('pvAddDeliveryHeading')}</h3>
+      ${p.aktiv? planFormHTML(p.id) : `<div class="order-card"><div class="order-time">${t('pvFertigBadge')}</div></div>`}
+    </div>
+  </div>`;
+}
+
+function planCatalogRowsHTML(){
   const counts = itemOrderCounts();
   const search = state.catalogSearch.trim().toLowerCase();
   const systemItems = SYSTEMS.length>1 ? CATALOG.filter(it=>it.system===state.systemSel) : CATALOG;
@@ -1682,14 +2078,21 @@ function planenHTML(){
       rows += catSectionHTML(cat.id, catName(cat), items);
     });
   }
-  return `<p class="view-sub">${t('plSub')}</p>
-  <div class="order-card">
-    <div class="field"><label>${t('projektLabel')}</label>
+  return rows;
+}
+
+// Planungs-Formular; mit fixedProjekt (Detail-Ansicht eines Bauvorhabens)
+// entfällt die Bauvorhaben-Auswahl.
+function planFormHTML(fixedProjekt){
+  const aktive = state.projects.filter(p=>p.aktiv);
+  const count = cartCount();
+  return `<div class="order-card">
+    ${fixedProjekt? '' : `<div class="field"><label>${t('projektLabel')}</label>
       <select id="planProjektSelect">
         <option value="">${t('plProjektPlaceholder')}</option>
         ${aktive.map(p=>`<option value="${p.id}" ${String(state.planDraft.projekt)===String(p.id)?'selected':''}>BV ${p.id} – ${p.name}</option>`).join('')}
       </select>
-    </div>
+    </div>`}
     <div class="field"><label>${t('plDatumLabel')}</label>
       <input type="date" id="planDateInput" value="${state.planDraft.date}">
     </div>
@@ -1697,14 +2100,23 @@ function planenHTML(){
     <input class="katalog-search" id="catalogSearch" placeholder="${t('searchPlaceholder')}" value="${state.catalogSearch.replace(/"/g,'&quot;')}" autocomplete="off">
     <div class="tbl-wrap"><table class="order-table">
       <thead><tr><th>${t('thTeil')}</th><th>${t('thEinheit')}</th><th style="text-align:right;">${t('thMenge')}</th></tr></thead>
-      <tbody>${rows}</tbody>
+      <tbody>${planCatalogRowsHTML()}</tbody>
     </table></div>
     <div id="planWarnArea">${state.planWarn? `<div class="warn">${state.planWarn}</div>`:''}</div>
     <div class="order-footer">
       <span>${count? t('footerCount',{n:count}) : t('footerEmpty')}</span>
-      <button class="submit-btn" data-action="add-planned-delivery" ${count? '':'disabled'}>${t('plAddBtn')}</button>
+      <button class="submit-btn" data-action="add-planned-delivery" ${fixedProjekt? `data-projekt="${fixedProjekt}"`:''} ${count? '':'disabled'}>${t('plAddBtn')}</button>
     </div>
-  </div>
+  </div>`;
+}
+
+function planenHTML(){
+  const aktive = state.projects.filter(p=>p.aktiv);
+  if(!aktive.length){
+    return `<p class="view-sub">${t('plSub')}</p><div class="empty-state">${t('plNoActiveProjects')}</div>`;
+  }
+  return `<p class="view-sub">${t('plSub')}</p>
+  ${planFormHTML(null)}
   <h3 style="margin-top:22px;font-size:15px;">${t('plListHeading')}</h3>
   ${geplantListHTML(true)}`;
 }
@@ -1724,7 +2136,7 @@ function personalHTML(){
     ${state.persWarn? `<div class="warn">${state.persWarn}</div>`:''}
     <button class="advance-btn" data-action="emp-add">${t('persAddBtn')}</button>
   </div>
-  ${emps.length? emps.map(e=>`<div class="order-card">
+  ${emps.length? `<div class="card-grid">`+emps.map(e=>`<div class="order-card">
     <div class="order-head">
       <div><div class="no">${e.name}</div><div class="site">${e.roles.length? e.roles.map(r=>t(ROLE_META[r].key)).join(' · ') : t('persNoRoles')}</div></div>
     </div>
@@ -1736,13 +2148,13 @@ function personalHTML(){
       </div>
     </div>
     <button class="refresh-btn" data-action="emp-remove" data-id="${e.id}" style="color:var(--red);border-color:var(--red);">${t('persRemoveBtn')}</button>
-  </div>`).join('') : `<div class="empty-state">${t('persEmpty')}</div>`}`;
+  </div>`).join('')+`</div>` : `<div class="empty-state">${t('persEmpty')}</div>`}`;
 }
 
 function fahrerProjekteHTML(){
   const aktive = state.projects.filter(p=>p.aktiv);
   return `<p class="view-sub">${t('fahrerProjekteSub')}</p>
-  ${aktive.length? aktive.map(p=>projektCardHTML(p,false)).join('') : `<div class="empty-state">${t('pvEmptyActive')}</div>`}`;
+  ${aktive.length? `<div class="card-grid">${aktive.map(p=>projektCardHTML(p,false)).join('')}</div>` : `<div class="empty-state">${t('pvEmptyActive')}</div>`}`;
 }
 
 function chefHTML(){
@@ -1759,15 +2171,19 @@ function chefHTML(){
     <button class="${tab==='personal'?'active':''}" data-action="chef-tab" data-tab="personal">${t('tabPersonal')}</button>
   </div>
   ${tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
+  ${widgetsHTML('chef')}
   <p class="view-sub">${t('chefOverviewSub')}</p>
   <div class="stat-row">${STATUS_FLOW.map(s=>`<div class="stat-chip"><b>${counts[s]}</b><span>${statusLabel(s)}</span></div>`).join('')}</div>
   <h3 style="margin-top:22px;font-size:15px;">${t('fahrerStatusHeading')}</h3>
   ${driverStatusListHTML()}
   <h3 style="margin-top:22px;font-size:15px;">${t('allOrdersHeading')}</h3>
-  ${orders.length? orders.map(o=>orderCardHTML(o,null)).join('') : `<div class="empty-state">${t('chefEmptyOrders')}</div>`}
-  <h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
-  ${inventoryTableHTML(false)}`}`;
+  ${orders.length? `<div class="card-grid">${orders.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state">${t('chefEmptyOrders')}</div>`}
+  ${SHOW_CHEF_INVENTORY? `<h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
+  ${inventoryTableHTML(false)}`:''}`}`;
 }
+// Lagerbestand in der Chef-Übersicht ist auf Wunsch nur AUSGEBLENDET,
+// nicht gelöscht -- zum Wieder-Einblenden einfach auf true setzen.
+const SHOW_CHEF_INVENTORY = false;
 
 function formatDateDE(iso){
   const [y,m,d] = iso.split('-');
@@ -2135,7 +2551,33 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='print-order'){ printOrder(parseInt(el.dataset.order,10)); }
-  if(action==='chef-tab'){ state.chefTab = el.dataset.tab; render(); }
+  if(action==='chef-tab'){ state.chefTab = el.dataset.tab; state.chefProjekt = null; render(); }
+  if(action==='widget-go'){
+    const key = state.role+'Tab';
+    if(key in state){ state[key] = el.dataset.tab; if(state.role==='chef') state.chefProjekt=null; render(); }
+  }
+  if(action==='open-projekt'){ state.chefProjekt = parseInt(el.dataset.id,10); state.cart = {}; state.planDraft = {projekt:'', date:''}; state.planWarn=''; render(); window.scrollTo(0,0); }
+  if(action==='close-projekt'){ state.chefProjekt = null; render(); }
+  if(action==='send-driver'){
+    state.driverStatus[el.dataset.driver] = {status:'unterwegs', ziel:parseInt(el.dataset.id,10), by:state.name, time:nowStr()};
+    await saveShared();
+    render();
+  }
+  if(action==='recall-driver'){
+    state.driverStatus[el.dataset.driver] = {status:'lager', ziel:null, time:nowStr()};
+    await saveShared();
+    render();
+  }
+  if(action==='set-driver-ziel'){
+    const cur = state.driverStatus[state.name];
+    const id = parseInt(el.dataset.id,10);
+    if(cur && cur.status==='unterwegs'){
+      cur.ziel = cur.ziel===id ? null : id;
+      cur.by = null; cur.time = nowStr();
+      await saveShared();
+    }
+    render();
+  }
   if(action==='add-projekt'){
     const n = document.getElementById('pvName'), a = document.getElementById('pvAdresse');
     const name = (n? n.value : '').trim(), adresse = (a? a.value : '').trim();
@@ -2157,9 +2599,14 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   }
   if(action==='fahrer-tab'){ state.fahrerTab = el.dataset.tab; render(); }
   if(action==='set-driver-status'){
+    const prev = state.driverStatus[state.name];
+    const status = el.dataset.status;
+    const keep = status==='unterwegs' && prev && prev.status==='unterwegs';
     state.driverStatus[state.name] = {
-      status: el.dataset.status,
-      time: new Date().toLocaleString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+      status,
+      ziel: keep? prev.ziel : null,
+      by: keep? prev.by : null,
+      time: nowStr(),
     };
     await saveShared();
     render();
@@ -2167,7 +2614,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='add-planned-delivery'){
     const projSel = document.getElementById('planProjektSelect');
     const dateInput = document.getElementById('planDateInput');
-    const projektId = projSel && projSel.value ? parseInt(projSel.value,10) : null;
+    const projektId = el.dataset.projekt ? parseInt(el.dataset.projekt,10)
+      : (projSel && projSel.value ? parseInt(projSel.value,10) : null);
     const date = dateInput ? dateInput.value : '';
     if(!projektId || !date){
       state.planWarn = t('plWarnFields');

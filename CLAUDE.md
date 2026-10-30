@@ -183,26 +183,61 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    - "Inventur": Bestand pro Teil mit +/− und "+10". Bei "Bereit melden"
      wird der Bestand automatisch abgezogen. Negativer Bestand wird rot
      als "Fehlt: X Stk" angezeigt.
-3. **Fahrer** (z. B. Ludwig): Oben "Mein Status" (Am Lager / Unterwegs),
-   darunter drei Reiter "Lieferungen" / "Geplant" / "Bauvorhaben".
+3. **Fahrer** (z. B. Ludwig): Oben Widgets, dann "Mein Status" (Am Lager /
+   Unterwegs – bei Unterwegs „Wohin?" mit antippbaren Bauvorhaben, siehe
+   Fahrer-Status), darunter drei Reiter "Lieferungen" / "Geplant" /
+   "Bauvorhaben".
    Sieht was wohin muss und wann bestellt wurde. Kann erst handeln, wenn
    das Lager freigegeben hat.
    Buttons: "Verladen" → "Losfahren" → "Lieferung bestätigen".
    Jede Bestellkarte (bei allen Rollen) hat einen Link „In Google Maps
    öffnen": mit GPS-Koordinaten, falls vorhanden, sonst per Adress-Suche.
-4. **Chef**: Vier Reiter. „Übersicht": Statistik-Chips pro Status,
-   Fahrer-Status-Liste, alle Bestellungen, kompletter Lagerbestand (nur
-   lesen). „Bauvorhaben": Bauvorhaben anlegen (Name + Adresse,
-   automatische Nummer „BV 101" aufwärts), Status-Farbe setzen und wie ein
-   Ordner pro Bauvorhaben sehen, welche Teile schon geliefert „vor Ort"
-   sind, was bestellt/unterwegs ist und welche Bestellungen dazugehören;
-   Bauvorhaben können als fertig markiert und reaktiviert werden.
+4. **Chef**: Vier Reiter. „Übersicht": Widgets, Statistik-Chips pro
+   Status, Fahrer-Status-Liste, alle Bestellungen. Der Lagerbestand ist
+   hier auf Wunsch nur AUSGEBLENDET, nicht gelöscht (Konstante
+   `SHOW_CHEF_INVENTORY = false`, zum Wieder-Einblenden auf `true`).
+   „Bauvorhaben": zuerst eine Liste aller Bauvorhaben mit Status-Farben
+   (`projektRowHTML()`, Farb-Legende oben, darunter „Neues Bauvorhaben"
+   anlegen: Name + Adresse, automatische Nummer „BV 101" aufwärts).
+   Antippen öffnet die Detail-Ansicht (`state.chefProjekt`,
+   `projektDetailHTML()`): Karte mit Status-Farbe, was „vor Ort" bzw.
+   bestellt/unterwegs ist, als fertig markieren/reaktivieren; Bereich
+   „Fahrer" mit „Hierher schicken"/„Zurückholen" pro Fahrer (setzt dessen
+   `driverStatus` auf unterwegs → dieses BV, `by` = Chef-Name); „Lieferung
+   hinzufügen" (gleiches Planungs-Formular `planFormHTML(projektId)`, ohne
+   BV-Auswahl) und die geplanten Lieferungen dieses BV. Am PC stehen
+   Karte/Fahrer links und das Lieferungs-Formular rechts (`.detail-grid`).
    „Planen": Lieferungen im Voraus planen. „Personal": Mitarbeiter,
    Rollen und Passwörter verwalten (siehe „Anmeldung"). Die Rolle ist
    zusätzlich zum eigenen Passwort mit dem Chef-Passwort geschützt
    (Konstante `CHEF_PASSWORD` am Anfang des `<script>`-Blocks). Hinweis:
    Prüfung läuft im Browser und das Repo ist öffentlich – einfacher
    Schutz, keine echte Sicherheitsmaßnahme.
+
+## Widgets (kurze Übersicht oben, Idee wie iPhone-Widgets)
+
+`widgetsHTML(role)` zeigt bei jeder Rolle oben ein paar Info-Kacheln
+(`widgetTile()`, Farbtöne `w-green/w-blue/w-sky/w-amber/w-red/w-accent/
+w-grey`); antippbare Kacheln springen in den passenden Reiter
+(`data-action="widget-go"`, setzt `state[role+'Tab']`).
+- Baustelle (nur wenn eigene Bestellungen existieren, 3 kompakte
+  Kacheln): Unterwegs zu dir / Im Lager / Geliefert.
+- Fahrer: Zu laden (Bereit zur Abholung) / Auf dem LKW (Beladen +
+  Unterwegs) / Zu räumen (aktive BV mit Farbe hellblau) / Nächste
+  geplante Lieferung.
+- Lager: Neue Bestellungen / In Bearbeitung / Fehlt im Lager (Bestand
+  < 0) / Nächste geplante Lieferung.
+- Chef (nur im Reiter Übersicht): Offene Bestellungen / Fahrer unterwegs
+  (mit Ziel) / Aktive Bauvorhaben je Farbe / Nächste geplante Lieferung.
+
+## PC-Ansicht (Chef im Büro)
+
+Mobile-first bleibt: am Handy eine Spalte wie bisher. Ab 900 px wird
+`main` breiter (1060 px), Kartenlisten (`.card-grid`, `.proj-list`)
+zweispaltig, Widgets vierspaltig; ab 1280 px `main` 1320 px, Karten
+dreispaltig und die Bauvorhaben-Detailansicht zweispaltig
+(`.detail-grid`). Neue Kartenlisten immer in `<div class="card-grid">`
+packen, damit sie am PC mitwachsen.
 
 ## Hell-/Dunkelmodus
 
@@ -271,6 +306,10 @@ den letzten vier siehe unten).
 
 Jedes Bauvorhaben (`state.projects[].farbe`, Werte `'gruen'`,
 `'hellblau'`, `'schwarz'` oder `null`/unbenannt) hat einen Status-Punkt
+und einen farbigen Streifen an Karte/Listenzeile. Die angezeigten Töne
+wurden ans SG-Design angepasst (Grün #1E9E5A, Blau #3AA0E6, „nichts zu
+tun" = Grau #7A8896 statt Schwarz, das im Dunkelmodus unsichtbar war) –
+die gespeicherten Werte (`'schwarz'` usw.) bleiben unverändert
 ("Status-Farbe") auf seiner Karte: Grün = "da muss was hin" (Lieferung
 nötig), Hellblau = "da muss was geräumt/abgeholt werden" (Abbau),
 Schwarz = nichts zu tun, kein Punkt = noch nicht gesetzt. Bewusst eine
@@ -296,7 +335,11 @@ Jeder Fahrer stellt für sich selbst ein, wo er gerade ist – nicht ein
 gemeinsamer LKW-Status, da mehrere Fahrer gleichzeitig unterwegs sein
 können. Gespeichert in `state.driverStatus` (geteilter Supabase-
 Datensatz, Feld `driverStatus`), ein Objekt keyed nach Mitarbeitername:
-`{status:'lager'|'unterwegs', time:'...'}` (Konstante
+`{status:'lager'|'unterwegs', ziel: BV-ID|null, by: Chef-Name|null,
+time:'...'}`. Bei „Unterwegs" tippt der Fahrer unter „Wohin?" ein
+aktives Bauvorhaben an (`set-driver-ziel`); schickt der Chef ihn aus
+der Bauvorhaben-Detailansicht hin, steht `by` drin und der Fahrer sieht
+„Vom Chef geschickt". Wechsel auf „Am Lager" löscht das Ziel (Konstante
 `DRIVER_STATUSES`, Meta-Infos/Übersetzungs-Schlüssel in
 `driverStatusMeta()`).
 
@@ -367,5 +410,13 @@ Formular einen Hinweis statt der leeren Auswahl.
   (Text). Firmenlogo `logo.png` (SGM, blau auf gelb) im Header und auf
   dem Login-Screen.
 - Mobile-first: wird hauptsächlich am Handy benutzt (meta viewport!);
-  ab 900 px Breite zweispaltige Teile-Liste/Inventur für PC
+  am PC breiter und mehrspaltig (siehe „PC-Ansicht")
 - Kein Amazon-/Shop-Feeling: Bestellschein-Charakter statt Warenkorb
+
+## Offen: Reiter Modul / Rahmen / Tribüne bei der Baustelle
+
+Gewünscht: bei der Baustelle per Reiter zwischen Modul, Rahmen (SL70/
+SL100) und Tribüne wechseln. Technik ist vorbereitet (`SYSTEMS`-Array,
+Reiter erscheint automatisch ab 2 Einträgen), wartet aber auf die
+aktuelle Bestell-Liste des Nutzers (hat zugesagt, sie zu schicken),
+damit die Reiter gleich mit echten Teilen kommen.
