@@ -277,6 +277,25 @@
   .chip-btn.primary{background:var(--accent-solid);border-color:var(--accent-solid);color:#fff;}
   .chip-btn.done{background:var(--accent-soft);border-color:transparent;color:var(--accent-dark);cursor:default;}
 
+  /* Fahrer-Kalender: Wochenleiste + Tagesliste */
+  .week-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .week-nav .chip-btn{min-width:38px;}
+  .week-label{flex:1;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;}
+  .week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
+  .day-cell{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--card);border:1.5px solid transparent;border-radius:14px;padding:8px 2px 7px 2px;cursor:pointer;box-shadow:var(--shadow);color:var(--ink);font-family:'Inter',sans-serif;}
+  .day-cell.today{border-color:var(--accent);}
+  .day-cell.active{background:var(--accent-solid);color:#fff;border-color:var(--accent-solid);}
+  .day-wd{font-size:10.5px;font-weight:600;opacity:0.75;}
+  .day-no{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;line-height:1;}
+  .day-dots{display:flex;gap:3px;min-height:7px;}
+  .day-dots i{width:7px;height:7px;border-radius:50%;display:inline-block;box-shadow:0 0 0 1px var(--card);}
+  .ev-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;}
+  .ev-time{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;}
+  .ev-kind{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .ev-kind.termin{background:var(--accent-soft);color:var(--accent-dark);}
+  .ev-kind.lieferung{background:#DCFCE7;color:#166534;}
+  .ev-notiz{font-size:13px;margin-top:6px;}
+
   /* Fahrer: Ziel antippen, wenn "Unterwegs" */
   .ziel-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
   .ziel-chip{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
@@ -530,6 +549,7 @@ de:{
   statusUpdatedPrefix:'Zuletzt aktualisiert:',
   fahrerStatusHeading:'Fahrer-Status', fahrerStatusEmpty:'Noch kein Fahrer hat einen Status gesetzt.',
   tabGeplant:'Geplant', tabPlanen:'Planen',
+  tabKalender:'Kalender', fkSub:'Wo wann was ist – LKW-Termine und geplante Lieferungen nach Bauvorhaben.', fkAllDay:'Ganztägig', fkTermin:'LKW-Termin', fkLieferung:'Lieferung', fkDayEmpty:'An diesem Tag ist nichts eingetragen.', fkNext:'Nächster Eintrag:', fkPrevWeek:'Vorherige Woche', fkNextWeek:'Nächste Woche', fkToday:'Heute',
   plSub:'Bauvorhaben, Datum und Teile wählen – erscheint als Geplant-Liste bei Lager und Fahrer.',
   plNoActiveProjects:'Erst ein Bauvorhaben anlegen, um eine Lieferung zu planen.',
   plProjektPlaceholder:'Bitte wählen…', plDatumLabel:'Lieferdatum',
@@ -685,6 +705,7 @@ pl:{
   statusUpdatedPrefix:'Ostatnia aktualizacja:',
   fahrerStatusHeading:'Status kierowców', fahrerStatusEmpty:'Żaden kierowca nie ustawił jeszcze statusu.',
   tabGeplant:'Zaplanowane', tabPlanen:'Planowanie',
+  tabKalender:'Kalendarz', fkSub:'Gdzie, kiedy i co – terminy ciężarówek i zaplanowane dostawy według budów.', fkAllDay:'Cały dzień', fkTermin:'Termin ciężarówki', fkLieferung:'Dostawa', fkDayEmpty:'Na ten dzień nic nie zaplanowano.', fkNext:'Następny wpis:', fkPrevWeek:'Poprzedni tydzień', fkNextWeek:'Następny tydzień', fkToday:'Dziś',
   plSub:'Wybierz budowę, datę i części – pojawi się jako lista „Zaplanowane" u magazynu i kierowców.',
   plNoActiveProjects:'Najpierw utwórz budowę, aby zaplanować dostawę.',
   plProjektPlaceholder:'Proszę wybrać…', plDatumLabel:'Data dostawy',
@@ -840,6 +861,7 @@ sk:{
   statusUpdatedPrefix:'Naposledy aktualizované:',
   fahrerStatusHeading:'Stav vodičov', fahrerStatusEmpty:'Žiadny vodič ešte nenastavil stav.',
   tabGeplant:'Naplánované', tabPlanen:'Plánovanie',
+  tabKalender:'Kalendár', fkSub:'Kde, kedy a čo – termíny nákladných áut a plánované dodávky podľa stavieb.', fkAllDay:'Celý deň', fkTermin:'Termín auta', fkLieferung:'Dodávka', fkDayEmpty:'Na tento deň nie je nič zadané.', fkNext:'Ďalší záznam:', fkPrevWeek:'Predchádzajúci týždeň', fkNextWeek:'Ďalší týždeň', fkToday:'Dnes',
   plSub:'Vyberte stavbu, dátum a diely – zobrazí sa ako zoznam „Naplánované" pre sklad a vodičov.',
   plNoActiveProjects:'Najprv vytvorte stavbu, aby ste mohli naplánovať dodávku.',
   plProjektPlaceholder:'Prosím vyberte…', plDatumLabel:'Dátum dodania',
@@ -995,6 +1017,7 @@ hr:{
   statusUpdatedPrefix:'Zadnje ažurirano:',
   fahrerStatusHeading:'Status vozača', fahrerStatusEmpty:'Nijedan vozač još nije postavio status.',
   tabGeplant:'Planirano', tabPlanen:'Planiranje',
+  tabKalender:'Kalendar', fkSub:'Gdje, kada i što – termini kamiona i planirane isporuke po gradilištima.', fkAllDay:'Cijeli dan', fkTermin:'Termin kamiona', fkLieferung:'Isporuka', fkDayEmpty:'Za ovaj dan nije ništa uneseno.', fkNext:'Sljedeći unos:', fkPrevWeek:'Prethodni tjedan', fkNextWeek:'Sljedeći tjedan', fkToday:'Danas',
   plSub:'Odaberite gradilište, datum i dijelove – prikazuje se kao popis „Planirano" kod skladišta i vozača.',
   plNoActiveProjects:'Prvo kreirajte gradilište kako biste planirali isporuku.',
   plProjektPlaceholder:'Molimo odaberite…', plDatumLabel:'Datum isporuke',
@@ -1150,6 +1173,7 @@ en:{
   statusUpdatedPrefix:'Last updated:',
   fahrerStatusHeading:'Driver status', fahrerStatusEmpty:'No driver has set a status yet.',
   tabGeplant:'Planned', tabPlanen:'Plan',
+  tabKalender:'Calendar', fkSub:'Where, when and what – truck appointments and planned deliveries by project.', fkAllDay:'All day', fkTermin:'Truck appointment', fkLieferung:'Delivery', fkDayEmpty:'Nothing scheduled for this day.', fkNext:'Next entry:', fkPrevWeek:'Previous week', fkNextWeek:'Next week', fkToday:'Today',
   plSub:'Pick a project, date and parts – shows up as a "Planned" list for the warehouse and drivers.',
   plNoActiveProjects:'Create a project first to plan a delivery.',
   plProjektPlaceholder:'Please choose…', plDatumLabel:'Delivery date',
@@ -1447,7 +1471,7 @@ const state = {
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
   employees:[], empCounter:1, authName:null, persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
-  projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', selProjekt:'', lastGPS:null,
+  projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
   driverStatus:{},
@@ -2010,10 +2034,89 @@ function fahrerHTML(){
   ${myStatusWidgetHTML()}
   <div class="seg-control">
     <button class="${tab==='lieferungen'?'active':''}" data-action="fahrer-tab" data-tab="lieferungen">${t('tabLieferungen')}</button>
+    <button class="${tab==='kalender'?'active':''}" data-action="fahrer-tab" data-tab="kalender">${t('tabKalender')}</button>
     <button class="${tab==='geplant'?'active':''}" data-action="fahrer-tab" data-tab="geplant">${t('tabGeplant')}</button>
     <button class="${tab==='bauvorhaben'?'active':''}" data-action="fahrer-tab" data-tab="bauvorhaben">${t('tabBauvorhaben')}</button>
   </div>
-  ${tab==='bauvorhaben' ? fahrerProjekteHTML() : tab==='geplant' ? fahrerGeplantHTML() : fahrerLieferungenHTML()}`;
+  ${tab==='bauvorhaben' ? fahrerProjekteHTML() : tab==='geplant' ? fahrerGeplantHTML() : tab==='kalender' ? fahrerKalenderHTML() : fahrerLieferungenHTML()}`;
+}
+
+// ---- Fahrer-Kalender: wo wann was ist ---------------------------------
+// Führt LKW-Termine (state.lkwEntries, mit Uhrzeit) und geplante
+// Lieferungen (state.plannedDeliveries) je Tag zusammen, jeweils mit
+// Bauvorhaben (Status-Farbe, Adresse, Maps-Link). Oben eine Wochenleiste
+// (Mo–So) mit Punkten je Termin, darunter der gewählte Tag
+// (state.fahrerCalDay, ISO-Datum, Standard heute).
+function addDaysISO(iso, n){
+  const d = new Date(iso+'T12:00:00'); d.setDate(d.getDate()+n);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function weekStartISO(iso){
+  const wd = new Date(iso+'T12:00:00').getDay();  // 0 = Sonntag
+  return addDaysISO(iso, wd===0 ? -6 : 1-wd);
+}
+function calEventsOn(iso){
+  const ev = [];
+  state.lkwEntries.filter(e=>e.date===iso).forEach(e=>ev.push({kind:'termin', time:e.time||'', projekt:e.projekt, notiz:e.notiz||''}));
+  state.plannedDeliveries.filter(pd=>pd.date===iso).forEach(pd=>ev.push({kind:'lieferung', time:'', projekt:pd.projekt, items:pd.items}));
+  // Termine mit Uhrzeit zuerst (nach Zeit), dann Lieferungen ohne Uhrzeit
+  return ev.sort((a,b)=> (a.time? 0:1)-(b.time? 0:1) || a.time.localeCompare(b.time));
+}
+function calEventHTML(ev){
+  const p = state.projects.find(x=>x.id===ev.projekt);
+  const hex = p ? projektColorMeta(p.farbe).hex : null;
+  const mapsUrl = !p ? '' : p.coords
+    ? `https://www.google.com/maps?q=${p.coords.lat},${p.coords.lon}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse)}`;
+  const items = ev.kind==='lieferung' ? ev.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('') : '';
+  return `<div class="order-card proj-card ev-card" style="${hex?`--pc:${hex};`:''}">
+    <div class="ev-head">
+      <div class="ev-time">${ev.time || t('fkAllDay')}</div>
+      <span class="ev-kind ${ev.kind}">${ev.kind==='termin' ? t('fkTermin') : t('fkLieferung')}</span>
+    </div>
+    <div class="no" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;">${p? `BV ${p.id} – ${p.name}` : '–'}</div>
+    ${p? `<div class="order-time" style="margin:2px 0 0 0;">${p.adresse}</div>`:''}
+    ${ev.notiz? `<div class="ev-notiz">${ev.notiz}</div>`:''}
+    ${items? `<ul class="order-items">${items}</ul>${weightLineHTML(ev.items)}`:''}
+    ${mapsUrl? `<a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>`:''}
+  </div>`;
+}
+function fahrerKalenderHTML(){
+  const today = todayISO();
+  const sel = state.fahrerCalDay || today;
+  const start = weekStartISO(sel);
+  const days = [0,1,2,3,4,5,6].map(i=>addDaysISO(start,i));
+  const wd = WEEKDAYS[state.lang]||WEEKDAYS.de;
+  const strip = days.map(d=>{
+    const ev = calEventsOn(d);
+    const dots = ev.slice(0,4).map(e=>{
+      const p = state.projects.find(x=>x.id===e.projekt);
+      const hex = p ? projektColorMeta(p.farbe).hex : null;
+      return `<i style="background:${hex||'var(--muted)'}"></i>`;
+    }).join('');
+    return `<button class="day-cell ${d===sel?'active':''} ${d===today?'today':''}" data-action="fk-day" data-day="${d}">
+      <span class="day-wd">${wd[new Date(d+'T12:00:00').getDay()]}</span>
+      <span class="day-no">${Number(d.slice(8,10))}</span>
+      <span class="day-dots">${dots}</span>
+    </button>`;
+  }).join('');
+  const events = calEventsOn(sel);
+  let empty = '';
+  if(!events.length){
+    const next = [...state.lkwEntries.map(e=>e.date), ...state.plannedDeliveries.map(pd=>pd.date)].filter(d=>d>sel).sort()[0];
+    empty = `<div class="empty-state" style="padding:26px 10px;">${t('fkDayEmpty')}
+      ${next? `<div style="margin-top:12px;"><button class="chip-btn" data-action="fk-day" data-day="${next}">${t('fkNext')} ${formatDateDE(next)} ›</button></div>`:''}</div>`;
+  }
+  return `<p class="view-sub">${t('fkSub')}</p>
+  <div class="week-nav">
+    <button class="chip-btn" data-action="fk-day" data-day="${addDaysISO(sel,-7)}" aria-label="${t('fkPrevWeek')}">‹</button>
+    <div class="week-label">${formatDateDE(days[0]).split(', ')[1].slice(0,6)} – ${formatDateDE(days[6]).split(', ')[1]}</div>
+    <button class="chip-btn" data-action="fk-day" data-day="${addDaysISO(sel,7)}" aria-label="${t('fkNextWeek')}">›</button>
+    ${sel!==today? `<button class="chip-btn primary" data-action="fk-day" data-day="${today}">${t('fkToday')}</button>`:''}
+  </div>
+  <div class="week-strip">${strip}</div>
+  <h3 class="section-h">${formatDateDE(sel)}</h3>
+  ${events.length? `<div class="card-grid">${events.map(calEventHTML).join('')}</div>` : empty}`;
 }
 
 function fahrerLieferungenHTML(){
@@ -2104,7 +2207,7 @@ function widgetsHTML(role){
       widgetTile({tone:'accent', label:t('wZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen'}),
       widgetTile({tone:'blue', label:t('wAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen'}),
       widgetTile({tone:'sky', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
-      planTile('geplant'),
+      planTile('kalender'),
     ];
   }
   if(role==='lager'){
@@ -2801,6 +2904,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='fahrer-tab'){ state.fahrerTab = el.dataset.tab; render(); }
+  if(action==='fk-day'){ state.fahrerCalDay = el.dataset.day; render(); }
   if(action==='set-driver-status'){
     const prev = state.driverStatus[state.name];
     const status = el.dataset.status;
