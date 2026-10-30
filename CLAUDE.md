@@ -217,8 +217,18 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
      als "Fehlt: X Stk" angezeigt.
 3. **Fahrer** (z. B. Ludwig): Oben Widgets, dann "Mein Status" (Am Lager /
    Unterwegs – bei Unterwegs „Wohin?" mit antippbaren Bauvorhaben, siehe
-   Fahrer-Status), darunter drei Reiter "Lieferungen" / "Geplant" /
-   "Bauvorhaben".
+   Fahrer-Status), darunter vier Reiter "Lieferungen" / "Kalender" /
+   "Geplant" / "Bauvorhaben". **Kalender** (`fahrerKalenderHTML()`): zeigt
+   wo wann was ist – führt LKW-Termine (`lkwEntries`, mit Uhrzeit) und
+   geplante Lieferungen (`plannedDeliveries`, „ganztägig", mit Teilen +
+   Gewicht) je Tag zusammen (`calEventsOn()`), jede Karte mit Bauvorhaben,
+   Status-Farbe als Streifen, Adresse und Maps-Link. Oben Wochenleiste
+   Mo–So mit farbigen Punkten je Termin, ‹ › blättert wochenweise, „Heute"
+   springt zurück (`state.fahrerCalDay`, `data-action="fk-day"`); an
+   leeren Tagen ein Knopf zum nächsten Eintrag. Die Fahrer-Kachel „Nächste
+   geplante Lieferung" springt in diesen Reiter. Eingetragen werden die
+   Termine weiterhin im LKW-Kalender (Menü, Chef-Passwort) bzw. über
+   „Planen"/Bauvorhaben beim Chef.
    Sieht was wohin muss und wann bestellt wurde. Kann erst handeln, wenn
    das Lager freigegeben hat.
    Buttons: "Verladen" → "Losfahren" → "Lieferung bestätigen".
