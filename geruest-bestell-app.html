@@ -370,7 +370,7 @@ de:{
   menuBackToApp:'🔑 Zur Anmeldung / Bestellung', menuLangLabel:'Sprache',
   loadingText:'Lade Daten…',
   offlineError:'Keine Internet-Verbindung zum Speicher.<br>Bitte Internet prüfen und Seite neu laden.',
-  chefAreaTitle:'Chef-Bereich', chefAreaSub:'Bitte das Chef-Passwort eingeben',
+  chefAreaTitle:'Chef-Bereich', chefAreaSub:'Zusätzlich das Chef-Passwort eingeben – nicht dein eigenes Passwort',
   pwLabel:'Passwort', pwPlaceholder:'Passwort', loginBtn:'Anmelden', backBtn:'Zurück',
   loginSub:'Name wählen und Passwort eingeben', nameLabel:'Dein Name', selectPlaceholder:'Bitte wählen…',
   roleBaustelle:'Baustelle', roleBaustelleSub:'Teile bestellen',
@@ -483,7 +483,7 @@ pl:{
   menuBackToApp:'🔑 Do logowania / zamówień', menuLangLabel:'Język',
   loadingText:'Ładowanie danych…',
   offlineError:'Brak połączenia z serwerem.<br>Sprawdź internet i odśwież stronę.',
-  chefAreaTitle:'Strefa szefa', chefAreaSub:'Podaj hasło szefa',
+  chefAreaTitle:'Strefa szefa', chefAreaSub:'Dodatkowo podaj hasło szefa – nie swoje własne hasło',
   pwLabel:'Hasło', pwPlaceholder:'Hasło', loginBtn:'Zaloguj', backBtn:'Wstecz',
   loginSub:'Wybierz imię i podaj hasło', nameLabel:'Twoje imię', selectPlaceholder:'Wybierz…',
   roleBaustelle:'Budowa', roleBaustelleSub:'Zamawianie części',
@@ -596,7 +596,7 @@ sk:{
   menuBackToApp:'🔑 Na prihlásenie / objednávku', menuLangLabel:'Jazyk',
   loadingText:'Načítavam dáta…',
   offlineError:'Žiadne pripojenie k úložisku.<br>Skontrolujte internet a znova načítajte stránku.',
-  chefAreaTitle:'Sekcia šéfa', chefAreaSub:'Zadajte heslo šéfa',
+  chefAreaTitle:'Sekcia šéfa', chefAreaSub:'Dodatočne zadajte heslo šéfa – nie svoje vlastné heslo',
   pwLabel:'Heslo', pwPlaceholder:'Heslo', loginBtn:'Prihlásiť', backBtn:'Späť',
   loginSub:'Vyberte meno a zadajte heslo', nameLabel:'Tvoje meno', selectPlaceholder:'Vyberte…',
   roleBaustelle:'Stavenisko', roleBaustelleSub:'Objednať diely',
@@ -709,7 +709,7 @@ hr:{
   menuBackToApp:'🔑 Na prijavu / narudžbu', menuLangLabel:'Jezik',
   loadingText:'Učitavanje podataka…',
   offlineError:'Nema internetske veze s pohranom.<br>Provjerite internet i ponovno učitajte stranicu.',
-  chefAreaTitle:'Područje šefa', chefAreaSub:'Unesite lozinku šefa',
+  chefAreaTitle:'Područje šefa', chefAreaSub:'Dodatno unesite lozinku šefa – ne svoju vlastitu lozinku',
   pwLabel:'Lozinka', pwPlaceholder:'Lozinka', loginBtn:'Prijava', backBtn:'Natrag',
   loginSub:'Odaberite ime i unesite lozinku', nameLabel:'Tvoje ime', selectPlaceholder:'Odaberi…',
   roleBaustelle:'Gradilište', roleBaustelleSub:'Naruči dijelove',
@@ -822,7 +822,7 @@ en:{
   menuBackToApp:'🔑 To login / order', menuLangLabel:'Language',
   loadingText:'Loading data…',
   offlineError:'No internet connection to storage.<br>Please check your connection and reload the page.',
-  chefAreaTitle:'Boss area', chefAreaSub:'Please enter the boss password',
+  chefAreaTitle:'Boss area', chefAreaSub:'Also enter the boss password – not your own password',
   pwLabel:'Password', pwPlaceholder:'Password', loginBtn:'Log in', backBtn:'Back',
   loginSub:'Choose your name and enter your password', nameLabel:'Your name', selectPlaceholder:'Please choose…',
   roleBaustelle:'Site', roleBaustelleSub:'Order parts',
@@ -1169,8 +1169,8 @@ function loginHTML(){
         <h1>${t('chefAreaTitle')}</h1>
         <div class="sub">${t('chefAreaSub')}</div>
         <div class="field">
-          <label>${t('pwLabel')}</label>
-          <input id="chefPwInput" type="password" placeholder="${t('pwPlaceholder')}">
+          <label>${t('calPwLabel')}</label>
+          <input id="chefPwInput" type="password" placeholder="${t('calPwLabel')}" autocomplete="off">
         </div>
         <div class="role-grid">
           <button class="role-btn" data-action="chef-pw-ok" style="justify-content:center;background:var(--accent-solid);color:white;">${t('loginBtn')}</button>
@@ -2002,7 +2002,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const name = nameSel? nameSel.value : '';
     const emp = findEmployee(name);
     if(!emp){ state.loginWarn=t('warnSelectName'); render(); return; }
-    if(!pwInput || pwInput.value!==emp.pw){ state.name = name; state.loginWarn=t('warnWrongPw'); render(); return; }
+    if(!pwInput || pwInput.value.trim()!==String(emp.pw).trim()){ state.name = name; state.loginWarn=t('warnWrongPw'); render(); return; }
     const roles = employeeRoles(name);
     if(!roles.length){ state.name = name; state.loginWarn=t('warnNoRoles'); render(); return; }
     state.name = name; state.authName = name; state.loginWarn='';
@@ -2012,7 +2012,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='login-back'){ state.authName=null; state.loginWarn=''; render(); }
   if(action==='chef-pw-ok'){
     const pw = document.getElementById('chefPwInput');
-    if(pw && pw.value===CHEF_PASSWORD){
+    if(pw && pw.value.trim()===CHEF_PASSWORD){
       state.askChefPw=false; state.loginWarn=''; state.role='chef'; state.loggedIn=true;
       saveSession();
     } else {
@@ -2226,7 +2226,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='cal-unlock-cancel'){ state.calAskPw=false; render(); }
   if(action==='cal-unlock-ok'){
     const pw = document.getElementById('calPwInput');
-    if(pw && pw.value===CHEF_PASSWORD){
+    if(pw && pw.value.trim()===CHEF_PASSWORD){
       state.calUnlocked=true; state.calAskPw=false;
     } else {
       const w = document.getElementById('calPwWarn');
