@@ -117,6 +117,10 @@
   .t-name:active{background:var(--accent-soft);}
   .t-icon{width:22px;height:22px;color:var(--accent);flex:none;}
   .t-unit{color:var(--muted);font-size:12.5px;}
+  .t-kg{font-size:10.5px;color:var(--muted);opacity:0.85;white-space:nowrap;}
+  .order-weight{font-size:12.5px;color:var(--ink);background:var(--surface-2);border-radius:10px;padding:7px 10px;margin:6px 0 2px 0;}
+  .order-weight b{font-family:'Space Grotesk',sans-serif;}
+  .inv-cat{font-size:12px;text-transform:uppercase;letter-spacing:0.05em;color:var(--accent-dark);margin:18px 0 8px 0;}
   .qty-ctl{display:flex;align-items:center;border:1.5px solid var(--line-strong);border-radius:8px;overflow:hidden;flex:none;background:var(--card);}
   .qty-ctl button{background:none;border:none;width:30px;height:34px;font-size:16px;line-height:1;cursor:pointer;color:var(--muted);}
   .qty-ctl button:active{background:var(--accent-soft);color:var(--accent-dark);}
@@ -333,7 +337,8 @@
   #printArea .ls-meta td:first-child{color:#555;width:140px;}
   #printArea .ls-items th{text-align:left;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:#555;border-bottom:2px solid #111;padding:6px 4px;}
   #printArea .ls-items td{padding:7px 4px;border-bottom:1px solid #ccc;font-size:14px;color:#111;}
-  #printArea .ls-items td.ls-menge{text-align:right;white-space:nowrap;}
+  #printArea .ls-items td.ls-menge,#printArea .ls-items th.ls-menge{text-align:right;white-space:nowrap;}
+  #printArea .ls-items .ls-total{font-weight:700;border-top:2px solid #111;border-bottom:none;text-align:right;padding-top:9px;}
   @media print{
     html,body{background:#fff !important;}
     body > *:not(#printArea){display:none !important;}
@@ -573,12 +578,24 @@ de:{
   statusBeladen:'Beladen', statusUnterwegs:'Unterwegs', statusGeliefert:'Geliefert',
   stepNeu:'Bearbeitung starten', stepInBearbeitung:'Bereit melden', stepBereitzurAbholung:'Verladen',
   stepBeladen:'Losfahren', stepUnterwegs:'Lieferung bestätigen',
-  cat_rahmen:'Rahmen & Streben', cat_boeden:'Böden & Beläge',
-  cat_gelaender:'Geländer & Absturzsicherung', cat_verbindung:'Verbindungstechnik', cat_zubehoer:'Zubehör',
-  item_rahmen20:'Vertikalrahmen 2,00 m', item_rahmen10:'Vertikalrahmen 1,00 m',
-  item_diagonale:'Diagonalstrebe', item_stahlboden:'Stahlboden 3,07 m', item_alubohle:'Alu-Bohle 2,50 m',
-  item_gelaender:'Geländerholm', item_bordbrett:'Bordbrett', item_spindel:'Fußspindel',
-  item_kupplung:'Kupplung (Normal)', item_leiter:'Durchstiegsleiter',
+  part_spindel:'Spindel (Ula)', part_spindelLang:'Spindel lang (Ula)', part_kippspindel:'Kippspindel (Ula)', part_stielMZ:'Stiel mit Zapfen',
+  part_stielOZ:'Stiel ohne Zapfen', part_anfangsstueck:'Anfangsstück', part_riegel:'Riegel', part_auflagerriegel:'Auflagerriegel',
+  part_diagonale:'Diagonale', part_belag:'Belag', part_leitergang:'Leitergang', part_konsole30:'Konsole 30',
+  part_konsole70:'Konsole 70', part_konsole100:'Konsole 100', part_ringschraube:'Ringschraube', part_anker:'Anker',
+  part_bordbrett:'Bordbrett', part_stirnbordbrett:'Stirnbordbrett', part_anschraubteller:'Anschraubteller', part_treppenlauf:'Treppenlauf',
+  part_treppengelaender:'Treppengeländer', part_rohr:'Rohr', part_nk:'Normalkupplung (NK)', part_dk:'Drehkupplung (DK)',
+  part_stosskupplung:'Stoßkupplung', part_keilkopfkupplung:'Keilkopfkupplung', part_bohle:'Bohle', part_gtStahl:'Gitterträger Stahl',
+  part_gtAlu:'Gitterträger Alu', part_rvRohr:'Rohrverbinder (Rohr)', part_rvGT:'Rohrverbinder (Gitterträger)', part_protectNetz:'Protect-Netz',
+  part_staubschutznetz:'Staubschutznetz', part_planen:'Plane', part_etagenleiter:'Etagenleiter', part_rahmenSL70:'Rahmen SL 70',
+  part_rahmenSL100:'Rahmen SL 100', part_durchgangsrahmen:'Durchgangsrahmen', part_lRahmenSL70:'L-Rahmen SL 70', part_lRahmenSL100:'L-Rahmen SL 100',
+  part_traufrahmen:'Traufrahmen', part_dachfangrahmen:'Dachfangrahmen', part_abschlussSL70:'Abschluss-Rahmen SL 70', part_abschlussSL100:'Abschluss-Rahmen SL 100',
+  part_gelaender:'Geländer', part_gelaenderpfosten:'Geländerpfosten (i)', part_absperrerSL70:'Absperrer SL 70', part_absperrerSL100:'Absperrer SL 100',
+  part_stirnbordbrettSL70:'Stirnbordbrett SL 70', part_stirnbordbrettSL100:'Stirnbordbrett SL 100', part_kippstiftkupplung:'Kippstiftkupplung', part_ddsNetz:'DDS-Netz',
+  part_aufzug500:'Aufzug 500 Z/ZP', part_aufzug1500:'Aufzug 1500 Z/ZP', part_mast:'Mast', part_masthalter:'Masthalter',
+  part_kabel16:'Kabel (16 A)', part_kabel32:'Kabel (32 A)', part_kabelfuehrung:'Kabelführung', part_etagentor:'Etagentor',
+  part_etagenstop:'Etagenstop', part_endschalter:'Endschalter', part_blinkstecker:'Blinkstecker',
+  var_offen:'offen', var_kurz:'kurz', var_lang:'lang', var_ohneZapfen:'ohne Zapfen', var_mitZapfen:'mit Zapfen', var_mit1Zapfen:'mit 1 Zapfen', var_mit2Zapfen:'mit 2 Zapfen', var_andere:'andere Länge', var_buehne:'Bühne', var_h1m:'H = 1 m',
+  sys_rahmen:'Rahmen', weightApprox:'ca.', weightLabel:'Gewicht', weightTotal:'Gesamtgewicht', weightMissing:'+ {n} Teil(e) ohne Gewichtsangabe', perPiece:'pro Stück',
   sys_modul:'Modul', searchPlaceholder:'Teil suchen…', searchNoResults:'Keine Teile gefunden.',
   favTitle:'⭐ Häufig bestellt',
   printBtn:'🖨️ Lieferschein drucken', pkgOne:'Paket', pkgMany:'Pakete', pkgAnd:'und',
@@ -716,12 +733,24 @@ pl:{
   statusBeladen:'Załadowane', statusUnterwegs:'W drodze', statusGeliefert:'Dostarczone',
   stepNeu:'Rozpocznij realizację', stepInBearbeitung:'Zgłoś gotowość', stepBereitzurAbholung:'Załaduj',
   stepBeladen:'Wyjazd', stepUnterwegs:'Potwierdź dostawę',
-  cat_rahmen:'Ramy i stężenia', cat_boeden:'Pomosty i okładziny',
-  cat_gelaender:'Poręcze i zabezpieczenia', cat_verbindung:'Technika łączenia', cat_zubehoer:'Akcesoria',
-  item_rahmen20:'Rama pionowa 2,00 m', item_rahmen10:'Rama pionowa 1,00 m',
-  item_diagonale:'Stężenie ukośne', item_stahlboden:'Pomost stalowy 3,07 m', item_alubohle:'Bohla aluminiowa 2,50 m',
-  item_gelaender:'Poręcz', item_bordbrett:'Bortnica', item_spindel:'Śruba rzymska (stopa)',
-  item_kupplung:'Złącze normalne', item_leiter:'Drabinka włazowa',
+  part_spindel:'Śruba podstawy (Ula)', part_spindelLang:'Śruba podstawy długa (Ula)', part_kippspindel:'Śruba przegubowa (Ula)', part_stielMZ:'Stojak z czopem',
+  part_stielOZ:'Stojak bez czopa', part_anfangsstueck:'Element startowy', part_riegel:'Rygiel', part_auflagerriegel:'Rygiel nośny',
+  part_diagonale:'Stężenie ukośne', part_belag:'Pomost', part_leitergang:'Pomost z drabiną', part_konsole30:'Konsola 30',
+  part_konsole70:'Konsola 70', part_konsole100:'Konsola 100', part_ringschraube:'Śruba z oczkiem', part_anker:'Kotwa',
+  part_bordbrett:'Krawężnik', part_stirnbordbrett:'Krawężnik czołowy', part_anschraubteller:'Talerz montażowy', part_treppenlauf:'Bieg schodów',
+  part_treppengelaender:'Poręcz schodowa', part_rohr:'Rura', part_nk:'Złącze normalne (NK)', part_dk:'Złącze obrotowe (DK)',
+  part_stosskupplung:'Złącze doczołowe', part_keilkopfkupplung:'Złącze klinowe', part_bohle:'Bal', part_gtStahl:'Dźwigar kratowy stalowy',
+  part_gtAlu:'Dźwigar kratowy aluminiowy', part_rvRohr:'Łącznik rur (rura)', part_rvGT:'Łącznik (dźwigar kratowy)', part_protectNetz:'Siatka Protect',
+  part_staubschutznetz:'Siatka przeciwpyłowa', part_planen:'Plandeka', part_etagenleiter:'Drabina kondygnacyjna', part_rahmenSL70:'Rama SL 70',
+  part_rahmenSL100:'Rama SL 100', part_durchgangsrahmen:'Rama przejściowa', part_lRahmenSL70:'Rama L SL 70', part_lRahmenSL100:'Rama L SL 100',
+  part_traufrahmen:'Rama okapowa', part_dachfangrahmen:'Rama ochrony dachu', part_abschlussSL70:'Rama zamykająca SL 70', part_abschlussSL100:'Rama zamykająca SL 100',
+  part_gelaender:'Poręcz', part_gelaenderpfosten:'Słupek poręczy (i)', part_absperrerSL70:'Barierka SL 70', part_absperrerSL100:'Barierka SL 100',
+  part_stirnbordbrettSL70:'Krawężnik czołowy SL 70', part_stirnbordbrettSL100:'Krawężnik czołowy SL 100', part_kippstiftkupplung:'Złącze z bolcem', part_ddsNetz:'Siatka DDS',
+  part_aufzug500:'Winda 500 Z/ZP', part_aufzug1500:'Winda 1500 Z/ZP', part_mast:'Maszt', part_masthalter:'Uchwyt masztu',
+  part_kabel16:'Kabel (16 A)', part_kabel32:'Kabel (32 A)', part_kabelfuehrung:'Prowadnica kabla', part_etagentor:'Brama piętrowa',
+  part_etagenstop:'Stop piętrowy', part_endschalter:'Wyłącznik krańcowy', part_blinkstecker:'Wtyk sygnalizacyjny',
+  var_offen:'otwarta', var_kurz:'krótka', var_lang:'długa', var_ohneZapfen:'bez czopa', var_mitZapfen:'z czopem', var_mit1Zapfen:'z 1 czopem', var_mit2Zapfen:'z 2 czopami', var_andere:'inna długość', var_buehne:'platforma', var_h1m:'H = 1 m',
+  sys_rahmen:'Ramy', weightApprox:'ok.', weightLabel:'Waga', weightTotal:'Waga całkowita', weightMissing:'+ {n} poz. bez podanej wagi', perPiece:'za sztukę',
   sys_modul:'Modul', searchPlaceholder:'Szukaj części…', searchNoResults:'Nie znaleziono żadnych części.',
   favTitle:'⭐ Często zamawiane',
   printBtn:'🖨️ Drukuj dowód dostawy', pkgOne:'paczka', pkgMany:'paczki', pkgAnd:'i',
@@ -859,12 +888,24 @@ sk:{
   statusBeladen:'Naložené', statusUnterwegs:'Na ceste', statusGeliefert:'Doručené',
   stepNeu:'Začať spracovanie', stepInBearbeitung:'Nahlásiť pripravené', stepBereitzurAbholung:'Naložiť',
   stepBeladen:'Vyraziť', stepUnterwegs:'Potvrdiť doručenie',
-  cat_rahmen:'Rámy a vzpery', cat_boeden:'Podlahy a obklady',
-  cat_gelaender:'Zábradlia a zabezpečenie proti pádu', cat_verbindung:'Spojovacia technika', cat_zubehoer:'Príslušenstvo',
-  item_rahmen20:'Rámová stojka 2,00 m', item_rahmen10:'Rámová stojka 1,00 m',
-  item_diagonale:'Diagonálna vzpera', item_stahlboden:'Oceľová podlaha 3,07 m', item_alubohle:'Hliníková fošňa 2,50 m',
-  item_gelaender:'Zábradlová tyč', item_bordbrett:'Okrajová doska', item_spindel:'Pätková skrutka',
-  item_kupplung:'Spojka (normálna)', item_leiter:'Priechodový rebrík',
+  part_spindel:'Pätková skrutka (Ula)', part_spindelLang:'Pätková skrutka dlhá (Ula)', part_kippspindel:'Sklopná pätka (Ula)', part_stielMZ:'Stojka s čapom',
+  part_stielOZ:'Stojka bez čapu', part_anfangsstueck:'Štartovací kus', part_riegel:'Priečnik', part_auflagerriegel:'Nosný priečnik',
+  part_diagonale:'Diagonála', part_belag:'Podlaha', part_leitergang:'Podlaha s rebríkom', part_konsole30:'Konzola 30',
+  part_konsole70:'Konzola 70', part_konsole100:'Konzola 100', part_ringschraube:'Skrutka s okom', part_anker:'Kotva',
+  part_bordbrett:'Zarážka', part_stirnbordbrett:'Čelná zarážka', part_anschraubteller:'Montážny tanier', part_treppenlauf:'Schodisko',
+  part_treppengelaender:'Zábradlie schodiska', part_rohr:'Rúra', part_nk:'Pevná spojka (NK)', part_dk:'Otočná spojka (DK)',
+  part_stosskupplung:'Nastavovacia spojka', part_keilkopfkupplung:'Klinová spojka', part_bohle:'Fošňa', part_gtStahl:'Priehradový nosník oceľ',
+  part_gtAlu:'Priehradový nosník hliník', part_rvRohr:'Spojka rúr (rúra)', part_rvGT:'Spojka (priehradový nosník)', part_protectNetz:'Sieť Protect',
+  part_staubschutznetz:'Protiprašná sieť', part_planen:'Plachta', part_etagenleiter:'Poschodový rebrík', part_rahmenSL70:'Rám SL 70',
+  part_rahmenSL100:'Rám SL 100', part_durchgangsrahmen:'Prechodový rám', part_lRahmenSL70:'L-rám SL 70', part_lRahmenSL100:'L-rám SL 100',
+  part_traufrahmen:'Odkvapový rám', part_dachfangrahmen:'Rám strešnej ochrany', part_abschlussSL70:'Koncový rám SL 70', part_abschlussSL100:'Koncový rám SL 100',
+  part_gelaender:'Zábradlie', part_gelaenderpfosten:'Stĺpik zábradlia (i)', part_absperrerSL70:'Zábrana SL 70', part_absperrerSL100:'Zábrana SL 100',
+  part_stirnbordbrettSL70:'Čelná zarážka SL 70', part_stirnbordbrettSL100:'Čelná zarážka SL 100', part_kippstiftkupplung:'Spojka s kolíkom', part_ddsNetz:'Sieť DDS',
+  part_aufzug500:'Výťah 500 Z/ZP', part_aufzug1500:'Výťah 1500 Z/ZP', part_mast:'Stožiar', part_masthalter:'Držiak stožiara',
+  part_kabel16:'Kábel (16 A)', part_kabel32:'Kábel (32 A)', part_kabelfuehrung:'Vedenie kábla', part_etagentor:'Poschodová brána',
+  part_etagenstop:'Poschodová zarážka', part_endschalter:'Koncový spínač', part_blinkstecker:'Signalizačný konektor',
+  var_offen:'otvorený', var_kurz:'krátky', var_lang:'dlhý', var_ohneZapfen:'bez čapu', var_mitZapfen:'s čapom', var_mit1Zapfen:'s 1 čapom', var_mit2Zapfen:'s 2 čapmi', var_andere:'iná dĺžka', var_buehne:'plošina', var_h1m:'H = 1 m',
+  sys_rahmen:'Rámy', weightApprox:'cca', weightLabel:'Hmotnosť', weightTotal:'Celková hmotnosť', weightMissing:'+ {n} pol. bez hmotnosti', perPiece:'za kus',
   sys_modul:'Modul', searchPlaceholder:'Hľadať diel…', searchNoResults:'Nenašli sa žiadne diely.',
   favTitle:'⭐ Často objednávané',
   printBtn:'🖨️ Vytlačiť dodací list', pkgOne:'balík', pkgMany:'balíky', pkgAnd:'a',
@@ -1002,12 +1043,24 @@ hr:{
   statusBeladen:'Utovareno', statusUnterwegs:'U dostavi', statusGeliefert:'Isporučeno',
   stepNeu:'Započni obradu', stepInBearbeitung:'Označi spremno', stepBereitzurAbholung:'Utovari',
   stepBeladen:'Kreni', stepUnterwegs:'Potvrdi isporuku',
-  cat_rahmen:'Okviri i spone', cat_boeden:'Podovi i obloge',
-  cat_gelaender:'Ograde i zaštita od pada', cat_verbindung:'Spojna tehnika', cat_zubehoer:'Pribor',
-  item_rahmen20:'Okvir 2,00 m', item_rahmen10:'Okvir 1,00 m',
-  item_diagonale:'Dijagonalna spona', item_stahlboden:'Čelična podna ploča 3,07 m', item_alubohle:'Aluminijska podnica 2,50 m',
-  item_gelaender:'Rukohvat ograde', item_bordbrett:'Rubna daska', item_spindel:'Podnožna vijčana noga',
-  item_kupplung:'Spojnica (normalna)', item_leiter:'Prolazne ljestve',
+  part_spindel:'Vreteno (Ula)', part_spindelLang:'Vreteno dugo (Ula)', part_kippspindel:'Zglobno vreteno (Ula)', part_stielMZ:'Stup s čepom',
+  part_stielOZ:'Stup bez čepa', part_anfangsstueck:'Početni element', part_riegel:'Prečka', part_auflagerriegel:'Nosiva prečka',
+  part_diagonale:'Dijagonala', part_belag:'Podnica', part_leitergang:'Podnica s ljestvama', part_konsole30:'Konzola 30',
+  part_konsole70:'Konzola 70', part_konsole100:'Konzola 100', part_ringschraube:'Vijak s okom', part_anker:'Sidro',
+  part_bordbrett:'Rubna daska', part_stirnbordbrett:'Čeona rubna daska', part_anschraubteller:'Montažni tanjur', part_treppenlauf:'Stubišni krak',
+  part_treppengelaender:'Stubišna ograda', part_rohr:'Cijev', part_nk:'Obična spojnica (NK)', part_dk:'Okretna spojnica (DK)',
+  part_stosskupplung:'Sučeljna spojnica', part_keilkopfkupplung:'Klinasta spojnica', part_bohle:'Platica', part_gtStahl:'Rešetkasti nosač čelik',
+  part_gtAlu:'Rešetkasti nosač aluminij', part_rvRohr:'Spojnica cijevi (cijev)', part_rvGT:'Spojnica (rešetkasti nosač)', part_protectNetz:'Protect-mreža',
+  part_staubschutznetz:'Mreža protiv prašine', part_planen:'Cerada', part_etagenleiter:'Etažne ljestve', part_rahmenSL70:'Okvir SL 70',
+  part_rahmenSL100:'Okvir SL 100', part_durchgangsrahmen:'Prolazni okvir', part_lRahmenSL70:'L-okvir SL 70', part_lRahmenSL100:'L-okvir SL 100',
+  part_traufrahmen:'Okvir za strehu', part_dachfangrahmen:'Okvir krovne zaštite', part_abschlussSL70:'Završni okvir SL 70', part_abschlussSL100:'Završni okvir SL 100',
+  part_gelaender:'Ograda', part_gelaenderpfosten:'Stup ograde (i)', part_absperrerSL70:'Zapreka SL 70', part_absperrerSL100:'Zapreka SL 100',
+  part_stirnbordbrettSL70:'Čeona rubna daska SL 70', part_stirnbordbrettSL100:'Čeona rubna daska SL 100', part_kippstiftkupplung:'Spojnica s klinom', part_ddsNetz:'DDS-mreža',
+  part_aufzug500:'Dizalo 500 Z/ZP', part_aufzug1500:'Dizalo 1500 Z/ZP', part_mast:'Jarbol', part_masthalter:'Držač jarbola',
+  part_kabel16:'Kabel (16 A)', part_kabel32:'Kabel (32 A)', part_kabelfuehrung:'Vodilica kabela', part_etagentor:'Etažna vrata',
+  part_etagenstop:'Etažni graničnik', part_endschalter:'Krajnji prekidač', part_blinkstecker:'Signalni utikač',
+  var_offen:'otvoren', var_kurz:'kratak', var_lang:'dug', var_ohneZapfen:'bez čepa', var_mitZapfen:'s čepom', var_mit1Zapfen:'s 1 čepom', var_mit2Zapfen:'s 2 čepa', var_andere:'druga duljina', var_buehne:'platforma', var_h1m:'H = 1 m',
+  sys_rahmen:'Okviri', weightApprox:'oko', weightLabel:'Težina', weightTotal:'Ukupna težina', weightMissing:'+ {n} stavki bez težine', perPiece:'po komadu',
   sys_modul:'Modul', searchPlaceholder:'Pretraži dio…', searchNoResults:'Nema pronađenih dijelova.',
   favTitle:'⭐ Često naručivano',
   printBtn:'🖨️ Ispiši otpremnicu', pkgOne:'paket', pkgMany:'paketa', pkgAnd:'i',
@@ -1145,12 +1198,24 @@ en:{
   statusBeladen:'Loaded', statusUnterwegs:'En route', statusGeliefert:'Delivered',
   stepNeu:'Start processing', stepInBearbeitung:'Mark ready', stepBereitzurAbholung:'Load',
   stepBeladen:'Depart', stepUnterwegs:'Confirm delivery',
-  cat_rahmen:'Frames & braces', cat_boeden:'Decks & boards',
-  cat_gelaender:'Guardrails & fall protection', cat_verbindung:'Connectors', cat_zubehoer:'Accessories',
-  item_rahmen20:'Vertical frame 2.00 m', item_rahmen10:'Vertical frame 1.00 m',
-  item_diagonale:'Diagonal brace', item_stahlboden:'Steel deck board 3.07 m', item_alubohle:'Aluminium plank 2.50 m',
-  item_gelaender:'Guardrail tube', item_bordbrett:'Toe board', item_spindel:'Base jack',
-  item_kupplung:'Standard coupler', item_leiter:'Access ladder',
+  part_spindel:'Base jack (Ula)', part_spindelLang:'Base jack long (Ula)', part_kippspindel:'Swivel base jack (Ula)', part_stielMZ:'Standard with spigot',
+  part_stielOZ:'Standard without spigot', part_anfangsstueck:'Base collar', part_riegel:'Ledger', part_auflagerriegel:'Bearer ledger',
+  part_diagonale:'Diagonal brace', part_belag:'Deck', part_leitergang:'Ladder deck', part_konsole30:'Bracket 30',
+  part_konsole70:'Bracket 70', part_konsole100:'Bracket 100', part_ringschraube:'Eye bolt', part_anker:'Anchor',
+  part_bordbrett:'Toe board', part_stirnbordbrett:'End toe board', part_anschraubteller:'Screw-on plate', part_treppenlauf:'Stair flight',
+  part_treppengelaender:'Stair railing', part_rohr:'Tube', part_nk:'Right-angle coupler (NK)', part_dk:'Swivel coupler (DK)',
+  part_stosskupplung:'Sleeve coupler', part_keilkopfkupplung:'Wedge-head coupler', part_bohle:'Scaffold board', part_gtStahl:'Lattice girder steel',
+  part_gtAlu:'Lattice girder aluminium', part_rvRohr:'Tube connector (tube)', part_rvGT:'Connector (lattice girder)', part_protectNetz:'Protect net',
+  part_staubschutznetz:'Dust net', part_planen:'Tarpaulin', part_etagenleiter:'Storey ladder', part_rahmenSL70:'Frame SL 70',
+  part_rahmenSL100:'Frame SL 100', part_durchgangsrahmen:'Passage frame', part_lRahmenSL70:'L-frame SL 70', part_lRahmenSL100:'L-frame SL 100',
+  part_traufrahmen:'Eaves frame', part_dachfangrahmen:'Roof catch frame', part_abschlussSL70:'End frame SL 70', part_abschlussSL100:'End frame SL 100',
+  part_gelaender:'Guardrail', part_gelaenderpfosten:'Guardrail post (i)', part_absperrerSL70:'Barrier SL 70', part_absperrerSL100:'Barrier SL 100',
+  part_stirnbordbrettSL70:'End toe board SL 70', part_stirnbordbrettSL100:'End toe board SL 100', part_kippstiftkupplung:'Pin coupler', part_ddsNetz:'DDS net',
+  part_aufzug500:'Hoist 500 Z/ZP', part_aufzug1500:'Hoist 1500 Z/ZP', part_mast:'Mast', part_masthalter:'Mast tie',
+  part_kabel16:'Cable (16 A)', part_kabel32:'Cable (32 A)', part_kabelfuehrung:'Cable guide', part_etagentor:'Landing gate',
+  part_etagenstop:'Landing stop', part_endschalter:'Limit switch', part_blinkstecker:'Signal plug',
+  var_offen:'open', var_kurz:'short', var_lang:'long', var_ohneZapfen:'without spigot', var_mitZapfen:'with spigot', var_mit1Zapfen:'with 1 spigot', var_mit2Zapfen:'with 2 spigots', var_andere:'other length', var_buehne:'platform', var_h1m:'H = 1 m',
+  sys_rahmen:'Frames', weightApprox:'approx.', weightLabel:'Weight', weightTotal:'Total weight', weightMissing:'+ {n} item(s) without weight', perPiece:'per piece',
   sys_modul:'Modul', searchPlaceholder:'Search parts…', searchNoResults:'No parts found.',
   favTitle:'⭐ Frequently ordered',
   printBtn:'🖨️ Print delivery note', pkgOne:'package', pkgMany:'packages', pkgAnd:'and',
@@ -1162,8 +1227,8 @@ function t(key, vars){
   if(vars) Object.keys(vars).forEach(k=>{ s = s.replace(new RegExp('\\{'+k+'\\}','g'), vars[k]); });
   return s;
 }
-function catName(cat){ return t('cat_'+cat.id); }
-function itemName(it){ return t('item_'+it.id); }
+function catName(cat){ return t('part_'+(PART_NAMEKEY[cat.id]||cat.id)); }
+function itemName(it){ return itemNameLang(it, state.lang); }
 function unitLabel(u){ return u==='Stk' ? t('unitStk') : u; }
 // Bestellte Positionen sind mit deutschem Namen/Einheit gespeichert
 // (Roh-Datensatz, sprachunabhängig) -- zur Anzeige immer über die
@@ -1191,44 +1256,171 @@ function formatPackages(qty, it){
     : `${pkgCount} ${pkgWord}`;
 }
 
-// Gerüst-Systeme (z.B. Modul, SL70/SL100, Tribünen). Aktuell nur eins --
-// die Auswahl-Reiter erscheinen automatisch, sobald ein zweites System
-// dazukommt (siehe catalogHTML). Neues System: hier eine Zeile ergänzen
-// und den Teilen unten das passende system-Feld geben.
+// Gerüst-Systeme = Reiter beim Bestellen/Planen/Inventur. "system" ist
+// das Rahmen-System (SL 70 / SL 100), im Excel "Materialauszug System".
+// Tribünen folgen, sobald die Teile-Liste dafür da ist.
 const SYSTEMS = [
   {id:'modul', nameKey:'sys_modul'},
+  {id:'system', nameKey:'sys_rahmen'},
 ];
 
-const CATEGORIES = [
-  {id:'rahmen', name:'Rahmen & Streben'},
-  {id:'boeden', name:'Böden & Beläge'},
-  {id:'gelaender', name:'Geländer & Absturzsicherung'},
-  {id:'verbindung', name:'Verbindungstechnik'},
-  {id:'zubehoer', name:'Zubehör'},
+// ECHTE TEILE aus der Excel-Datei des Kunden ("Projekt.xlsm", Blätter
+// "Materialauszug Modul" und "Materialauszug System"). Pro Zeile eine
+// Teile-Art: [Typ-ID, Namens-Schlüssel (part_<key> im T-Wörterbuch),
+// Icon, Systeme, Varianten]. Variante = [Länge in m | Varianten-Schlüssel
+// (var_<key>) | [Länge, Varianten-Schlüssel] | null, kg pro Stück | null].
+// Gewicht: Excel-Spalte "Einzeln" x 100 = kg (das Excel rechnet die
+// Summe x 0,1 in Tonnen). Teile-Arten, die in beiden Blättern exakt
+// gleich sind (gleiche Längen + Gewichte), sind EIN Artikel für beide
+// Systeme, damit der Lagerbestand nicht doppelt geführt wird.
+// Neues Teil: Zeile ergänzen + part_<key> in allen 5 Sprachen. Die
+// Artikel-ID (partItemId) ergibt sich aus Typ + Länge und darf sich nicht
+// ändern, sonst passen alte Bestellungen/Bestände nicht mehr.
+const PARTS = [
+  ["spindel","spindel","spindle",["modul", "system"],[[null,2.6]]],
+  ["spindelLang","spindelLang","spindle",["modul", "system"],[[null,3.5]]],
+  ["kippspindel","kippspindel","spindle",["modul", "system"],[[null,6.0]]],
+  ["stielMZ","stielMZ","frame",["modul"],[[0.5,3.2],[1.0,5.4],[1.5,7.7],[2.0,9.9],[2.5,12.1],[3.0,14.4],[4.0,18.8]]],
+  ["stielOZ","stielOZ","frame",["modul"],[[0.5,2.2],[1.0,4.5],[1.5,6.7],[2.0,8.9],[2.5,11.2],[3.0,13.4],[4.0,17.9]]],
+  ["anfangsstueck","anfangsstueck","frame",["modul"],[[null,13.0]]],
+  ["riegel","riegel","rail",["modul"],[[0.3,2.0],[0.7,3.0],[1.0,4.2],[1.39,5.4],[1.5,5.4],[2.0,7.0],[2.5,8.5],[3.0,10.1]]],
+  ["auflagerriegel","auflagerriegel","rail",["modul"],[[0.3,2.1],[0.7,3.2],[1.0,5.9],[1.39,7.7],[1.5,9.5],[2.0,12.7],[2.5,15.8],[3.0,18.9]]],
+  ["diagonaleM","diagonale","diag",["modul"],[[0.7,9.2],[1.0,null],[1.5,null],[2.0,10.1],[2.5,11.2],[3.0,12.4]]],
+  ["belag","belag","plank",["modul", "system"],[[0.7,6.1],[1.0,8.2],[1.5,11.2],[2.0,14.3],[2.5,17.4],[3.0,20.5]]],
+  ["leitergang","leitergang","ladder",["modul", "system"],[[2.5,25.5],[3.0,29.2]]],
+  ["konsole30M","konsole30","board",["modul"],[[null,3.6]]],
+  ["konsole70M","konsole70","board",["modul"],[[null,5.9]]],
+  ["konsole100M","konsole100","board",["modul"],[[null,9.5]]],
+  ["ringschraubeM","ringschraube","clamp",["modul"],[[null,1.9]]],
+  ["anker","anker","clamp",["modul", "system"],[[null,null]]],
+  ["bordbrett","bordbrett","board",["modul", "system"],[[1.0,2.4],[1.5,3.2],[2.0,4.1],[2.5,5.0],[3.0,5.9]]],
+  ["stirnbordbrett","stirnbordbrett","board",["modul"],[[0.7,1.4],[1.0,1.8]]],
+  ["anschraubteller","anschraubteller","clamp",["modul"],[[null,1.1]]],
+  ["treppenlauf","treppenlauf","ladder",["modul", "system"],[[2.5,27.5],["h1m",32.5]]],
+  ["treppengelaender","treppengelaender","rail",["modul", "system"],[[2.5,15.4],["andere",17.2]]],
+  ["rohr","rohr","pipe",["modul", "system"],[[1.0,3.8],[1.5,5.7],[2.0,7.6],[2.5,9.5],[3.0,11.4],[3.5,13.3],[4.0,15.2],[4.5,17.1],[5.0,19.0],[5.5,20.9],[6.0,22.8]]],
+  ["nk","nk","clamp",["modul", "system"],[[null,1.0]]],
+  ["dk","dk","clamp",["modul", "system"],[[null,1.2]]],
+  ["stosskupplung","stosskupplung","clamp",["modul", "system"],[[null,1.3]]],
+  ["keilkopfkupplung","keilkopfkupplung","clamp",["modul"],[[null,1.3]]],
+  ["bohle","bohle","plank",["modul", "system"],[[0.5,3.2],[1.0,6.4],[1.5,9.6],[2.0,12.8],[2.5,16.0],[3.0,19.2],[3.5,22.4],[4.0,25.6]]],
+  ["gtStahl","gtStahl","truss",["modul", "system"],[[3.0,30.3],[4.0,39.2],[5.0,48.2],[6.0,57.1],[7.0,71.2],[8.0,75.8]]],
+  ["gtAlu","gtAlu","truss",["modul", "system"],[[3.0,12.6],[4.0,16.3],[5.0,19.9],[6.0,23.6],[7.0,29.4],[8.0,31.2]]],
+  ["rvRohr","rvRohr","clamp",["modul", "system"],[[null,1.3]]],
+  ["rvGT","rvGT","clamp",["modul", "system"],[[null,2.2]]],
+  ["protectNetz","protectNetz","net",["modul", "system"],[[null,55.0]]],
+  ["staubschutznetz","staubschutznetz","net",["modul", "system"],[[null,null]]],
+  ["planen","planen","net",["modul", "system"],[[null,null]]],
+  ["etagenleiter","etagenleiter","ladder",["modul", "system"],[[null,9.0]]],
+  ["rahmenSL70","rahmenSL70","frame",["system"],[[0.5,8.5],[1.0,11.7],[1.5,15.2],[2.0,18.3],[[2.0, "offen"],18.3]]],
+  ["rahmenSL100","rahmenSL100","frame",["system"],[[0.5,11.4],[1.0,14.9],[1.5,18.7],[2.0,22.1],[[2.0, "offen"],22.1]]],
+  ["durchgangsrahmen","durchgangsrahmen","frame",["system"],[[1.5,32.1],[1.8,34.8]]],
+  ["lRahmenSL70","lRahmenSL70","frame",["system"],[["kurz",5.2],["lang",10.6]]],
+  ["lRahmenSL100","lRahmenSL100","frame",["system"],[["kurz",5.9],["lang",11.5]]],
+  ["traufrahmen","traufrahmen","frame",["system"],[[2.0,22.2]]],
+  ["dachfangrahmen","dachfangrahmen","frame",["system"],[[2.0,21.9]]],
+  ["abschlussSL70","abschlussSL70","frame",["system"],[[1.0,12.8]]],
+  ["abschlussSL100","abschlussSL100","frame",["system"],[[1.0,15.5]]],
+  ["gelaender","gelaender","rail",["system"],[[1.0,2.0],[1.5,2.8],[2.0,3.6],[2.5,4.2],[3.0,5.2]]],
+  ["konsole30S","konsole30","board",["system"],[["ohneZapfen",3.3],["mitZapfen",5.5]]],
+  ["konsole70S","konsole70","board",["system"],[["ohneZapfen",6.4],["mit1Zapfen",8.3],["mit2Zapfen",10.9]]],
+  ["konsole100S","konsole100","board",["system"],[["mit1Zapfen",10.5],["mit2Zapfen",12.3]]],
+  ["ringschraubeS","ringschraube","clamp",["system"],[[null,2.1]]],
+  ["gelaenderpfosten","gelaenderpfosten","rail",["system"],[[null,3.8]]],
+  ["absperrerSL70","absperrerSL70","rail",["system"],[[null,3.7]]],
+  ["absperrerSL100","absperrerSL100","rail",["system"],[[null,4.9]]],
+  ["diagonaleS","diagonale","diag",["system"],[[2.5,10.1],[3.0,11.4]]],
+  ["stirnbordbrettSL70","stirnbordbrettSL70","board",["system"],[[null,1.4]]],
+  ["stirnbordbrettSL100","stirnbordbrettSL100","board",["system"],[[null,1.8]]],
+  ["kippstiftkupplung","kippstiftkupplung","clamp",["system"],[[null,0.7]]],
+  ["ddsNetz","ddsNetz","net",["system"],[[null,null]]],
+  ["aufzug500","aufzug500","lift",["system"],[["buehne",null]]],
+  ["aufzug1500","aufzug1500","lift",["system"],[["buehne",null]]],
+  ["mast","mast","lift",["system"],[[null,null]]],
+  ["masthalter","masthalter","lift",["system"],[[null,null]]],
+  ["kabel16","kabel16","lift",["system"],[[null,null]]],
+  ["kabel32","kabel32","lift",["system"],[[null,null]]],
+  ["kabelfuehrung","kabelfuehrung","lift",["system"],[[null,null]]],
+  ["etagentor","etagentor","lift",["system"],[[null,null]]],
+  ["etagenstop","etagenstop","lift",["system"],[[null,null]]],
+  ["endschalter","endschalter","lift",["system"],[[null,null]]],
+  ["blinkstecker","blinkstecker","lift",["system"],[[null,null]]],
 ];
+const CATEGORY_ORDER = {"modul": ["spindel", "spindelLang", "kippspindel", "stielMZ", "stielOZ", "anfangsstueck", "riegel", "auflagerriegel", "diagonaleM", "belag", "leitergang", "konsole30M", "konsole70M", "konsole100M", "ringschraubeM", "anker", "bordbrett", "stirnbordbrett", "anschraubteller", "treppenlauf", "treppengelaender", "rohr", "nk", "dk", "stosskupplung", "keilkopfkupplung", "bohle", "gtStahl", "gtAlu", "rvRohr", "rvGT", "protectNetz", "staubschutznetz", "planen", "etagenleiter"], "system": ["spindel", "spindelLang", "kippspindel", "rahmenSL70", "rahmenSL100", "durchgangsrahmen", "lRahmenSL70", "lRahmenSL100", "traufrahmen", "dachfangrahmen", "abschlussSL70", "abschlussSL100", "belag", "leitergang", "gelaender", "konsole30S", "konsole70S", "konsole100S", "ringschraubeS", "anker", "treppenlauf", "treppengelaender", "gelaenderpfosten", "absperrerSL70", "absperrerSL100", "diagonaleS", "bordbrett", "stirnbordbrettSL70", "stirnbordbrettSL100", "rohr", "nk", "dk", "stosskupplung", "kippstiftkupplung", "bohle", "gtStahl", "gtAlu", "rvRohr", "rvGT", "protectNetz", "staubschutznetz", "ddsNetz", "planen", "etagenleiter", "aufzug500", "aufzug1500", "mast", "masthalter", "kabel16", "kabel32", "kabelfuehrung", "etagentor", "etagenstop", "endschalter", "blinkstecker"]};
+// Reihenfolge der Teile-Arten je System = Reihenfolge im Excel.
 
-const CATALOG = [
-  {id:'rahmen20', name:'Vertikalrahmen 2,00 m', unit:'Stk', icon:'frame', cat:'rahmen', system:'modul'},
-  {id:'rahmen10', name:'Vertikalrahmen 1,00 m', unit:'Stk', icon:'frame', cat:'rahmen', system:'modul'},
-  {id:'diagonale', name:'Diagonalstrebe', unit:'Stk', icon:'diag', cat:'rahmen', system:'modul'},
-  {id:'stahlboden', name:'Stahlboden 3,07 m', unit:'Stk', icon:'plank', cat:'boeden', system:'modul', pkg:10},
-  {id:'alubohle', name:'Alu-Bohle 2,50 m', unit:'Stk', icon:'plank', cat:'boeden', system:'modul', pkg:10},
-  {id:'gelaender', name:'Geländerholm', unit:'Stk', icon:'rail', cat:'gelaender', system:'modul'},
-  {id:'bordbrett', name:'Bordbrett', unit:'Stk', icon:'board', cat:'gelaender', system:'modul'},
-  {id:'spindel', name:'Fußspindel', unit:'Stk', icon:'spindle', cat:'verbindung', system:'modul'},
-  {id:'kupplung', name:'Kupplung (Normal)', unit:'Stk', icon:'clamp', cat:'verbindung', system:'modul', pkg:50},
-  {id:'leiter', name:'Durchstiegsleiter', unit:'Stk', icon:'ladder', cat:'zubehoer', system:'modul'},
-];
-// pkg = Stück pro Paket (optional). Nur Beispielwerte zum Testen der
-// Paket-Umrechnung auf dem Lieferschein -- echte Paketgrößen kommen mit
-// der realen Teile-Liste und müssen hier pro Teil ersetzt werden.
+function partItemId(type, v){
+  if(v==null) return type;
+  if(typeof v==='number') return type+'_'+Math.round(v*100);
+  if(Array.isArray(v)) return type+'_'+Math.round(v[0]*100)+v[1];
+  return type+'_'+v;
+}
+const LOCALES = {de:'de-DE', pl:'pl-PL', sk:'sk-SK', hr:'hr-HR', en:'en-GB'};
+function tl(lang, key){ return (T[lang] && T[lang][key]) ?? T.de[key] ?? key; }
+function fmtLen(m, lang){ return m.toLocaleString(LOCALES[lang]||'de-DE', {minimumFractionDigits:2, maximumFractionDigits:2})+' m'; }
+function variantLabel(v, lang){
+  if(v==null) return '';
+  if(typeof v==='number') return fmtLen(v, lang);
+  if(Array.isArray(v)) return fmtLen(v[0], lang)+' '+tl(lang,'var_'+v[1]);
+  return tl(lang,'var_'+v);
+}
+function itemNameLang(it, lang){
+  const vl = variantLabel(it.v, lang);
+  return tl(lang,'part_'+it.nameKey) + (vl? ' '+vl : '');
+}
 
-const DEFAULT_INVENTORY = {
-  rahmen20:40, rahmen10:40, diagonale:60, stahlboden:35, alubohle:25,
-  gelaender:50, bordbrett:45, spindel:30, kupplung:120, leiter:8,
-};
+const CATALOG = [];
+PARTS.forEach(([type, nameKey, icon, systems, variants])=>{
+  variants.forEach(([v, kg])=>{
+    const it = {id:partItemId(type,v), type, nameKey, v, kg, icon, unit:'Stk', cat:type, systems};
+    it.name = itemNameLang(it, 'de');  // deutscher Name für den gespeicherten Bestell-Datensatz
+    CATALOG.push(it);
+  });
+});
+// pkg = Stück pro Paket (optional, für die Paket-Umrechnung auf dem
+// Lieferschein). Echte Paketgrößen fehlen noch -- hier pro Artikel
+// ergänzen, z. B. CATALOG.find(i=>i.id==='belag_300').pkg = 20;
+function inSystem(it){ return it.systems.includes(state.systemSel); }
+function systemCategories(){ return (CATEGORY_ORDER[state.systemSel]||[]).map(id=>({id})); }
+const PART_NAMEKEY = Object.fromEntries(PARTS.map(p=>[p[0], p[1]]));
+
+const DEFAULT_INVENTORY = {};
+
+// ---- Gewicht (wichtig für den LKW) -----------------------------------
+function itemKg(i){
+  const c = CATALOG.find(x=>x.id===i.id);
+  if(c && c.kg!=null) return c.kg;
+  return (typeof i.kg==='number') ? i.kg : null;
+}
+function weightOf(items){
+  let kg = 0, missing = 0;
+  items.forEach(i=>{ const w = itemKg(i); if(w==null) missing++; else kg += w*i.qty; });
+  return {kg, missing};
+}
+function formatKg(kg){
+  const loc = LOCALES[state.lang]||'de-DE';
+  return kg>=1000
+    ? (kg/1000).toLocaleString(loc, {minimumFractionDigits:2, maximumFractionDigits:2})+' t'
+    : Math.round(kg).toLocaleString(loc)+' kg';
+}
+function weightText(items){
+  const w = weightOf(items);
+  if(!w.kg) return '';  // gar kein Gewicht bekannt (z. B. alte Beispiel-Teile) -> nichts anzeigen
+  return `${t('weightApprox')} ${formatKg(w.kg)}` + (w.missing? ` (${t('weightMissing',{n:w.missing})})` : '');
+}
+function weightLineHTML(items){
+  const txt = weightText(items);
+  return txt? `<div class="order-weight">⚖️ ${t('weightLabel')}: <b>${txt}</b></div>` : '';
+}
+function cartItems(){
+  return Object.entries(state.cart).filter(([,q])=>q>0).map(([id,qty])=>({id, qty}));
+}
 
 const ICONS = {
+  pipe:'<svg viewBox="0 0 24 24" fill="none" stroke="#0069B3" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="9" width="20" height="6" rx="3"/><line x1="18" y1="9" x2="18" y2="15"/></svg>',
+  truss:'<svg viewBox="0 0 24 24" fill="none" stroke="#0069B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="7" x2="22" y2="7"/><line x1="2" y1="17" x2="22" y2="17"/><polyline points="2,17 7,7 12,17 17,7 22,17"/></svg>',
+  net:'<svg viewBox="0 0 24 24" fill="none" stroke="#0069B3" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>',
+  lift:'<svg viewBox="0 0 24 24" fill="none" stroke="#0069B3" stroke-width="2.2" stroke-linecap="round"><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><rect x="5" y="10" width="14" height="6" rx="1"/></svg>',
   frame:'<svg viewBox="0 0 24 24" fill="none" stroke="#0069B3" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="2" x2="6" y2="22"/><line x1="18" y1="2" x2="18" y2="22"/><line x1="6" y1="7" x2="18" y2="7"/><line x1="6" y1="17" x2="18" y2="17"/></svg>',
   diag:'<svg viewBox="0 0 24 24" fill="none" stroke="#0069B3" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="4" y1="20" x2="20" y2="4"/></svg>',
   plank:'<svg viewBox="0 0 24 24" fill="none" stroke="#0069B3" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>',
@@ -1476,7 +1668,7 @@ function qtyControlHTML(it){
 function catalogRowHTML(it, alt){
   return `<tr class="${alt? 'row-alt':''}">
     <td class="t-name" data-longpress="${it.id}"><span class="t-icon">${ICONS[it.icon]}</span>${itemName(it)}</td>
-    <td class="t-unit">${unitLabel(it.unit)}</td>
+    <td class="t-unit">${unitLabel(it.unit)}${it.kg!=null? `<div class="t-kg">${it.kg.toLocaleString(LOCALES[state.lang]||'de-DE')} kg</div>`:''}</td>
     <td>${qtyControlHTML(it)}</td>
   </tr>`;
 }
@@ -1507,7 +1699,7 @@ function catalogHTML(){
   const freiGewaehlt = !aktive.length || state.selProjekt==='_frei';
   const counts = itemOrderCounts();
   const search = state.catalogSearch.trim().toLowerCase();
-  const systemItems = SYSTEMS.length>1 ? CATALOG.filter(it=>it.system===state.systemSel) : CATALOG;
+  const systemItems = SYSTEMS.length>1 ? CATALOG.filter(inSystem) : CATALOG;
 
   let rows = '';
   let rowIdx = 0;
@@ -1527,7 +1719,7 @@ function catalogHTML(){
       const favItems = favIds.map(id=>systemItems.find(x=>x.id===id));
       rows += catSectionHTML('_fav', t('favTitle'), favItems);
     }
-    CATEGORIES.forEach(cat=>{
+    systemCategories().forEach(cat=>{
       const items = systemItems.filter(it=>it.cat===cat.id).sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
       if(!items.length) return;
       rows += catSectionHTML(cat.id, catName(cat), items);
@@ -1562,7 +1754,7 @@ function catalogHTML(){
     ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>`}
   </div>
   <div class="order-footer">
-    <span>${count? t('footerCount',{n:count}) : t('footerEmpty')}</span>
+    <span>${count? t('footerCount',{n:count}) + (weightText(cartItems())? ' · '+weightText(cartItems()) : '') : t('footerEmpty')}</span>
     <button class="submit-btn" data-action="open-order-review" ${count? '':'disabled'}>${t('reviewBtn')}</button>
   </div>`;
 }
@@ -1574,7 +1766,7 @@ function itemPopupHTML(){
     <div class="item-popup">
       <div class="item-popup-photo">${ICONS[it.icon]}<span>${t('fotoFolgt')}</span></div>
       <div class="item-popup-name">${itemName(it)}</div>
-      <div class="item-popup-unit">${unitLabel(it.unit)}</div>
+      <div class="item-popup-unit">${unitLabel(it.unit)}${it.kg!=null? ` · ${it.kg.toLocaleString(LOCALES[state.lang]||'de-DE')} kg ${t('perPiece')}`:''}</div>
       ${qtyControlHTML(it)}
       <button class="refresh-btn" data-action="close-item-popup" style="margin-top:16px;width:100%;">${t('closeBtn')}</button>
     </div>
@@ -1585,7 +1777,7 @@ function orderReviewHTML(){
   if(!state.orderReview) return '';
   const items = Object.entries(state.cart).filter(([id,q])=>q>0).map(([id,q])=>{
     const it = CATALOG.find(c=>c.id===id);
-    return {name:itemName(it), unit:unitLabel(it.unit), qty:q};
+    return {id, name:itemName(it), unit:unitLabel(it.unit), qty:q};
   });
   const today = new Date().toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'});
   return `<div class="overlay" data-action="close-order-review-bg">
@@ -1598,7 +1790,7 @@ function orderReviewHTML(){
       ${items.length? `<table class="review-table">
         <thead><tr><th>${t('thTeil')}</th><th class="num">${t('thMenge')}</th></tr></thead>
         <tbody>${items.map(i=>`<tr><td>${i.name}</td><td class="num">${i.qty} ${i.unit}</td></tr>`).join('')}</tbody>
-      </table>` : `<div class="empty-state">${t('reviewEmpty')}</div>`}
+      </table>${weightLineHTML(items)}` : `<div class="empty-state">${t('reviewEmpty')}</div>`}
       <button class="submit-btn" data-action="submit-order-final" style="width:100%;" ${items.length? '':'disabled'}>${t('reviewSubmitBtn')}</button>
       <button class="refresh-btn" data-action="close-order-review" style="width:100%;margin-top:10px;">${t('reviewBackBtn')}</button>
     </div>
@@ -1620,6 +1812,7 @@ function confirmHTML(o){
           <div class="ticket-row"><span>${t('zeitLabel')}</span><span>${o.time}</span></div>
           <div style="border-top:1px solid var(--concrete);margin:10px 0;"></div>
           <ul class="order-items">${o.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>
+          ${weightLineHTML(o.items)}
         </div>
       </div>
       <button class="submit-btn" data-action="close-confirm" style="width:100%;max-width:340px;margin:16px auto 0 auto;display:block;">${t('fertigBtn')}</button>
@@ -1634,8 +1827,10 @@ function printOrder(id){
     const r = resolvedItem(i);
     const cat = CATALOG.find(c=>c.id===i.id);
     const pkg = formatPackages(i.qty, cat);
-    return `<tr><td>${r.name}</td><td class="ls-menge">${pkg || (i.qty+' '+r.unit)}</td></tr>`;
+    const w = itemKg(i);
+    return `<tr><td>${r.name}</td><td class="ls-menge">${pkg || (i.qty+' '+r.unit)}</td><td class="ls-menge">${w!=null? formatKg(w*i.qty) : '–'}</td></tr>`;
   }).join('');
+  const wt = weightText(o.items);
   const area = document.getElementById('printArea');
   area.innerHTML = `
     <img class="ls-logo" src="logo.png" alt="SGM">
@@ -1646,8 +1841,9 @@ function printOrder(id){
       <tr><td>${t('zeitLabel')}</td><td>${o.time}</td></tr>
     </table>
     <table class="ls-items">
-      <thead><tr><th>${t('thTeil')}</th><th class="ls-menge">${t('thMenge')}</th></tr></thead>
+      <thead><tr><th>${t('thTeil')}</th><th class="ls-menge">${t('thMenge')}</th><th class="ls-menge">${t('weightLabel')}</th></tr></thead>
       <tbody>${rowsHtml}</tbody>
+      ${wt? `<tfoot><tr><td colspan="3" class="ls-total">${t('weightTotal')}: ${wt}</td></tr></tfoot>`:''}
     </table>
   `;
   window.print();
@@ -1667,6 +1863,7 @@ function orderCardHTML(o, role){
     </div>
     <div class="order-time">${t('bestelltPrefix')} ${o.time}</div>
     <ul class="order-items">${o.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>
+    ${weightLineHTML(o.items)}
     <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
     <button class="print-btn" data-action="print-order" data-order="${o.id}">${t('printBtn')}</button>
     ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
@@ -1678,7 +1875,7 @@ function inventoryRowHTML(it, editable){
   const qty = state.inventory[it.id] ?? 0;
   let qtyClass='', tag='';
   if(qty<0){ qtyClass='stock-missing'; tag=`${t('stockMissingLabel')} ${-qty} ${unitLabel(it.unit)}`; }
-  else if(qty<10){ qtyClass='stock-low'; tag=t('stockLow'); }
+  else if(qty>0 && qty<10){ qtyClass='stock-low'; tag=t('stockLow'); }
   return `<div class="inv-row">
     <div class="inv-icon">${ICONS[it.icon]}</div>
     <div class="inv-main">
@@ -1693,7 +1890,12 @@ function inventoryRowHTML(it, editable){
   </div>`;
 }
 function inventoryTableHTML(editable){
-  return `<div class="inv-list">${CATALOG.map(it=>inventoryRowHTML(it, editable)).join('')}</div>`;
+  const tabs = SYSTEMS.length>1? `<div class="seg-control">${SYSTEMS.map(s=>`<button class="${state.systemSel===s.id?'active':''}" data-action="system-tab" data-sys="${s.id}">${t(s.nameKey)}</button>`).join('')}</div>`:'';
+  return tabs + systemCategories().map(cat=>{
+    const items = CATALOG.filter(it=>it.cat===cat.id && inSystem(it));
+    if(!items.length) return '';
+    return `<h4 class="inv-cat">${catName(cat)}</h4><div class="inv-list">${items.map(it=>inventoryRowHTML(it, editable)).join('')}</div>`;
+  }).join('');
 }
 
 function lagerHTML(){
@@ -1737,6 +1939,7 @@ function plannedDeliveryCardHTML(pd, editable){
       <div><div class="no">${formatDateDE(pd.date)}</div><div class="site">${projLabel}</div></div>
     </div>
     <ul class="order-items">${itemsHtml}</ul>
+    ${weightLineHTML(pd.items)}
     <div class="order-time">${t('plGeplantVonPrefix')} ${pd.person}</div>
     ${editable? `<button class="refresh-btn" data-action="delete-planned" data-id="${pd.id}" style="margin-top:10px;">${t('plDeleteBtn')}</button>`:''}
   </div>`;
@@ -1898,8 +2101,8 @@ function widgetsHTML(role){
     const lkw = by(['Beladen','Unterwegs']);
     const raeumen = state.projects.filter(p=>p.aktiv && p.farbe==='hellblau');
     tiles = [
-      widgetTile({tone:'accent', label:t('wZuLaden'), value:laden.length, detail:firstLine(laden), tab:'lieferungen'}),
-      widgetTile({tone:'blue', label:t('wAufLkw'), value:lkw.length, detail:firstLine(lkw), tab:'lieferungen'}),
+      widgetTile({tone:'accent', label:t('wZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen'}),
+      widgetTile({tone:'blue', label:t('wAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen'}),
       widgetTile({tone:'sky', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
       planTile('geplant'),
     ];
@@ -2061,7 +2264,7 @@ function projektDetailHTML(p){
 function planCatalogRowsHTML(){
   const counts = itemOrderCounts();
   const search = state.catalogSearch.trim().toLowerCase();
-  const systemItems = SYSTEMS.length>1 ? CATALOG.filter(it=>it.system===state.systemSel) : CATALOG;
+  const systemItems = SYSTEMS.length>1 ? CATALOG.filter(inSystem) : CATALOG;
   let rows = '';
   let rowIdx = 0;
   if(search){
@@ -2072,7 +2275,7 @@ function planCatalogRowsHTML(){
       ? matches.map(it=>{ rowIdx++; return catalogRowHTML(it, rowIdx%2===0); }).join('')
       : `<tr><td colspan="3" class="empty-state">${t('searchNoResults')}</td></tr>`;
   } else {
-    CATEGORIES.forEach(cat=>{
+    systemCategories().forEach(cat=>{
       const items = systemItems.filter(it=>it.cat===cat.id).sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
       if(!items.length) return;
       rows += catSectionHTML(cat.id, catName(cat), items);
@@ -2104,7 +2307,7 @@ function planFormHTML(fixedProjekt){
     </table></div>
     <div id="planWarnArea">${state.planWarn? `<div class="warn">${state.planWarn}</div>`:''}</div>
     <div class="order-footer">
-      <span>${count? t('footerCount',{n:count}) : t('footerEmpty')}</span>
+      <span>${count? t('footerCount',{n:count}) + (weightText(cartItems())? ' · '+weightText(cartItems()) : '') : t('footerEmpty')}</span>
       <button class="submit-btn" data-action="add-planned-delivery" ${fixedProjekt? `data-projekt="${fixedProjekt}"`:''} ${count? '':'disabled'}>${t('plAddBtn')}</button>
     </div>
   </div>`;
@@ -2377,7 +2580,7 @@ async function submitOrderFinal(){
   const {ort, coords, projektId} = state.orderReview;
   const items = Object.entries(state.cart).filter(([id,q])=>q>0).map(([id,q])=>{
     const it = CATALOG.find(c=>c.id===id);
-    return {id:it.id, name:it.name, unit:it.unit, qty:q};
+    return {id:it.id, name:it.name, unit:it.unit, qty:q, kg:it.kg};
   });
   if(items.length===0){ state.orderReview=null; render(); return; }
 
@@ -2624,7 +2827,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     }
     const items = Object.entries(state.cart).filter(([id,q])=>q>0).map(([id,q])=>{
       const it = CATALOG.find(c=>c.id===id);
-      return {id:it.id, name:it.name, unit:it.unit, qty:q};
+      return {id:it.id, name:it.name, unit:it.unit, qty:q, kg:it.kg};
     });
     if(items.length===0) return;
     state.plannedDeliveries.push({id: state.planCounter++, projekt: projektId, date, items, person: state.name});

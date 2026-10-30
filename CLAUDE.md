@@ -96,17 +96,58 @@ Baustellen-Bestellliste (`catalogHTML()`) drei Bausteine dagegen:
 - **Suchfeld** (`#catalogSearch`, `state.catalogSearch`): filtert per
   Tippen auf den (übersetzten) Teile-Namen; zeigt bei Treffern eine
   flache, nach Häufigkeit sortierte Liste ohne Kategorie-Überschriften.
-- **System-Auswahl** (`SYSTEMS`-Array, `state.systemSel`): aktuell nur
-  ein Eintrag ("Modul"), daher bleibt der Auswahl-Reiter unsichtbar
-  (`SYSTEMS.length>1`-Prüfung). Sobald ein zweites System (z. B.
-  "SL70/SL100" oder "Tribünen") als Eintrag ergänzt wird und die
-  CATALOG-Teile ein passendes `system`-Feld bekommen, erscheint der
-  Reiter automatisch.
+- **System-Reiter** (`SYSTEMS`-Array, `state.systemSel`): „Modul" und
+  „Rahmen" (= Rahmen-System SL 70/SL 100, im Excel „Materialauszug
+  System", interne ID `system`). Gleiche Reiter beim Bestellen, beim
+  Planen (Chef) und in der Lager-Inventur. Tribünen fehlen noch (keine
+  Teile-Liste vorhanden) – neuer Eintrag in `SYSTEMS` + Teile in `PARTS`.
 - **Ausklappbare Kategorien** (`state.collapsedCats`, `isCatCollapsed()`,
-  `catSectionHTML()`): Kategorien starten eingeklappt (nur Name +
-  Teile-Anzahl sichtbar, z. B. "RAHMEN & STREBEN (3)"), "Häufig
+  `catSectionHTML()`): Jede Teile-ART ist eine Kategorie, die Längen
+  sind die Zeilen darin. Kategorien starten eingeklappt (nur Name +
+  Anzahl Längen sichtbar, z. B. "STIEL MIT ZAPFEN (7)"), "Häufig
   bestellt" startet aufgeklappt. Eine Kategorie mit Teilen im aktuellen
   Warenkorb bleibt immer sichtbar, auch nach Zuklappen-Versuch.
+
+## Teile-Katalog (echte Teile aus dem Kunden-Excel)
+
+Quelle: Kunden-Datei „Projekt.xlsm", Blätter „Materialauszug Modul" und
+„Materialauszug System" (68 Teile-Arten, 159 Positionen). Im Code steht
+das kompakt in `PARTS` (pro Teile-Art: Typ-ID, Namens-Schlüssel, Icon,
+Systeme, Varianten `[Länge | Varianten-Schlüssel | [Länge, Schlüssel] |
+null, kg pro Stück | null]`) plus `CATEGORY_ORDER` (Reihenfolge je
+System = Reihenfolge im Excel). Daraus wird `CATALOG` erzeugt:
+- Artikel-ID = `partItemId(typ, variante)`, z. B. `stielMZ_200`,
+  `rahmenSL70_200offen`, `anker` – NIE ändern, sonst passen gespeicherte
+  Bestellungen/Lagerbestände nicht mehr.
+- Name = `part_<key>` (in allen 5 Sprachen im `T`-Wörterbuch) + Länge
+  (`fmtLen`, sprachabhängiges Zahlenformat) bzw. Zusatz `var_<key>`
+  (offen, kurz, lang, ohne/mit Zapfen …). Nur die Teile-ART wird
+  übersetzt, nicht jede Länge (`itemNameLang()`).
+- Teile-Arten, die in beiden Blättern EXAKT gleich sind (Längen + Gewichte,
+  z. B. Spindeln, Belag, Rohre, Kupplungen, Bohlen, Gitterträger), sind
+  ein gemeinsamer Artikel für beide Systeme (`systems:['modul','system']`),
+  damit der Lagerbestand nicht doppelt zählt. Abweichende (z. B.
+  Diagonale, Konsolen, Ringschraube) sind getrennte Typen mit gleichem
+  Namen.
+- SL 70 und SL 100 sind getrennte Teile (Nutzerentscheidung).
+- Die alten 10 Beispielteile sind entfernt; alte Bestellungen damit
+  werden über den gespeicherten deutschen Namen weiter angezeigt.
+
+## Gewicht (wichtig für den LKW)
+
+Gewicht pro Stück steht in `PARTS`/`CATALOG[].kg` (Excel-Spalte
+„Einzeln" × 100 = kg; das Excel rechnet Summe × 0,1 in Tonnen). Neue
+Bestellungen/Planungen speichern `kg` pro Position zusätzlich mit.
+`weightOf()`/`weightText()`/`formatKg()` (ab 1000 kg in t): angezeigt
+auf Bestellkarten, geplanten Lieferungen, Bestellschein-Entwurf,
+Bestätigungs-Ticket, gedrucktem Lieferschein (Spalte Gewicht +
+Gesamtgewicht), in der Fußleiste beim Auswählen (Baustelle + Chef-
+Planung), im Teile-Popup und klein unter der Einheit in der Tabelle;
+Fahrer-Widgets „Zu laden"/„Auf dem LKW" zeigen das Gesamtgewicht.
+Teile ohne Gewichtsangabe im Excel (Anker, Netze/Planen, Aufzug-Teile,
+Modul-Diagonale 1,00/1,50 m) werden als „+ N Teil(e) ohne
+Gewichtsangabe" ausgewiesen; ist gar kein Gewicht bekannt, entfällt die
+Zeile.
 
 ## Pakete auf dem Lieferschein
 
@@ -115,10 +156,10 @@ Teile können ein optionales `pkg`-Feld bekommen (Stück pro Paket, z. B.
 bestellte Stückzahl in ganze Pakete + Rest um (z. B. 32 Stk bei
 `pkg:10` -> "3 Pakete und 2 Stk" statt einer Kommazahl wie "3,2
 Pakete"). Wird nur auf dem gedruckten Lieferschein verwendet (siehe
-unten), nicht in den normalen Bestellkarten in der App. Aktuell haben
-nur `stahlboden`/`alubohle` (pkg:10) und `kupplung` (pkg:50) zu
-Testzwecken ein `pkg`-Feld -- Platzhalterwerte, müssen beim Eintragen
-der echten Teile durch die tatsächlichen Paketgrößen ersetzt werden.
+unten), nicht in den normalen Bestellkarten in der App. OFFEN: Die
+echten Paketgrößen fehlen noch (nicht im Excel) – aktuell hat kein Teil
+ein `pkg`-Feld, die Umrechnung greift also erst, wenn sie pro Artikel
+ergänzt werden.
 
 ## Lieferschein drucken
 
@@ -136,17 +177,8 @@ den tatsächlich bestellten Teilen gedruckt wird. Mengen werden dabei
 über `formatPackages()` in Pakete umgerechnet, wenn das Teil ein
 `pkg`-Feld hat.
 
-**Geplant, noch nicht umgesetzt:** Die echten Teile aus den drei
-gelieferten Lieferscheinen (Modul, SL70/SL100, Tribünen) eintragen –
-bewusst als eigener, späterer Schritt, weil das viele Positionen sind
-und jede einzelne in alle 5 Sprachen übersetzt werden muss. Offene
-Design-Frage dabei: Längen-Varianten (z. B. Diagonale in 6 Längen)
-vorerst als eigene Katalog-Zeile wie heute bei den Rahmen (aktuelle
-Richtung) oder Teil-dann-Länge als zweistufige Auswahl. Bei SL70/SL100
-gibt es laut Lieferschein pro Zeile zwei Stück-Spalten (SL70 *und*
-SL100 getrennt) und einige Teile haben statt fester Längen-Liste ein
-freies "Länge = ___"-Feld (v. a. Kupplungen/Rohre) – beides beim
-Eintragen der echten Daten berücksichtigen.
+Der Lieferschein hat zusätzlich eine Gewichts-Spalte und darunter das
+Gesamtgewicht (siehe „Gewicht").
 
 ## PWA / „Wie eine App" nutzbar
 
@@ -413,10 +445,8 @@ Formular einen Hinweis statt der leeren Auswahl.
   am PC breiter und mehrspaltig (siehe „PC-Ansicht")
 - Kein Amazon-/Shop-Feeling: Bestellschein-Charakter statt Warenkorb
 
-## Offen: Reiter Modul / Rahmen / Tribüne bei der Baustelle
+## Offen
 
-Gewünscht: bei der Baustelle per Reiter zwischen Modul, Rahmen (SL70/
-SL100) und Tribüne wechseln. Technik ist vorbereitet (`SYSTEMS`-Array,
-Reiter erscheint automatisch ab 2 Einträgen), wartet aber auf die
-aktuelle Bestell-Liste des Nutzers (hat zugesagt, sie zu schicken),
-damit die Reiter gleich mit echten Teilen kommen.
+- Reiter „Tribüne": keine Teile-Liste vorhanden (im Kunden-Excel nur
+  Modul + System) – sobald sie kommt, als drittes System ergänzen.
+- Echte Paketgrößen pro Teil (`pkg`) für die Lieferschein-Umrechnung.
