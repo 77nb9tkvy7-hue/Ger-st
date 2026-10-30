@@ -1097,12 +1097,14 @@ async function loadShared(){
       state.empCounter = DEFAULT_EMPLOYEES.length+1;
       await saveShared();
     }
+    // Nur nach ERFOLGREICHEM Laden prüfen -- sonst würde ein kurzer
+    // Netzaussetzer beim Start vom Chef angelegte Mitarbeiter abmelden.
+    enforceSession();
   }catch(e){
     console.error('Laden fehlgeschlagen', e);
     state.inventory = {...DEFAULT_INVENTORY};
     if(!state.employees.length) state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
   }
-  enforceSession();
 }
 async function saveShared(){
   try{
