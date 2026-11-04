@@ -33,16 +33,34 @@ const json = (body: unknown, status = 200) =>
 type Sub = { endpoint: string; keys: { p256dh: string; auth: string }; name: string; lang?: string };
 type Msg = { title: string; body: string };
 
-webpush.setVapidDetails(
-  Deno.env.get("VAPID_SUBJECT") ?? "mailto:info@example.com",
-  Deno.env.get("VAPID_PUBLIC_KEY") ?? "",
-  Deno.env.get("VAPID_PRIVATE_KEY") ?? "",
-);
+// Secrets erst beim Aufruf prüfen (nicht beim Start), Leerzeichen/
+// Zeilenumbrüche vom Einfügen im Dashboard entfernen und bei Fehlern
+// genau sagen, welches Secret nicht stimmt -- sonst stürzt die Funktion
+// nur mit "WORKER_ERROR" ab.
+let vapidReady = false;
+function setupVapid() {
+  if (vapidReady) return;
+  const clean = (n: string) => (Deno.env.get(n) ?? "").replace(/\s+/g, "");
+  const pub = clean("VAPID_PUBLIC_KEY"), priv = clean("VAPID_PRIVATE_KEY");
+  const subject = (Deno.env.get("VAPID_SUBJECT") ?? "").trim();
+  if (!pub) throw new Error("Secret VAPID_PUBLIC_KEY fehlt");
+  if (!priv) throw new Error("Secret VAPID_PRIVATE_KEY fehlt");
+  if (!/^(mailto:\S+@\S+|https:\/\/\S+)$/.test(subject)) {
+    throw new Error("Secret VAPID_SUBJECT muss so aussehen: mailto:name@firma.de");
+  }
+  try {
+    webpush.setVapidDetails(subject, pub, priv);
+  } catch (e) {
+    throw new Error("VAPID-Schlüssel ungültig (Public/Private Key prüfen): " + String((e as Error).message ?? e));
+  }
+  vapidReady = true;
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
   try {
+    setupVapid();
     const { roles = [], names = [], exclude = null, msgs = {}, url = "./geruest-bestell-app.html" } = await req.json();
 
     const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
