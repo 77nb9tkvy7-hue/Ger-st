@@ -306,6 +306,7 @@
   .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
+  .sync-banner{font-size:13px;line-height:1.45;border-radius:12px;padding:10px 12px;margin:0 0 14px 0;background:var(--surface-2);color:var(--ink);border-left:4px solid var(--amber);}
   .lager-pin{border-color:#0069B3;}
   .nav-btn{display:block;text-align:center;margin-top:12px;background:#FFEE00;color:#0B2A4A;font-weight:700;font-size:14px;border-radius:12px;padding:11px 14px;text-decoration:none;}
   .geo-badge{font-size:12.5px;line-height:1.45;border-radius:12px;padding:9px 12px;margin:0 0 14px 0;background:var(--surface-2);color:var(--ink);border-left:4px solid var(--line-strong);}
@@ -597,6 +598,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  syncPending:'📶 Kein Netz – deine Änderungen sind auf dem Handy gemerkt und werden automatisch gesendet, sobald wieder Netz da ist.', syncOffline:'📶 Kein Netz – angezeigt wird der letzte bekannte Stand.',
   lagerHeading:'🏭 Lager-Standort', lagerHint:'Damit stellt sich der Fahrer-Status von selbst um: Kommt ein Fahrer (App offen) am Lager an, steht er auf „Am Lager“ – fährt er weg, auf „Unterwegs“. Umkreis ca. 250 m.', lagerNotSet:'Noch kein Lager eingetragen.', lagerAdresseLabel:'Adresse des Lagers', lagerSaveBtn:'Lager-Adresse speichern', lagerGpsBtn:'📍 Ich bin gerade am Lager – Standort übernehmen', lagerNotFound:'Adresse nicht gefunden – bitte mit Ort eingeben, z. B. „Musterstraße 1, München“.', lagerMapLabel:'Lager', autoTag:'automatisch', autoHint:'🔄 Stellt sich automatisch um, wenn du am Lager ankommst oder wegfährst.',
   routeEta:'ca. {min} Min. Fahrt · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Navigation starten (Google Maps)',
   geoOn:'📍 Dein Standort wird geteilt – nur der Chef sieht ihn, und nur solange du angemeldet bist und die App offen ist.', geoWait:'📍 Standort wird gesucht …', geoDenied:'📍 Standort-Freigabe ist aus – der Chef sieht dich nicht auf der Karte. Bitte in den Handy-Einstellungen den Standort für diese App erlauben.', geoUnavail:'📍 Dieses Gerät liefert keinen Standort.', geoRetry:'Nochmal versuchen', posHeading:'📍 Wo sind die LKWs?', posHint:'Nur für dich (Chef) sichtbar. Fahrer teilen ihren Standort nur, solange sie angemeldet sind und die App offen haben. Gespeichert wird nur die letzte Position.', posNone:'Gerade teilt kein Fahrer seinen Standort.', posNow:'gerade eben', posMinAgo:'vor {n} Min.', posLastSeen:'zuletzt gesehen um {time}', posAcc:'Genauigkeit ± {m} m',
@@ -780,6 +782,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  syncPending:'📶 Brak sieci – twoje zmiany są zapisane w telefonie i zostaną wysłane automatycznie, gdy sieć wróci.', syncOffline:'📶 Brak sieci – widoczny jest ostatni znany stan.',
   lagerHeading:'🏭 Lokalizacja magazynu', lagerHint:'Dzięki temu status kierowcy zmienia się sam: gdy kierowca (z otwartą aplikacją) dojedzie do magazynu, ma status „W magazynie“ – gdy odjedzie, „W trasie“. Promień ok. 250 m.', lagerNotSet:'Magazyn nie jest jeszcze wpisany.', lagerAdresseLabel:'Adres magazynu', lagerSaveBtn:'Zapisz adres magazynu', lagerGpsBtn:'📍 Jestem teraz w magazynie – użyj mojej lokalizacji', lagerNotFound:'Nie znaleziono adresu – podaj go z miejscowością, np. „Musterstraße 1, München“.', lagerMapLabel:'Magazyn', autoTag:'automatycznie', autoHint:'🔄 Zmienia się automatycznie, gdy dojeżdżasz do magazynu lub z niego odjeżdżasz.',
   routeEta:'ok. {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa w Google Maps', navStart:'🧭 Uruchom nawigację (Google Maps)',
   geoOn:'📍 Twoja lokalizacja jest udostępniana – widzi ją tylko szef i tylko wtedy, gdy jesteś zalogowany i aplikacja jest otwarta.', geoWait:'📍 Szukam lokalizacji …', geoDenied:'📍 Udostępnianie lokalizacji jest wyłączone – szef nie widzi cię na mapie. Zezwól na lokalizację dla tej aplikacji w ustawieniach telefonu.', geoUnavail:'📍 To urządzenie nie podaje lokalizacji.', geoRetry:'Spróbuj ponownie', posHeading:'📍 Gdzie są ciężarówki?', posHint:'Widoczne tylko dla ciebie (szef). Kierowcy udostępniają lokalizację tylko wtedy, gdy są zalogowani i mają otwartą aplikację. Zapisywana jest tylko ostatnia pozycja.', posNone:'Obecnie żaden kierowca nie udostępnia lokalizacji.', posNow:'przed chwilą', posMinAgo:'{n} min temu', posLastSeen:'ostatnio widziany o {time}', posAcc:'Dokładność ± {m} m',
@@ -963,6 +966,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  syncPending:'📶 Žiadna sieť – tvoje zmeny sú uložené v telefóne a odošlú sa automaticky, keď bude sieť.', syncOffline:'📶 Žiadna sieť – zobrazuje sa posledný známy stav.',
   lagerHeading:'🏭 Poloha skladu', lagerHint:'Vďaka tomu sa stav vodiča mení sám: keď vodič (s otvorenou aplikáciou) príde do skladu, má stav „V sklade“ – keď odíde, „Na ceste“. Okruh cca 250 m.', lagerNotSet:'Sklad ešte nie je zadaný.', lagerAdresseLabel:'Adresa skladu', lagerSaveBtn:'Uložiť adresu skladu', lagerGpsBtn:'📍 Som práve v sklade – použiť moju polohu', lagerNotFound:'Adresa sa nenašla – zadaj ju aj s mestom, napr. „Musterstraße 1, München“.', lagerMapLabel:'Sklad', autoTag:'automaticky', autoHint:'🔄 Mení sa automaticky, keď prídeš do skladu alebo z neho odídeš.',
   routeEta:'cca {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa v Google Maps', navStart:'🧭 Spustiť navigáciu (Google Maps)',
   geoOn:'📍 Tvoja poloha sa zdieľa – vidí ju iba šéf a iba kým si prihlásený a aplikácia je otvorená.', geoWait:'📍 Hľadám polohu …', geoDenied:'📍 Zdieľanie polohy je vypnuté – šéf ťa nevidí na mape. Povoľ polohu pre túto aplikáciu v nastaveniach telefónu.', geoUnavail:'📍 Toto zariadenie neposkytuje polohu.', geoRetry:'Skúsiť znova', posHeading:'📍 Kde sú nákladné autá?', posHint:'Viditeľné iba pre teba (šéf). Vodiči zdieľajú polohu iba vtedy, keď sú prihlásení a majú otvorenú aplikáciu. Ukladá sa iba posledná poloha.', posNone:'Momentálne žiadny vodič nezdieľa polohu.', posNow:'práve teraz', posMinAgo:'pred {n} min', posLastSeen:'naposledy videný o {time}', posAcc:'Presnosť ± {m} m',
@@ -1146,6 +1150,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  syncPending:'📶 Nema mreže – tvoje promjene su spremljene na mobitelu i bit će poslane automatski kad se mreža vrati.', syncOffline:'📶 Nema mreže – prikazano je zadnje poznato stanje.',
   lagerHeading:'🏭 Lokacija skladišta', lagerHint:'Tako se status vozača mijenja sam: kad vozač (s otvorenom aplikacijom) stigne u skladište, ima status „U skladištu“ – kad ode, „Na putu“. Radijus oko 250 m.', lagerNotSet:'Skladište još nije upisano.', lagerAdresseLabel:'Adresa skladišta', lagerSaveBtn:'Spremi adresu skladišta', lagerGpsBtn:'📍 Upravo sam u skladištu – preuzmi moju lokaciju', lagerNotFound:'Adresa nije pronađena – upiši je s mjestom, npr. „Musterstraße 1, München“.', lagerMapLabel:'Skladište', autoTag:'automatski', autoHint:'🔄 Mijenja se automatski kad stigneš u skladište ili odeš iz njega.',
   routeEta:'oko {min} min vožnje · {km} km', routeGmaps:'🧭 Ruta u Google Maps', navStart:'🧭 Pokreni navigaciju (Google Maps)',
   geoOn:'📍 Tvoja se lokacija dijeli – vidi je samo šef i samo dok si prijavljen i aplikacija je otvorena.', geoWait:'📍 Tražim lokaciju …', geoDenied:'📍 Dijeljenje lokacije je isključeno – šef te ne vidi na karti. Dopusti lokaciju za ovu aplikaciju u postavkama mobitela.', geoUnavail:'📍 Ovaj uređaj ne daje lokaciju.', geoRetry:'Pokušaj ponovno', posHeading:'📍 Gdje su kamioni?', posHint:'Vidljivo samo tebi (šef). Vozači dijele lokaciju samo dok su prijavljeni i imaju otvorenu aplikaciju. Sprema se samo zadnja pozicija.', posNone:'Trenutno nijedan vozač ne dijeli lokaciju.', posNow:'upravo sada', posMinAgo:'prije {n} min', posLastSeen:'zadnji put viđen u {time}', posAcc:'Točnost ± {m} m',
@@ -1329,6 +1334,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  syncPending:'📶 No network – your changes are saved on the phone and will be sent automatically once the network is back.', syncOffline:'📶 No network – showing the last known data.',
   lagerHeading:'🏭 Warehouse location', lagerHint:'This makes the driver status update by itself: when a driver (app open) arrives at the warehouse, the status becomes “At the warehouse” – when they drive off, “On the road”. Radius approx. 250 m.', lagerNotSet:'No warehouse entered yet.', lagerAdresseLabel:'Warehouse address', lagerSaveBtn:'Save warehouse address', lagerGpsBtn:'📍 I am at the warehouse right now – use my location', lagerNotFound:'Address not found – please include the town, e.g. “Musterstraße 1, München”.', lagerMapLabel:'Warehouse', autoTag:'automatic', autoHint:'🔄 Updates automatically when you arrive at or leave the warehouse.',
   routeEta:'approx. {min} min drive · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Start navigation (Google Maps)',
   geoOn:'📍 Your location is being shared – only the boss can see it, and only while you are logged in and the app is open.', geoWait:'📍 Finding your location …', geoDenied:'📍 Location sharing is off – the boss cannot see you on the map. Please allow location for this app in your phone settings.', geoUnavail:'📍 This device does not provide a location.', geoRetry:'Try again', posHeading:'📍 Where are the trucks?', posHint:'Only visible to you (boss). Drivers share their location only while they are logged in and have the app open. Only the latest position is stored.', posNone:'No driver is sharing their location right now.', posNow:'just now', posMinAgo:'{n} min ago', posLastSeen:'last seen at {time}', posAcc:'Accuracy ± {m} m',
@@ -1657,78 +1663,288 @@ function itemOrderCounts(){
   return counts;
 }
 
+// ======================================================================
+// Speicher: Abgleich mit Supabase (app_state / STORAGE_KEY)
+// ----------------------------------------------------------------------
+// Statt den ganzen Datensatz blind zu überschreiben, merkt sich die App
+// den zuletzt vom Server gelesenen Stand (syncBase). Beim Speichern holt
+// sie den AKTUELLEN Server-Stand und trägt nur die EIGENEN Änderungen
+// (Unterschied syncBase -> eigener Stand) darauf ein (merge3). Dadurch:
+//  - gehen gleichzeitige Änderungen anderer nicht verloren (Bestellung
+//    hier, Status dort; Lagerbestand wird als +/- verrechnet),
+//  - kann ein fehlgeschlagenes Laden nichts mehr überschreiben (ohne
+//    bekannten Server-Stand wird gar nicht gespeichert),
+//  - funktioniert die App bei schlechtem Netz weiter: Änderungen bleiben
+//    auf dem Handy gemerkt (auch nach Schließen, localStorage PENDING_KEY)
+//    und werden automatisch gesendet, sobald wieder Netz da ist. Der
+//    letzte Server-Stand liegt zusätzlich in CACHE_KEY, damit die App auch
+//    ohne Netz startet.
+// Schreiben nur, wenn sich der Server seit dem Lesen nicht geändert hat
+// (Versionszähler value.rev), sonst neu lesen + neu zusammenführen.
+// ======================================================================
+const CACHE_KEY = 'geruest-cache', PENDING_KEY = 'geruest-pending';
+const RECORD_ARRAYS = {orders:'counter', projects:'projektCounter', calendarEntries:'calCounter',
+  plannedDeliveries:'planCounter', lkwEntries:'lkwCounter', employees:'empCounter'};
+let syncBase = null;          // letzter bekannter Server-Stand (ohne rev)
+let syncChain = Promise.resolve();
+state.syncOffline = false; state.syncPending = false;
+
+function clone(x){ return x===undefined ? undefined : JSON.parse(JSON.stringify(x)); }
+// Vergleich unabhängig von der Reihenfolge der Felder
+function stableStr(x){
+  if(Array.isArray(x)) return '['+x.map(stableStr).join(',')+']';
+  if(x && typeof x==='object') return '{'+Object.keys(x).filter(k=>x[k]!=null).sort().map(k=>JSON.stringify(k)+':'+stableStr(x[k])).join(',')+'}';
+  return JSON.stringify(x===undefined ? null : x);
+}
+function same(a, b){ return stableStr(a)===stableStr(b); }
+
+function stateToValue(){
+  return clone({orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
+    projects:state.projects, projektCounter:state.projektCounter,
+    calendarEntries:state.calendarEntries, calCounter:state.calCounter,
+    driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager,
+    plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
+    lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
+    employees:state.employees, empCounter:state.empCounter,
+    pushSubs:state.pushSubs});
+}
+function applyValue(v){
+  v = v || {};
+  state.orders = v.orders || [];
+  state.orderCounter = v.counter || 1001;
+  state.inventory = v.inventory || {...DEFAULT_INVENTORY};
+  state.projects = v.projects || [];
+  state.projektCounter = v.projektCounter || 101;
+  state.calendarEntries = v.calendarEntries || [];
+  state.calCounter = v.calCounter || 1;
+  state.driverStatus = v.driverStatus || {};
+  state.driverPos = v.driverPos || {};
+  state.lager = v.lager || null;
+  state.plannedDeliveries = v.plannedDeliveries || [];
+  state.planCounter = v.planCounter || 1;
+  state.lkwEntries = v.lkwEntries || [];
+  state.lkwCounter = v.lkwCounter || 1;
+  state.pushSubs = v.pushSubs || [];
+  state.employees = Array.isArray(v.employees) ? v.employees : [];
+  state.empCounter = v.empCounter || (state.employees.length ? Math.max(...state.employees.map(e=>e.id))+1 : 1);
+}
+
+// Feldweise: was lokal (gegenüber base) geändert wurde, gewinnt; sonst Server.
+function mergeRecord(b, l, r){
+  const out = {...r};
+  new Set([...Object.keys(b||{}), ...Object.keys(l||{})]).forEach(f=>{
+    if(!same((l||{})[f], (b||{})[f])){ if(l[f]===undefined) delete out[f]; else out[f] = clone(l[f]); }
+  });
+  return out;
+}
+// Listen mit Schlüssel (id bzw. endpoint): Hinzufügen/Löschen/Ändern je Eintrag.
+function mergeList(b, l, r, key, counterInfo){
+  b = b||[]; l = l||[]; r = r||[];
+  let changes = 0;
+  const bm = new Map(b.map(x=>[x[key], x])), lm = new Map(l.map(x=>[x[key], x]));
+  let out = r.map(x=>clone(x));
+  // gelöscht
+  b.forEach(x=>{ if(!lm.has(x[key])){ changes++; out = out.filter(y=>y[key]!==x[key]); } });
+  // geändert
+  l.forEach(x=>{
+    const bx = bm.get(x[key]);
+    if(bx && !same(bx, x)){
+      changes++;
+      const i = out.findIndex(y=>y[key]===x[key]);
+      if(i>=0) out[i] = mergeRecord(bx, x, out[i]);
+      else out.push(clone(x));   // auf dem Server inzwischen gelöscht -> lokale Änderung behalten
+    }
+  });
+  // neu
+  l.forEach(x=>{
+    if(bm.has(x[key])) return;
+    changes++;
+    const rx = out.find(y=>y[key]===x[key]);
+    if(!rx){ out.push(clone(x)); return; }
+    if(same(rx, x)) return;
+    // gleiche Nummer von zwei Geräten gleichzeitig vergeben -> neue Nummer
+    const nx = clone(x);
+    if(counterInfo && typeof x[key]==='number'){
+      nx[key] = Math.max(...out.map(y=>typeof y[key]==='number'? y[key] : 0), ...l.map(y=>typeof y[key]==='number'? y[key] : 0)) + 1;
+    }
+    out.push(nx);
+  });
+  return {out, changes};
+}
+// Schlüssel-Objekte (driverStatus, driverPos): je Eintrag
+function mergeMap(b, l, r, numericDelta){
+  b = b||{}; l = l||{}; r = r||{};
+  const out = clone(r);
+  let changes = 0;
+  new Set([...Object.keys(b), ...Object.keys(l)]).forEach(k=>{
+    if(same(b[k], l[k])) return;
+    changes++;
+    if(numericDelta){
+      out[k] = (Number(r[k])||0) + (Number(l[k])||0) - (Number(b[k])||0);   // Lagerbestand: +/- verrechnen
+    } else if(l[k]===undefined) delete out[k];
+    else if(b[k] && r[k] && typeof l[k]==='object') out[k] = mergeRecord(b[k], l[k], r[k]);
+    else out[k] = clone(l[k]);
+  });
+  return {out, changes};
+}
+function merge3(base, local, remote){
+  base = base||{}; local = local||{}; remote = remote||{};
+  const out = clone(remote);
+  delete out.rev;
+  let changes = 0;
+  const handled = new Set(['rev']);
+  Object.entries(RECORD_ARRAYS).forEach(([k, ck])=>{
+    handled.add(k); handled.add(ck);
+    const m = mergeList(base[k], local[k], remote[k], 'id', true);
+    out[k] = m.out; changes += m.changes;
+    const maxId = Math.max(0, ...m.out.map(x=>typeof x.id==='number'? x.id : 0));
+    const lc = Number(local[ck])||0, rc = Number(remote[ck])||0;
+    if(lc!==(Number(base[ck])||0)) changes++;
+    out[ck] = Math.max(lc, rc, maxId+1);
+  });
+  [['inventory', true], ['driverStatus', false], ['driverPos', false]].forEach(([k, num])=>{
+    handled.add(k);
+    const m = mergeMap(base[k], local[k], remote[k], num);
+    out[k] = m.out; changes += m.changes;
+  });
+  handled.add('pushSubs');
+  const ps = mergeList(base.pushSubs, local.pushSubs, remote.pushSubs, 'endpoint', false);
+  out.pushSubs = ps.out; changes += ps.changes;
+  new Set([...Object.keys(base), ...Object.keys(local)]).forEach(k=>{
+    if(handled.has(k) || same(base[k], local[k])) return;
+    changes++;
+    if(local[k]===undefined) delete out[k]; else out[k] = clone(local[k]);
+  });
+  return {value:out, changes};
+}
+function savePending(){
+  if(state.syncPending && syncBase) lsSet(PENDING_KEY, JSON.stringify({base:syncBase, local:stateToValue(), ts:Date.now()}));
+  else lsSet(PENDING_KEY, null);
+}
+async function fetchRemote(){
+  const { data, error } = await supabaseClient.from('app_state').select('value').eq('key', STORAGE_KEY).maybeSingle();
+  if(error) throw error;
+  return data && data.value ? data.value : null;
+}
+// Schreibt nur, wenn der Server noch auf Version rev steht. true = geschrieben.
+async function writeIfUnchanged(value, rev){
+  const q = supabaseClient.from('app_state').update({value});
+  const filtered = q.eq('key', STORAGE_KEY);
+  const { data, error } = await (rev==null ? filtered.is('value->>rev', null) : filtered.eq('value->>rev', String(rev))).select('key');
+  if(error) throw error;
+  return Array.isArray(data) && data.length>0;
+}
+
+// Ein Abgleich: Server lesen, eigene Änderungen einarbeiten, ggf. schreiben.
+async function doSync(){
+  if(!supabaseClient) throw new Error('Supabase-Bibliothek nicht geladen');
+  for(let attempt=0; attempt<5; attempt++){
+    const captured = stateToValue();
+    let remote;
+    try{ remote = await fetchRemote(); }
+    catch(e){ state.syncOffline = true; savePending(); throw e; }
+    state.syncOffline = false;
+    if(!remote){
+      // Allererster Start: Datensatz anlegen
+      if(!syncBase && !state.employees.length){
+        state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
+        state.empCounter = DEFAULT_EMPLOYEES.length+1;
+      }
+      const v = {...stateToValue(), rev:1};
+      const { error } = await supabaseClient.from('app_state').upsert({key:STORAGE_KEY, value:v});
+      if(error) throw error;
+      syncBase = clone(v); delete syncBase.rev;
+      state.syncPending = false; savePending();
+      lsSet(CACHE_KEY, JSON.stringify(syncBase));
+      return;
+    }
+    const rev = remote.rev==null ? null : remote.rev;
+    let merged, changes = 0;
+    if(syncBase){ const m = merge3(syncBase, captured, remote); merged = m.value; changes = m.changes; }
+    else { merged = clone(remote); delete merged.rev; }
+    if(!Array.isArray(merged.employees) || !merged.employees.length){
+      // Älterer Datensatz ohne Mitarbeiterliste: Start-Befüllung
+      merged.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
+      merged.empCounter = DEFAULT_EMPLOYEES.length+1;
+      changes++;
+    }
+    if(changes>0){
+      let ok;
+      try{ ok = await writeIfUnchanged({...merged, rev:(Number(rev)||0)+1}, rev); }
+      catch(e){
+        if(/fetch|network|Failed/i.test(String(e && (e.message||e)))){ state.syncOffline = true; state.syncPending = true; savePending(); throw e; }
+        // Bedingtes Schreiben nicht möglich (z. B. Tabellen-Regeln) -> normal speichern
+        console.warn('Bedingtes Speichern nicht möglich, speichere direkt', e);
+        const { error } = await supabaseClient.from('app_state').upsert({key:STORAGE_KEY, value:{...merged, rev:(Number(rev)||0)+1}});
+        if(error){ state.syncPending = true; savePending(); throw error; }
+        ok = true;
+      }
+      if(!ok) continue;   // jemand anderes hat gerade gespeichert -> neu lesen + zusammenführen
+    }
+    // Was seit "captured" lokal noch dazukam (während wir gewartet haben), behalten
+    const now = stateToValue();
+    const result = same(now, captured) ? merged : merge3(captured, now, merged).value;
+    syncBase = merged;
+    applyValue(clone(result));   // eigene Kopie, sonst ändert die App syncBase mit
+    state.syncPending = !same(stateToValue(), syncBase);
+    savePending();
+    lsSet(CACHE_KEY, JSON.stringify(syncBase));
+    enforceSession();
+    return;
+  }
+  state.syncPending = true; savePending();
+  throw new Error('Speichern: zu viele gleichzeitige Änderungen, versuche es gleich nochmal');
+}
+function sync(){
+  const run = syncChain.then(doSync, doSync);
+  syncChain = run.catch(()=>{});
+  return run;
+}
+// Beim Start: letzter bekannter Stand + gemerkte Änderungen (falls offline)
+function restoreOfflineState(){
+  let cache = null, pend = null;
+  try{ cache = JSON.parse(lsGet(CACHE_KEY)||'null'); }catch(e){}
+  try{ pend = JSON.parse(lsGet(PENDING_KEY)||'null'); }catch(e){}
+  if(pend && pend.base && pend.local && Date.now()-(pend.ts||0) < 3*24*3600*1000){
+    syncBase = pend.base; applyValue(clone(pend.local)); state.syncPending = true; return true;
+  }
+  if(cache){ syncBase = cache; applyValue(clone(cache)); return true; }
+  return false;
+}
+
 async function loadShared(){
   if(!supabaseClient){
-    document.getElementById('app').innerHTML =
-      `<div class="loading">${t('offlineError')}</div>`;
+    document.getElementById('app').innerHTML = `<div class="loading">${t('offlineError')}</div>`;
     throw new Error('Supabase-Bibliothek nicht geladen');
   }
   try{
-    const { data, error } = await supabaseClient
-      .from('app_state')
-      .select('value')
-      .eq('key', STORAGE_KEY)
-      .maybeSingle();
-    if(error) throw error;
-    if(data && data.value){
-      state.orders = data.value.orders || [];
-      state.orderCounter = data.value.counter || 1001;
-      state.inventory = data.value.inventory || {...DEFAULT_INVENTORY};
-      state.projects = data.value.projects || [];
-      state.projektCounter = data.value.projektCounter || 101;
-      state.calendarEntries = data.value.calendarEntries || [];
-      state.calCounter = data.value.calCounter || 1;
-      state.driverStatus = data.value.driverStatus || {};
-      state.driverPos = data.value.driverPos || {};
-      state.lager = data.value.lager || null;
-      state.plannedDeliveries = data.value.plannedDeliveries || [];
-      state.planCounter = data.value.planCounter || 1;
-      state.lkwEntries = data.value.lkwEntries || [];
-      state.pushSubs = data.value.pushSubs || [];
-      state.lkwCounter = data.value.lkwCounter || 1;
-      if(Array.isArray(data.value.employees) && data.value.employees.length){
-        state.employees = data.value.employees;
-        state.empCounter = data.value.empCounter || (Math.max(...state.employees.map(e=>e.id))+1);
-      } else {
-        // Älterer Datensatz ohne Mitarbeiterliste: einmalig mit der
-        // Start-Befüllung anlegen, damit sich überhaupt jemand anmelden kann.
-        state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
-        state.empCounter = DEFAULT_EMPLOYEES.length+1;
-        await saveShared();
-      }
-    } else {
-      state.inventory = {...DEFAULT_INVENTORY};
-      state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
-      state.empCounter = DEFAULT_EMPLOYEES.length+1;
-      await saveShared();
-    }
-    // Nur nach ERFOLGREICHEM Laden prüfen -- sonst würde ein kurzer
-    // Netzaussetzer beim Start vom Chef angelegte Mitarbeiter abmelden.
-    enforceSession();
+    await sync();
     if(state.loggedIn && state.role==='chef') await loadPositions();
   }catch(e){
     console.error('Laden fehlgeschlagen', e);
-    state.inventory = {...DEFAULT_INVENTORY};
-    if(!state.employees.length) state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
+    // Ohne je geladenen Stand: nur damit sich überhaupt jemand anmelden kann
+    if(!syncBase && !state.employees.length) state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
   }
 }
 async function saveShared(){
-  try{
-    const { error } = await supabaseClient
-      .from('app_state')
-      .upsert({
-        key: STORAGE_KEY,
-        value: {orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
-                projects:state.projects, projektCounter:state.projektCounter,
-                calendarEntries:state.calendarEntries, calCounter:state.calCounter,
-                driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager,
-                plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
-                lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
-                employees:state.employees, empCounter:state.empCounter,
-                pushSubs:state.pushSubs},
-      });
-    if(error) throw error;
-  }catch(e){ console.error('Speichern fehlgeschlagen', e); }
+  if(!syncBase){
+    // Server-Stand nie gelesen -> NICHT speichern (sonst würden echte Daten
+    // mit leeren Startwerten überschrieben). Änderung bleibt lokal sichtbar.
+    console.warn('Noch keine Verbindung zum Server – nicht gespeichert');
+    state.syncOffline = true;
+    return false;
+  }
+  state.syncPending = true;
+  try{ await sync(); return true; }
+  catch(e){ console.error('Speichern fehlgeschlagen', e); return false; }
+}
+// Ausstehende Änderungen regelmäßig nachsenden (auch wenn gerade nicht
+// neu gezeichnet wird), und sofort, wenn das Handy wieder Netz hat.
+setInterval(()=>{ if(state.syncPending && syncBase) sync().then(()=>{ if(!state.syncPending) render(); }).catch(()=>{}); }, 8000);
+window.addEventListener('online', ()=>{ if(syncBase) sync().then(render).catch(()=>{}); });
+function syncBannerHTML(){
+  if(!state.syncOffline && !state.syncPending) return '';
+  return `<div class="sync-banner">${state.syncPending ? t('syncPending') : t('syncOffline')}</div>`;
 }
 
 function truckIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="7" width="13" height="9"/><path d="M14 10h4l3 3v3h-7z"/><circle cx="5.5" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>';}
@@ -3332,7 +3548,7 @@ function render(){
         </div>
       </div>
     </header>
-    <main>${pushCardHTML()}${mainHTML}</main>
+    <main>${syncBannerHTML()}${pushCardHTML()}${mainHTML}</main>
     ${state.itemPopup ? itemPopupHTML() : ''}
     ${state.orderReview ? orderReviewHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
@@ -3902,6 +4118,7 @@ if('serviceWorker' in navigator){
 (async function init(){
   state.lang = loadLang();
   restoreSession();
+  restoreOfflineState();   // letzter Stand + gemerkte Änderungen, falls gerade kein Netz
   await loadShared();
   state.loading = false;
   render();
