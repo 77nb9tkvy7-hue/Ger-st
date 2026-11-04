@@ -238,7 +238,8 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    bleiben so erhalten; neu eingepasst wird nur, wenn BV dazukommen oder
    wegfallen. BV ohne Koordinaten werden einmalig über die Adresse gesucht
    (Nominatim, 1 Anfrage/s, `geocodeMissing()`) und `p.coords` gespeichert –
-   zuerst nur im Raum München (`MUC_VIEWBOX`, `bounded=1`), erst ohne Treffer
+   zuerst nur in München + Umland (`MUC_VIEWBOX`, ca. 80 km: Augsburg,
+   Ingolstadt, Landshut, Mühldorf, Rosenheim, Garmisch; `bounded=1`), erst ohne Treffer
    deutschlandweit (sonst landet z. B. eine Adresse ohne Ort anderswo).
    Sieht was wohin muss und wann bestellt wurde. Kann erst handeln, wenn
    das Lager freigegeben hat.

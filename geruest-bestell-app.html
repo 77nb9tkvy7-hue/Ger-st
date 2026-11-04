@@ -2735,8 +2735,9 @@ function fahrerProjekteHTML(){
 // (Nominatim, max. 1 Anfrage/s) und die Koordinaten im Bauvorhaben
 // gespeichert (p.coords) -- davon profitiert auch der Maps-Link.
 const MAP_CENTER = [48.137, 11.575];
-// München + Umgebung (ca. 50 km), Format Nominatim: links,oben,rechts,unten
-const MUC_VIEWBOX = '10.9,48.5,12.3,47.75';
+// München + Umland (ca. 80 km: Augsburg, Ingolstadt, Landshut, Mühldorf,
+// Rosenheim, Garmisch), Format Nominatim: links,oben,rechts,unten
+const MUC_VIEWBOX = '10.6,48.85,12.65,47.4';
 let leafletLoading = null, bvMap = null, bvMapEl = null, bvLayer = null, bvMapSig = '', bvMapIds = '';
 const geocodeTried = new Set();
 let geocodeRunning = false;
