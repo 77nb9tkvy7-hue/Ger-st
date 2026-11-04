@@ -377,6 +377,19 @@ Hintergrund kein GPS). Sichtbar nur für den Chef.
   gestrichelte Luftlinie. Echte Google-Routen IN der Karte bräuchten ein
   kostenpflichtiges Google-Konto + API-Schlüssel – stattdessen Popup-Link
   „🧭 Route in Google Maps“ (`maps/dir/?api=1&origin=…&destination=…`).
+- **Status automatisch (Am Lager / Unterwegs)**: Der Chef trägt im Reiter
+  „Bauvorhaben“ unten den **Lager-Standort** ein (`lagerSettingHTML()`,
+  Adresse → Nominatim mit München+Umland-Vorrang, oder „Ich bin gerade am
+  Lager“ per GPS; gespeichert als `state.lager = {adresse, coords}` im
+  großen Datensatz, Feld `lager`; 🏭 auf beiden Karten). Das Fahrer-Handy
+  (App offen, Standort geteilt) stellt dann selbst um (`autoDriverStatus()`):
+  ≤ 250 m (`LAGER_IN_M`) → „Am Lager“, ≥ 450 m (`LAGER_OUT_M`) → „Unterwegs“
+  (dazwischen nichts, gegen Hin-und-Her; Standorte mit Genauigkeit > 300 m
+  werden ignoriert). Nur beim WECHSEL der Zone, damit Handeinstellungen
+  bleiben; beim ersten Standort nach dem Öffnen wird ein < 15 Min. alter
+  Status (`ts`, wird bei jeder Handänderung gesetzt) nicht überschrieben.
+  Automatische Änderungen haben `auto:true` („🔄 automatisch“ beim Fahrer).
+  Ist er schon „Unterwegs“ (z. B. vom Chef geschickt), bleibt das Ziel.
 - **Fahrer**: Bei „Unterwegs“ mit Ziel zeigt „Mein Status“ den gelben Knopf
   „🧭 Navigation starten (Google Maps)“ (`navButtonHTML()`), der Google Maps
   mit Navigation zum BV öffnet.

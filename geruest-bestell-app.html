@@ -306,6 +306,7 @@
   .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
+  .lager-pin{border-color:#0069B3;}
   .nav-btn{display:block;text-align:center;margin-top:12px;background:#FFEE00;color:#0B2A4A;font-weight:700;font-size:14px;border-radius:12px;padding:11px 14px;text-decoration:none;}
   .geo-badge{font-size:12.5px;line-height:1.45;border-radius:12px;padding:9px 12px;margin:0 0 14px 0;background:var(--surface-2);color:var(--ink);border-left:4px solid var(--line-strong);}
   .geo-badge.geo-on{border-left-color:#1E9E5A;}
@@ -596,6 +597,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  lagerHeading:'🏭 Lager-Standort', lagerHint:'Damit stellt sich der Fahrer-Status von selbst um: Kommt ein Fahrer (App offen) am Lager an, steht er auf „Am Lager“ – fährt er weg, auf „Unterwegs“. Umkreis ca. 250 m.', lagerNotSet:'Noch kein Lager eingetragen.', lagerAdresseLabel:'Adresse des Lagers', lagerSaveBtn:'Lager-Adresse speichern', lagerGpsBtn:'📍 Ich bin gerade am Lager – Standort übernehmen', lagerNotFound:'Adresse nicht gefunden – bitte mit Ort eingeben, z. B. „Musterstraße 1, München“.', lagerMapLabel:'Lager', autoTag:'automatisch', autoHint:'🔄 Stellt sich automatisch um, wenn du am Lager ankommst oder wegfährst.',
   routeEta:'ca. {min} Min. Fahrt · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Navigation starten (Google Maps)',
   geoOn:'📍 Dein Standort wird geteilt – nur der Chef sieht ihn, und nur solange du angemeldet bist und die App offen ist.', geoWait:'📍 Standort wird gesucht …', geoDenied:'📍 Standort-Freigabe ist aus – der Chef sieht dich nicht auf der Karte. Bitte in den Handy-Einstellungen den Standort für diese App erlauben.', geoUnavail:'📍 Dieses Gerät liefert keinen Standort.', geoRetry:'Nochmal versuchen', posHeading:'📍 Wo sind die LKWs?', posHint:'Nur für dich (Chef) sichtbar. Fahrer teilen ihren Standort nur, solange sie angemeldet sind und die App offen haben. Gespeichert wird nur die letzte Position.', posNone:'Gerade teilt kein Fahrer seinen Standort.', posNow:'gerade eben', posMinAgo:'vor {n} Min.', posLastSeen:'zuletzt gesehen um {time}', posAcc:'Genauigkeit ± {m} m',
   pushCardTitle:'Benachrichtigungen',
@@ -778,6 +780,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  lagerHeading:'🏭 Lokalizacja magazynu', lagerHint:'Dzięki temu status kierowcy zmienia się sam: gdy kierowca (z otwartą aplikacją) dojedzie do magazynu, ma status „W magazynie“ – gdy odjedzie, „W trasie“. Promień ok. 250 m.', lagerNotSet:'Magazyn nie jest jeszcze wpisany.', lagerAdresseLabel:'Adres magazynu', lagerSaveBtn:'Zapisz adres magazynu', lagerGpsBtn:'📍 Jestem teraz w magazynie – użyj mojej lokalizacji', lagerNotFound:'Nie znaleziono adresu – podaj go z miejscowością, np. „Musterstraße 1, München“.', lagerMapLabel:'Magazyn', autoTag:'automatycznie', autoHint:'🔄 Zmienia się automatycznie, gdy dojeżdżasz do magazynu lub z niego odjeżdżasz.',
   routeEta:'ok. {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa w Google Maps', navStart:'🧭 Uruchom nawigację (Google Maps)',
   geoOn:'📍 Twoja lokalizacja jest udostępniana – widzi ją tylko szef i tylko wtedy, gdy jesteś zalogowany i aplikacja jest otwarta.', geoWait:'📍 Szukam lokalizacji …', geoDenied:'📍 Udostępnianie lokalizacji jest wyłączone – szef nie widzi cię na mapie. Zezwól na lokalizację dla tej aplikacji w ustawieniach telefonu.', geoUnavail:'📍 To urządzenie nie podaje lokalizacji.', geoRetry:'Spróbuj ponownie', posHeading:'📍 Gdzie są ciężarówki?', posHint:'Widoczne tylko dla ciebie (szef). Kierowcy udostępniają lokalizację tylko wtedy, gdy są zalogowani i mają otwartą aplikację. Zapisywana jest tylko ostatnia pozycja.', posNone:'Obecnie żaden kierowca nie udostępnia lokalizacji.', posNow:'przed chwilą', posMinAgo:'{n} min temu', posLastSeen:'ostatnio widziany o {time}', posAcc:'Dokładność ± {m} m',
   pushCardTitle:'Powiadomienia',
@@ -960,6 +963,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  lagerHeading:'🏭 Poloha skladu', lagerHint:'Vďaka tomu sa stav vodiča mení sám: keď vodič (s otvorenou aplikáciou) príde do skladu, má stav „V sklade“ – keď odíde, „Na ceste“. Okruh cca 250 m.', lagerNotSet:'Sklad ešte nie je zadaný.', lagerAdresseLabel:'Adresa skladu', lagerSaveBtn:'Uložiť adresu skladu', lagerGpsBtn:'📍 Som práve v sklade – použiť moju polohu', lagerNotFound:'Adresa sa nenašla – zadaj ju aj s mestom, napr. „Musterstraße 1, München“.', lagerMapLabel:'Sklad', autoTag:'automaticky', autoHint:'🔄 Mení sa automaticky, keď prídeš do skladu alebo z neho odídeš.',
   routeEta:'cca {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa v Google Maps', navStart:'🧭 Spustiť navigáciu (Google Maps)',
   geoOn:'📍 Tvoja poloha sa zdieľa – vidí ju iba šéf a iba kým si prihlásený a aplikácia je otvorená.', geoWait:'📍 Hľadám polohu …', geoDenied:'📍 Zdieľanie polohy je vypnuté – šéf ťa nevidí na mape. Povoľ polohu pre túto aplikáciu v nastaveniach telefónu.', geoUnavail:'📍 Toto zariadenie neposkytuje polohu.', geoRetry:'Skúsiť znova', posHeading:'📍 Kde sú nákladné autá?', posHint:'Viditeľné iba pre teba (šéf). Vodiči zdieľajú polohu iba vtedy, keď sú prihlásení a majú otvorenú aplikáciu. Ukladá sa iba posledná poloha.', posNone:'Momentálne žiadny vodič nezdieľa polohu.', posNow:'práve teraz', posMinAgo:'pred {n} min', posLastSeen:'naposledy videný o {time}', posAcc:'Presnosť ± {m} m',
   pushCardTitle:'Upozornenia',
@@ -1142,6 +1146,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  lagerHeading:'🏭 Lokacija skladišta', lagerHint:'Tako se status vozača mijenja sam: kad vozač (s otvorenom aplikacijom) stigne u skladište, ima status „U skladištu“ – kad ode, „Na putu“. Radijus oko 250 m.', lagerNotSet:'Skladište još nije upisano.', lagerAdresseLabel:'Adresa skladišta', lagerSaveBtn:'Spremi adresu skladišta', lagerGpsBtn:'📍 Upravo sam u skladištu – preuzmi moju lokaciju', lagerNotFound:'Adresa nije pronađena – upiši je s mjestom, npr. „Musterstraße 1, München“.', lagerMapLabel:'Skladište', autoTag:'automatski', autoHint:'🔄 Mijenja se automatski kad stigneš u skladište ili odeš iz njega.',
   routeEta:'oko {min} min vožnje · {km} km', routeGmaps:'🧭 Ruta u Google Maps', navStart:'🧭 Pokreni navigaciju (Google Maps)',
   geoOn:'📍 Tvoja se lokacija dijeli – vidi je samo šef i samo dok si prijavljen i aplikacija je otvorena.', geoWait:'📍 Tražim lokaciju …', geoDenied:'📍 Dijeljenje lokacije je isključeno – šef te ne vidi na karti. Dopusti lokaciju za ovu aplikaciju u postavkama mobitela.', geoUnavail:'📍 Ovaj uređaj ne daje lokaciju.', geoRetry:'Pokušaj ponovno', posHeading:'📍 Gdje su kamioni?', posHint:'Vidljivo samo tebi (šef). Vozači dijele lokaciju samo dok su prijavljeni i imaju otvorenu aplikaciju. Sprema se samo zadnja pozicija.', posNone:'Trenutno nijedan vozač ne dijeli lokaciju.', posNow:'upravo sada', posMinAgo:'prije {n} min', posLastSeen:'zadnji put viđen u {time}', posAcc:'Točnost ± {m} m',
   pushCardTitle:'Obavijesti',
@@ -1324,6 +1329,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  lagerHeading:'🏭 Warehouse location', lagerHint:'This makes the driver status update by itself: when a driver (app open) arrives at the warehouse, the status becomes “At the warehouse” – when they drive off, “On the road”. Radius approx. 250 m.', lagerNotSet:'No warehouse entered yet.', lagerAdresseLabel:'Warehouse address', lagerSaveBtn:'Save warehouse address', lagerGpsBtn:'📍 I am at the warehouse right now – use my location', lagerNotFound:'Address not found – please include the town, e.g. “Musterstraße 1, München”.', lagerMapLabel:'Warehouse', autoTag:'automatic', autoHint:'🔄 Updates automatically when you arrive at or leave the warehouse.',
   routeEta:'approx. {min} min drive · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Start navigation (Google Maps)',
   geoOn:'📍 Your location is being shared – only the boss can see it, and only while you are logged in and the app is open.', geoWait:'📍 Finding your location …', geoDenied:'📍 Location sharing is off – the boss cannot see you on the map. Please allow location for this app in your phone settings.', geoUnavail:'📍 This device does not provide a location.', geoRetry:'Try again', posHeading:'📍 Where are the trucks?', posHint:'Only visible to you (boss). Drivers share their location only while they are logged in and have the app open. Only the latest position is stored.', posNone:'No driver is sharing their location right now.', posNow:'just now', posMinAgo:'{n} min ago', posLastSeen:'last seen at {time}', posAcc:'Accuracy ± {m} m',
   pushCardTitle:'Notifications',
@@ -1629,7 +1635,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
-  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'',
+  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, lagerWarn:'', lagerDraft:null,
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
@@ -1674,6 +1680,7 @@ async function loadShared(){
       state.calCounter = data.value.calCounter || 1;
       state.driverStatus = data.value.driverStatus || {};
       state.driverPos = data.value.driverPos || {};
+      state.lager = data.value.lager || null;
       state.plannedDeliveries = data.value.plannedDeliveries || [];
       state.planCounter = data.value.planCounter || 1;
       state.lkwEntries = data.value.lkwEntries || [];
@@ -1714,7 +1721,7 @@ async function saveShared(){
         value: {orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
                 projects:state.projects, projektCounter:state.projektCounter,
                 calendarEntries:state.calendarEntries, calCounter:state.calCounter,
-                driverStatus:state.driverStatus, driverPos:state.driverPos,
+                driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager,
                 plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
                 lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
                 employees:state.employees, empCounter:state.empCounter,
@@ -2268,7 +2275,8 @@ function myStatusWidgetHTML(){
         return `<button class="ziel-chip ${cur.ziel===p.id?'active':''}" data-action="set-driver-ziel" data-id="${p.id}"><i style="${hex?`background:${hex};`:''}"></i>BV ${p.id} – ${p.name}</button>`;
       }).join('')}</div>` : `<div class="order-time" style="margin-top:6px;">${t('pvEmptyActive')}</div>`}`:''}
     ${unterwegs && cur.ziel ? navButtonHTML(cur.ziel) : ''}
-    ${cur? `<div class="order-time" style="margin-top:10px;">${t('statusUpdatedPrefix')} ${cur.time}</div>`:''}
+    ${cur? `<div class="order-time" style="margin-top:10px;">${t('statusUpdatedPrefix')} ${cur.time}${cur.auto? ' · 🔄 '+t('autoTag'):''}</div>`:''}
+    ${state.lager && state.lager.coords && state.geoStatus==='on'? `<div class="order-time" style="margin-top:4px;">${t('autoHint')}</div>`:''}
   </div>`;
 }
 // Startet Google Maps mit Navigation zum Ziel-Bauvorhaben (Start = eigener
@@ -2599,6 +2607,19 @@ function projekteHTML(){
     <div class="field"><label>${t('pvAdresseLabel')}</label><input id="pvAdresse" placeholder="${t('pvAdressePlaceholder')}" autocomplete="off"></div>
     <div id="pvWarn"></div>
     <button class="advance-btn" data-action="add-projekt">${t('pvAddBtn')}</button>
+  </div>
+  ${lagerSettingHTML()}`;
+}
+function lagerSettingHTML(){
+  const lg = state.lager;
+  return `<h3 class="section-h">${t('lagerHeading')}</h3>
+  <div class="order-card">
+    <p class="order-time" style="margin:0 0 10px 0;line-height:1.5;">${t('lagerHint')}</p>
+    <div style="font-weight:700;font-size:14px;margin-bottom:10px;">${lg && lg.coords ? '🏭 '+escapeHtml(lg.adresse || `${lg.coords.lat}, ${lg.coords.lon}`) : t('lagerNotSet')}</div>
+    <div class="field"><label>${t('lagerAdresseLabel')}</label><input id="lagerAdresse" value="${escapeHtml(state.lagerDraft!==null ? state.lagerDraft : (lg && lg.adresse) || '')}" placeholder="${t('pvAdressePlaceholder')}" autocomplete="off"></div>
+    <div id="lagerWarn">${state.lagerWarn? `<div class="warn">${state.lagerWarn}</div>`:''}</div>
+    <button class="advance-btn" data-action="lager-save">${t('lagerSaveBtn')}</button>
+    <button class="chip-btn" style="margin-top:10px;width:100%;" data-action="lager-gps">${t('lagerGpsBtn')}</button>
   </div>`;
 }
 
@@ -2791,10 +2812,17 @@ async function mountProjectMap(){
 function updateMapMarkers(){
   if(!bvMap) return;
   const aktive = state.projects.filter(p=>p.aktiv && p.coords);
-  const sig = state.lang+'|'+JSON.stringify(aktive.map(p=>[p.id,p.name,p.adresse,p.farbe,p.coords,p.fertigAm]));
+  const lc = state.lager && state.lager.coords;
+  const sig = state.lang+'|'+JSON.stringify([state.lager, aktive.map(p=>[p.id,p.name,p.adresse,p.farbe,p.coords,p.fertigAm])]);
   if(sig!==bvMapSig){
   bvMapSig = sig;
   bvLayer.clearLayers();
+  if(lc){
+    L.marker([lc.lat, lc.lon], {icon:L.divIcon({className:'truck-pin lager-pin', html:'🏭', iconSize:[34,34], iconAnchor:[17,17]})})
+      .bindTooltip(t('lagerMapLabel'), {permanent:true, direction:'top', offset:[0,-16], className:'bv-tip'})
+      .bindPopup(`<b>🏭 ${t('lagerMapLabel')}</b>${state.lager.adresse? `<br>${escapeHtml(state.lager.adresse)}`:''}`)
+      .addTo(bvLayer);
+  }
   aktive.forEach(p=>{
     const m = projektColorMeta(p.farbe);
     const ll = [p.coords.lat, p.coords.lon];
@@ -2810,10 +2838,10 @@ function updateMapMarkers(){
   }
   // LKW-Standorte (nur in der Chef-Rolle, sonst leer)
   const trucks = updateTruckMarkers();
-  const pts = aktive.map(p=>[p.coords.lat, p.coords.lon]).concat(trucks.map(x=>x[1]));
+  const pts = aktive.map(p=>[p.coords.lat, p.coords.lon]).concat(trucks.map(x=>x[1]), lc? [[lc.lat, lc.lon]] : []);
   // Ausschnitt nur neu einpassen, wenn Bauvorhaben/LKWs dazukommen oder
   // wegfallen -- sonst bleibt die gewählte Ansicht erhalten.
-  const ids = aktive.map(p=>p.id).join(',')+'|'+trucks.map(x=>x[0]).join(',');
+  const ids = aktive.map(p=>p.id).join(',')+'|'+trucks.map(x=>x[0]).join(',')+'|'+(lc? lc.lat+','+lc.lon : '');
   if(pts.length && ids!==bvMapIds){
     bvMap.fitBounds(pts, {padding:[40,40], maxZoom:13});
     bvMapIds = ids;
@@ -2884,6 +2912,7 @@ function onGeo(p){
   geoLast = {lat:+p.coords.latitude.toFixed(5), lon:+p.coords.longitude.toFixed(5), acc:Math.round(p.coords.accuracy||0), fix:Date.now()};
   if(state.geoStatus!=='on'){ state.geoStatus = 'on'; updateGeoBadge(); }
   if(Date.now()-geoLastSent >= POS_EVERY_MS) sendPos();
+  autoDriverStatus(geoLast);
 }
 function onGeoErr(e){
   if(e && e.code===1){  // nicht erlaubt
@@ -2910,7 +2939,44 @@ async function writePos(name, v){
     await saveShared();
   }
 }
+// ---- Fahrer-Status automatisch (Am Lager / Unterwegs) -------------------
+// Hat der Chef den Lager-Standort eingetragen (state.lager.coords), stellt
+// das Fahrer-Handy (App offen, Standort geteilt) den Status selbst um:
+// innerhalb LAGER_IN_M -> "Am Lager", weiter weg als LAGER_OUT_M ->
+// "Unterwegs" (Abstand dazwischen gegen Hin- und Herspringen). Umgestellt
+// wird nur beim WECHSEL der Zone -- stellt der Fahrer oder Chef von Hand
+// um, bleibt das, bis er die Zone wirklich wechselt. Beim ersten Standort
+// nach dem Öffnen wird ein gerade (< 15 Min.) von Hand gesetzter Status
+// nicht überschrieben. Ein vom Chef/Fahrer gewähltes Ziel bleibt erhalten,
+// wenn der Status schon "Unterwegs" ist.
+const LAGER_IN_M = 250, LAGER_OUT_M = 450;
+let geoZone = null, autoBusy = false;
+async function autoDriverStatus(pos){
+  const lc = state.lager && state.lager.coords;
+  if(!lc || !geoName || autoBusy || (pos.acc && pos.acc > 300)) return;
+  const d = distM([pos.lat, pos.lon], [lc.lat, lc.lon]);
+  const zone = d <= LAGER_IN_M ? 'in' : d >= LAGER_OUT_M ? 'out' : null;
+  if(!zone || zone===geoZone) return;
+  const first = geoZone===null;
+  geoZone = zone;
+  const want = zone==='in' ? 'lager' : 'unterwegs';
+  const cur = state.driverStatus[geoName];
+  if(cur && cur.status===want) return;
+  if(first && cur && cur.ts && Date.now()-cur.ts < 15*60*1000) return;
+  autoBusy = true;
+  try{
+    await loadShared();  // frisch laden, damit nichts Neueres überschrieben wird
+    const c2 = state.driverStatus[geoName];
+    if(!geoName || (c2 && c2.status===want)) return;
+    state.driverStatus[geoName] = {status:want, ziel:null, by:null, time:nowStr(), ts:Date.now(), auto:true};
+    await saveShared();
+    const ae = document.activeElement;
+    if(state.loggedIn && !(ae && /^(INPUT|SELECT|TEXTAREA)$/.test(ae.tagName))) render();
+  } finally { autoBusy = false; }
+}
+
 async function stopGeo(clear){
+  geoZone = null;
   if(geoWatch!==null){ navigator.geolocation.clearWatch(geoWatch); geoWatch = null; }
   const name = geoName;
   geoName = null; geoLast = null; geoLastSent = 0; geoDenied = false; state.geoStatus = '';
@@ -3459,7 +3525,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       state.lastGPS = {lat, lon};
       let text = lat.toFixed(5)+', '+lon.toFixed(5);
       try{
-        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=de&lat=${lat}&lon=${lon}`);
         const j = await r.json();
         if(j && j.address){
           const a = j.address;
@@ -3491,14 +3557,14 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='open-projekt'){ state.chefProjekt = parseInt(el.dataset.id,10); state.cart = {}; state.planDraft = {projekt:'', date:''}; state.planWarn=''; render(); window.scrollTo(0,0); }
   if(action==='close-projekt'){ state.chefProjekt = null; render(); }
   if(action==='send-driver'){
-    state.driverStatus[el.dataset.driver] = {status:'unterwegs', ziel:parseInt(el.dataset.id,10), by:state.name, time:nowStr()};
+    state.driverStatus[el.dataset.driver] = {status:'unterwegs', ziel:parseInt(el.dataset.id,10), by:state.name, time:nowStr(), ts:Date.now()};
     await saveShared();
     render();
     const pz = state.projects.find(x=>x.id===parseInt(el.dataset.id,10));
     notify({names:[el.dataset.driver]}, 'nSentT', 'nSentB', {bv:projektLabel(pz?pz.id:null), adr:pz?pz.adresse:''});
   }
   if(action==='recall-driver'){
-    state.driverStatus[el.dataset.driver] = {status:'lager', ziel:null, time:nowStr()};
+    state.driverStatus[el.dataset.driver] = {status:'lager', ziel:null, time:nowStr(), ts:Date.now()};
     await saveShared();
     render();
   }
@@ -3507,10 +3573,50 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const id = parseInt(el.dataset.id,10);
     if(cur && cur.status==='unterwegs'){
       cur.ziel = cur.ziel===id ? null : id;
-      cur.by = null; cur.time = nowStr();
+      cur.by = null; cur.time = nowStr(); cur.ts = Date.now(); cur.auto = false;
       await saveShared();
     }
     render();
+  }
+  if(action==='lager-save'){
+    const inp = document.getElementById('lagerAdresse');
+    const adresse = (inp? inp.value : '').trim();
+    if(!adresse) return;
+    el.disabled = true;
+    try{
+      const base = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=de&q=${encodeURIComponent(adresse)}`;
+      let res = await (await fetch(base+`&viewbox=${MUC_VIEWBOX}&bounded=1`, {headers:{'Accept-Language':'de'}})).json();
+      if(!res || !res[0]) res = await (await fetch(base, {headers:{'Accept-Language':'de'}})).json();
+      if(!res || !res[0]) throw new Error('nicht gefunden');
+      await loadShared();
+      state.lager = {adresse, coords:{lat:+parseFloat(res[0].lat).toFixed(5), lon:+parseFloat(res[0].lon).toFixed(5)}};
+      state.lagerWarn = ''; state.lagerDraft = null;
+      await saveShared();
+      render();
+    }catch(e){
+      state.lagerWarn = t('lagerNotFound'); state.lagerDraft = adresse;
+      render();
+    }
+  }
+  if(action==='lager-gps'){
+    if(!navigator.geolocation){ state.lagerWarn = t('locNoSupport'); render(); return; }
+    el.textContent = t('locFetching');
+    navigator.geolocation.getCurrentPosition(async (pos)=>{
+      const lat = +pos.coords.latitude.toFixed(5), lon = +pos.coords.longitude.toFixed(5);
+      let adresse = '';
+      try{
+        const j = await (await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=de&lat=${lat}&lon=${lon}`)).json();
+        if(j && j.address){
+          const a = j.address;
+          adresse = [[a.road, a.house_number].filter(Boolean).join(' '), [a.postcode, a.city || a.town || a.village].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+        }
+      }catch(e){ /* ohne Adresse reichen die Koordinaten */ }
+      await loadShared();
+      state.lager = {adresse, coords:{lat, lon}};
+      state.lagerWarn = ''; state.lagerDraft = null;
+      await saveShared();
+      render();
+    }, ()=>{ state.lagerWarn = t('locFailed'); render(); }, {enableHighAccuracy:true, timeout:20000});
   }
   if(action==='add-projekt'){
     const n = document.getElementById('pvName'), a = document.getElementById('pvAdresse');
@@ -3546,7 +3652,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       status,
       ziel: keep? prev.ziel : null,
       by: keep? prev.by : null,
-      time: nowStr(),
+      time: nowStr(), ts: Date.now(),
     };
     await saveShared();
     render();
