@@ -306,6 +306,7 @@
   .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
+  .nav-btn{display:block;text-align:center;margin-top:12px;background:#FFEE00;color:#0B2A4A;font-weight:700;font-size:14px;border-radius:12px;padding:11px 14px;text-decoration:none;}
   .geo-badge{font-size:12.5px;line-height:1.45;border-radius:12px;padding:9px 12px;margin:0 0 14px 0;background:var(--surface-2);color:var(--ink);border-left:4px solid var(--line-strong);}
   .geo-badge.geo-on{border-left-color:#1E9E5A;}
   .geo-badge.geo-denied,.geo-badge.geo-unavailable{border-left-color:var(--amber);}
@@ -595,6 +596,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  routeEta:'ca. {min} Min. Fahrt · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Navigation starten (Google Maps)',
   geoOn:'📍 Dein Standort wird geteilt – nur der Chef sieht ihn, und nur solange du angemeldet bist und die App offen ist.', geoWait:'📍 Standort wird gesucht …', geoDenied:'📍 Standort-Freigabe ist aus – der Chef sieht dich nicht auf der Karte. Bitte in den Handy-Einstellungen den Standort für diese App erlauben.', geoUnavail:'📍 Dieses Gerät liefert keinen Standort.', geoRetry:'Nochmal versuchen', posHeading:'📍 Wo sind die LKWs?', posHint:'Nur für dich (Chef) sichtbar. Fahrer teilen ihren Standort nur, solange sie angemeldet sind und die App offen haben. Gespeichert wird nur die letzte Position.', posNone:'Gerade teilt kein Fahrer seinen Standort.', posNow:'gerade eben', posMinAgo:'vor {n} Min.', posLastSeen:'zuletzt gesehen um {time}', posAcc:'Genauigkeit ± {m} m',
   pushCardTitle:'Benachrichtigungen',
   pushCardText:'Bekomm eine Nachricht aufs Handy, wenn es für dich etwas Neues gibt – auch wenn die App zu ist.',
@@ -776,6 +778,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  routeEta:'ok. {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa w Google Maps', navStart:'🧭 Uruchom nawigację (Google Maps)',
   geoOn:'📍 Twoja lokalizacja jest udostępniana – widzi ją tylko szef i tylko wtedy, gdy jesteś zalogowany i aplikacja jest otwarta.', geoWait:'📍 Szukam lokalizacji …', geoDenied:'📍 Udostępnianie lokalizacji jest wyłączone – szef nie widzi cię na mapie. Zezwól na lokalizację dla tej aplikacji w ustawieniach telefonu.', geoUnavail:'📍 To urządzenie nie podaje lokalizacji.', geoRetry:'Spróbuj ponownie', posHeading:'📍 Gdzie są ciężarówki?', posHint:'Widoczne tylko dla ciebie (szef). Kierowcy udostępniają lokalizację tylko wtedy, gdy są zalogowani i mają otwartą aplikację. Zapisywana jest tylko ostatnia pozycja.', posNone:'Obecnie żaden kierowca nie udostępnia lokalizacji.', posNow:'przed chwilą', posMinAgo:'{n} min temu', posLastSeen:'ostatnio widziany o {time}', posAcc:'Dokładność ± {m} m',
   pushCardTitle:'Powiadomienia',
   pushCardText:'Otrzymuj wiadomość na telefon, gdy jest coś nowego dla ciebie – nawet gdy aplikacja jest zamknięta.',
@@ -957,6 +960,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  routeEta:'cca {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa v Google Maps', navStart:'🧭 Spustiť navigáciu (Google Maps)',
   geoOn:'📍 Tvoja poloha sa zdieľa – vidí ju iba šéf a iba kým si prihlásený a aplikácia je otvorená.', geoWait:'📍 Hľadám polohu …', geoDenied:'📍 Zdieľanie polohy je vypnuté – šéf ťa nevidí na mape. Povoľ polohu pre túto aplikáciu v nastaveniach telefónu.', geoUnavail:'📍 Toto zariadenie neposkytuje polohu.', geoRetry:'Skúsiť znova', posHeading:'📍 Kde sú nákladné autá?', posHint:'Viditeľné iba pre teba (šéf). Vodiči zdieľajú polohu iba vtedy, keď sú prihlásení a majú otvorenú aplikáciu. Ukladá sa iba posledná poloha.', posNone:'Momentálne žiadny vodič nezdieľa polohu.', posNow:'práve teraz', posMinAgo:'pred {n} min', posLastSeen:'naposledy videný o {time}', posAcc:'Presnosť ± {m} m',
   pushCardTitle:'Upozornenia',
   pushCardText:'Dostaň správu do mobilu, keď je pre teba niečo nové – aj keď je aplikácia zatvorená.',
@@ -1138,6 +1142,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  routeEta:'oko {min} min vožnje · {km} km', routeGmaps:'🧭 Ruta u Google Maps', navStart:'🧭 Pokreni navigaciju (Google Maps)',
   geoOn:'📍 Tvoja se lokacija dijeli – vidi je samo šef i samo dok si prijavljen i aplikacija je otvorena.', geoWait:'📍 Tražim lokaciju …', geoDenied:'📍 Dijeljenje lokacije je isključeno – šef te ne vidi na karti. Dopusti lokaciju za ovu aplikaciju u postavkama mobitela.', geoUnavail:'📍 Ovaj uređaj ne daje lokaciju.', geoRetry:'Pokušaj ponovno', posHeading:'📍 Gdje su kamioni?', posHint:'Vidljivo samo tebi (šef). Vozači dijele lokaciju samo dok su prijavljeni i imaju otvorenu aplikaciju. Sprema se samo zadnja pozicija.', posNone:'Trenutno nijedan vozač ne dijeli lokaciju.', posNow:'upravo sada', posMinAgo:'prije {n} min', posLastSeen:'zadnji put viđen u {time}', posAcc:'Točnost ± {m} m',
   pushCardTitle:'Obavijesti',
   pushCardText:'Primi poruku na mobitel kad za tebe ima nešto novo – čak i kad je aplikacija zatvorena.',
@@ -1319,6 +1324,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  routeEta:'approx. {min} min drive · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Start navigation (Google Maps)',
   geoOn:'📍 Your location is being shared – only the boss can see it, and only while you are logged in and the app is open.', geoWait:'📍 Finding your location …', geoDenied:'📍 Location sharing is off – the boss cannot see you on the map. Please allow location for this app in your phone settings.', geoUnavail:'📍 This device does not provide a location.', geoRetry:'Try again', posHeading:'📍 Where are the trucks?', posHint:'Only visible to you (boss). Drivers share their location only while they are logged in and have the app open. Only the latest position is stored.', posNone:'No driver is sharing their location right now.', posNow:'just now', posMinAgo:'{n} min ago', posLastSeen:'last seen at {time}', posAcc:'Accuracy ± {m} m',
   pushCardTitle:'Notifications',
   pushCardText:'Get a message on your phone when there is something new for you – even when the app is closed.',
@@ -2261,8 +2267,17 @@ function myStatusWidgetHTML(){
         const hex = projektColorMeta(p.farbe).hex;
         return `<button class="ziel-chip ${cur.ziel===p.id?'active':''}" data-action="set-driver-ziel" data-id="${p.id}"><i style="${hex?`background:${hex};`:''}"></i>BV ${p.id} – ${p.name}</button>`;
       }).join('')}</div>` : `<div class="order-time" style="margin-top:6px;">${t('pvEmptyActive')}</div>`}`:''}
+    ${unterwegs && cur.ziel ? navButtonHTML(cur.ziel) : ''}
     ${cur? `<div class="order-time" style="margin-top:10px;">${t('statusUpdatedPrefix')} ${cur.time}</div>`:''}
   </div>`;
+}
+// Startet Google Maps mit Navigation zum Ziel-Bauvorhaben (Start = eigener
+// Standort, das macht Google Maps selbst).
+function navButtonHTML(ziel){
+  const p = state.projects.find(x=>x.id===ziel);
+  if(!p) return '';
+  const dest = p.coords ? `${p.coords.lat},${p.coords.lon}` : encodeURIComponent(p.adresse||p.name);
+  return `<a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving" target="_blank" rel="noopener">${t('navStart')}</a>`;
 }
 function driverStatusListHTML(){
   const entries = Object.entries(state.driverStatus).filter(([,v])=>v && v.status);
@@ -2954,14 +2969,88 @@ function chefPositionsHTML(){
   <div id="bvMapSlot" class="bv-map-slot"></div>
   ${list.length? `<div class="ziel-chips" style="margin-top:-6px;">${list.map(([n,v])=>{
     const live = Date.now()-v.ts < POS_LIVE_MS;
-    return `<button class="ziel-chip pos-chip ${live?'live':''}" data-action="pos-focus" data-name="${escapeHtml(n)}">🚚 ${escapeHtml(n)} · ${posAgoText(v.ts)}</button>`;
+    return `<button class="ziel-chip pos-chip ${live?'live':''}" data-action="pos-focus" data-name="${escapeHtml(n)}">${posChipText(n, v)}</button>`;
   }).join('')}</div>` : `<div class="empty-state">${t('posNone')}</div>`}`;
 }
 function truckPopupHTML(n, v){
   const ds = state.driverStatus[n];
   const ziel = ds && ds.status==='unterwegs' && ds.ziel ? `<br>→ ${escapeHtml(projektLabel(ds.ziel))}` : '';
-  return `<b>🚚 ${escapeHtml(n)}</b>${ziel}<br>${posAgoText(v.ts)}${v.acc? `<br>${t('posAcc',{m:v.acc})}`:''}
-    <br><a href="https://www.google.com/maps?q=${v.lat},${v.lon}" target="_blank" rel="noopener">${t('mapsLink')}</a>`;
+  const p = routeTarget(n), c = routeCache[n];
+  const eta = c && c.info ? `<br><b>${routeInfoText(c.info)}</b>` : '';
+  const gRoute = p ? `<br><a href="https://www.google.com/maps/dir/?api=1&origin=${v.lat},${v.lon}&destination=${p.coords.lat},${p.coords.lon}&travelmode=driving" target="_blank" rel="noopener">${t('routeGmaps')}</a>` : '';
+  return `<b>🚚 ${escapeHtml(n)}</b>${ziel}${eta}<br>${posAgoText(v.ts)}${v.acc? `<br>${t('posAcc',{m:v.acc})}`:''}
+    <br><a href="https://www.google.com/maps?q=${v.lat},${v.lon}" target="_blank" rel="noopener">${t('mapsLink')}</a>${gRoute}`;
+}
+
+// ---- Routen auf der Chef-Karte ----------------------------------------
+// Für jeden Fahrer, der "Unterwegs" zu einem Bauvorhaben (mit Koordinaten)
+// ist und seinen Standort teilt, zeichnet die Karte die Straßen-Route von
+// seiner Position zum Bauvorhaben, mit Fahrzeit + km. Quelle: freier
+// OSRM-Routendienst (OpenStreetMap, kein Schlüssel nötig; Google-Routen
+// direkt in der Karte bräuchten ein kostenpflichtiges Google-Konto).
+// Neu berechnet nur, wenn sich der LKW > 150 m bewegt hat (höchstens alle
+// 20 s je Fahrer). Klappt der Dienst nicht, bleibt eine gestrichelte
+// Luftlinie. Im Popup zusätzlich "Route in Google Maps".
+const ROUTE_URL = 'https://router.project-osrm.org/route/v1/driving/';
+let routeLayer = null;
+const routeCache = {};  // Name -> {ziel, line, from, routedFrom, info:{min,km}, at, fetching}
+function routeTarget(n){
+  const ds = state.driverStatus[n];
+  if(!ds || ds.status!=='unterwegs' || !ds.ziel) return null;
+  const p = state.projects.find(x=>x.id===ds.ziel);
+  return p && p.coords ? p : null;
+}
+function distM(a, b){
+  const R = 6371000, toR = x=>x*Math.PI/180;
+  const dLat = toR(b[0]-a[0]), dLon = toR(b[1]-a[1]);
+  const h = Math.sin(dLat/2)**2 + Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+function routeInfoText(info){
+  const km = info.km < 10 ? info.km.toFixed(1) : String(Math.round(info.km));
+  return t('routeEta', {min:info.min, km: state.lang==='en' ? km : km.replace('.', ',')});
+}
+function updateRoutes(list){
+  if(!routeLayer) routeLayer = L.layerGroup().addTo(bvMap);
+  const active = new Set();
+  list.forEach(([n,v])=>{
+    const p = routeTarget(n);
+    if(!p) return;
+    active.add(n);
+    const from = [v.lat, v.lon], to = [p.coords.lat, p.coords.lon];
+    let c = routeCache[n];
+    if(c && c.ziel!==p.id){ routeLayer.removeLayer(c.line); c = null; }
+    if(!c){
+      c = routeCache[n] = {ziel:p.id, from, routedFrom:null, info:null, at:0, fetching:false,
+        line: L.polyline([from, to], {color:'#0069B3', weight:5, opacity:0.8, dashArray:'6 9'}).addTo(routeLayer)};
+    }
+    c.from = from;
+    if(!c.routedFrom) c.line.setLatLngs([from, to]);  // noch keine Straßen-Route: Luftlinie
+    const due = Date.now()-c.at > 20000;
+    if(!c.fetching && due && (!c.routedFrom || distM(c.routedFrom, from) > 150)) fetchRoute(n, c, from, to);
+  });
+  Object.keys(routeCache).forEach(n=>{ if(!active.has(n)){ routeLayer.removeLayer(routeCache[n].line); delete routeCache[n]; } });
+}
+async function fetchRoute(n, c, from, to){
+  c.fetching = true; c.at = Date.now();
+  try{
+    const r = await fetch(`${ROUTE_URL}${from[1]},${from[0]};${to[1]},${to[0]}?overview=full&geometries=geojson`);
+    const j = await r.json();
+    if(routeCache[n]!==c || !j || j.code!=='Ok' || !j.routes || !j.routes[0]) return;
+    const rt = j.routes[0];
+    c.line.setLatLngs(rt.geometry.coordinates.map(([lon,lat])=>[lat,lon]));
+    c.line.setStyle({dashArray:null});
+    c.info = {min:Math.max(1, Math.round(rt.duration/60)), km:rt.distance/1000};
+    c.routedFrom = from;
+    const m = posMarkers[n], v = state.positions[n];
+    if(m && v) m.setPopupContent(truckPopupHTML(n, v));
+    document.querySelectorAll('.pos-chip').forEach(b=>{ if(b.dataset.name===n) b.innerHTML = posChipText(n, v); });
+  }catch(e){ console.warn('Route nicht berechenbar', e); }
+  finally{ c.fetching = false; }
+}
+function posChipText(n, v){
+  const p = routeTarget(n), c = routeCache[n];
+  return `🚚 ${escapeHtml(n)} · ${posAgoText(v.ts)}${p? ` · → BV ${p.id}${c && c.info? ` (${routeInfoText(c.info)})`:''}`:''}`;
 }
 // Marker je Fahrer bleiben bestehen und werden nur verschoben/beschriftet,
 // damit ein offenes Popup das 4-s-Neuzeichnen übersteht.
@@ -2986,6 +3075,7 @@ function updateTruckMarkers(){
     }
     m.setOpacity(live ? 1 : 0.55);
   });
+  updateRoutes(list);
   return list.map(([n,v])=>[n, [v.lat, v.lon]]);
 }
 

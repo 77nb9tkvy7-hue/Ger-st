@@ -367,6 +367,19 @@ Hintergrund kein GPS). Sichtbar nur für den Chef.
   älter als 12 h ausgeblendet. Darunter Chips je Fahrer (`pos-focus`
   springt auf der Karte hin und öffnet das Popup mit Ziel-BV, Genauigkeit,
   Maps-Link). Lager/Fahrer laden keine Positionen.
+- **Routen** (Chef-Karte): Ist ein Fahrer „Unterwegs“ mit Ziel-BV (mit
+  Koordinaten) und teilt seinen Standort, zeichnet `updateRoutes()` die
+  Straßen-Route (SG-Blau) von seiner Position zum BV, mit „ca. X Min. Fahrt ·
+  Y km“ in Chip und Popup (`routeCache`, `fetchRoute()`, `posChipText()`).
+  Quelle: freier OSRM-Dienst (`ROUTE_URL`, router.project-osrm.org, Daten
+  OpenStreetMap, kein Schlüssel; Fahrzeit ohne Verkehr). Neu berechnet nur
+  bei > 150 m Bewegung (max. alle 20 s je Fahrer); ohne Antwort bleibt eine
+  gestrichelte Luftlinie. Echte Google-Routen IN der Karte bräuchten ein
+  kostenpflichtiges Google-Konto + API-Schlüssel – stattdessen Popup-Link
+  „🧭 Route in Google Maps“ (`maps/dir/?api=1&origin=…&destination=…`).
+- **Fahrer**: Bei „Unterwegs“ mit Ziel zeigt „Mein Status“ den gelben Knopf
+  „🧭 Navigation starten (Google Maps)“ (`navButtonHTML()`), der Google Maps
+  mit Navigation zum BV öffnet.
 - Schutz: wie der Rest der App – wer den öffentlichen Anon-Key hat, könnte
   die Zeilen lesen. Fahrer sollten (DSGVO) informiert werden, dass ihr
   Standort während der Arbeit in der App geteilt wird.
