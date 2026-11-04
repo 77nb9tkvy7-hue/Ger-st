@@ -2735,6 +2735,8 @@ function fahrerProjekteHTML(){
 // (Nominatim, max. 1 Anfrage/s) und die Koordinaten im Bauvorhaben
 // gespeichert (p.coords) -- davon profitiert auch der Maps-Link.
 const MAP_CENTER = [48.137, 11.575];
+// München + Umgebung (ca. 50 km), Format Nominatim: links,oben,rechts,unten
+const MUC_VIEWBOX = '10.9,48.5,12.3,47.75';
 let leafletLoading = null, bvMap = null, bvMapEl = null, bvLayer = null, bvMapSig = '', bvMapIds = '';
 const geocodeTried = new Set();
 let geocodeRunning = false;
@@ -2809,8 +2811,15 @@ async function geocodeMissing(){
   for(const p of todo){
     geocodeTried.add(p.id);
     try{
-      const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=de&q=${encodeURIComponent(p.adresse)}`, {headers:{'Accept-Language':'de'}});
-      const res = await r.json();
+      // Zuerst nur im Raum München suchen (sonst landet z. B. eine Adresse
+      // ohne Ortsangabe in einer gleichnamigen Straße anderswo), erst wenn
+      // dort nichts gefunden wird, in ganz Deutschland.
+      const base = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=de&q=${encodeURIComponent(p.adresse)}`;
+      let res = await (await fetch(base+`&viewbox=${MUC_VIEWBOX}&bounded=1`, {headers:{'Accept-Language':'de'}})).json();
+      if(!res || !res[0]){
+        await new Promise(r=>setTimeout(r, 1100));
+        res = await (await fetch(base, {headers:{'Accept-Language':'de'}})).json();
+      }
       if(res && res[0]){
         const cur = state.projects.find(x=>x.id===p.id);
         if(cur && !cur.coords){ cur.coords = {lat:parseFloat(res[0].lat), lon:parseFloat(res[0].lon)}; await saveShared(); updateMapMarkers(); }
@@ -3605,6 +3614,8 @@ function fetchAddrSuggestions(q){
       if(state.lastGPS){
         const g = state.lastGPS;
         url += `&viewbox=${g.lon-0.15},${g.lat+0.15},${g.lon+0.15},${g.lat-0.15}`;
+      } else {
+        url += `&viewbox=${MUC_VIEWBOX}`;  // ohne GPS: Raum München bevorzugen
       }
       const r = await fetch(url);
       const list = await r.json();

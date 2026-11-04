@@ -237,7 +237,9 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    jedem `render()` wieder in `#bvMapSlot` gehängt wird – Zoom/Ausschnitt
    bleiben so erhalten; neu eingepasst wird nur, wenn BV dazukommen oder
    wegfallen. BV ohne Koordinaten werden einmalig über die Adresse gesucht
-   (Nominatim, 1 Anfrage/s, `geocodeMissing()`) und `p.coords` gespeichert.
+   (Nominatim, 1 Anfrage/s, `geocodeMissing()`) und `p.coords` gespeichert –
+   zuerst nur im Raum München (`MUC_VIEWBOX`, `bounded=1`), erst ohne Treffer
+   deutschlandweit (sonst landet z. B. eine Adresse ohne Ort anderswo).
    Sieht was wohin muss und wann bestellt wurde. Kann erst handeln, wenn
    das Lager freigegeben hat.
    Buttons: "Verladen" → "Losfahren" → "Lieferung bestätigen".
