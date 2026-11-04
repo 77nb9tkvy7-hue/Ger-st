@@ -229,6 +229,16 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    geplante Lieferung" springt in diesen Reiter. Eingetragen werden die
    Termine weiterhin im LKW-Kalender (Menü, Chef-Passwort) bzw. über
    „Planen"/Bauvorhaben beim Chef.
+   Reiter **Bauvorhaben**: oben Farb-Legende und eine **Karte von München
+   + Umgebung** (Leaflet + OpenStreetMap, erst beim Öffnen nachgeladen,
+   `mountProjectMap()`): jedes aktive BV als Punkt in seiner Status-Farbe
+   mit Beschriftung „BV 101", Antippen zeigt Name, Adresse, Status,
+   Fertig-Datum und Maps-Link. Weil die App alle 4 s per innerHTML neu
+   zeichnet, gibt es EIN dauerhaftes Karten-Element (`bvMapEl`), das nach
+   jedem `render()` wieder in `#bvMapSlot` gehängt wird – Zoom/Ausschnitt
+   bleiben so erhalten; neu eingepasst wird nur, wenn BV dazukommen oder
+   wegfallen. BV ohne Koordinaten werden einmalig über die Adresse gesucht
+   (Nominatim, 1 Anfrage/s, `geocodeMissing()`) und `p.coords` gespeichert.
    Sieht was wohin muss und wann bestellt wurde. Kann erst handeln, wenn
    das Lager freigegeben hat.
    Buttons: "Verladen" → "Losfahren" → "Lieferung bestätigen".

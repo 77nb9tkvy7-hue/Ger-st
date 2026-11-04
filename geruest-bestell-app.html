@@ -296,6 +296,11 @@
   .ev-kind.lieferung{background:#DCFCE7;color:#166534;}
   .ev-notiz{font-size:13px;margin-top:6px;}
   .ev-kind.fertig{background:var(--surface-2);color:var(--ink);}
+  .bv-map-slot{margin:0 0 16px 0;}
+  .bv-map{height:340px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);background:var(--surface-2);z-index:0;}
+  .bv-tip{background:var(--card);color:var(--ink);border:none;box-shadow:0 1px 4px rgba(0,0,0,0.25);font-weight:700;font-size:11px;padding:2px 6px;}
+  .bv-tip::before{display:none;}
+  @media (min-width: 900px){ .bv-map{height:460px;} }
   .fertig-line{font-size:12.5px;margin-top:8px;}
   .fertig-box{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);}
   .fertig-box label{font-size:12.5px;font-weight:600;color:var(--muted);}
@@ -576,6 +581,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  mapLoadError:'Karte konnte nicht geladen werden – bitte Internet prüfen.',
   pvFertigGeplant:'Fertig geplant am', pvFertigAm:'Fertig am', fkFertig:'Fertigstellung',
   pvAlsFertigBtn:'Als fertig markieren', pvWiederAktivBtn:'Wieder aktivieren',
   pvColorNone:'Keine Angabe', pvColorGreen:'Lieferung nötig', pvColorBlue:'Abholung/Räumung nötig', pvColorBlack:'Nichts zu tun',
@@ -733,6 +739,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  mapLoadError:'Nie udało się załadować mapy – sprawdź internet.',
   pvFertigGeplant:'Planowane zakończenie', pvFertigAm:'Zakończona dnia', fkFertig:'Zakończenie',
   pvAlsFertigBtn:'Oznacz jako zakończoną', pvWiederAktivBtn:'Aktywuj ponownie',
   pvColorNone:'Brak danych', pvColorGreen:'Potrzebna dostawa', pvColorBlue:'Potrzebny odbiór/sprzątanie', pvColorBlack:'Nic do zrobienia',
@@ -890,6 +897,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  mapLoadError:'Mapu sa nepodarilo načítať – skontrolujte internet.',
   pvFertigGeplant:'Plánované dokončenie', pvFertigAm:'Dokončená dňa', fkFertig:'Dokončenie',
   pvAlsFertigBtn:'Označiť ako dokončenú', pvWiederAktivBtn:'Znova aktivovať',
   pvColorNone:'Neurčené', pvColorGreen:'Potrebná dodávka', pvColorBlue:'Potrebné vyzdvihnutie/upratanie', pvColorBlack:'Nič k vybaveniu',
@@ -1047,6 +1055,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  mapLoadError:'Karta se nije mogla učitati – provjerite internet.',
   pvFertigGeplant:'Planirani završetak', pvFertigAm:'Završeno dana', fkFertig:'Završetak',
   pvAlsFertigBtn:'Označi kao završeno', pvWiederAktivBtn:'Ponovno aktiviraj',
   pvColorNone:'Nije postavljeno', pvColorGreen:'Potrebna isporuka', pvColorBlue:'Potrebno preuzimanje/čišćenje', pvColorBlack:'Nema posla',
@@ -1204,6 +1213,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  mapLoadError:'Map could not be loaded – please check your internet.',
   pvFertigGeplant:'Planned completion', pvFertigAm:'Completed on', fkFertig:'Completion',
   pvAlsFertigBtn:'Mark as done', pvWiederAktivBtn:'Reactivate',
   pvColorNone:'Not set', pvColorGreen:'Delivery needed', pvColorBlue:'Pickup/clearing needed', pvColorBlack:'Nothing to do',
@@ -2477,7 +2487,102 @@ function personalHTML(){
 function fahrerProjekteHTML(){
   const aktive = state.projects.filter(p=>p.aktiv);
   return `<p class="view-sub">${t('fahrerProjekteSub')}</p>
+  <div class="proj-legend">${PROJECT_COLORS.map(c=>{ const m=projektColorMeta(c); return `<span><i style="background:${m.hex}"></i>${t(m.key)}</span>`; }).join('')}</div>
+  <div id="bvMapSlot" class="bv-map-slot"></div>
   ${aktive.length? `<div class="card-grid">${aktive.map(p=>projektCardHTML(p,false)).join('')}</div>` : `<div class="empty-state">${t('pvEmptyActive')}</div>`}`;
+}
+
+// ---- Karte der Bauvorhaben (München + Umgebung) ------------------------
+// Leaflet + OpenStreetMap, erst beim ersten Öffnen nachgeladen. Die App
+// zeichnet alle 4 s neu (innerHTML) -- damit Karte, Zoom und offenes
+// Popup das überleben, gibt es EIN dauerhaftes Karten-Element, das nach
+// jedem render() wieder in den Platzhalter #bvMapSlot gehängt wird.
+// Bauvorhaben ohne Koordinaten werden einmalig über die Adresse gesucht
+// (Nominatim, max. 1 Anfrage/s) und die Koordinaten im Bauvorhaben
+// gespeichert (p.coords) -- davon profitiert auch der Maps-Link.
+const MAP_CENTER = [48.137, 11.575];
+let leafletLoading = null, bvMap = null, bvMapEl = null, bvLayer = null, bvMapSig = '', bvMapIds = '';
+const geocodeTried = new Set();
+let geocodeRunning = false;
+function loadLeaflet(){
+  if(window.L) return Promise.resolve();
+  if(leafletLoading) return leafletLoading;
+  leafletLoading = new Promise((resolve, reject)=>{
+    const css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css';
+    document.head.appendChild(css);
+    const js = document.createElement('script');
+    js.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js';
+    js.onload = resolve; js.onerror = ()=>{ leafletLoading = null; reject(); };
+    document.head.appendChild(js);
+  });
+  return leafletLoading;
+}
+async function mountProjectMap(){
+  const slot = document.getElementById('bvMapSlot');
+  if(!slot) return;
+  if(!bvMapEl){ bvMapEl = document.createElement('div'); bvMapEl.className = 'bv-map'; }
+  slot.appendChild(bvMapEl);
+  try{ await loadLeaflet(); }
+  catch(e){ slot.innerHTML = `<div class="order-time" style="padding:12px;">${t('mapLoadError')}</div>`; return; }
+  if(!document.body.contains(bvMapEl)) return;
+  if(!bvMap){
+    bvMap = L.map(bvMapEl, {scrollWheelZoom:false}).setView(MAP_CENTER, 10);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:18, attribution:'© OpenStreetMap'}).addTo(bvMap);
+    bvLayer = L.layerGroup().addTo(bvMap);
+  } else {
+    bvMap.invalidateSize();
+  }
+  updateMapMarkers();
+  geocodeMissing();
+}
+function updateMapMarkers(){
+  if(!bvMap) return;
+  const aktive = state.projects.filter(p=>p.aktiv && p.coords);
+  const sig = state.lang+'|'+JSON.stringify(aktive.map(p=>[p.id,p.name,p.adresse,p.farbe,p.coords,p.fertigAm]));
+  if(sig===bvMapSig) return;
+  bvMapSig = sig;
+  bvLayer.clearLayers();
+  const pts = [];
+  aktive.forEach(p=>{
+    const m = projektColorMeta(p.farbe);
+    const ll = [p.coords.lat, p.coords.lon];
+    pts.push(ll);
+    const maps = `https://www.google.com/maps?q=${p.coords.lat},${p.coords.lon}`;
+    L.circleMarker(ll, {radius:11, color:'#fff', weight:3, fillColor:m.hex||'#94A3B8', fillOpacity:1})
+      .bindTooltip(`BV ${p.id}`, {permanent:true, direction:'top', offset:[0,-10], className:'bv-tip'})
+      .bindPopup(`<b>BV ${p.id} – ${escapeHtml(p.name)}</b><br>${escapeHtml(p.adresse)}<br>
+        <span style="color:${m.hex||'#64748B'};font-weight:700;">● ${t(m.key)}</span>
+        ${p.fertigAm? `<br>🏁 ${t('pvFertigGeplant')} ${formatDateDE(p.fertigAm)}`:''}
+        <br><a href="${maps}" target="_blank" rel="noopener">${t('mapsLink')}</a>`)
+      .addTo(bvLayer);
+  });
+  // Ausschnitt nur neu einpassen, wenn Bauvorhaben dazukommen/wegfallen --
+  // sonst bleibt die vom Fahrer gewählte Ansicht erhalten.
+  const ids = aktive.map(p=>p.id).join(',');
+  if(pts.length && ids!==bvMapIds){
+    bvMap.fitBounds(pts, {padding:[40,40], maxZoom:13});
+    bvMapIds = ids;
+  }
+}
+async function geocodeMissing(){
+  if(geocodeRunning) return;
+  const todo = state.projects.filter(p=>p.aktiv && !p.coords && p.adresse && !geocodeTried.has(p.id));
+  if(!todo.length) return;
+  geocodeRunning = true;
+  for(const p of todo){
+    geocodeTried.add(p.id);
+    try{
+      const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=de&q=${encodeURIComponent(p.adresse)}`, {headers:{'Accept-Language':'de'}});
+      const res = await r.json();
+      if(res && res[0]){
+        const cur = state.projects.find(x=>x.id===p.id);
+        if(cur && !cur.coords){ cur.coords = {lat:parseFloat(res[0].lat), lon:parseFloat(res[0].lon)}; await saveShared(); updateMapMarkers(); }
+      }
+    }catch(e){ console.error('Adresse nicht gefunden', p.adresse, e); }
+    await new Promise(r=>setTimeout(r, 1100));
+  }
+  geocodeRunning = false;
 }
 
 function chefHTML(){
@@ -2671,6 +2776,7 @@ function render(){
     ${state.orderReview ? orderReviewHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
+  mountProjectMap();
 }
 
 function openOrderReview(){
