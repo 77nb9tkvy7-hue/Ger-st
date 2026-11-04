@@ -303,6 +303,13 @@
   .bv-map{height:340px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);background:var(--surface-2);z-index:0;}
   .bv-tip{background:var(--card);color:var(--ink);border:none;box-shadow:0 1px 4px rgba(0,0,0,0.25);font-weight:700;font-size:11px;padding:2px 6px;}
   .bv-tip::before{display:none;}
+  .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
+  .truck-tip{font-size:12px;}
+  .pos-chip.live{border-color:#1E9E5A;}
+  .geo-badge{font-size:12.5px;line-height:1.45;border-radius:12px;padding:9px 12px;margin:0 0 14px 0;background:var(--surface-2);color:var(--ink);border-left:4px solid var(--line-strong);}
+  .geo-badge.geo-on{border-left-color:#1E9E5A;}
+  .geo-badge.geo-denied,.geo-badge.geo-unavailable{border-left-color:var(--amber);}
+  .geo-retry{margin-top:8px;display:block;border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
   @media (min-width: 900px){ .bv-map{height:460px;} }
   .fertig-line{font-size:12.5px;margin-top:8px;}
   .fertig-box{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);}
@@ -588,6 +595,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  geoOn:'📍 Dein Standort wird geteilt – nur der Chef sieht ihn, und nur solange du angemeldet bist und die App offen ist.', geoWait:'📍 Standort wird gesucht …', geoDenied:'📍 Standort-Freigabe ist aus – der Chef sieht dich nicht auf der Karte. Bitte in den Handy-Einstellungen den Standort für diese App erlauben.', geoUnavail:'📍 Dieses Gerät liefert keinen Standort.', geoRetry:'Nochmal versuchen', posHeading:'📍 Wo sind die LKWs?', posHint:'Nur für dich (Chef) sichtbar. Fahrer teilen ihren Standort nur, solange sie angemeldet sind und die App offen haben. Gespeichert wird nur die letzte Position.', posNone:'Gerade teilt kein Fahrer seinen Standort.', posNow:'gerade eben', posMinAgo:'vor {n} Min.', posLastSeen:'zuletzt gesehen um {time}', posAcc:'Genauigkeit ± {m} m',
   pushCardTitle:'Benachrichtigungen',
   pushCardText:'Bekomm eine Nachricht aufs Handy, wenn es für dich etwas Neues gibt – auch wenn die App zu ist.',
   pushEnableBtn:'Einschalten',
@@ -768,6 +776,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  geoOn:'📍 Twoja lokalizacja jest udostępniana – widzi ją tylko szef i tylko wtedy, gdy jesteś zalogowany i aplikacja jest otwarta.', geoWait:'📍 Szukam lokalizacji …', geoDenied:'📍 Udostępnianie lokalizacji jest wyłączone – szef nie widzi cię na mapie. Zezwól na lokalizację dla tej aplikacji w ustawieniach telefonu.', geoUnavail:'📍 To urządzenie nie podaje lokalizacji.', geoRetry:'Spróbuj ponownie', posHeading:'📍 Gdzie są ciężarówki?', posHint:'Widoczne tylko dla ciebie (szef). Kierowcy udostępniają lokalizację tylko wtedy, gdy są zalogowani i mają otwartą aplikację. Zapisywana jest tylko ostatnia pozycja.', posNone:'Obecnie żaden kierowca nie udostępnia lokalizacji.', posNow:'przed chwilą', posMinAgo:'{n} min temu', posLastSeen:'ostatnio widziany o {time}', posAcc:'Dokładność ± {m} m',
   pushCardTitle:'Powiadomienia',
   pushCardText:'Otrzymuj wiadomość na telefon, gdy jest coś nowego dla ciebie – nawet gdy aplikacja jest zamknięta.',
   pushEnableBtn:'Włącz',
@@ -948,6 +957,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  geoOn:'📍 Tvoja poloha sa zdieľa – vidí ju iba šéf a iba kým si prihlásený a aplikácia je otvorená.', geoWait:'📍 Hľadám polohu …', geoDenied:'📍 Zdieľanie polohy je vypnuté – šéf ťa nevidí na mape. Povoľ polohu pre túto aplikáciu v nastaveniach telefónu.', geoUnavail:'📍 Toto zariadenie neposkytuje polohu.', geoRetry:'Skúsiť znova', posHeading:'📍 Kde sú nákladné autá?', posHint:'Viditeľné iba pre teba (šéf). Vodiči zdieľajú polohu iba vtedy, keď sú prihlásení a majú otvorenú aplikáciu. Ukladá sa iba posledná poloha.', posNone:'Momentálne žiadny vodič nezdieľa polohu.', posNow:'práve teraz', posMinAgo:'pred {n} min', posLastSeen:'naposledy videný o {time}', posAcc:'Presnosť ± {m} m',
   pushCardTitle:'Upozornenia',
   pushCardText:'Dostaň správu do mobilu, keď je pre teba niečo nové – aj keď je aplikácia zatvorená.',
   pushEnableBtn:'Zapnúť',
@@ -1128,6 +1138,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  geoOn:'📍 Tvoja se lokacija dijeli – vidi je samo šef i samo dok si prijavljen i aplikacija je otvorena.', geoWait:'📍 Tražim lokaciju …', geoDenied:'📍 Dijeljenje lokacije je isključeno – šef te ne vidi na karti. Dopusti lokaciju za ovu aplikaciju u postavkama mobitela.', geoUnavail:'📍 Ovaj uređaj ne daje lokaciju.', geoRetry:'Pokušaj ponovno', posHeading:'📍 Gdje su kamioni?', posHint:'Vidljivo samo tebi (šef). Vozači dijele lokaciju samo dok su prijavljeni i imaju otvorenu aplikaciju. Sprema se samo zadnja pozicija.', posNone:'Trenutno nijedan vozač ne dijeli lokaciju.', posNow:'upravo sada', posMinAgo:'prije {n} min', posLastSeen:'zadnji put viđen u {time}', posAcc:'Točnost ± {m} m',
   pushCardTitle:'Obavijesti',
   pushCardText:'Primi poruku na mobitel kad za tebe ima nešto novo – čak i kad je aplikacija zatvorena.',
   pushEnableBtn:'Uključi',
@@ -1308,6 +1319,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  geoOn:'📍 Your location is being shared – only the boss can see it, and only while you are logged in and the app is open.', geoWait:'📍 Finding your location …', geoDenied:'📍 Location sharing is off – the boss cannot see you on the map. Please allow location for this app in your phone settings.', geoUnavail:'📍 This device does not provide a location.', geoRetry:'Try again', posHeading:'📍 Where are the trucks?', posHint:'Only visible to you (boss). Drivers share their location only while they are logged in and have the app open. Only the latest position is stored.', posNone:'No driver is sharing their location right now.', posNow:'just now', posMinAgo:'{n} min ago', posLastSeen:'last seen at {time}', posAcc:'Accuracy ± {m} m',
   pushCardTitle:'Notifications',
   pushCardText:'Get a message on your phone when there is something new for you – even when the app is closed.',
   pushEnableBtn:'Turn on',
@@ -1611,7 +1623,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
-  driverStatus:{},
+  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'',
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
@@ -1655,6 +1667,7 @@ async function loadShared(){
       state.calendarEntries = data.value.calendarEntries || [];
       state.calCounter = data.value.calCounter || 1;
       state.driverStatus = data.value.driverStatus || {};
+      state.driverPos = data.value.driverPos || {};
       state.plannedDeliveries = data.value.plannedDeliveries || [];
       state.planCounter = data.value.planCounter || 1;
       state.lkwEntries = data.value.lkwEntries || [];
@@ -1679,6 +1692,7 @@ async function loadShared(){
     // Nur nach ERFOLGREICHEM Laden prüfen -- sonst würde ein kurzer
     // Netzaussetzer beim Start vom Chef angelegte Mitarbeiter abmelden.
     enforceSession();
+    if(state.loggedIn && state.role==='chef') await loadPositions();
   }catch(e){
     console.error('Laden fehlgeschlagen', e);
     state.inventory = {...DEFAULT_INVENTORY};
@@ -1694,7 +1708,7 @@ async function saveShared(){
         value: {orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
                 projects:state.projects, projektCounter:state.projektCounter,
                 calendarEntries:state.calendarEntries, calCounter:state.calCounter,
-                driverStatus:state.driverStatus,
+                driverStatus:state.driverStatus, driverPos:state.driverPos,
                 plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
                 lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
                 employees:state.employees, empCounter:state.empCounter,
@@ -2269,6 +2283,7 @@ function fahrerHTML(){
   const tab = state.fahrerTab;
   return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
   <h2 class="view-title">${t('fahrerTitle')}</h2>
+  <div id="geoBadge">${geoBadgeHTML()}</div>
   ${widgetsHTML('fahrer')}
   ${myStatusWidgetHTML()}
   <div class="seg-control">
@@ -2759,14 +2774,12 @@ function updateMapMarkers(){
   if(!bvMap) return;
   const aktive = state.projects.filter(p=>p.aktiv && p.coords);
   const sig = state.lang+'|'+JSON.stringify(aktive.map(p=>[p.id,p.name,p.adresse,p.farbe,p.coords,p.fertigAm]));
-  if(sig===bvMapSig) return;
+  if(sig!==bvMapSig){
   bvMapSig = sig;
   bvLayer.clearLayers();
-  const pts = [];
   aktive.forEach(p=>{
     const m = projektColorMeta(p.farbe);
     const ll = [p.coords.lat, p.coords.lon];
-    pts.push(ll);
     const maps = `https://www.google.com/maps?q=${p.coords.lat},${p.coords.lon}`;
     L.circleMarker(ll, {radius:11, color:'#fff', weight:3, fillColor:m.hex||'#94A3B8', fillOpacity:1})
       .bindTooltip(`BV ${p.id}`, {permanent:true, direction:'top', offset:[0,-10], className:'bv-tip'})
@@ -2776,9 +2789,13 @@ function updateMapMarkers(){
         <br><a href="${maps}" target="_blank" rel="noopener">${t('mapsLink')}</a>`)
       .addTo(bvLayer);
   });
-  // Ausschnitt nur neu einpassen, wenn Bauvorhaben dazukommen/wegfallen --
-  // sonst bleibt die vom Fahrer gewählte Ansicht erhalten.
-  const ids = aktive.map(p=>p.id).join(',');
+  }
+  // LKW-Standorte (nur in der Chef-Rolle, sonst leer)
+  const trucks = updateTruckMarkers();
+  const pts = aktive.map(p=>[p.coords.lat, p.coords.lon]).concat(trucks.map(x=>x[1]));
+  // Ausschnitt nur neu einpassen, wenn Bauvorhaben/LKWs dazukommen oder
+  // wegfallen -- sonst bleibt die gewählte Ansicht erhalten.
+  const ids = aktive.map(p=>p.id).join(',')+'|'+trucks.map(x=>x[0]).join(',');
   if(pts.length && ids!==bvMapIds){
     bvMap.fitBounds(pts, {padding:[40,40], maxZoom:13});
     bvMapIds = ids;
@@ -2804,6 +2821,164 @@ async function geocodeMissing(){
   geocodeRunning = false;
 }
 
+// ---- LKW-Standorte (nur der Chef sieht sie) ---------------------------
+// Solange ein Fahrer angemeldet ist und die App offen (im Vordergrund)
+// hat, schickt sie etwa alle 30 s seine Position. Gespeichert wird NUR die
+// letzte Position, je Fahrer in einer eigenen Zeile von app_state
+// (key = POS_PREFIX + Name) -- so überschreiben sich die häufigen
+// Standort-Meldungen nicht mit Bestellungen im großen Datensatz. Klappt
+// das nicht (z. B. Tabellen-Regeln erlauben keine neue Zeile), landet sie
+// ersatzweise in driverPos im großen Datensatz. Beim Abmelden/Rollen-
+// wechsel wird sie gelöscht. Geladen wird sie nur in der Chef-Rolle.
+const POS_PREFIX = 'shopfloor-pos:';
+const POS_EVERY_MS = 30000;          // höchstens alle 30 s senden
+const POS_LIVE_MS = 2*60*1000;       // bis 2 Min. alt = "live"
+const POS_MAX_AGE_MS = 12*60*60*1000; // älter als 12 h -> nicht mehr anzeigen
+let geoWatch = null, geoName = null, geoLast = null, geoLastSent = 0, geoDenied = false;
+let posLayer = null, posMarkers = {}, posLoadedOnce = false;
+
+function geoShouldShare(){
+  return state.loggedIn && state.role==='fahrer' && !!state.name && !geoDenied && document.visibilityState!=='hidden';
+}
+function syncGeo(){
+  if(geoWatch!==null && (!state.loggedIn || state.role!=='fahrer' || state.name!==geoName)){
+    stopGeo(true);  // abgemeldet/andere Rolle (auch durch enforceSession)
+  }
+  if(!geoShouldShare()){
+    if(geoWatch!==null){ navigator.geolocation.clearWatch(geoWatch); geoWatch = null; }
+    return;
+  }
+  if(geoWatch!==null) return;
+  if(!('geolocation' in navigator)){ state.geoStatus = 'unavailable'; updateGeoBadge(); return; }
+  geoName = state.name;
+  if(state.geoStatus!=='on') state.geoStatus = 'wait';
+  geoWatch = navigator.geolocation.watchPosition(onGeo, onGeoErr, {enableHighAccuracy:true, maximumAge:15000, timeout:60000});
+  updateGeoBadge();
+}
+function onGeo(p){
+  geoLast = {lat:+p.coords.latitude.toFixed(5), lon:+p.coords.longitude.toFixed(5), acc:Math.round(p.coords.accuracy||0), fix:Date.now()};
+  if(state.geoStatus!=='on'){ state.geoStatus = 'on'; updateGeoBadge(); }
+  if(Date.now()-geoLastSent >= POS_EVERY_MS) sendPos();
+}
+function onGeoErr(e){
+  if(e && e.code===1){  // nicht erlaubt
+    geoDenied = true; state.geoStatus = 'denied';
+    if(geoWatch!==null){ navigator.geolocation.clearWatch(geoWatch); geoWatch = null; }
+    updateGeoBadge();
+  }
+  // Zeitüberschreitung/kein Signal: watchPosition versucht es selbst weiter
+}
+async function sendPos(){
+  if(!geoLast || !geoName || Date.now()-geoLast.fix > 5*60*1000) return;
+  geoLastSent = Date.now();
+  await writePos(geoName, {lat:geoLast.lat, lon:geoLast.lon, acc:geoLast.acc, ts:Date.now()});
+}
+async function writePos(name, v){
+  if(!supabaseClient) return;
+  try{
+    const { error } = await supabaseClient.from('app_state').upsert({key:POS_PREFIX+name, value: v || {off:true, ts:Date.now()}});
+    if(error) throw error;
+  }catch(e){
+    console.warn('Standort-Zeile nicht speicherbar, nutze gemeinsamen Datensatz', e);
+    await loadShared();  // frisch laden, damit nichts Neueres überschrieben wird
+    if(v) state.driverPos[name] = v; else delete state.driverPos[name];
+    await saveShared();
+  }
+}
+async function stopGeo(clear){
+  if(geoWatch!==null){ navigator.geolocation.clearWatch(geoWatch); geoWatch = null; }
+  const name = geoName;
+  geoName = null; geoLast = null; geoLastSent = 0; geoDenied = false; state.geoStatus = '';
+  if(clear && name) await writePos(name, null);
+}
+// Auch wenn der Fahrer still steht, meldet watchPosition nichts Neues --
+// daher alle 30 s die letzte Position erneut schicken ("noch da").
+setInterval(()=>{ if(geoShouldShare() && geoWatch!==null && Date.now()-geoLastSent >= POS_EVERY_MS) sendPos(); }, 10000);
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState==='visible') geoLastSent = 0;  // beim Zurückkommen sofort melden
+  syncGeo();
+});
+function geoBadgeHTML(){
+  const s = state.geoStatus;
+  if(!s) return '';
+  const key = {on:'geoOn', wait:'geoWait', denied:'geoDenied', unavailable:'geoUnavail'}[s];
+  return `<div class="geo-badge geo-${s}">${t(key)}${s==='denied'? ` <button class="geo-retry" data-action="geo-retry">${t('geoRetry')}</button>`:''}</div>`;
+}
+function updateGeoBadge(){
+  const el = document.getElementById('geoBadge');
+  if(el) el.innerHTML = geoBadgeHTML();
+}
+
+async function loadPositions(){
+  if(!supabaseClient) return;
+  const pos = {};
+  Object.entries(state.driverPos||{}).forEach(([n,v])=>{ if(v && v.lat!=null) pos[n] = v; });
+  try{
+    const { data, error } = await supabaseClient.from('app_state').select('key,value').like('key', POS_PREFIX+'%');
+    if(error) throw error;
+    (data||[]).forEach(r=>{
+      const n = r.key.slice(POS_PREFIX.length), v = r.value;
+      if(!v || v.off || v.lat==null){ if(v && pos[n] && (v.ts||0) >= (pos[n].ts||0)) delete pos[n]; return; }
+      if(!pos[n] || (v.ts||0) > (pos[n].ts||0)) pos[n] = v;
+    });
+  }catch(e){ console.warn('Standorte nicht ladbar', e); }
+  state.positions = pos;
+}
+function livePositions(){
+  const now = Date.now();
+  return Object.entries(state.positions||{})
+    .filter(([,v])=> v && v.lat!=null && now-(v.ts||0) < POS_MAX_AGE_MS)
+    .sort((a,b)=> a[0].localeCompare(b[0]));
+}
+function posAgoText(ts){
+  const ms = Date.now()-ts;
+  if(ms < 90*1000) return t('posNow');
+  if(ms < 60*60*1000) return t('posMinAgo', {n:Math.round(ms/60000)});
+  const d = new Date(ts);
+  return t('posLastSeen', {time:`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`});
+}
+function chefPositionsHTML(){
+  const list = livePositions();
+  return `<h3 style="margin-top:22px;font-size:15px;">${t('posHeading')}</h3>
+  <p class="view-sub" style="margin-top:-4px;">${t('posHint')}</p>
+  <div id="bvMapSlot" class="bv-map-slot"></div>
+  ${list.length? `<div class="ziel-chips" style="margin-top:-6px;">${list.map(([n,v])=>{
+    const live = Date.now()-v.ts < POS_LIVE_MS;
+    return `<button class="ziel-chip pos-chip ${live?'live':''}" data-action="pos-focus" data-name="${escapeHtml(n)}">🚚 ${escapeHtml(n)} · ${posAgoText(v.ts)}</button>`;
+  }).join('')}</div>` : `<div class="empty-state">${t('posNone')}</div>`}`;
+}
+function truckPopupHTML(n, v){
+  const ds = state.driverStatus[n];
+  const ziel = ds && ds.status==='unterwegs' && ds.ziel ? `<br>→ ${escapeHtml(projektLabel(ds.ziel))}` : '';
+  return `<b>🚚 ${escapeHtml(n)}</b>${ziel}<br>${posAgoText(v.ts)}${v.acc? `<br>${t('posAcc',{m:v.acc})}`:''}
+    <br><a href="https://www.google.com/maps?q=${v.lat},${v.lon}" target="_blank" rel="noopener">${t('mapsLink')}</a>`;
+}
+// Marker je Fahrer bleiben bestehen und werden nur verschoben/beschriftet,
+// damit ein offenes Popup das 4-s-Neuzeichnen übersteht.
+function updateTruckMarkers(){
+  if(!posLayer) posLayer = L.layerGroup().addTo(bvMap);
+  const list = state.role==='chef' ? livePositions() : [];
+  const keep = new Set(list.map(([n])=>n));
+  Object.keys(posMarkers).forEach(n=>{ if(!keep.has(n)){ posLayer.removeLayer(posMarkers[n]); delete posMarkers[n]; } });
+  list.forEach(([n,v])=>{
+    const ll = [v.lat, v.lon];
+    const live = Date.now()-v.ts < POS_LIVE_MS;
+    const tip = `🚚 ${escapeHtml(n)} · ${posAgoText(v.ts)}`;
+    let m = posMarkers[n];
+    if(!m){
+      m = L.marker(ll, {icon:L.divIcon({className:'truck-pin', html:'🚚', iconSize:[34,34], iconAnchor:[17,17]}), zIndexOffset:1000})
+        .bindTooltip(tip, {permanent:true, direction:'right', offset:[14,0], className:'bv-tip truck-tip'})
+        .bindPopup(truckPopupHTML(n, v))
+        .addTo(posLayer);
+      posMarkers[n] = m;
+    } else {
+      m.setLatLng(ll); m.setTooltipContent(tip); m.setPopupContent(truckPopupHTML(n, v));
+    }
+    m.setOpacity(live ? 1 : 0.55);
+  });
+  return list.map(([n,v])=>[n, [v.lat, v.lon]]);
+}
+
 function chefHTML(){
   const tab = state.chefTab;
   const orders = [...state.orders].sort((a,b)=>a.id-b.id);
@@ -2823,6 +2998,7 @@ function chefHTML(){
   <div class="stat-row">${STATUS_FLOW.map(s=>`<div class="stat-chip"><b>${counts[s]}</b><span>${statusLabel(s)}</span></div>`).join('')}</div>
   <h3 style="margin-top:22px;font-size:15px;">${t('fahrerStatusHeading')}</h3>
   ${driverStatusListHTML()}
+  ${chefPositionsHTML()}
   <h3 style="margin-top:22px;font-size:15px;">${t('allOrdersHeading')}</h3>
   ${orders.length? `<div class="card-grid">${orders.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state">${t('chefEmptyOrders')}</div>`}
   ${SHOW_CHEF_INVENTORY? `<h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
@@ -2967,7 +3143,7 @@ function render(){
   if(state.loading){ document.getElementById('app').innerHTML = `<div class="loading">${t('loadingText')}</div>`; return; }
   if(state.view==='calendar'){ document.getElementById('app').innerHTML = calendarPageHTML(); return; }
   if(state.view==='lkwkalender'){ document.getElementById('app').innerHTML = lkwKalenderPageHTML(); return; }
-  if(!state.loggedIn){ document.getElementById('app').innerHTML = loginHTML(); return; }
+  if(!state.loggedIn){ document.getElementById('app').innerHTML = loginHTML(); syncGeo(); return; }
 
   let mainHTML='';
   if(state.role==='baustelle') mainHTML = catalogHTML();
@@ -2996,6 +3172,7 @@ function render(){
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
   mountProjectMap();
+  syncGeo();
 }
 
 function openOrderReview(){
@@ -3081,6 +3258,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       state.askChefPw=false; state.loginWarn=''; state.role='chef'; state.loggedIn=true;
       saveSession();
       syncPushSub();
+      loadPositions().then(()=>{ if(state.role==='chef') render(); });
     } else {
       state.loginWarn=t('warnWrongPw');
     }
@@ -3092,8 +3270,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     if(employeeRoles(state.authName).length<=1) state.authName=null;
     render();
   }
-  if(action==='switch-role'){ state.loggedIn=false; state.role=null; state.askChefPw=false; state.loginWarn=''; clearSession(); render(); }
-  if(action==='logout'){ await unlinkPushSub(); state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false; clearSession(); render(); }
+  if(action==='switch-role'){ await stopGeo(true); state.loggedIn=false; state.role=null; state.askChefPw=false; state.loginWarn=''; clearSession(); render(); }
+  if(action==='logout'){ await stopGeo(true); await unlinkPushSub(); state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false; clearSession(); render(); }
 
   // Personal (nur Chef): Mitarbeiter anlegen/entfernen, Rollen, Passwörter
   if(action==='pers-draft-role'){
@@ -3315,6 +3493,11 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='refresh'){ await loadShared(); render(); }
+  if(action==='geo-retry'){ geoDenied=false; state.geoStatus=''; syncGeo(); }
+  if(action==='pos-focus'){
+    const m = posMarkers[el.dataset.name];
+    if(m && bvMap){ bvMap.setView(m.getLatLng(), Math.max(bvMap.getZoom(), 14)); m.openPopup(); }
+  }
 
   if(action==='menu-toggle'){ state.menuOpen = !state.menuOpen; state.langMenuOpen=false; render(); }
   if(action==='lang-toggle'){ state.langMenuOpen = !state.langMenuOpen; state.menuOpen=false; render(); }

@@ -333,6 +333,41 @@ Nutzerentscheidung: echte Web-Push-Nachrichten („Weg 2").
 - Schutz: Wer den (öffentlichen) Anon-Key hat, könnte die Funktion
   aufrufen – gleiches Schutzniveau wie der Rest der App.
 
+## LKW-Standorte (nur für den Chef sichtbar)
+
+Nutzerentscheidung „Variante A“: kein Store-App, sondern im Browser/PWA –
+der Standort wird NUR geteilt, solange ein Fahrer in der Rolle Fahrer
+angemeldet ist UND die App offen im Vordergrund hat (Browser erlauben im
+Hintergrund kein GPS). Sichtbar nur für den Chef.
+- **Fahrer**: `syncGeo()` (nach jedem `render()` und bei
+  `visibilitychange`) startet/stoppt `navigator.geolocation.watchPosition`.
+  Gesendet wird höchstens alle 30 s (`POS_EVERY_MS`, plus „noch da“-
+  Meldung alle 30 s bei Stillstand) über `sendPos()`/`writePos()`. Oben in
+  der Fahrer-Ansicht steht deutlich `#geoBadge` („📍 Dein Standort wird
+  geteilt …“ / „wird gesucht“ / „Freigabe ist aus“ mit Knopf
+  `geo-retry` / „Gerät liefert keinen Standort“) – Hinweispflicht DSGVO.
+- **Speicher**: nur die LETZTE Position `{lat, lon, acc, ts}`, je Fahrer
+  eigene Zeile `app_state.key = 'shopfloor-pos:<Name>'` (damit die häufigen
+  Meldungen nicht mit Bestellungen im großen Datensatz kollidieren).
+  Scheitert das (z. B. Tabellen-Regeln erlauben keine neue Zeile), Rückfall:
+  frisch laden und in `driverPos[name]` im großen Datensatz speichern.
+  Abmelden/Rollenwechsel (`stopGeo(true)`, auch beim Rauswurf durch
+  `enforceSession`) überschreibt die Zeile mit `{off:true}` – kein Verlauf.
+- **Chef**: `loadPositions()` (nur in der Chef-Rolle, in `loadShared()`)
+  liest alle `shopfloor-pos:%`-Zeilen + `driverPos` (jeweils neuerer Wert
+  gewinnt) nach `state.positions`. Reiter „Übersicht“ → Abschnitt „📍 Wo
+  sind die LKWs?“ (`chefPositionsHTML()`): dieselbe Leaflet-Karte (gleicher
+  `#bvMapSlot`-Mechanismus wie beim Fahrer) mit BV-Punkten plus 🚚-Markern
+  (`updateTruckMarkers()`, Marker bleiben bestehen, damit offene Popups das
+  Neuzeichnen überleben), Beschriftung „Ludwig · gerade eben / vor 5 Min. /
+  zuletzt gesehen um 10:42“ (`posAgoText()`), ältere als 2 Min. blasser,
+  älter als 12 h ausgeblendet. Darunter Chips je Fahrer (`pos-focus`
+  springt auf der Karte hin und öffnet das Popup mit Ziel-BV, Genauigkeit,
+  Maps-Link). Lager/Fahrer laden keine Positionen.
+- Schutz: wie der Rest der App – wer den öffentlichen Anon-Key hat, könnte
+  die Zeilen lesen. Fahrer sollten (DSGVO) informiert werden, dass ihr
+  Standort während der Arbeit in der App geteilt wird.
+
 ## Hell-/Dunkelmodus
 
 Die App folgt automatisch der Handy-/Browser-Einstellung
@@ -360,8 +395,10 @@ Die App nutzt Supabase als geteilten Online-Speicher (kostenlose Stufe).
 Alle Bestellungen und der Lagerbestand landen in einer Tabelle `app_state`
 (eine Zeile mit `key = 'shopfloor-data-v2'` und einer `jsonb`-Spalte `value`,
 die `{orders, counter, inventory, projects, projektCounter, calendarEntries,
-calCounter, driverStatus, plannedDeliveries, planCounter, lkwEntries,
-lkwCounter, employees, empCounter, pushSubs}` enthält). Dadurch sehen alle Rollen
+calCounter, driverStatus, driverPos, plannedDeliveries, planCounter, lkwEntries,
+lkwCounter, employees, empCounter, pushSubs}` enthält). Ausnahme: LKW-Standorte
+liegen je Fahrer in einer EIGENEN Zeile (`key = 'shopfloor-pos:<Name>'`,
+siehe „LKW-Standorte“), `driverPos` im großen Datensatz ist nur der Rückfall. Dadurch sehen alle Rollen
 (egal auf welchem Handy, auch über GitHub Pages) dieselben Daten.
 
 Die einzigen zwei Funktionen, die den Speicher anfassen, sind `loadShared()`
