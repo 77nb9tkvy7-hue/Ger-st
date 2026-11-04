@@ -295,6 +295,11 @@
   .ev-kind.termin{background:var(--accent-soft);color:var(--accent-dark);}
   .ev-kind.lieferung{background:#DCFCE7;color:#166534;}
   .ev-notiz{font-size:13px;margin-top:6px;}
+  .ev-kind.fertig{background:var(--surface-2);color:var(--ink);}
+  .fertig-line{font-size:12.5px;margin-top:8px;}
+  .fertig-box{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);}
+  .fertig-box label{font-size:12.5px;font-weight:600;color:var(--muted);}
+  .fertig-box input{padding:7px 10px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);}
 
   /* Fahrer: Ziel antippen, wenn "Unterwegs" */
   .ziel-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
@@ -571,6 +576,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  pvFertigGeplant:'Fertig geplant am', pvFertigAm:'Fertig am', fkFertig:'Fertigstellung',
   pvAlsFertigBtn:'Als fertig markieren', pvWiederAktivBtn:'Wieder aktivieren',
   pvColorNone:'Keine Angabe', pvColorGreen:'Lieferung nötig', pvColorBlue:'Abholung/Räumung nötig', pvColorBlack:'Nichts zu tun',
   calTitle:'Kalender',
@@ -727,6 +733,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  pvFertigGeplant:'Planowane zakończenie', pvFertigAm:'Zakończona dnia', fkFertig:'Zakończenie',
   pvAlsFertigBtn:'Oznacz jako zakończoną', pvWiederAktivBtn:'Aktywuj ponownie',
   pvColorNone:'Brak danych', pvColorGreen:'Potrzebna dostawa', pvColorBlue:'Potrzebny odbiór/sprzątanie', pvColorBlack:'Nic do zrobienia',
   calTitle:'Kalendarz',
@@ -883,6 +890,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  pvFertigGeplant:'Plánované dokončenie', pvFertigAm:'Dokončená dňa', fkFertig:'Dokončenie',
   pvAlsFertigBtn:'Označiť ako dokončenú', pvWiederAktivBtn:'Znova aktivovať',
   pvColorNone:'Neurčené', pvColorGreen:'Potrebná dodávka', pvColorBlue:'Potrebné vyzdvihnutie/upratanie', pvColorBlack:'Nič k vybaveniu',
   calTitle:'Kalendár',
@@ -1039,6 +1047,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  pvFertigGeplant:'Planirani završetak', pvFertigAm:'Završeno dana', fkFertig:'Završetak',
   pvAlsFertigBtn:'Označi kao završeno', pvWiederAktivBtn:'Ponovno aktiviraj',
   pvColorNone:'Nije postavljeno', pvColorGreen:'Potrebna isporuka', pvColorBlue:'Potrebno preuzimanje/čišćenje', pvColorBlack:'Nema posla',
   calTitle:'Kalendar',
@@ -1195,6 +1204,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  pvFertigGeplant:'Planned completion', pvFertigAm:'Completed on', fkFertig:'Completion',
   pvAlsFertigBtn:'Mark as done', pvWiederAktivBtn:'Reactivate',
   pvColorNone:'Not set', pvColorGreen:'Delivery needed', pvColorBlue:'Pickup/clearing needed', pvColorBlack:'Nothing to do',
   calTitle:'Calendar',
@@ -2059,6 +2069,7 @@ function calEventsOn(iso){
   const ev = [];
   state.lkwEntries.filter(e=>e.date===iso).forEach(e=>ev.push({kind:'termin', time:e.time||'', projekt:e.projekt, notiz:e.notiz||''}));
   state.plannedDeliveries.filter(pd=>pd.date===iso).forEach(pd=>ev.push({kind:'lieferung', time:'', projekt:pd.projekt, items:pd.items}));
+  state.projects.filter(p=>p.fertigAm===iso).forEach(p=>ev.push({kind:'fertig', time:'', projekt:p.id}));
   // Termine mit Uhrzeit zuerst (nach Zeit), dann Lieferungen ohne Uhrzeit
   return ev.sort((a,b)=> (a.time? 0:1)-(b.time? 0:1) || a.time.localeCompare(b.time));
 }
@@ -2072,7 +2083,7 @@ function calEventHTML(ev){
   return `<div class="order-card proj-card ev-card" style="${hex?`--pc:${hex};`:''}">
     <div class="ev-head">
       <div class="ev-time">${ev.time || t('fkAllDay')}</div>
-      <span class="ev-kind ${ev.kind}">${ev.kind==='termin' ? t('fkTermin') : t('fkLieferung')}</span>
+      <span class="ev-kind ${ev.kind}">${ev.kind==='termin' ? t('fkTermin') : ev.kind==='fertig' ? '🏁 '+t('fkFertig') : t('fkLieferung')}</span>
     </div>
     <div class="no" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;">${p? `BV ${p.id} – ${p.name}` : '–'}</div>
     ${p? `<div class="order-time" style="margin:2px 0 0 0;">${p.adresse}</div>`:''}
@@ -2103,7 +2114,7 @@ function fahrerKalenderHTML(){
   const events = calEventsOn(sel);
   let empty = '';
   if(!events.length){
-    const next = [...state.lkwEntries.map(e=>e.date), ...state.plannedDeliveries.map(pd=>pd.date)].filter(d=>d>sel).sort()[0];
+    const next = [...state.lkwEntries.map(e=>e.date), ...state.plannedDeliveries.map(pd=>pd.date), ...state.projects.map(p=>p.fertigAm).filter(Boolean)].filter(d=>d>sel).sort()[0];
     empty = `<div class="empty-state" style="padding:26px 10px;">${t('fkDayEmpty')}
       ${next? `<div style="margin-top:12px;"><button class="chip-btn" data-action="fk-day" data-day="${next}">${t('fkNext')} ${formatDateDE(next)} ›</button></div>`:''}</div>`;
   }
@@ -2279,8 +2290,13 @@ function projektCardHTML(p, editable){
     ${Object.keys(offen).length? `<div style="font-size:12px;font-weight:700;margin-top:6px;">${t('pvBestelltUnterwegs')}</div>
       <ul class="order-items">${Object.entries(offen).map(([id,q])=>line(id,q)).join('')}</ul>`:''}
     <div class="order-time">${orders.length? t('pvBestellungenPrefix')+' '+orders.map(o=>'#'+o.id+' ('+statusLabel(o.status)+')').join(', ') : t('pvKeineBestellungen')}</div>
+    ${p.fertigAm && !editable? `<div class="fertig-line">🏁 ${p.aktiv? t('pvFertigGeplant') : t('pvFertigAm')} <b>${formatDateDE(p.fertigAm)}</b></div>`:''}
     <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
-    ${editable? `<button class="refresh-btn" data-action="projekt-toggle" data-id="${p.id}" style="margin-top:10px;">${p.aktiv? t('pvAlsFertigBtn'):t('pvWiederAktivBtn')}</button>`:''}
+    ${editable? `<div class="fertig-box">
+      <label for="fertigDate-${p.id}">🏁 ${p.aktiv? t('pvFertigGeplant') : t('pvFertigAm')}</label>
+      <input type="date" id="fertigDate-${p.id}" data-projekt="${p.id}" value="${p.fertigAm||''}">
+      <button class="refresh-btn" data-action="projekt-toggle" data-id="${p.id}">${p.aktiv? t('pvAlsFertigBtn'):t('pvWiederAktivBtn')}</button>
+    </div>`:''}
   </div>`;
 }
 
@@ -2301,6 +2317,7 @@ function projektRowHTML(p){
         <span class="pill"><i></i>${t(meta.key)}</span>
         ${offen? `<span>${t('pvOffeneBestellungen',{n:offen})}</span>`:''}
         ${geplant? `<span>${t('pvGeplantCount',{n:geplant})}</span>`:''}
+        ${p.fertigAm? `<span>🏁 ${formatDateDE(p.fertigAm)}</span>`:''}
         ${fahrer.length? `<span>🚚 ${fahrer.join(', ')}</span>`:''}
       </div>
     </div>
@@ -2895,7 +2912,12 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   }
   if(action==='projekt-toggle'){
     const p = state.projects.find(x=>String(x.id)===el.dataset.id);
-    if(p){ p.aktiv = !p.aktiv; await saveShared(); }
+    if(p){
+      p.aktiv = !p.aktiv;
+      if(!p.aktiv){ if(!p.fertigAm || p.fertigAm > todayISO()) p.fertigAm = todayISO(); }
+      else p.fertigAm = null;
+      await saveShared();
+    }
     render();
   }
   if(action==='set-projekt-color'){
@@ -3076,6 +3098,18 @@ function fetchAddrSuggestions(q){
   }, 700);
 }
 
+// Fertig-Datum eines Bauvorhabens (Chef) -- 'change' feuert, sobald im
+// Datumsfeld ein Tag gewählt oder das Feld geleert wurde.
+document.getElementById('app').addEventListener('change', async (e)=>{
+  if(e.target.id && e.target.id.startsWith('fertigDate-')){
+    const p = state.projects.find(x=>String(x.id)===e.target.dataset.projekt);
+    if(!p) return;
+    p.fertigAm = e.target.value || null;
+    await saveShared();
+    e.target.blur();
+    render();
+  }
+});
 document.getElementById('app').addEventListener('input', (e)=>{
   if(e.target.id==='baustelleOrtInput'){
     state.baustelleOrt = e.target.value;
