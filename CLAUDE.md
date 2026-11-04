@@ -243,7 +243,15 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    anlegen: Name + Adresse, automatische Nummer „BV 101" aufwärts).
    Antippen öffnet die Detail-Ansicht (`state.chefProjekt`,
    `projektDetailHTML()`): Karte mit Status-Farbe, was „vor Ort" bzw.
-   bestellt/unterwegs ist, als fertig markieren/reaktivieren; Bereich
+   bestellt/unterwegs ist, als fertig markieren/reaktivieren und
+   **Fertig-Datum** (`state.projects[].fertigAm`, ISO-Datum, Datumsfeld
+   `fertigDate-<id>`, gespeichert per `change`-Listener): bei aktiven BV
+   „Fertig geplant am", bei fertigen „Fertig am". „Als fertig markieren"
+   übernimmt das gewählte Datum, setzt aber heute, wenn keins oder eins in
+   der Zukunft gewählt ist; „Wieder aktivieren" löscht es. Das Datum steht
+   in der BV-Liste (🏁), auf der Karte bei Lager/Fahrer (nur lesen) und als
+   Eintrag „Fertigstellung" im Fahrer-Kalender (`calEventsOn()`, Art
+   `fertig`); Bereich
    „Fahrer" mit „Hierher schicken"/„Zurückholen" pro Fahrer (setzt dessen
    `driverStatus` auf unterwegs → dieses BV, `by` = Chef-Name); „Lieferung
    hinzufügen" (gleiches Planungs-Formular `planFormHTML(projektId)`, ohne
@@ -333,8 +341,15 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
   Nur eine Idee bisher: eine Extra-Spalte "Stunden" im Kalender, die nur
   Chefin (und Chef, der sieht sowieso alles) sehen kann, andere Rollen/
   Mitarbeiter nicht – noch nicht umgesetzt, nur besprochen.
+- Benachrichtigungen: Nutzer hat gefragt, ob das geht. Optionen
+  besprochen: (a) einfach – System-Benachrichtigung, solange die App
+  offen/im Hintergrund ist (Polling erkennt Neues, Notification-API);
+  (b) echte Push-Nachrichten auch bei geschlossener App (Web-Push mit
+  VAPID-Schlüsseln + Supabase Edge Function als Sender, iPhone nur als
+  Home-Bildschirm-App ab iOS 16.4) – braucht Einrichtung im Supabase-
+  Dashboard. Noch nicht entschieden/umgesetzt.
 - Weitere Ideen: Realtime-Updates statt Polling (Supabase Realtime),
-  Push-Benachrichtigungen, Export der Bestellungen als PDF/CSV.
+  Export der Bestellungen als PDF/CSV.
 
 ## Große Erweiterung Chef/Lager/Fahrer (umgesetzt)
 
