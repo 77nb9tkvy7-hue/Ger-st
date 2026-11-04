@@ -183,9 +183,8 @@ Gesamtgewicht (siehe „Gewicht").
 ## PWA / „Wie eine App" nutzbar
 
 Die Datei bindet eine `manifest.json` sowie `icon-192.png`/`icon-512.png`
-(quadratische Kacheln, generiert aus `logo.png`) und einen minimalen
-`sw.js` (Service Worker, nur zur Erfüllung der Browser-Installierbarkeits-
-Kriterien, kein Offline-Cache) ein. Dadurch bieten Handy-Browser „Zum
+(quadratische Kacheln, generiert aus `logo.png`) und `sw.js` ein (Service
+Worker: Installierbarkeit + Push-Nachrichten, kein Offline-Cache). Dadurch bieten Handy-Browser „Zum
 Startbildschirm hinzufügen" an; die App startet dann ohne Adressleiste wie
 eine eigenständige App (`display: standalone` in der Manifest-Datei).
 
@@ -299,6 +298,41 @@ dreispaltig und die Bauvorhaben-Detailansicht zweispaltig
 (`.detail-grid`). Neue Kartenlisten immer in `<div class="card-grid">`
 packen, damit sie am PC mitwachsen.
 
+## Push-Benachrichtigungen (auch bei geschlossener App)
+
+Nutzerentscheidung: echte Web-Push-Nachrichten („Weg 2").
+- **Handy**: Karte „🔔 Benachrichtigungen" oben in `<main>`
+  (`pushCardHTML()`, „Einschalten"/„Später"; „Später" merkt sich
+  `geruest-push-later`, danach bleibt der Menüpunkt „Benachrichtigungen
+  einschalten"). `enablePush()` fragt die Erlaubnis, abonniert über den
+  Service Worker mit `VAPID_PUBLIC_KEY` und legt das Abo in
+  `state.pushSubs` ab (`{endpoint, keys, name, lang, ts}`, geteilter
+  Supabase-Datensatz). `syncPushSub()` (nach Login, Sprachwechsel, Start)
+  hängt ein schon erlaubtes Handy still auf die aktuelle Person/Sprache um;
+  `unlinkPushSub()` beim Abmelden löst die Zuordnung. iPhone: nur als
+  Home-Bildschirm-App (ab iOS 16.4) – sonst zeigt die Karte einen Hinweis.
+- **Service Worker** `sw.js`: `push` zeigt die Nachricht (Icon
+  `icon-192.png`), `notificationclick` holt die App nach vorne/öffnet sie.
+- **Versand**: `notify({roles, names}, titelKey, textKey, vars)` ruft die
+  Supabase Edge Function `send-push` auf (`supabaseClient.functions.invoke`)
+  und schickt die Texte gleich in allen 5 Sprachen mit (`tlv()`), die
+  Funktion wählt pro Handy die passende. Absender wird ausgenommen.
+  Ereignisse: neue Bestellung → Lager + Chef; „Bereit zur Abholung" →
+  Fahrer; „Unterwegs"/„Geliefert" → Besteller; Chef schickt Fahrer →
+  dieser Fahrer; neue geplante Lieferung → Lager + Fahrer; neuer
+  LKW-Termin → Fahrer. Texte: Schlüssel `n…T`/`n…B` im `T`-Wörterbuch.
+  Abgelaufene Abos meldet die Funktion als `gone`, die App löscht sie.
+- **Edge Function** `supabase/functions/send-push/index.ts` (Deno,
+  `npm:web-push`): liest `app_state` mit dem Service-Role-Key (stellt
+  Supabase automatisch bereit), wählt Abos nach Rolle (über `employees`)
+  oder Name. Einrichtung steht oben in der Datei: im Supabase-Dashboard
+  als Funktion `send-push` anlegen + Secrets `VAPID_PUBLIC_KEY`,
+  `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`. Der private VAPID-Schlüssel steht
+  NUR dort, nie im Repo. Ist die Funktion nicht eingerichtet, scheitert
+  der Versand still (App läuft normal weiter).
+- Schutz: Wer den (öffentlichen) Anon-Key hat, könnte die Funktion
+  aufrufen – gleiches Schutzniveau wie der Rest der App.
+
 ## Hell-/Dunkelmodus
 
 Die App folgt automatisch der Handy-/Browser-Einstellung
@@ -327,7 +361,7 @@ Alle Bestellungen und der Lagerbestand landen in einer Tabelle `app_state`
 (eine Zeile mit `key = 'shopfloor-data-v2'` und einer `jsonb`-Spalte `value`,
 die `{orders, counter, inventory, projects, projektCounter, calendarEntries,
 calCounter, driverStatus, plannedDeliveries, planCounter, lkwEntries,
-lkwCounter, employees, empCounter}` enthält). Dadurch sehen alle Rollen
+lkwCounter, employees, empCounter, pushSubs}` enthält). Dadurch sehen alle Rollen
 (egal auf welchem Handy, auch über GitHub Pages) dieselben Daten.
 
 Die einzigen zwei Funktionen, die den Speicher anfassen, sind `loadShared()`
@@ -351,13 +385,6 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
   Nur eine Idee bisher: eine Extra-Spalte "Stunden" im Kalender, die nur
   Chefin (und Chef, der sieht sowieso alles) sehen kann, andere Rollen/
   Mitarbeiter nicht – noch nicht umgesetzt, nur besprochen.
-- Benachrichtigungen: Nutzer hat gefragt, ob das geht. Optionen
-  besprochen: (a) einfach – System-Benachrichtigung, solange die App
-  offen/im Hintergrund ist (Polling erkennt Neues, Notification-API);
-  (b) echte Push-Nachrichten auch bei geschlossener App (Web-Push mit
-  VAPID-Schlüsseln + Supabase Edge Function als Sender, iPhone nur als
-  Home-Bildschirm-App ab iOS 16.4) – braucht Einrichtung im Supabase-
-  Dashboard. Noch nicht entschieden/umgesetzt.
 - Weitere Ideen: Realtime-Updates statt Polling (Supabase Realtime),
   Export der Bestellungen als PDF/CSV.
 

@@ -297,6 +297,9 @@
   .ev-notiz{font-size:13px;margin-top:6px;}
   .ev-kind.fertig{background:var(--surface-2);color:var(--ink);}
   .bv-map-slot{margin:0 0 16px 0;}
+  .push-card{background:var(--accent-soft);color:var(--ink);border-radius:16px;padding:14px 16px;margin:0 0 14px 0;font-size:13px;line-height:1.45;}
+  .push-card b{font-family:'Space Grotesk',sans-serif;font-size:15px;display:block;margin-bottom:4px;}
+  .push-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
   .bv-map{height:340px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);background:var(--surface-2);z-index:0;}
   .bv-tip{background:var(--card);color:var(--ink);border:none;box-shadow:0 1px 4px rgba(0,0,0,0.25);font-weight:700;font-size:11px;padding:2px 6px;}
   .bv-tip::before{display:none;}
@@ -389,6 +392,10 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabaseClient = (typeof supabase !== 'undefined')
   ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
+// Öffentlicher VAPID-Schlüssel für Push-Nachrichten. Der passende GEHEIME
+// Schlüssel steht NUR als Secret in Supabase (Edge Function "send-push",
+// siehe supabase/functions/send-push/index.ts) -- nie ins Repo schreiben.
+const VAPID_PUBLIC_KEY = 'BNPzghIrh9xjEiEtKmp_AxqWGl3EkDk29AUrEErbU-1eJn2AjNk7vy1jdmA6dRWbYsM4GVcH591WWGdLq4PfZb0';
 // ---------------------------------------------------------------------------
 
 const STORAGE_KEY = 'shopfloor-data-v2';
@@ -581,6 +588,28 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  pushCardTitle:'Benachrichtigungen',
+  pushCardText:'Bekomm eine Nachricht aufs Handy, wenn es für dich etwas Neues gibt – auch wenn die App zu ist.',
+  pushEnableBtn:'Einschalten',
+  pushLaterBtn:'Später',
+  pushMenuItem:'Benachrichtigungen einschalten',
+  pushIosHint:'Auf dem iPhone geht das nur, wenn die App auf dem Home-Bildschirm liegt: in Safari unten auf Teilen tippen → „Zum Home-Bildschirm", dann die App von dort öffnen und hier einschalten.',
+  pushDenied:'Benachrichtigungen sind für diese Seite blockiert – bitte in den Handy-/Browser-Einstellungen erlauben.',
+  pushFailed:'Einschalten hat nicht geklappt – bitte später nochmal versuchen.',
+  nNewOrderT:'Neue Bestellung #{id}',
+  nNewOrderB:'{ort} – von {person}',
+  nReadyT:'Bereit zum Laden: #{id}',
+  nReadyB:'{ort}',
+  nOnWayT:'Deine Bestellung #{id} ist unterwegs',
+  nOnWayB:'{ort}',
+  nDeliveredT:'Bestellung #{id} geliefert',
+  nDeliveredB:'{ort}',
+  nSentT:'Der Chef schickt dich los',
+  nSentB:'{bv} – {adr}',
+  nPlannedT:'Neue geplante Lieferung',
+  nPlannedB:'{date}: {bv}',
+  nLkwT:'Neuer LKW-Termin',
+  nLkwB:'{date}, {time} Uhr: {bv}',
   mapLoadError:'Karte konnte nicht geladen werden – bitte Internet prüfen.',
   pvFertigGeplant:'Fertig geplant am', pvFertigAm:'Fertig am', fkFertig:'Fertigstellung',
   pvAlsFertigBtn:'Als fertig markieren', pvWiederAktivBtn:'Wieder aktivieren',
@@ -739,6 +768,28 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  pushCardTitle:'Powiadomienia',
+  pushCardText:'Otrzymuj wiadomość na telefon, gdy jest coś nowego dla ciebie – nawet gdy aplikacja jest zamknięta.',
+  pushEnableBtn:'Włącz',
+  pushLaterBtn:'Później',
+  pushMenuItem:'Włącz powiadomienia',
+  pushIosHint:'Na iPhonie działa to tylko, gdy aplikacja jest na ekranie początkowym: w Safari stuknij Udostępnij → „Do ekranu początkowego", otwórz aplikację stamtąd i włącz tutaj.',
+  pushDenied:'Powiadomienia są zablokowane dla tej strony – zezwól w ustawieniach telefonu/przeglądarki.',
+  pushFailed:'Nie udało się włączyć – spróbuj później.',
+  nNewOrderT:'Nowe zamówienie #{id}',
+  nNewOrderB:'{ort} – od {person}',
+  nReadyT:'Gotowe do załadunku: #{id}',
+  nReadyB:'{ort}',
+  nOnWayT:'Twoje zamówienie #{id} jest w drodze',
+  nOnWayB:'{ort}',
+  nDeliveredT:'Zamówienie #{id} dostarczone',
+  nDeliveredB:'{ort}',
+  nSentT:'Szef wysyła cię w trasę',
+  nSentB:'{bv} – {adr}',
+  nPlannedT:'Nowa zaplanowana dostawa',
+  nPlannedB:'{date}: {bv}',
+  nLkwT:'Nowy termin ciężarówki',
+  nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Nie udało się załadować mapy – sprawdź internet.',
   pvFertigGeplant:'Planowane zakończenie', pvFertigAm:'Zakończona dnia', fkFertig:'Zakończenie',
   pvAlsFertigBtn:'Oznacz jako zakończoną', pvWiederAktivBtn:'Aktywuj ponownie',
@@ -897,6 +948,28 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  pushCardTitle:'Upozornenia',
+  pushCardText:'Dostaň správu do mobilu, keď je pre teba niečo nové – aj keď je aplikácia zatvorená.',
+  pushEnableBtn:'Zapnúť',
+  pushLaterBtn:'Neskôr',
+  pushMenuItem:'Zapnúť upozornenia',
+  pushIosHint:'Na iPhone to funguje len vtedy, keď je aplikácia na ploche: v Safari ťukni na Zdieľať → „Pridať na plochu", otvor aplikáciu odtiaľ a zapni tu.',
+  pushDenied:'Upozornenia sú pre túto stránku zablokované – povoľ ich v nastaveniach mobilu/prehliadača.',
+  pushFailed:'Zapnutie sa nepodarilo – skús to neskôr.',
+  nNewOrderT:'Nová objednávka #{id}',
+  nNewOrderB:'{ort} – od {person}',
+  nReadyT:'Pripravené na naloženie: #{id}',
+  nReadyB:'{ort}',
+  nOnWayT:'Tvoja objednávka #{id} je na ceste',
+  nOnWayB:'{ort}',
+  nDeliveredT:'Objednávka #{id} doručená',
+  nDeliveredB:'{ort}',
+  nSentT:'Šéf ťa posiela na cestu',
+  nSentB:'{bv} – {adr}',
+  nPlannedT:'Nová plánovaná dodávka',
+  nPlannedB:'{date}: {bv}',
+  nLkwT:'Nový termín auta',
+  nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Mapu sa nepodarilo načítať – skontrolujte internet.',
   pvFertigGeplant:'Plánované dokončenie', pvFertigAm:'Dokončená dňa', fkFertig:'Dokončenie',
   pvAlsFertigBtn:'Označiť ako dokončenú', pvWiederAktivBtn:'Znova aktivovať',
@@ -1055,6 +1128,28 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  pushCardTitle:'Obavijesti',
+  pushCardText:'Primi poruku na mobitel kad za tebe ima nešto novo – čak i kad je aplikacija zatvorena.',
+  pushEnableBtn:'Uključi',
+  pushLaterBtn:'Kasnije',
+  pushMenuItem:'Uključi obavijesti',
+  pushIosHint:'Na iPhoneu to radi samo kad je aplikacija na početnom zaslonu: u Safariju dodirni Dijeli → „Dodaj na početni zaslon", otvori aplikaciju odande i uključi ovdje.',
+  pushDenied:'Obavijesti su blokirane za ovu stranicu – dopusti ih u postavkama mobitela/preglednika.',
+  pushFailed:'Uključivanje nije uspjelo – pokušaj kasnije.',
+  nNewOrderT:'Nova narudžba #{id}',
+  nNewOrderB:'{ort} – od {person}',
+  nReadyT:'Spremno za utovar: #{id}',
+  nReadyB:'{ort}',
+  nOnWayT:'Tvoja narudžba #{id} je na putu',
+  nOnWayB:'{ort}',
+  nDeliveredT:'Narudžba #{id} isporučena',
+  nDeliveredB:'{ort}',
+  nSentT:'Šef te šalje na put',
+  nSentB:'{bv} – {adr}',
+  nPlannedT:'Nova planirana isporuka',
+  nPlannedB:'{date}: {bv}',
+  nLkwT:'Novi termin kamiona',
+  nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Karta se nije mogla učitati – provjerite internet.',
   pvFertigGeplant:'Planirani završetak', pvFertigAm:'Završeno dana', fkFertig:'Završetak',
   pvAlsFertigBtn:'Označi kao završeno', pvWiederAktivBtn:'Ponovno aktiviraj',
@@ -1213,6 +1308,28 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  pushCardTitle:'Notifications',
+  pushCardText:'Get a message on your phone when there is something new for you – even when the app is closed.',
+  pushEnableBtn:'Turn on',
+  pushLaterBtn:'Later',
+  pushMenuItem:'Turn on notifications',
+  pushIosHint:'On iPhone this only works when the app is on the Home Screen: in Safari tap Share → "Add to Home Screen", then open the app from there and turn it on here.',
+  pushDenied:'Notifications are blocked for this site – please allow them in your phone/browser settings.',
+  pushFailed:'Could not turn on – please try again later.',
+  nNewOrderT:'New order #{id}',
+  nNewOrderB:'{ort} – from {person}',
+  nReadyT:'Ready to load: #{id}',
+  nReadyB:'{ort}',
+  nOnWayT:'Your order #{id} is on the way',
+  nOnWayB:'{ort}',
+  nDeliveredT:'Order #{id} delivered',
+  nDeliveredB:'{ort}',
+  nSentT:'The boss is sending you out',
+  nSentB:'{bv} – {adr}',
+  nPlannedT:'New planned delivery',
+  nPlannedB:'{date}: {bv}',
+  nLkwT:'New truck appointment',
+  nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Map could not be loaded – please check your internet.',
   pvFertigGeplant:'Planned completion', pvFertigAm:'Completed on', fkFertig:'Completion',
   pvAlsFertigBtn:'Mark as done', pvWiederAktivBtn:'Reactivate',
@@ -1490,7 +1607,7 @@ const state = {
   cart:{}, orders:[], orderCounter:1001, inventory:{...DEFAULT_INVENTORY},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
-  employees:[], empCounter:1, authName:null, persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
+  employees:[], empCounter:1, authName:null, pushSubs:[], pushMsg:'', persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
@@ -1541,6 +1658,7 @@ async function loadShared(){
       state.plannedDeliveries = data.value.plannedDeliveries || [];
       state.planCounter = data.value.planCounter || 1;
       state.lkwEntries = data.value.lkwEntries || [];
+      state.pushSubs = data.value.pushSubs || [];
       state.lkwCounter = data.value.lkwCounter || 1;
       if(Array.isArray(data.value.employees) && data.value.employees.length){
         state.employees = data.value.employees;
@@ -1579,7 +1697,8 @@ async function saveShared(){
                 driverStatus:state.driverStatus,
                 plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
                 lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
-                employees:state.employees, empCounter:state.empCounter},
+                employees:state.employees, empCounter:state.empCounter,
+                pushSubs:state.pushSubs},
       });
     if(error) throw error;
   }catch(e){ console.error('Speichern fehlgeschlagen', e); }
@@ -1596,6 +1715,7 @@ function menuDropdownHTML(){
   if(state.view!=='app') items.push(`<button data-action="go-app">${t('menuBackToApp')}</button>`);
   if(state.view!=='calendar') items.push(`<button data-action="go-calendar">${t('menuCalendar')}</button>`);
   if(state.view!=='lkwkalender') items.push(`<button data-action="go-lkwkalender">${t('menuLkwCalendar')}</button>`);
+  if(state.loggedIn && pushSupported() && !(Notification.permission==='granted' && pushActiveHere())) items.push(`<button data-action="push-enable">🔔 ${t('pushMenuItem')}</button>`);
   return `<div class="menu-dropdown">${items.join('')}</div>`;
 }
 function langDropdownHTML(){
@@ -1692,12 +1812,111 @@ function roleButtonHTML(role, action){
   return `<button class="role-btn" data-action="${action}" data-role="${role}">${m.icon()}<div>${t(m.key)}<small>${t(m.subKey)}</small></div></button>`;
 }
 // In eine Rolle einsteigen; Chef verlangt ZUSÄTZLICH das Chef-Passwort.
+// ---- Push-Benachrichtigungen ---------------------------------------------
+// Jedes Handy, das Benachrichtigungen erlaubt, landet mit seinem Push-
+// Abo in state.pushSubs ({endpoint, keys, name, lang, ts}). Verschickt
+// wird über die Supabase Edge Function "send-push" (notify()): sie sucht
+// die passenden Handys (nach Rolle der Person oder nach Name) und schickt
+// den Text in der Sprache, die auf dem jeweiligen Handy eingestellt ist.
+// Ist die Funktion (noch) nicht eingerichtet, passiert einfach nichts.
+const PUSH_ENDPOINT_KEY = 'geruest-push-endpoint', PUSH_LATER_KEY = 'geruest-push-later';
+function pushSupported(){ return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+function isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
+function isStandalone(){ return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone===true; }
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ v==null? localStorage.removeItem(k) : localStorage.setItem(k,v); }catch(e){} }
+function pushActiveHere(){
+  const ep = lsGet(PUSH_ENDPOINT_KEY);
+  return !!ep && state.pushSubs.some(s=>s.endpoint===ep && s.name===state.name);
+}
+function urlB64ToUint8(b64){
+  const raw = atob((b64 + '='.repeat((4-b64.length%4)%4)).replace(/-/g,'+').replace(/_/g,'/'));
+  return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));
+}
+async function registerPushSub(sub){
+  const j = sub.toJSON();
+  state.pushSubs = state.pushSubs.filter(x=>x.endpoint!==j.endpoint);
+  state.pushSubs.push({endpoint:j.endpoint, keys:j.keys, name:state.name, lang:state.lang, ts:nowStr()});
+  lsSet(PUSH_ENDPOINT_KEY, j.endpoint);
+  await saveShared();
+}
+async function enablePush(){
+  try{
+    const perm = await Notification.requestPermission();
+    if(perm!=='granted'){ state.pushMsg = t('pushDenied'); render(); return; }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if(!sub) sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:urlB64ToUint8(VAPID_PUBLIC_KEY)});
+    await registerPushSub(sub);
+    state.pushMsg = '';
+  }catch(e){ console.error('Push einschalten fehlgeschlagen', e); state.pushMsg = t('pushFailed'); }
+  render();
+}
+// Nach Anmeldung/Sprachwechsel: Handy hat schon erlaubt -> Abo still auf
+// aktuelle Person/Sprache umschreiben (kein erneutes Nachfragen).
+async function syncPushSub(){
+  if(!pushSupported() || !state.loggedIn || Notification.permission!=='granted') return;
+  try{
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if(!sub) return;
+    const cur = state.pushSubs.find(x=>x.endpoint===sub.endpoint);
+    if(cur && cur.name===state.name && cur.lang===state.lang) return;
+    await registerPushSub(sub);
+    render();
+  }catch(e){}
+}
+// Beim Abmelden: Handy nicht mehr dieser Person zuordnen
+async function unlinkPushSub(){
+  const ep = lsGet(PUSH_ENDPOINT_KEY);
+  if(!ep) return;
+  const before = state.pushSubs.length;
+  state.pushSubs = state.pushSubs.filter(x=>x.endpoint!==ep);
+  if(state.pushSubs.length!==before) await saveShared();
+}
+function pushCardHTML(){
+  if(!state.loggedIn || lsGet(PUSH_LATER_KEY)) return '';
+  const btns = (enable)=>`<div class="push-actions">
+    ${enable? `<button class="chip-btn primary" data-action="push-enable">${t('pushEnableBtn')}</button>`:''}
+    <button class="chip-btn" data-action="push-later">${t('pushLaterBtn')}</button></div>`;
+  if(isIOS() && !isStandalone()){
+    return `<div class="push-card"><b>🔔 ${t('pushCardTitle')}</b><div>${t('pushIosHint')}</div>${btns(false)}</div>`;
+  }
+  if(!pushSupported()) return '';
+  if(Notification.permission==='granted' && pushActiveHere()) return '';
+  if(Notification.permission==='denied') return state.pushMsg? `<div class="push-card"><div>${state.pushMsg}</div>${btns(false)}</div>` : '';
+  return `<div class="push-card"><b>🔔 ${t('pushCardTitle')}</b><div>${t('pushCardText')}</div>
+    ${state.pushMsg? `<div class="warn">${state.pushMsg}</div>`:''}${btns(true)}</div>`;
+}
+function tlv(lang, key, vars){
+  let s = tl(lang, key);
+  if(vars) Object.keys(vars).forEach(k=>{ s = s.split('{'+k+'}').join(vars[k]); });
+  return s;
+}
+function isoToDE(iso){ const [y,m,d] = iso.split('-'); return `${d}.${m}.${y}`; }
+// target = {roles:[...], names:[...]}; Texte werden für alle 5 Sprachen
+// mitgeschickt, die Funktion nimmt pro Handy die passende.
+function notify(target, titleKey, bodyKey, vars){
+  if(!supabaseClient || !supabaseClient.functions) return;
+  const msgs = {};
+  LANGS.forEach(l=>{ msgs[l.code] = {title:tlv(l.code,titleKey,vars), body:tlv(l.code,bodyKey,vars)}; });
+  supabaseClient.functions.invoke('send-push', {body:{roles:target.roles||[], names:target.names||[], exclude:state.name||null, msgs, url:'./geruest-bestell-app.html'}})
+    .then(({data})=>{
+      if(data && Array.isArray(data.gone) && data.gone.length){
+        state.pushSubs = state.pushSubs.filter(x=>!data.gone.includes(x.endpoint));
+        saveShared();
+      }
+    })
+    .catch(e=>console.warn('Push-Versand nicht möglich', e));
+}
+
 function enterRole(role){
   if(!employeeRoles(state.authName).includes(role)){ state.loginWarn=t('warnNoRoles'); render(); return; }
   if(role==='chef'){ state.askChefPw=true; state.loginWarn=''; render(); return; }
   state.role = role; state.loggedIn = true; state.loginWarn='';
   saveSession();
   render();
+  syncPushSub();
 }
 
 function qtyControlHTML(it){
@@ -2771,7 +2990,7 @@ function render(){
         </div>
       </div>
     </header>
-    <main>${mainHTML}</main>
+    <main>${pushCardHTML()}${mainHTML}</main>
     ${state.itemPopup ? itemPopupHTML() : ''}
     ${state.orderReview ? orderReviewHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
@@ -2827,6 +3046,7 @@ async function submitOrderFinal(){
   if(!projektId) state.baustelleOrt = ort;
   await saveShared();
   render();
+  notify({roles:['lager','chef']}, 'nNewOrderT', 'nNewOrderB', {id:order.id, ort:order.baustelle, person:order.person});
 }
 
 document.getElementById('app').addEventListener('click', async (e)=>{
@@ -2860,6 +3080,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     if(pw && pw.value.trim()===CHEF_PASSWORD){
       state.askChefPw=false; state.loginWarn=''; state.role='chef'; state.loggedIn=true;
       saveSession();
+      syncPushSub();
     } else {
       state.loginWarn=t('warnWrongPw');
     }
@@ -2872,7 +3093,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='switch-role'){ state.loggedIn=false; state.role=null; state.askChefPw=false; state.loginWarn=''; clearSession(); render(); }
-  if(action==='logout'){ state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false; clearSession(); render(); }
+  if(action==='logout'){ await unlinkPushSub(); state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false; clearSession(); render(); }
 
   // Personal (nur Chef): Mitarbeiter anlegen/entfernen, Rollen, Passwörter
   if(action==='pers-draft-role'){
@@ -2943,6 +3164,10 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       }
       order.status = step.next;
       await saveShared();
+      const v = {id:order.id, ort:order.baustelle};
+      if(order.status==='Bereit zur Abholung') notify({roles:['fahrer']}, 'nReadyT', 'nReadyB', v);
+      if(order.status==='Unterwegs') notify({names:[order.person]}, 'nOnWayT', 'nOnWayB', v);
+      if(order.status==='Geliefert') notify({names:[order.person]}, 'nDeliveredT', 'nDeliveredB', v);
     }
     render();
   }
@@ -2991,6 +3216,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     state.driverStatus[el.dataset.driver] = {status:'unterwegs', ziel:parseInt(el.dataset.id,10), by:state.name, time:nowStr()};
     await saveShared();
     render();
+    const pz = state.projects.find(x=>x.id===parseInt(el.dataset.id,10));
+    notify({names:[el.dataset.driver]}, 'nSentT', 'nSentB', {bv:projektLabel(pz?pz.id:null), adr:pz?pz.adresse:''});
   }
   if(action==='recall-driver'){
     state.driverStatus[el.dataset.driver] = {status:'lager', ziel:null, time:nowStr()};
@@ -3063,6 +3290,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     });
     if(items.length===0) return;
     state.plannedDeliveries.push({id: state.planCounter++, projekt: projektId, date, items, person: state.name});
+    notify({roles:['lager','fahrer']}, 'nPlannedT', 'nPlannedB', {date:isoToDE(date), bv:projektLabel(projektId)});
     state.cart = {};
     state.planDraft = {projekt:'', date:''};
     state.planWarn = '';
@@ -3092,7 +3320,10 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='lang-toggle'){ state.langMenuOpen = !state.langMenuOpen; state.menuOpen=false; render(); }
   if(action==='set-lang'){
     state.lang = el.dataset.lang; saveLang(state.lang); state.langMenuOpen=false; render();
+    syncPushSub();
   }
+  if(action==='push-enable'){ state.menuOpen=false; await enablePush(); }
+  if(action==='push-later'){ lsSet(PUSH_LATER_KEY, '1'); state.pushMsg=''; render(); }
   if(action==='go-calendar'){
     state.view='calendar'; state.menuOpen=false; state.calWarn='';
     await loadShared();
@@ -3169,6 +3400,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       state.lkwEditId=null;
     } else {
       state.lkwEntries.push({id: state.lkwCounter++, date, time, projekt, notiz});
+      notify({roles:['fahrer']}, 'nLkwT', 'nLkwB', {date:isoToDE(date), time, bv:projektLabel(projekt)});
     }
     state.lkwDraft=null; state.lkwWarn='';
     await saveShared();
@@ -3282,6 +3514,7 @@ if('serviceWorker' in navigator){
   await loadShared();
   state.loading = false;
   render();
+  syncPushSub();
 })();
 </script>
 </body>
