@@ -425,16 +425,43 @@ Alle Bestellungen und der Lagerbestand landen in einer Tabelle `app_state`
 (eine Zeile mit `key = 'shopfloor-data-v2'` und einer `jsonb`-Spalte `value`,
 die `{orders, counter, inventory, projects, projektCounter, calendarEntries,
 calCounter, driverStatus, driverPos, plannedDeliveries, planCounter, lkwEntries,
-lkwCounter, employees, empCounter, pushSubs}` enthält). Ausnahme: LKW-Standorte
+lkwCounter, employees, empCounter, pushSubs, lager, rev}` enthält). Ausnahme: LKW-Standorte
 liegen je Fahrer in einer EIGENEN Zeile (`key = 'shopfloor-pos:<Name>'`,
 siehe „LKW-Standorte“), `driverPos` im großen Datensatz ist nur der Rückfall. Dadurch sehen alle Rollen
 (egal auf welchem Handy, auch über GitHub Pages) dieselben Daten.
 
-Die einzigen zwei Funktionen, die den Speicher anfassen, sind `loadShared()`
-und `saveShared()` – dort steht auch, welche Supabase-Tabelle/Spalten
-erwartet werden. Zusätzlich gibt es ein 4-Sekunden-Polling per
-`setInterval`, das `loadShared()` aufruft, damit alle Rollen neue
-Bestellungen/Status ohne manuellen Reload sehen.
+Speichern/Laden läuft über `loadShared()`/`saveShared()`, beide rufen den
+gemeinsamen Abgleich `sync()` → `doSync()` auf (Abschnitt „Speicher:
+Abgleich mit Supabase“ im Code). NIE wieder den ganzen Datensatz blind
+überschreiben – Prinzip:
+- `syncBase` = zuletzt vom Server gelesener Stand. Beim Speichern wird der
+  AKTUELLE Server-Stand geholt und nur der Unterschied `syncBase` → eigener
+  Stand (`stateToValue()`) daraufgelegt (`merge3()`): Listen mit `id`
+  (orders, projects, calendarEntries, plannedDeliveries, lkwEntries,
+  employees) und `pushSubs` (über `endpoint`) je Eintrag und feldweise;
+  `driverStatus`/`driverPos` je Name; **Lagerbestand als +/−** (zwei
+  Handys buchen gleichzeitig +10 → +20); Zähler = Maximum; gleiche neue
+  Nummer von zwei Geräten → eine bekommt die nächste freie.
+- Geschrieben wird nur, wenn der Server noch auf derselben Version steht
+  (`value.rev`, bedingtes `update … where value->>rev = …`,
+  `writeIfUnchanged()`); sonst neu lesen + neu zusammenführen (bis 5×).
+  Geht das bedingte Schreiben nicht (Tabellen-Regeln), Rückfall `upsert`.
+- Ohne je gelesenen Server-Stand wird NICHT gespeichert (früher konnte ein
+  fehlgeschlagenes Laden den Lagerbestand mit leeren Startwerten
+  überschreiben).
+- **Offline / schlechtes Netz:** Änderungen bleiben auf dem Handy
+  (`state.syncPending`, localStorage `geruest-pending` = {base, local},
+  max. 3 Tage) und werden alle 8 s bzw. beim `online`-Ereignis
+  nachgesendet. Der letzte Server-Stand liegt in `geruest-cache`, damit die
+  App auch ohne Netz startet (`restoreOfflineState()` in `init`). Hinweis-
+  Leiste oben (`syncBannerHTML()`, Texte `syncPending`/`syncOffline`).
+- Werte, die im Datensatz `null` sind, gelten wie „nicht vorhanden“
+  (`stableStr()`/`same()`), z. B. `ziel:null` beim Fahrer-Status.
+- Neue Felder im Datensatz: in `stateToValue()` UND `applyValue()` ergänzen
+  (Listen mit `id` zusätzlich in `RECORD_ARRAYS` samt Zähler).
+Zusätzlich gibt es ein 4-Sekunden-Polling per `setInterval`, das
+`loadShared()` aufruft, damit alle Rollen neue Bestellungen/Status ohne
+manuellen Reload sehen.
 
 Die Zugangsdaten (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) stehen am Anfang des
 `<script>`-Blocks in `geruest-bestell-app.html` und müssen pro Firma einmal
