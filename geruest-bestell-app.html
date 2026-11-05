@@ -451,26 +451,25 @@ const VAPID_PUBLIC_KEY = 'BNPzghIrh9xjEiEtKmp_AxqWGl3EkDk29AUrEErbU-1eJn2AjNk7vy
 
 const STORAGE_KEY = 'shopfloor-data-v2';
 
-// Passwort für die Chef-Ansicht. Zum Ändern einfach den Text
-// zwischen den Anführungszeichen austauschen.
-const CHEF_PASSWORD = 'chef2026';
+// Echte Anmeldung über Supabase Auth: Jeder Mitarbeiter hat ein Konto mit
+// der (nie angeschriebenen) Adresse ma<ID>@AUTH_DOMAIN. Passwörter liegen
+// NUR verschlüsselt bei Supabase, nicht im Datensatz. PW_PREFIX wird
+// vorangestellt, weil Supabase mind. 6 Zeichen verlangt (so bleiben auch
+// 4-stellige PINs gültig). Beide Werte müssen zur Funktion manage-users
+// passen. Konten anlegen/ändern/löschen nur über manage-users (prüft auf
+// dem Server, dass der Chef fragt). Das Chef-Passwort (zusätzliche
+// Sicherung für die Chef-Rolle) steht verschlüsselt im Datensatz
+// (state.chefPw = {salt, hash}), nicht mehr im Code.
+const AUTH_DOMAIN = 'mitarbeiter.sg-muc.de';
+const PW_PREFIX = 'sgm#';
+const MIN_PW = 4;
+function authEmail(id){ return `ma${id}@${AUTH_DOMAIN}`; }
 
 // Mitarbeiter + Rollen (wie auf einem Discord-Server): Jeder meldet sich
 // mit Name + eigenem Passwort an und landet in der Rolle / den Rollen,
-// die der Chef ihm im Reiter "Personal" zugewiesen hat. Die echte Liste
-// liegt im gemeinsamen Supabase-Datensatz (state.employees) und wird vom
-// Chef in der App gepflegt. DEFAULT_EMPLOYEES ist nur die Start-Befüllung
-// beim allerersten Laden (wenn in Supabase noch keine Liste existiert).
-// Hinweis: Passwörter liegen im Klartext im Datensatz -- gleiches
-// Schutzniveau wie CHEF_PASSWORD, kein echter Sicherheitsmechanismus.
+// die der Chef ihm im Reiter "Personal" zugewiesen hat. Die Liste (ohne
+// Passwörter) liegt im gemeinsamen Datensatz (state.employees).
 const ROLES = ['baustelle','lager','fahrer','chef'];
-const DEFAULT_EMPLOYEES = [
-  {id:1, name:'Jason',  pw:'1111', roles:['baustelle']},
-  {id:2, name:'Max',    pw:'2222', roles:['baustelle']},
-  {id:3, name:'Jochen', pw:'3333', roles:['lager']},
-  {id:4, name:'Ludwig', pw:'4444', roles:['fahrer']},
-  {id:5, name:'Chefin', pw:'5555', roles:['chef']},
-];
 function findEmployee(name){ return state.employees.find(e=>e.name===name); }
 function employeeRoles(name){
   const e = findEmployee(name);
@@ -500,9 +499,11 @@ function clearSession(){
 // (Chef könnte den Mitarbeiter entfernt oder ihm die Rolle entzogen haben).
 function enforceSession(){
   if(!state.loggedIn) return;
+  if(!state.authed){ state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false; clearSession(); return; }
   if(!employeeRoles(state.name).includes(state.role)){
     state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false;
     clearSession();
+    dropAuthLocal();   // auch beim Server abmelden (neu anmelden nötig)
   }
 }
 
@@ -639,6 +640,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  warnLoginNet:'Anmeldung gerade nicht möglich – bitte Netz prüfen und nochmal versuchen.', loggingIn:'Anmelden …', calLoginFirst:'Bearbeiten nur für angemeldete Mitarbeiter: erst in der App anmelden, dann hier „Bearbeiten“.', persChefPwHeading:'Chef-Passwort (zusätzliche Sicherung für die Chef-Rolle)', persChefPwBtn:'Ändern', persChefPwSaved:'Chef-Passwort geändert.', persWarnPwShort:'Das Passwort braucht mindestens 4 Zeichen.', persFnMissing:'Die Mitarbeiter-Verwaltung ist auf dem Server noch nicht eingerichtet (Funktion „manage-users“) – oder kein Netz.', persErr:'Hat nicht geklappt: {msg}', persBusy:'Wird gespeichert …', persNotChef:'Nur der Chef darf Mitarbeiter verwalten.', persPwSaved:'Neues Passwort für {name} gespeichert.', persRemoveConfirm:'{name} wirklich entfernen? Das Konto wird gelöscht.', persSecurityNote:'Passwörter liegen nur verschlüsselt bei Supabase – auch der Chef kann sie nicht sehen, nur neu setzen.', logoutPendingConfirm:'Es sind noch nicht gesendete Änderungen auf dem Handy (kein Netz). Trotzdem abmelden? Dann gehen sie verloren.',
   plaeneHeading:'Baupläne', plaeneEmpty:'Noch keine Pläne hochgeladen.', planUploadBtn:'⬆️ Plan hochladen (PDF oder Foto)', planUploading:'Wird hochgeladen …', planHint:'Mehrere Dateien auf einmal möglich, max. {mb} MB je Datei. Alle können die Pläne zu diesem Bauvorhaben ansehen.', planTooBig:'„{name}“ ist zu groß (max. {mb} MB).', planNoBucket:'Der Datei-Speicher ist noch nicht eingerichtet – bitte einmal in Supabase anlegen.', planUploadFail:'Hochladen hat nicht geklappt – bitte Netz prüfen und nochmal versuchen.', planDelete:'Plan löschen', planDeleteConfirm:'„{name}“ wirklich löschen?',
   wunschLabel:'Wann wird es gebraucht?', wunschNormal:'Normal', wunschDringend:'🔴 Dringend – sofort', wunschMorgen:'Morgen früh', wunschDatum:'📅 Wunschtermin', badgeDringend:'🔴 DRINGEND', badgeBis:'📅 bis {d}', badgeHeute:'📅 heute gebraucht', badgeUeberfaellig:'⚠️ überfällig – war bis {d}', gebrauchtLabel:'Gebraucht', nUrgentT:'🔴 DRINGEND: Neue Bestellung #{id}', pickHint:'Beim Zusammenstellen abhaken. Was fehlt, kommt automatisch als Nachlieferung.', pickOkBtn:'Eingepackt', pickMissBtn:'Fehlt', pickMissQty:'Davon fehlen:', pickProgress:'{a} von {n} abgehakt', pickMissingCount:'{n} fehlt', pickAllMissing:'Es fehlt alles – so kann die Bestellung nicht bereit gemeldet werden.', fehltHeading:'⚠️ Fehlt – kommt mit Nachlieferung #{id}:', nachVonBadge:'↩ Nachlieferung zu #{id}', nMissingT:'Teile fehlen bei Bestellung #{id}', nMissingB:'{n} Position(en) kommen mit Nachlieferung #{neu}.', lsFehlt:'Fehlt (kommt mit Nachlieferung #{id})',
   syncPending:'📶 Kein Netz – deine Änderungen sind auf dem Handy gemerkt und werden automatisch gesendet, sobald wieder Netz da ist.', syncOffline:'📶 Kein Netz – angezeigt wird der letzte bekannte Stand.',
@@ -825,6 +827,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  warnLoginNet:'Logowanie teraz niemożliwe – sprawdź sieć i spróbuj ponownie.', loggingIn:'Logowanie …', calLoginFirst:'Edycja tylko dla zalogowanych pracowników: najpierw zaloguj się w aplikacji, potem tutaj „Edytuj”.', persChefPwHeading:'Hasło szefa (dodatkowe zabezpieczenie roli szefa)', persChefPwBtn:'Zmień', persChefPwSaved:'Hasło szefa zmienione.', persWarnPwShort:'Hasło musi mieć co najmniej 4 znaki.', persFnMissing:'Zarządzanie pracownikami nie jest jeszcze skonfigurowane na serwerze (funkcja „manage-users”) – albo brak sieci.', persErr:'Nie udało się: {msg}', persBusy:'Zapisywanie …', persNotChef:'Tylko szef może zarządzać pracownikami.', persPwSaved:'Nowe hasło dla {name} zapisane.', persRemoveConfirm:'Na pewno usunąć {name}? Konto zostanie usunięte.', persSecurityNote:'Hasła są przechowywane w Supabase tylko w formie zaszyfrowanej – szef też ich nie widzi, może je tylko ustawić na nowo.', logoutPendingConfirm:'Na telefonie są jeszcze niewysłane zmiany (brak sieci). Wylogować mimo to? Wtedy przepadną.',
   plaeneHeading:'Plany budowy', plaeneEmpty:'Nie przesłano jeszcze planów.', planUploadBtn:'⬆️ Prześlij plan (PDF lub zdjęcie)', planUploading:'Przesyłanie …', planHint:'Można wybrać kilka plików naraz, maks. {mb} MB na plik. Wszyscy mogą oglądać plany tej budowy.', planTooBig:'„{name}” jest za duży (maks. {mb} MB).', planNoBucket:'Magazyn plików nie jest jeszcze skonfigurowany – trzeba go raz utworzyć w Supabase.', planUploadFail:'Przesyłanie nie powiodło się – sprawdź sieć i spróbuj ponownie.', planDelete:'Usuń plan', planDeleteConfirm:'Na pewno usunąć „{name}”?',
   wunschLabel:'Kiedy jest potrzebne?', wunschNormal:'Normalnie', wunschDringend:'🔴 Pilne – od razu', wunschMorgen:'Jutro rano', wunschDatum:'📅 Wybrany termin', badgeDringend:'🔴 PILNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrzebne dziś', badgeUeberfaellig:'⚠️ po terminie – było do {d}', gebrauchtLabel:'Potrzebne', nUrgentT:'🔴 PILNE: Nowe zamówienie #{id}', pickHint:'Odhaczaj przy kompletowaniu. Czego brakuje, zostanie automatycznie dosłane.', pickOkBtn:'Spakowane', pickMissBtn:'Brak', pickMissQty:'Brakuje z tego:', pickProgress:'{a} z {n} odhaczonych', pickMissingCount:'{n} brak', pickAllMissing:'Brakuje wszystkiego – zamówienia nie można zgłosić jako gotowe.', fehltHeading:'⚠️ Brak – zostanie dosłane z dostawą #{id}:', nachVonBadge:'↩ Dosyłka do #{id}', nMissingT:'Brakuje części w zamówieniu #{id}', nMissingB:'{n} pozycja(e) przyjdzie z dosyłką #{neu}.', lsFehlt:'Brak (przyjdzie z dosyłką #{id})',
   syncPending:'📶 Brak sieci – twoje zmiany są zapisane w telefonie i zostaną wysłane automatycznie, gdy sieć wróci.', syncOffline:'📶 Brak sieci – widoczny jest ostatni znany stan.',
@@ -1011,6 +1014,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  warnLoginNet:'Prihlásenie teraz nie je možné – skontroluj sieť a skús znova.', loggingIn:'Prihlasovanie …', calLoginFirst:'Úpravy len pre prihlásených zamestnancov: najprv sa prihlás v aplikácii, potom tu „Upraviť“.', persChefPwHeading:'Heslo šéfa (dodatočné zabezpečenie roly šéfa)', persChefPwBtn:'Zmeniť', persChefPwSaved:'Heslo šéfa zmenené.', persWarnPwShort:'Heslo musí mať aspoň 4 znaky.', persFnMissing:'Správa zamestnancov ešte nie je nastavená na serveri (funkcia „manage-users“) – alebo nie je sieť.', persErr:'Nepodarilo sa: {msg}', persBusy:'Ukladá sa …', persNotChef:'Zamestnancov môže spravovať len šéf.', persPwSaved:'Nové heslo pre {name} uložené.', persRemoveConfirm:'Naozaj odstrániť {name}? Konto sa vymaže.', persSecurityNote:'Heslá sú v Supabase uložené len zašifrované – ani šéf ich nevidí, môže ich len nastaviť nanovo.', logoutPendingConfirm:'V telefóne sú ešte neodoslané zmeny (žiadna sieť). Napriek tomu odhlásiť? Potom sa stratia.',
   plaeneHeading:'Stavebné plány', plaeneEmpty:'Zatiaľ neboli nahrané žiadne plány.', planUploadBtn:'⬆️ Nahrať plán (PDF alebo foto)', planUploading:'Nahráva sa …', planHint:'Naraz môžeš vybrať viac súborov, max. {mb} MB na súbor. Plány k tejto stavbe môžu vidieť všetci.', planTooBig:'„{name}“ je príliš veľký (max. {mb} MB).', planNoBucket:'Úložisko súborov ešte nie je nastavené – treba ho raz vytvoriť v Supabase.', planUploadFail:'Nahrávanie nevyšlo – skontroluj sieť a skús znova.', planDelete:'Vymazať plán', planDeleteConfirm:'Naozaj vymazať „{name}“?',
   wunschLabel:'Kedy je to potrebné?', wunschNormal:'Normálne', wunschDringend:'🔴 Súrne – hneď', wunschMorgen:'Zajtra ráno', wunschDatum:'📅 Želaný termín', badgeDringend:'🔴 SÚRNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebné dnes', badgeUeberfaellig:'⚠️ po termíne – bolo do {d}', gebrauchtLabel:'Potrebné', nUrgentT:'🔴 SÚRNE: Nová objednávka #{id}', pickHint:'Pri chystaní odškrtávaj. Čo chýba, príde automaticky ako doplnenie.', pickOkBtn:'Zabalené', pickMissBtn:'Chýba', pickMissQty:'Z toho chýba:', pickProgress:'{a} z {n} odškrtnuté', pickMissingCount:'{n} chýba', pickAllMissing:'Chýba všetko – objednávku nemožno nahlásiť ako pripravenú.', fehltHeading:'⚠️ Chýba – príde s doplnením #{id}:', nachVonBadge:'↩ Doplnenie k #{id}', nMissingT:'V objednávke #{id} chýbajú diely', nMissingB:'{n} položka(y) príde s doplnením #{neu}.', lsFehlt:'Chýba (príde s doplnením #{id})',
   syncPending:'📶 Žiadna sieť – tvoje zmeny sú uložené v telefóne a odošlú sa automaticky, keď bude sieť.', syncOffline:'📶 Žiadna sieť – zobrazuje sa posledný známy stav.',
@@ -1197,6 +1201,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  warnLoginNet:'Prijava trenutno nije moguća – provjeri mrežu i pokušaj ponovno.', loggingIn:'Prijava …', calLoginFirst:'Uređivanje samo za prijavljene zaposlenike: najprije se prijavi u aplikaciji, zatim ovdje „Uredi”.', persChefPwHeading:'Lozinka šefa (dodatna zaštita uloge šefa)', persChefPwBtn:'Promijeni', persChefPwSaved:'Lozinka šefa promijenjena.', persWarnPwShort:'Lozinka mora imati najmanje 4 znaka.', persFnMissing:'Upravljanje zaposlenicima još nije postavljeno na poslužitelju (funkcija „manage-users”) – ili nema mreže.', persErr:'Nije uspjelo: {msg}', persBusy:'Spremanje …', persNotChef:'Samo šef može upravljati zaposlenicima.', persPwSaved:'Nova lozinka za {name} spremljena.', persRemoveConfirm:'Stvarno ukloniti {name}? Račun će biti izbrisan.', persSecurityNote:'Lozinke su u Supabaseu spremljene samo šifrirano – ni šef ih ne vidi, može ih samo postaviti iznova.', logoutPendingConfirm:'Na mobitelu su još neposlane promjene (nema mreže). Ipak se odjaviti? Tada će se izgubiti.',
   plaeneHeading:'Građevinski planovi', plaeneEmpty:'Još nisu učitani planovi.', planUploadBtn:'⬆️ Učitaj plan (PDF ili fotografija)', planUploading:'Učitavanje …', planHint:'Može se odabrati više datoteka odjednom, maks. {mb} MB po datoteci. Svi mogu vidjeti planove ovog gradilišta.', planTooBig:'„{name}” je prevelika (maks. {mb} MB).', planNoBucket:'Spremište datoteka još nije postavljeno – treba ga jednom napraviti u Supabaseu.', planUploadFail:'Učitavanje nije uspjelo – provjeri mrežu i pokušaj ponovno.', planDelete:'Izbriši plan', planDeleteConfirm:'Stvarno izbrisati „{name}”?',
   wunschLabel:'Kada je potrebno?', wunschNormal:'Normalno', wunschDringend:'🔴 Hitno – odmah', wunschMorgen:'Sutra ujutro', wunschDatum:'📅 Željeni termin', badgeDringend:'🔴 HITNO', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebno danas', badgeUeberfaellig:'⚠️ kasni – bilo do {d}', gebrauchtLabel:'Potrebno', nUrgentT:'🔴 HITNO: Nova narudžba #{id}', pickHint:'Odkvačuj pri slaganju. Što nedostaje, stiže automatski kao dopuna.', pickOkBtn:'Spakirano', pickMissBtn:'Nedostaje', pickMissQty:'Od toga nedostaje:', pickProgress:'{a} od {n} odkvačeno', pickMissingCount:'{n} nedostaje', pickAllMissing:'Nedostaje sve – narudžba se ne može prijaviti kao spremna.', fehltHeading:'⚠️ Nedostaje – stiže s dopunom #{id}:', nachVonBadge:'↩ Dopuna za #{id}', nMissingT:'Nedostaju dijelovi u narudžbi #{id}', nMissingB:'{n} stavka(e) stiže s dopunom #{neu}.', lsFehlt:'Nedostaje (stiže s dopunom #{id})',
   syncPending:'📶 Nema mreže – tvoje promjene su spremljene na mobitelu i bit će poslane automatski kad se mreža vrati.', syncOffline:'📶 Nema mreže – prikazano je zadnje poznato stanje.',
@@ -1383,6 +1388,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  warnLoginNet:'Login not possible right now – please check the network and try again.', loggingIn:'Logging in …', calLoginFirst:'Editing only for logged-in staff: log in to the app first, then tap “Edit” here.', persChefPwHeading:'Boss password (extra protection for the boss role)', persChefPwBtn:'Change', persChefPwSaved:'Boss password changed.', persWarnPwShort:'The password needs at least 4 characters.', persFnMissing:'Staff management is not set up on the server yet (function “manage-users”) – or no network.', persErr:'Did not work: {msg}', persBusy:'Saving …', persNotChef:'Only the boss can manage staff.', persPwSaved:'New password for {name} saved.', persRemoveConfirm:'Really remove {name}? The account will be deleted.', persSecurityNote:'Passwords are only stored encrypted at Supabase – even the boss cannot see them, only set new ones.', logoutPendingConfirm:'There are unsent changes on this phone (no network). Log out anyway? They will be lost.',
   plaeneHeading:'Building plans', plaeneEmpty:'No plans uploaded yet.', planUploadBtn:'⬆️ Upload plan (PDF or photo)', planUploading:'Uploading …', planHint:'You can pick several files at once, max. {mb} MB per file. Everyone can view the plans for this project.', planTooBig:'“{name}” is too large (max. {mb} MB).', planNoBucket:'The file storage is not set up yet – it needs to be created once in Supabase.', planUploadFail:'Upload failed – please check the network and try again.', planDelete:'Delete plan', planDeleteConfirm:'Really delete “{name}”?',
   wunschLabel:'When is it needed?', wunschNormal:'Normal', wunschDringend:'🔴 Urgent – right away', wunschMorgen:'Tomorrow morning', wunschDatum:'📅 Preferred date', badgeDringend:'🔴 URGENT', badgeBis:'📅 by {d}', badgeHeute:'📅 needed today', badgeUeberfaellig:'⚠️ overdue – was due {d}', gebrauchtLabel:'Needed', nUrgentT:'🔴 URGENT: New order #{id}', pickHint:'Tick off while packing. Anything missing is sent automatically as a follow-up delivery.', pickOkBtn:'Packed', pickMissBtn:'Missing', pickMissQty:'Missing:', pickProgress:'{a} of {n} ticked', pickMissingCount:'{n} missing', pickAllMissing:'Everything is missing – the order cannot be marked as ready.', fehltHeading:'⚠️ Missing – comes with follow-up #{id}:', nachVonBadge:'↩ Follow-up for #{id}', nMissingT:'Parts missing in order #{id}', nMissingB:'{n} item(s) will come with follow-up #{neu}.', lsFehlt:'Missing (comes with follow-up #{id})',
   syncPending:'📶 No network – your changes are saved on the phone and will be sent automatically once the network is back.', syncOffline:'📶 No network – showing the last known data.',
@@ -1692,7 +1698,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
-  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
+  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
@@ -1753,7 +1759,7 @@ function stateToValue(){
   return clone({orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
     projects:state.projects, projektCounter:state.projektCounter,
     calendarEntries:state.calendarEntries, calCounter:state.calCounter,
-    driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager,
+    driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager, chefPw:state.chefPw,
     plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
     lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
     employees:state.employees, empCounter:state.empCounter,
@@ -1771,6 +1777,7 @@ function applyValue(v){
   state.driverStatus = v.driverStatus || {};
   state.driverPos = v.driverPos || {};
   state.lager = v.lager || null;
+  state.chefPw = v.chefPw || null;
   state.plannedDeliveries = v.plannedDeliveries || [];
   state.planCounter = v.planCounter || 1;
   state.lkwEntries = v.lkwEntries || [];
@@ -1901,11 +1908,9 @@ async function doSync(){
     catch(e){ state.syncOffline = true; savePending(); throw e; }
     state.syncOffline = false;
     if(!remote){
-      // Allererster Start: Datensatz anlegen
-      if(!syncBase && !state.employees.length){
-        state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
-        state.empCounter = DEFAULT_EMPLOYEES.length+1;
-      }
+      // Nichts lesbar: ohne Anmeldung (Zugriffsschutz) oder ganz neue
+      // Datenbank. Nur im zweiten Fall und nur angemeldet anlegen.
+      if(!state.authed) throw new Error('nicht angemeldet');
       const v = {...stateToValue(), rev:1};
       const { error } = await supabaseClient.from('app_state').upsert({key:STORAGE_KEY, value:v});
       if(error) throw error;
@@ -1918,12 +1923,6 @@ async function doSync(){
     let merged, changes = 0;
     if(syncBase){ const m = merge3(syncBase, captured, remote); merged = m.value; changes = m.changes; }
     else { merged = clone(remote); delete merged.rev; }
-    if(!Array.isArray(merged.employees) || !merged.employees.length){
-      // Älterer Datensatz ohne Mitarbeiterliste: Start-Befüllung
-      merged.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
-      merged.empCounter = DEFAULT_EMPLOYEES.length+1;
-      changes++;
-    }
     if(changes>0){
       let ok;
       try{ ok = await writeIfUnchanged({...merged, rev:(Number(rev)||0)+1}, rev); }
@@ -1973,16 +1972,102 @@ async function loadShared(){
     document.getElementById('app').innerHTML = `<div class="loading">${t('offlineError')}</div>`;
     throw new Error('Supabase-Bibliothek nicht geladen');
   }
+  if(!state.authed){ await loadPublic(); return; }
   try{
     await sync();
     if(state.loggedIn && state.role==='chef') await loadPositions();
+    refreshPlanUrls();
   }catch(e){
     console.error('Laden fehlgeschlagen', e);
-    // Ohne je geladenen Stand: nur damit sich überhaupt jemand anmelden kann
-    if(!syncBase && !state.employees.length) state.employees = DEFAULT_EMPLOYEES.map(e=>({...e, roles:[...e.roles]}));
   }
 }
+// Ohne Anmeldung: nur Namensliste (für die Anmeldung) + die frei
+// einsehbaren Kalender über die Datenbank-Funktion public_info().
+// Solange die Zugriffsregeln (supabase/security.sql) noch nicht aktiv
+// sind, gibt es die Funktion evtl. noch nicht -> direkt lesen.
+async function loadPublic(){
+  let info = null;
+  try{
+    const { data, error } = await supabaseClient.rpc('public_info');
+    if(!error && data) info = data;
+  }catch(e){}
+  if(!info){
+    try{
+      const v = await fetchRemote();
+      if(v) info = {names:(v.employees||[]).map(e=>({id:e.id, name:e.name})), calendarEntries:v.calendarEntries, lkwEntries:v.lkwEntries, projects:v.projects};
+    }catch(e){ console.warn('Öffentliche Daten nicht ladbar', e); }
+  }
+  if(!info || state.authed) return;
+  state.publicNames = (info.names||[]).filter(n=>n && n.name).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+  state.calendarEntries = info.calendarEntries || [];
+  state.lkwEntries = info.lkwEntries || [];
+  state.projects = info.projects || [];
+}
+function loginPeople(){
+  return state.authed && state.employees.length ? state.employees.map(e=>({id:e.id, name:e.name})) : state.publicNames;
+}
+
+// Chef-Passwort: verschlüsselt (SHA-256 mit Salz) im Datensatz.
+async function sha256hex(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function makeChefPw(pw){
+  const salt = Array.from(crypto.getRandomValues(new Uint8Array(8))).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return {salt, hash: await sha256hex(salt+':'+pw)};
+}
+// true = richtig. Gibt es noch keins (neue Datenbank), wird das erste
+// eingegebene (mind. MIN_PW Zeichen) zum Chef-Passwort.
+async function verifyChefPw(pw){
+  pw = String(pw||'').trim();
+  if(!state.authed || !pw) return false;
+  if(!state.chefPw || !state.chefPw.hash){
+    if(pw.length < MIN_PW) return false;
+    state.chefPw = await makeChefPw(pw);
+    await saveShared();
+    return true;
+  }
+  return (await sha256hex(state.chefPw.salt+':'+pw)) === state.chefPw.hash;
+}
+// Ruft die Server-Funktion manage-users auf. Liefert {ok} oder wirft einen
+// Fehler mit lesbarem Text (Code -> Übersetzung).
+async function manageUsers(body){
+  let res;
+  try{ res = await supabaseClient.functions.invoke('manage-users', {body}); }
+  catch(e){ throw new Error(t('persFnMissing')); }
+  const { data, error } = res;
+  if(!error) return data;
+  let info = null;
+  try{ info = error.context && typeof error.context.json==='function' ? await error.context.json() : null; }catch(e){}
+  const map = {last_chef:'persWarnLastChef', duplicate:'persWarnDuplicate', pw_short:'persWarnPwShort', not_chef:'persNotChef', fields:'persWarnFields'};
+  if(info && map[info.code]) throw new Error(t(map[info.code]));
+  if(info && info.error) throw new Error(t('persErr',{msg:info.error}));
+  throw new Error(t('persFnMissing'));
+}
+// Sofort lokal + beim Server abmelden, ohne vorher zu speichern
+// (z. B. wenn der Chef einem die Rolle entzogen hat).
+function dropAuthLocal(){
+  try{ supabaseClient.auth.signOut(); }catch(e){}
+  state.authed = false; state.calUnlocked = false; state.positions = {};
+  syncBase = null; state.syncPending = false; state.syncOffline = false;
+  lsSet(CACHE_KEY, null); lsSet(PENDING_KEY, null);
+  applyValue({});
+  loadPublic().then(()=>render());
+}
+// Anmeldung beenden (auch wenn der Server sie für ungültig erklärt hat)
+async function signOutAll(){
+  try{ if(state.syncPending) await sync(); }catch(e){}
+  try{ await supabaseClient.auth.signOut(); }catch(e){}
+  state.authed = false; state.loggedIn = false; state.role = null; state.authName = null; state.askChefPw = false;
+  state.calUnlocked = false; state.positions = {};
+  syncBase = null; state.syncPending = false; state.syncOffline = false;
+  lsSet(CACHE_KEY, null); lsSet(PENDING_KEY, null);
+  applyValue({});
+  clearSession();
+  await loadPublic();
+}
 async function saveShared(){
+  if(!state.authed) return false;
   if(!syncBase){
     // Server-Stand nie gelesen -> NICHT speichern (sonst würden echte Daten
     // mit leeren Startwerten überschrieben). Änderung bleibt lokal sichtbar.
@@ -2087,14 +2172,14 @@ function loginHTML(){
         <label>${t('nameLabel')}</label>
         <select id="loginName">
           <option value="" ${state.name?'':'selected'} disabled>${t('selectPlaceholder')}</option>
-          ${state.employees.map(e=>`<option value="${e.name}" ${state.name===e.name?'selected':''}>${e.name}</option>`).join('')}
+          ${loginPeople().map(e=>`<option value="${e.id}" ${state.name===e.name?'selected':''}>${escapeHtml(String(e.name))}</option>`).join('')}
         </select>
       </div>
       <div class="field">
         <label>${t('pwLabel')}</label>
         <input id="loginPw" type="password" placeholder="${t('pwPlaceholder')}" autocomplete="current-password">
       </div>
-      <button class="role-btn" data-action="login" style="justify-content:center;width:100%;background:var(--accent-solid);color:white;">${t('loginBtn')}</button>
+      <button class="role-btn" data-action="login" ${state.loginBusy?'disabled':''} style="justify-content:center;width:100%;background:var(--accent-solid);color:white;">${state.loginBusy? t('loggingIn') : t('loginBtn')}</button>
       ${state.loginWarn? `<div class="warn">${state.loginWarn}</div>`:''}
     </div>
   </div>`;
@@ -2882,8 +2967,27 @@ function widgetsHTML(role){
 // wie der Rest der App. Einrichtung: SQL in CLAUDE.md ("Baupläne").
 const PLAN_BUCKET = 'bauplaene';
 const PLAN_MAX_MB = 50;
-function planUrl(pl){
-  try{ return supabaseClient.storage.from(PLAN_BUCKET).getPublicUrl(pl.path).data.publicUrl; }catch(e){ return '#'; }
+// Der Bucket ist (nach supabase/security.sql) privat: die App holt sich
+// für alle Pläne zeitlich begrenzte Links (6 h) und erneuert sie rechtzeitig.
+const planUrlCache = {};   // path -> {url, exp}
+let planUrlBusy = false;
+function planUrl(pl){ const c = planUrlCache[pl.path]; return c ? c.url : '#'; }
+async function refreshPlanUrls(){
+  if(planUrlBusy || !state.authed || !supabaseClient || !supabaseClient.storage) return;
+  const soon = Date.now() + 30*60*1000;
+  const paths = [];
+  state.projects.forEach(p=>(p.plaene||[]).forEach(pl=>{ const c = planUrlCache[pl.path]; if(!c || c.exp < soon) paths.push(pl.path); }));
+  if(!paths.length) return;
+  planUrlBusy = true;
+  try{
+    const { data, error } = await supabaseClient.storage.from(PLAN_BUCKET).createSignedUrls(paths, 6*3600);
+    if(!error && Array.isArray(data)){
+      let any = false;
+      data.forEach(d=>{ if(d && d.signedUrl && d.path){ planUrlCache[d.path] = {url:d.signedUrl, exp:Date.now()+6*3600*1000}; any = true; } });
+      if(any){ const ae = document.activeElement; if(!(ae && /^(INPUT|SELECT|TEXTAREA)$/.test(ae.tagName))) render(); }
+    }
+  }catch(e){ console.warn('Plan-Links nicht ladbar', e); }
+  planUrlBusy = false;
 }
 function formatSize(b){
   if(!b) return '';
@@ -2934,6 +3038,7 @@ async function uploadPlans(pid, files){
   }
   state.planUploading = null;
   render();
+  refreshPlanUrls();
 }
 
 function projektCardHTML(p, editable){
@@ -3148,6 +3253,21 @@ function planenHTML(){
 function roleChipsHTML(activeRoles, action, extraAttrs){
   return `<div class="role-chips">${ROLES.map(r=>`<button class="role-chip ${activeRoles.includes(r)?'active':''}" data-action="${action}" data-role="${r}" ${extraAttrs||''}>${t(ROLE_META[r].key)}</button>`).join('')}</div>`;
 }
+// Änderungen am Personal laufen über die Server-Funktion manage-users
+// (prüft dort, dass wirklich der Chef fragt), danach neu laden.
+async function persRun(body, onOk){
+  state.persBusy = true; state.persWarn = ''; state.persOk = ''; render();
+  try{
+    await manageUsers(body);
+    if(onOk) onOk();
+    await loadShared();
+  }catch(e){
+    state.persWarn = e.message || t('persFnMissing');
+  }
+  state.persBusy = false;
+  render();
+}
+
 function personalHTML(){
   const emps = [...state.employees].sort((a,b)=>a.name.localeCompare(b.name));
   return `<p class="view-sub">${t('persSub')}</p>
@@ -3156,7 +3276,17 @@ function personalHTML(){
     <div class="field"><label>${t('persPwLabel')}</label><input id="persPw" placeholder="${t('pwPlaceholder')}" value="${state.persDraftPw.replace(/"/g,'&quot;')}" autocomplete="off"></div>
     <div class="field"><label>${t('persRolesLabel')}</label>${roleChipsHTML(state.persDraftRoles,'pers-draft-role')}</div>
     ${state.persWarn? `<div class="warn">${state.persWarn}</div>`:''}
-    <button class="advance-btn" data-action="emp-add">${t('persAddBtn')}</button>
+    ${state.persOk? `<div class="sent-note">✓ ${state.persOk}</div>`:''}
+    <button class="advance-btn" data-action="emp-add" ${state.persBusy?'disabled':''}>${state.persBusy? t('persBusy') : t('persAddBtn')}</button>
+  </div>
+  <div class="order-card" style="margin-top:12px;">
+    <div class="field"><label>🔐 ${t('persChefPwHeading')}</label>
+      <div style="display:flex;gap:8px;">
+        <input id="chefPwNew" type="password" placeholder="${t('persNewPwPlaceholder')}" autocomplete="new-password" style="flex:1;">
+        <button class="refresh-btn" data-action="chef-pw-set">${t('persChefPwBtn')}</button>
+      </div>
+    </div>
+    <div class="order-time" style="margin:0;">${t('persSecurityNote')}</div>
   </div>
   ${emps.length? `<div class="card-grid">`+emps.map(e=>`<div class="order-card">
     <div class="order-head">
@@ -3633,7 +3763,7 @@ function calendarPageHTML(){
         ${state.calEditId? `<button class="refresh-btn" data-action="cal-cancel-edit" style="margin-top:8px;">${t('calCancelBtn')}</button>`:''}
       </div>
       <button class="refresh-btn" data-action="cal-lock" style="margin-bottom:14px;">${t('calLockBtn')}</button>`
-      : `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>`}
+      : state.authed ? `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>` : `<div class="order-time" style="margin:0 0 14px 0;">🔒 ${t('calLoginFirst')}</div>`}
 
       ${dates.length? dates.map(dt=>`
         <h3 style="margin-top:18px;font-size:14px;">${formatDateDE(dt)}</h3>
@@ -3700,7 +3830,7 @@ function lkwKalenderPageHTML(){
         ` : `<div class="empty-state">${t('lkwNoProjects')}</div>`}
       </div>
       <button class="refresh-btn" data-action="cal-lock" style="margin-bottom:14px;">${t('calLockBtn')}</button>`
-      : `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>`}
+      : state.authed ? `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>` : `<div class="order-time" style="margin:0 0 14px 0;">🔒 ${t('calLoginFirst')}</div>`}
 
       ${dates.length? dates.map(dt=>`
         <h3 style="margin-top:18px;font-size:14px;">${formatDateDE(dt)}</h3>
@@ -3829,22 +3959,35 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   // Anmeldung Stufe 1: Name + eigenes Passwort prüfen, dann je nach
   // Anzahl der zugewiesenen Rollen direkt rein oder Rolle wählen lassen.
   if(action==='login'){
+    if(state.loginBusy) return;
     const nameSel = document.getElementById('loginName');
     const pwInput = document.getElementById('loginPw');
-    const name = nameSel? nameSel.value : '';
-    const emp = findEmployee(name);
-    if(!emp){ state.loginWarn=t('warnSelectName'); render(); return; }
-    if(!pwInput || pwInput.value.trim()!==String(emp.pw).trim()){ state.name = name; state.loginWarn=t('warnWrongPw'); render(); return; }
-    const roles = employeeRoles(name);
-    if(!roles.length){ state.name = name; state.loginWarn=t('warnNoRoles'); render(); return; }
-    state.name = name; state.authName = name; state.loginWarn='';
+    const person = loginPeople().find(p=>String(p.id)===(nameSel? nameSel.value : ''));
+    if(!person){ state.loginWarn=t('warnSelectName'); render(); return; }
+    const pw = pwInput? pwInput.value.trim() : '';
+    state.name = person.name;
+    if(!pw){ state.loginWarn=t('warnWrongPw'); render(); return; }
+    state.loginBusy = true; state.loginWarn=''; render();
+    let error = null;
+    try{ ({ error } = await supabaseClient.auth.signInWithPassword({email:authEmail(person.id), password:PW_PREFIX+pw})); }
+    catch(e){ error = e; }
+    state.loginBusy = false;
+    if(error){
+      state.loginWarn = /invalid|credentials|password/i.test(String(error.message||'')) ? t('warnWrongPw') : t('warnLoginNet');
+      render(); return;
+    }
+    state.authed = true;
+    await loadShared();   // jetzt mit Rechten: echte Mitarbeiter-/Rollenliste
+    const roles = employeeRoles(person.name);
+    if(!roles.length){ await signOutAll(); state.name = person.name; state.loginWarn=t('warnNoRoles'); render(); return; }
+    state.authName = person.name; state.loginWarn='';
     if(roles.length===1) enterRole(roles[0]); else render();
   }
   if(action==='pick-role'){ enterRole(el.dataset.role); }
   if(action==='login-back'){ state.authName=null; state.loginWarn=''; render(); }
   if(action==='chef-pw-ok'){
     const pw = document.getElementById('chefPwInput');
-    if(pw && pw.value.trim()===CHEF_PASSWORD){
+    if(pw && await verifyChefPw(pw.value)){
       state.askChefPw=false; state.loginWarn=''; state.role='chef'; state.loggedIn=true;
       saveSession();
       syncPushSub();
@@ -3861,7 +4004,12 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='switch-role'){ await stopGeo(true); state.loggedIn=false; state.role=null; state.askChefPw=false; state.loginWarn=''; clearSession(); render(); }
-  if(action==='logout'){ await stopGeo(true); await unlinkPushSub(); state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false; clearSession(); render(); }
+  if(action==='logout'){
+    if(state.syncPending && !confirm(t('logoutPendingConfirm'))) return;
+    await stopGeo(true); await unlinkPushSub();
+    await signOutAll();
+    render();
+  }
 
   // Personal (nur Chef): Mitarbeiter anlegen/entfernen, Rollen, Passwörter
   if(action==='pers-draft-role'){
@@ -3873,42 +4021,40 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const n = document.getElementById('persName'), p = document.getElementById('persPw');
     const name = (n? n.value : '').trim(), pw = (p? p.value : '').trim();
     if(!name || !pw){ state.persWarn=t('persWarnFields'); render(); return; }
+    if(pw.length < MIN_PW){ state.persWarn=t('persWarnPwShort'); state.persDraftName=name; state.persDraftPw=pw; render(); return; }
     if(findEmployee(name)){ state.persWarn=t('persWarnDuplicate'); render(); return; }
-    state.employees.push({id: state.empCounter++, name, pw, roles:[...state.persDraftRoles]});
-    state.persDraftRoles=[]; state.persDraftName=''; state.persDraftPw=''; state.persWarn='';
-    await saveShared();
-    render();
+    await persRun({action:'create', name, pw, roles:[...state.persDraftRoles]}, ()=>{ state.persDraftRoles=[]; state.persDraftName=''; state.persDraftPw=''; });
   }
   if(action==='emp-toggle-role'){
     const emp = state.employees.find(e=>String(e.id)===el.dataset.id);
     const r = el.dataset.role;
     if(!emp) return;
-    if(emp.roles.includes(r)){
-      if(r==='chef' && state.employees.filter(e=>e.roles.includes('chef')).length<=1){ state.persWarn=t('persWarnLastChef'); render(); return; }
-      emp.roles = emp.roles.filter(x=>x!==r);
-    } else {
-      emp.roles = [...emp.roles, r];
-    }
-    state.persWarn='';
-    await saveShared();
-    render();
+    const roles = emp.roles.includes(r) ? emp.roles.filter(x=>x!==r) : [...emp.roles, r];
+    if(r==='chef' && !roles.includes('chef') && state.employees.filter(e=>e.roles.includes('chef')).length<=1){ state.persWarn=t('persWarnLastChef'); render(); return; }
+    await persRun({action:'set-roles', id:emp.id, roles});
   }
   if(action==='emp-set-pw'){
     const emp = state.employees.find(e=>String(e.id)===el.dataset.id);
     const inp = document.getElementById('empPw-'+el.dataset.id);
     const pw = (inp? inp.value : '').trim();
     if(!emp || !pw){ state.persWarn=t('persWarnFields'); render(); return; }
-    emp.pw = pw; state.persWarn='';
-    await saveShared();
-    render();
+    if(pw.length < MIN_PW){ state.persWarn=t('persWarnPwShort'); render(); return; }
+    await persRun({action:'set-pw', id:emp.id, pw}, ()=>{ state.persOk = t('persPwSaved',{name:emp.name}); });
   }
   if(action==='emp-remove'){
     const emp = state.employees.find(e=>String(e.id)===el.dataset.id);
     if(!emp) return;
     if(emp.roles.includes('chef') && state.employees.filter(e=>e.roles.includes('chef')).length<=1){ state.persWarn=t('persWarnLastChef'); render(); return; }
-    state.employees = state.employees.filter(e=>e.id!==emp.id);
-    state.persWarn='';
+    if(!confirm(t('persRemoveConfirm',{name:emp.name}))) return;
+    await persRun({action:'remove', id:emp.id});
+  }
+  if(action==='chef-pw-set'){
+    const inp = document.getElementById('chefPwNew');
+    const pw = (inp? inp.value : '').trim();
+    if(pw.length < MIN_PW){ state.persWarn=t('persWarnPwShort'); state.persOk=''; render(); return; }
+    state.chefPw = await makeChefPw(pw);
     await saveShared();
+    state.persWarn=''; state.persOk=t('persChefPwSaved');
     render();
   }
   if(action==='qty'){
@@ -4202,7 +4348,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='cal-unlock-cancel'){ state.calAskPw=false; render(); }
   if(action==='cal-unlock-ok'){
     const pw = document.getElementById('calPwInput');
-    if(pw && pw.value.trim()===CHEF_PASSWORD){
+    if(pw && await verifyChefPw(pw.value)){
       state.calUnlocked=true; state.calAskPw=false;
     } else {
       const w = document.getElementById('calPwWarn');
@@ -4393,7 +4539,19 @@ if('serviceWorker' in navigator){
 (async function init(){
   state.lang = loadLang();
   restoreSession();
-  restoreOfflineState();   // letzter Stand + gemerkte Änderungen, falls gerade kein Netz
+  // Echte Anmeldung: gilt nur, wenn Supabase noch eine Sitzung hat
+  // (bleibt gespeichert, bis man sich abmeldet; geht auch ohne Netz).
+  try{
+    const { data } = await supabaseClient.auth.getSession();
+    state.authed = !!(data && data.session);
+  }catch(e){ state.authed = false; }
+  if(!state.authed){ state.loggedIn=false; state.role=null; state.authName=null; clearSession(); lsSet(CACHE_KEY, null); lsSet(PENDING_KEY, null); }
+  else restoreOfflineState();   // letzter Stand + gemerkte Änderungen, falls gerade kein Netz
+  try{
+    supabaseClient.auth.onAuthStateChange((event)=>{
+      if(event==='SIGNED_OUT' && state.authed){ signOutAll().then(render); }
+    });
+  }catch(e){}
   await loadShared();
   state.loading = false;
   render();

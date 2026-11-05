@@ -20,29 +20,63 @@ vergeben – "wie auf einem Discord-Server" (Nutzerwunsch). Ablauf
    mehrere, bekommt sie nur IHRE Rollen zur Auswahl (`state.authName`
    = Person ist authentifiziert, aber noch keine Rolle gewählt). Ohne
    zugewiesene Rolle: Hinweis "bitte beim Chef melden".
-3. Rolle **Chef** verlangt ZUSÄTZLICH das Chef-Passwort (`CHEF_PASSWORD`,
-   ausdrücklicher Wunsch: doppelte Sicherung). Wer mehrere Rollen hat,
+3. Rolle **Chef** verlangt ZUSÄTZLICH das Chef-Passwort (`verifyChefPw()`,
+   siehe unten, ausdrücklicher Wunsch: doppelte Sicherung). Wer mehrere Rollen hat,
    sieht im Header "Rolle wechseln" (`switch-role`, ohne erneutes
    Passwort; Chef fragt trotzdem wieder das Chef-Passwort ab).
 
-Die Mitarbeiterliste liegt NICHT mehr im Code, sondern im gemeinsamen
-Supabase-Datensatz (`state.employees`, Einträge `{id, name, pw, roles[]}`,
-Zähler `state.empCounter`) und wird vom Chef im Reiter **"Personal"**
-gepflegt (`personalHTML()`: Mitarbeiter anlegen/entfernen, Rollen per
-Chip an-/abwählen – mehrere pro Person möglich –, Passwort neu setzen).
-Schutz: der letzte Chef kann weder entfernt noch seine Chef-Rolle
-abgewählt werden (`persWarnLastChef`). `DEFAULT_EMPLOYEES` ist nur die
-Start-Befüllung beim allerersten Laden (alte PINs als Start-Passwörter);
-`ROLES`/`ROLE_META` definieren die vier Rollen. Hinweis: Passwörter liegen
-im Klartext im Datensatz – gleiches Schutzniveau wie `CHEF_PASSWORD`,
-kein echter Sicherheitsmechanismus (Repo + Anon-Key sind öffentlich).
+**Echte Anmeldung über Supabase Auth** (seit Sicherheits-Umbau): Jeder
+Mitarbeiter hat ein Supabase-Konto `ma<ID>@mitarbeiter.sg-muc.de`
+(`AUTH_DOMAIN`, wird nie angeschrieben), Passwort = `PW_PREFIX` ('sgm#') +
+eigenes Passwort (Supabase verlangt mind. 6 Zeichen, so bleiben 4-stellige
+PINs gültig; neue Passwörter mind. 4 Zeichen, `MIN_PW`). Passwörter liegen
+NUR verschlüsselt bei Supabase, NICHT im Datensatz. Anmelden:
+`supabaseClient.auth.signInWithPassword` (Aktion `login`), danach lädt die
+App mit Rechten. `state.authed` = Supabase-Sitzung vorhanden (bleibt
+gespeichert bis „Abmelden“, auch offline). Ohne Anmeldung: nur
+`loadPublic()` über die DB-Funktion `public_info()` (Namensliste fürs
+Anmelden + die frei einsehbaren Kalender; vorher Rückfall: direkt lesen),
+`saveShared()` schreibt dann nichts. Abmelden (`signOutAll()`) löscht
+Sitzung, Zwischenspeicher (`geruest-cache`/`-pending`) und Daten im Speicher.
+Wird jemandem die aktuelle Rolle entzogen, meldet `enforceSession()` →
+`dropAuthLocal()` ihn auch beim Server ab.
+
+Die Mitarbeiterliste (ohne Passwörter) liegt im gemeinsamen Datensatz
+(`state.employees`, Einträge `{id, name, roles[], uid}`, Zähler
+`state.empCounter`) und wird vom Chef im Reiter **"Personal"** gepflegt
+(`personalHTML()`). Anlegen/Rollen/Passwort/Entfernen laufen über die
+Edge Function **`manage-users`** (`supabase/functions/manage-users/index.ts`,
+`manageUsers()`/`persRun()` in der App): prüft auf dem Server, dass der
+Aufrufer Chef ist (app_metadata), pflegt Konto + Datensatz, Schutz „letzter
+Chef“ auch serverseitig. `app_metadata = {emp_id, name, roles}` steht im
+Anmelde-Token und wird von den Tabellen-Regeln benutzt. Einmalige
+Einrichtung: Aktion `bootstrap` (nur solange es noch kein Konto gibt) legt
+für alle Mitarbeiter Konten mit ihren bisherigen Passwörtern an und
+entfernt die Passwörter aus dem Datensatz.
+
+**Chef-Passwort** (zusätzliche Sicherung der Chef-Rolle + Kalender-
+Bearbeiten): nicht mehr im Code, sondern als `state.chefPw = {salt, hash}`
+(SHA-256) im Datensatz, `verifyChefPw()`; ändern im Reiter Personal
+(„🔐 Chef-Passwort“, Aktion `chef-pw-set`). Gibt es noch keins (neue
+Datenbank), wird das erste eingegebene übernommen.
+
+**Server-Schutz** (`supabase/security.sql`, einmalig im SQL Editor): RLS
+auf `app_state` – ohne Anmeldung kein Zugriff (nur `public_info()`),
+Angemeldete mit mind. einer Rolle (`jwt_has_role()`) lesen/ändern den
+Datensatz, Standort-Zeilen: jeder Fahrer nur seine eigene, lesen nur Chef
+(`jwt_is_chef()`, `jwt_name()`); Bucket `bauplaene` privat, nur für
+Angemeldete (App holt zeitlich begrenzte Links, `refreshPlanUrls()`).
+`send-push` nimmt nur Aufrufe angemeldeter Mitarbeiter an. In Supabase
+außerdem: Authentication → „Allow new users to sign up“ AUS (Konten nur
+über manage-users).
 
 Die Anmeldung wird per `localStorage` auf dem Gerät gespeichert und gilt,
 bis man sich ausdrücklich abmeldet – KEIN Ablauf am Tagesende mehr
 (Nutzerwunsch; `saveSession`/`restoreSession`/`clearSession`). „Abmelden"
 löscht sie.
 `enforceSession()` (nach jedem `loadShared()`) wirft automatisch raus,
-wenn der Chef die Person oder ihre aktuelle Rolle inzwischen entfernt hat.
+wenn der Chef die Person oder ihre aktuelle Rolle inzwischen entfernt hat
+oder keine Supabase-Sitzung mehr besteht.
 
 ## Menü / Kalender (ohne Anmeldung erreichbar)
 
@@ -51,10 +85,11 @@ auch VOR der Anmeldung sichtbar (Funktion `topNavHTML()`). Im Menü gibt es
 die Punkte „Kalender" (`state.view = 'calendar'`) und „LKW-Kalender"
 (`state.view = 'lkwkalender'`, siehe eigenen Abschnitt unten). Der Kalender
 zeigt, wer wann wo im Einsatz sein soll, und ist bewusst frei einsehbar
-(kein Login nötig). Einträge bearbeiten/anlegen/löschen kann nur, wer das
-Chef-Passwort eingibt (gleiche Konstante `CHEF_PASSWORD`, eigene Freischalt-
-Abfrage `state.calUnlocked`, gilt nur für die aktuelle Seitenladung, nicht
-dauerhaft gespeichert). Die Kalender-Daten (`calendarEntries`,
+(kein Login nötig; Daten ohne Anmeldung über `public_info()`). Einträge
+bearbeiten/anlegen/löschen kann nur, wer in der App angemeldet ist UND das
+Chef-Passwort eingibt (`verifyChefPw()`, eigene Freischalt-Abfrage
+`state.calUnlocked`, gilt nur für die aktuelle Seitenladung); ohne Anmeldung
+steht dort „🔒 … erst in der App anmelden“. Die Kalender-Daten (`calendarEntries`,
 `calCounter`) liegen im selben Supabase-Datensatz wie alles andere.
 
 ## Sprachen
@@ -290,9 +325,9 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    „Planen": Lieferungen im Voraus planen. „Personal": Mitarbeiter,
    Rollen und Passwörter verwalten (siehe „Anmeldung"). Die Rolle ist
    zusätzlich zum eigenen Passwort mit dem Chef-Passwort geschützt
-   (Konstante `CHEF_PASSWORD` am Anfang des `<script>`-Blocks). Hinweis:
-   Prüfung läuft im Browser und das Repo ist öffentlich – einfacher
-   Schutz, keine echte Sicherheitsmaßnahme.
+   (verschlüsselt im Datensatz, im Reiter Personal änderbar). Die echte
+   Absicherung macht der Server (Supabase Auth + Tabellen-Regeln, siehe
+   „Anmeldung“).
 
 ## Widgets (kurze Übersicht oben, Idee wie iPhone-Widgets)
 
@@ -442,9 +477,8 @@ Supabase-Storage-Bucket `bauplaene` (`PLAN_BUCKET`) unter
   create policy "bauplaene hochladen" on storage.objects for insert to anon with check (bucket_id = 'bauplaene');
   create policy "bauplaene loeschen" on storage.objects for delete to anon using (bucket_id = 'bauplaene');
   ```
-  Schutz: öffentlicher Bucket (wer den Link hat, kann die Datei öffnen;
-  Dateinamen sind zufällig) – gleiches Niveau wie der Rest der App, bis
-  die echte Anmeldung (Supabase Auth) kommt.
+  Seit `supabase/security.sql`: Bucket privat, nur für Angemeldete; die App
+  holt zeitlich begrenzte Links (6 h, `createSignedUrls`, `refreshPlanUrls()`).
 
 ## Hell-/Dunkelmodus
 
