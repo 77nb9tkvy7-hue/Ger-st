@@ -512,6 +512,12 @@ Zusätzlich gibt es ein 4-Sekunden-Polling per `setInterval`, das
 `loadShared()` aufruft, damit alle Rollen neue Bestellungen/Status ohne
 manuellen Reload sehen.
 
+**Tägliche Sicherung:** `supabase/backup.sql` (einmalig im SQL Editor
+ausgeführt) legt `app_state_backup` an (Zugriffsschutz an, keine Regeln →
+nur im Dashboard sichtbar) und einen pg_cron-Job `app-state-backup`, der
+jede Nacht 02:00 UTC den Datensatz kopiert und Sicherungen > 30 Tage
+löscht. Wiederherstellen: SQL unten in derselben Datei (zählt `rev` hoch).
+
 Die Zugangsdaten (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) stehen am Anfang des
 `<script>`-Blocks in `geruest-bestell-app.html` und müssen pro Firma einmal
 mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
