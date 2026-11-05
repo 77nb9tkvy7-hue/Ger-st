@@ -60,7 +60,9 @@ Bearbeiten): nicht mehr im Code, sondern als `state.chefPw = {salt, hash}`
 („🔐 Chef-Passwort“, Aktion `chef-pw-set`). Gibt es noch keins (neue
 Datenbank), wird das erste eingegebene übernommen.
 
-**Server-Schutz** (`supabase/security.sql`, einmalig im SQL Editor): RLS
+**Server-Schutz** (`supabase/security.sql`, im Live-Projekt ausgeführt und
+von außen geprüft: ohne Anmeldung 401 auf `app_state`, nur `public_info()`
+offen): RLS
 auf `app_state` – ohne Anmeldung kein Zugriff (nur `public_info()`),
 Angemeldete mit mind. einer Rolle (`jwt_has_role()`) lesen/ändern den
 Datensatz, Standort-Zeilen: jeder Fahrer nur seine eigene, lesen nur Chef
@@ -386,8 +388,8 @@ Nutzerentscheidung: echte Web-Push-Nachrichten („Weg 2").
   `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`. Der private VAPID-Schlüssel steht
   NUR dort, nie im Repo. Ist die Funktion nicht eingerichtet, scheitert
   der Versand still (App läuft normal weiter).
-- Schutz: Wer den (öffentlichen) Anon-Key hat, könnte die Funktion
-  aufrufen – gleiches Schutzniveau wie der Rest der App.
+- Schutz: `send-push` nimmt nur Aufrufe angemeldeter Mitarbeiter an
+  (Anmelde-Token wird geprüft; der öffentliche Anon-Key allein → 401).
 
 ## LKW-Standorte (nur für den Chef sichtbar)
 
@@ -446,9 +448,10 @@ Hintergrund kein GPS). Sichtbar nur für den Chef.
 - **Fahrer**: Bei „Unterwegs“ mit Ziel zeigt „Mein Status“ den gelben Knopf
   „🧭 Navigation starten (Google Maps)“ (`navButtonHTML()`), der Google Maps
   mit Navigation zum BV öffnet.
-- Schutz: wie der Rest der App – wer den öffentlichen Anon-Key hat, könnte
-  die Zeilen lesen. Fahrer sollten (DSGVO) informiert werden, dass ihr
-  Standort während der Arbeit in der App geteilt wird.
+- Schutz: Tabellen-Regeln (`supabase/security.sql`, live aktiv) – lesen
+  darf die Standort-Zeilen nur der Chef, schreiben jeder Fahrer nur seine
+  eigene; ohne Anmeldung kein Zugriff. Fahrer sollten (DSGVO) informiert
+  werden, dass ihr Standort während der Arbeit in der App geteilt wird.
 
 ## Baupläne pro Bauvorhaben
 
@@ -465,7 +468,8 @@ Supabase-Storage-Bucket `bauplaene` (`PLAN_BUCKET`) unter
   Antippen öffnet die Datei (`getPublicUrl`).
 - Fehlermeldungen: zu groß (`planTooBig`), Bucket fehlt (`planNoBucket`),
   sonstiger Fehler/kein Netz (`planUploadFail`).
-- **Einrichtung (einmalig, Supabase → SQL Editor):**
+- **Erst-Einrichtung (historisch, damals öffentlich; heute überschreibt
+  `supabase/security.sql` die Regeln → privat, nur Angemeldete):**
   ```sql
   insert into storage.buckets (id, name, public, file_size_limit)
   values ('bauplaene', 'bauplaene', true, 52428800)
