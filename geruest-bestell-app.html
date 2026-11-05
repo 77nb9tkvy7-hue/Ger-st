@@ -124,7 +124,10 @@
   .qty-ctl{display:flex;align-items:center;border:1.5px solid var(--line-strong);border-radius:8px;overflow:hidden;flex:none;background:var(--card);}
   .qty-ctl button{background:none;border:none;width:30px;height:34px;font-size:16px;line-height:1;cursor:pointer;color:var(--muted);}
   .qty-ctl button:active{background:var(--accent-soft);color:var(--accent-dark);}
-  .qty-ctl .qty-val{width:32px;text-align:center;font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;border-left:1px solid var(--line-strong);border-right:1px solid var(--line-strong);}
+  .qty-ctl .qty-val{width:44px;height:34px;padding:0;margin:0;text-align:center;font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;border:none;border-left:1px solid var(--line-strong);border-right:1px solid var(--line-strong);border-radius:0;background:transparent;color:var(--ink);font-family:inherit;-moz-appearance:textfield;appearance:textfield;}
+  .qty-ctl .qty-val::-webkit-outer-spin-button,.qty-ctl .qty-val::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .qty-ctl .qty-val:focus{outline:none;background:var(--accent-soft);}
+  .qty-ctl .qty-val::placeholder{color:var(--muted);opacity:.7;}
 
   /* Detail-Popup pro Teil (langes Drücken auf den Namen) */
   .overlay-center{align-items:center;}
@@ -306,6 +309,10 @@
   .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
+  .reorder-btn{display:block;width:100%;margin-top:8px;border:1.5px solid var(--accent);background:var(--card);color:var(--accent-dark);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+  .pick-all-btn{display:block;width:100%;margin-top:8px;border:1.5px solid #1E9E5A;background:rgba(30,158,90,0.08);color:var(--ink);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+  .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);max-width:calc(100% - 32px);width:max-content;background:#0B2A4A;color:#fff;border-left:5px solid #FFEE00;border-radius:12px;padding:11px 14px;font-size:13.5px;line-height:1.4;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:1000;font-family:'Inter',sans-serif;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .plaene{margin:12px 0 4px 0;padding:10px;border-radius:12px;background:var(--surface-2);}
   .plaene-head{font-size:13px;font-weight:700;margin-bottom:6px;}
   .plaene-list{display:flex;flex-direction:column;gap:6px;}
@@ -640,6 +647,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  qtyInputAria:'Menge eintippen', reorderBtn:'🔁 Nochmal bestellen', reorderToast:'Teile von #{id} sind in der Bestellliste – Mengen prüfen und abschicken.', reorderNone:'Diese Teile gibt es im Katalog nicht mehr.', pickAllBtn:'✓ Alles eingepackt',
   warnLoginNet:'Anmeldung gerade nicht möglich – bitte Netz prüfen und nochmal versuchen.', loggingIn:'Anmelden …', calLoginFirst:'Bearbeiten nur für angemeldete Mitarbeiter: erst in der App anmelden, dann hier „Bearbeiten“.', persChefPwHeading:'Chef-Passwort (zusätzliche Sicherung für die Chef-Rolle)', persChefPwBtn:'Ändern', persChefPwSaved:'Chef-Passwort geändert.', persWarnPwShort:'Das Passwort braucht mindestens 4 Zeichen.', persFnMissing:'Die Mitarbeiter-Verwaltung ist auf dem Server noch nicht eingerichtet (Funktion „manage-users“) – oder kein Netz.', persErr:'Hat nicht geklappt: {msg}', persBusy:'Wird gespeichert …', persNotChef:'Nur der Chef darf Mitarbeiter verwalten.', persPwSaved:'Neues Passwort für {name} gespeichert.', persRemoveConfirm:'{name} wirklich entfernen? Das Konto wird gelöscht.', persSecurityNote:'Passwörter liegen nur verschlüsselt bei Supabase – auch der Chef kann sie nicht sehen, nur neu setzen.', logoutPendingConfirm:'Es sind noch nicht gesendete Änderungen auf dem Handy (kein Netz). Trotzdem abmelden? Dann gehen sie verloren.',
   plaeneHeading:'Baupläne', plaeneEmpty:'Noch keine Pläne hochgeladen.', planUploadBtn:'⬆️ Plan hochladen (PDF oder Foto)', planUploading:'Wird hochgeladen …', planHint:'Mehrere Dateien auf einmal möglich, max. {mb} MB je Datei. Alle können die Pläne zu diesem Bauvorhaben ansehen.', planTooBig:'„{name}“ ist zu groß (max. {mb} MB).', planNoBucket:'Der Datei-Speicher ist noch nicht eingerichtet – bitte einmal in Supabase anlegen.', planUploadFail:'Hochladen hat nicht geklappt – bitte Netz prüfen und nochmal versuchen.', planDelete:'Plan löschen', planDeleteConfirm:'„{name}“ wirklich löschen?',
   wunschLabel:'Wann wird es gebraucht?', wunschNormal:'Normal', wunschDringend:'🔴 Dringend – sofort', wunschMorgen:'Morgen früh', wunschDatum:'📅 Wunschtermin', badgeDringend:'🔴 DRINGEND', badgeBis:'📅 bis {d}', badgeHeute:'📅 heute gebraucht', badgeUeberfaellig:'⚠️ überfällig – war bis {d}', gebrauchtLabel:'Gebraucht', nUrgentT:'🔴 DRINGEND: Neue Bestellung #{id}', pickHint:'Beim Zusammenstellen abhaken. Was fehlt, kommt automatisch als Nachlieferung.', pickOkBtn:'Eingepackt', pickMissBtn:'Fehlt', pickMissQty:'Davon fehlen:', pickProgress:'{a} von {n} abgehakt', pickMissingCount:'{n} fehlt', pickAllMissing:'Es fehlt alles – so kann die Bestellung nicht bereit gemeldet werden.', fehltHeading:'⚠️ Fehlt – kommt mit Nachlieferung #{id}:', nachVonBadge:'↩ Nachlieferung zu #{id}', nMissingT:'Teile fehlen bei Bestellung #{id}', nMissingB:'{n} Position(en) kommen mit Nachlieferung #{neu}.', lsFehlt:'Fehlt (kommt mit Nachlieferung #{id})',
@@ -827,6 +835,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  qtyInputAria:'Wpisz ilość', reorderBtn:'🔁 Zamów ponownie', reorderToast:'Części z #{id} są na liście zamówienia – sprawdź ilości i wyślij.', reorderNone:'Tych części nie ma już w katalogu.', pickAllBtn:'✓ Wszystko spakowane',
   warnLoginNet:'Logowanie teraz niemożliwe – sprawdź sieć i spróbuj ponownie.', loggingIn:'Logowanie …', calLoginFirst:'Edycja tylko dla zalogowanych pracowników: najpierw zaloguj się w aplikacji, potem tutaj „Edytuj”.', persChefPwHeading:'Hasło szefa (dodatkowe zabezpieczenie roli szefa)', persChefPwBtn:'Zmień', persChefPwSaved:'Hasło szefa zmienione.', persWarnPwShort:'Hasło musi mieć co najmniej 4 znaki.', persFnMissing:'Zarządzanie pracownikami nie jest jeszcze skonfigurowane na serwerze (funkcja „manage-users”) – albo brak sieci.', persErr:'Nie udało się: {msg}', persBusy:'Zapisywanie …', persNotChef:'Tylko szef może zarządzać pracownikami.', persPwSaved:'Nowe hasło dla {name} zapisane.', persRemoveConfirm:'Na pewno usunąć {name}? Konto zostanie usunięte.', persSecurityNote:'Hasła są przechowywane w Supabase tylko w formie zaszyfrowanej – szef też ich nie widzi, może je tylko ustawić na nowo.', logoutPendingConfirm:'Na telefonie są jeszcze niewysłane zmiany (brak sieci). Wylogować mimo to? Wtedy przepadną.',
   plaeneHeading:'Plany budowy', plaeneEmpty:'Nie przesłano jeszcze planów.', planUploadBtn:'⬆️ Prześlij plan (PDF lub zdjęcie)', planUploading:'Przesyłanie …', planHint:'Można wybrać kilka plików naraz, maks. {mb} MB na plik. Wszyscy mogą oglądać plany tej budowy.', planTooBig:'„{name}” jest za duży (maks. {mb} MB).', planNoBucket:'Magazyn plików nie jest jeszcze skonfigurowany – trzeba go raz utworzyć w Supabase.', planUploadFail:'Przesyłanie nie powiodło się – sprawdź sieć i spróbuj ponownie.', planDelete:'Usuń plan', planDeleteConfirm:'Na pewno usunąć „{name}”?',
   wunschLabel:'Kiedy jest potrzebne?', wunschNormal:'Normalnie', wunschDringend:'🔴 Pilne – od razu', wunschMorgen:'Jutro rano', wunschDatum:'📅 Wybrany termin', badgeDringend:'🔴 PILNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrzebne dziś', badgeUeberfaellig:'⚠️ po terminie – było do {d}', gebrauchtLabel:'Potrzebne', nUrgentT:'🔴 PILNE: Nowe zamówienie #{id}', pickHint:'Odhaczaj przy kompletowaniu. Czego brakuje, zostanie automatycznie dosłane.', pickOkBtn:'Spakowane', pickMissBtn:'Brak', pickMissQty:'Brakuje z tego:', pickProgress:'{a} z {n} odhaczonych', pickMissingCount:'{n} brak', pickAllMissing:'Brakuje wszystkiego – zamówienia nie można zgłosić jako gotowe.', fehltHeading:'⚠️ Brak – zostanie dosłane z dostawą #{id}:', nachVonBadge:'↩ Dosyłka do #{id}', nMissingT:'Brakuje części w zamówieniu #{id}', nMissingB:'{n} pozycja(e) przyjdzie z dosyłką #{neu}.', lsFehlt:'Brak (przyjdzie z dosyłką #{id})',
@@ -1014,6 +1023,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  qtyInputAria:'Zadaj množstvo', reorderBtn:'🔁 Objednať znova', reorderToast:'Diely z #{id} sú v zozname objednávky – skontroluj množstvá a odošli.', reorderNone:'Tieto diely už v katalógu nie sú.', pickAllBtn:'✓ Všetko zabalené',
   warnLoginNet:'Prihlásenie teraz nie je možné – skontroluj sieť a skús znova.', loggingIn:'Prihlasovanie …', calLoginFirst:'Úpravy len pre prihlásených zamestnancov: najprv sa prihlás v aplikácii, potom tu „Upraviť“.', persChefPwHeading:'Heslo šéfa (dodatočné zabezpečenie roly šéfa)', persChefPwBtn:'Zmeniť', persChefPwSaved:'Heslo šéfa zmenené.', persWarnPwShort:'Heslo musí mať aspoň 4 znaky.', persFnMissing:'Správa zamestnancov ešte nie je nastavená na serveri (funkcia „manage-users“) – alebo nie je sieť.', persErr:'Nepodarilo sa: {msg}', persBusy:'Ukladá sa …', persNotChef:'Zamestnancov môže spravovať len šéf.', persPwSaved:'Nové heslo pre {name} uložené.', persRemoveConfirm:'Naozaj odstrániť {name}? Konto sa vymaže.', persSecurityNote:'Heslá sú v Supabase uložené len zašifrované – ani šéf ich nevidí, môže ich len nastaviť nanovo.', logoutPendingConfirm:'V telefóne sú ešte neodoslané zmeny (žiadna sieť). Napriek tomu odhlásiť? Potom sa stratia.',
   plaeneHeading:'Stavebné plány', plaeneEmpty:'Zatiaľ neboli nahrané žiadne plány.', planUploadBtn:'⬆️ Nahrať plán (PDF alebo foto)', planUploading:'Nahráva sa …', planHint:'Naraz môžeš vybrať viac súborov, max. {mb} MB na súbor. Plány k tejto stavbe môžu vidieť všetci.', planTooBig:'„{name}“ je príliš veľký (max. {mb} MB).', planNoBucket:'Úložisko súborov ešte nie je nastavené – treba ho raz vytvoriť v Supabase.', planUploadFail:'Nahrávanie nevyšlo – skontroluj sieť a skús znova.', planDelete:'Vymazať plán', planDeleteConfirm:'Naozaj vymazať „{name}“?',
   wunschLabel:'Kedy je to potrebné?', wunschNormal:'Normálne', wunschDringend:'🔴 Súrne – hneď', wunschMorgen:'Zajtra ráno', wunschDatum:'📅 Želaný termín', badgeDringend:'🔴 SÚRNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebné dnes', badgeUeberfaellig:'⚠️ po termíne – bolo do {d}', gebrauchtLabel:'Potrebné', nUrgentT:'🔴 SÚRNE: Nová objednávka #{id}', pickHint:'Pri chystaní odškrtávaj. Čo chýba, príde automaticky ako doplnenie.', pickOkBtn:'Zabalené', pickMissBtn:'Chýba', pickMissQty:'Z toho chýba:', pickProgress:'{a} z {n} odškrtnuté', pickMissingCount:'{n} chýba', pickAllMissing:'Chýba všetko – objednávku nemožno nahlásiť ako pripravenú.', fehltHeading:'⚠️ Chýba – príde s doplnením #{id}:', nachVonBadge:'↩ Doplnenie k #{id}', nMissingT:'V objednávke #{id} chýbajú diely', nMissingB:'{n} položka(y) príde s doplnením #{neu}.', lsFehlt:'Chýba (príde s doplnením #{id})',
@@ -1201,6 +1211,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  qtyInputAria:'Upiši količinu', reorderBtn:'🔁 Naruči ponovno', reorderToast:'Dijelovi iz #{id} su na popisu narudžbe – provjeri količine i pošalji.', reorderNone:'Ovih dijelova više nema u katalogu.', pickAllBtn:'✓ Sve spakirano',
   warnLoginNet:'Prijava trenutno nije moguća – provjeri mrežu i pokušaj ponovno.', loggingIn:'Prijava …', calLoginFirst:'Uređivanje samo za prijavljene zaposlenike: najprije se prijavi u aplikaciji, zatim ovdje „Uredi”.', persChefPwHeading:'Lozinka šefa (dodatna zaštita uloge šefa)', persChefPwBtn:'Promijeni', persChefPwSaved:'Lozinka šefa promijenjena.', persWarnPwShort:'Lozinka mora imati najmanje 4 znaka.', persFnMissing:'Upravljanje zaposlenicima još nije postavljeno na poslužitelju (funkcija „manage-users”) – ili nema mreže.', persErr:'Nije uspjelo: {msg}', persBusy:'Spremanje …', persNotChef:'Samo šef može upravljati zaposlenicima.', persPwSaved:'Nova lozinka za {name} spremljena.', persRemoveConfirm:'Stvarno ukloniti {name}? Račun će biti izbrisan.', persSecurityNote:'Lozinke su u Supabaseu spremljene samo šifrirano – ni šef ih ne vidi, može ih samo postaviti iznova.', logoutPendingConfirm:'Na mobitelu su još neposlane promjene (nema mreže). Ipak se odjaviti? Tada će se izgubiti.',
   plaeneHeading:'Građevinski planovi', plaeneEmpty:'Još nisu učitani planovi.', planUploadBtn:'⬆️ Učitaj plan (PDF ili fotografija)', planUploading:'Učitavanje …', planHint:'Može se odabrati više datoteka odjednom, maks. {mb} MB po datoteci. Svi mogu vidjeti planove ovog gradilišta.', planTooBig:'„{name}” je prevelika (maks. {mb} MB).', planNoBucket:'Spremište datoteka još nije postavljeno – treba ga jednom napraviti u Supabaseu.', planUploadFail:'Učitavanje nije uspjelo – provjeri mrežu i pokušaj ponovno.', planDelete:'Izbriši plan', planDeleteConfirm:'Stvarno izbrisati „{name}”?',
   wunschLabel:'Kada je potrebno?', wunschNormal:'Normalno', wunschDringend:'🔴 Hitno – odmah', wunschMorgen:'Sutra ujutro', wunschDatum:'📅 Željeni termin', badgeDringend:'🔴 HITNO', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebno danas', badgeUeberfaellig:'⚠️ kasni – bilo do {d}', gebrauchtLabel:'Potrebno', nUrgentT:'🔴 HITNO: Nova narudžba #{id}', pickHint:'Odkvačuj pri slaganju. Što nedostaje, stiže automatski kao dopuna.', pickOkBtn:'Spakirano', pickMissBtn:'Nedostaje', pickMissQty:'Od toga nedostaje:', pickProgress:'{a} od {n} odkvačeno', pickMissingCount:'{n} nedostaje', pickAllMissing:'Nedostaje sve – narudžba se ne može prijaviti kao spremna.', fehltHeading:'⚠️ Nedostaje – stiže s dopunom #{id}:', nachVonBadge:'↩ Dopuna za #{id}', nMissingT:'Nedostaju dijelovi u narudžbi #{id}', nMissingB:'{n} stavka(e) stiže s dopunom #{neu}.', lsFehlt:'Nedostaje (stiže s dopunom #{id})',
@@ -1388,6 +1399,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  qtyInputAria:'Type quantity', reorderBtn:'🔁 Order again', reorderToast:'Parts from #{id} are in the order list – check quantities and send.', reorderNone:'These parts are no longer in the catalogue.', pickAllBtn:'✓ All packed',
   warnLoginNet:'Login not possible right now – please check the network and try again.', loggingIn:'Logging in …', calLoginFirst:'Editing only for logged-in staff: log in to the app first, then tap “Edit” here.', persChefPwHeading:'Boss password (extra protection for the boss role)', persChefPwBtn:'Change', persChefPwSaved:'Boss password changed.', persWarnPwShort:'The password needs at least 4 characters.', persFnMissing:'Staff management is not set up on the server yet (function “manage-users”) – or no network.', persErr:'Did not work: {msg}', persBusy:'Saving …', persNotChef:'Only the boss can manage staff.', persPwSaved:'New password for {name} saved.', persRemoveConfirm:'Really remove {name}? The account will be deleted.', persSecurityNote:'Passwords are only stored encrypted at Supabase – even the boss cannot see them, only set new ones.', logoutPendingConfirm:'There are unsent changes on this phone (no network). Log out anyway? They will be lost.',
   plaeneHeading:'Building plans', plaeneEmpty:'No plans uploaded yet.', planUploadBtn:'⬆️ Upload plan (PDF or photo)', planUploading:'Uploading …', planHint:'You can pick several files at once, max. {mb} MB per file. Everyone can view the plans for this project.', planTooBig:'“{name}” is too large (max. {mb} MB).', planNoBucket:'The file storage is not set up yet – it needs to be created once in Supabase.', planUploadFail:'Upload failed – please check the network and try again.', planDelete:'Delete plan', planDeleteConfirm:'Really delete “{name}”?',
   wunschLabel:'When is it needed?', wunschNormal:'Normal', wunschDringend:'🔴 Urgent – right away', wunschMorgen:'Tomorrow morning', wunschDatum:'📅 Preferred date', badgeDringend:'🔴 URGENT', badgeBis:'📅 by {d}', badgeHeute:'📅 needed today', badgeUeberfaellig:'⚠️ overdue – was due {d}', gebrauchtLabel:'Needed', nUrgentT:'🔴 URGENT: New order #{id}', pickHint:'Tick off while packing. Anything missing is sent automatically as a follow-up delivery.', pickOkBtn:'Packed', pickMissBtn:'Missing', pickMissQty:'Missing:', pickProgress:'{a} of {n} ticked', pickMissingCount:'{n} missing', pickAllMissing:'Everything is missing – the order cannot be marked as ready.', fehltHeading:'⚠️ Missing – comes with follow-up #{id}:', nachVonBadge:'↩ Follow-up for #{id}', nMissingT:'Parts missing in order #{id}', nMissingB:'{n} item(s) will come with follow-up #{neu}.', lsFehlt:'Missing (comes with follow-up #{id})',
@@ -2303,11 +2315,23 @@ function enterRole(role){
   syncPushSub();
 }
 
+// Suche: mehrere Wörter (alle müssen passen), egal ob groß/klein, mit oder
+// ohne Umlaut (geländer/gelander), Längen als "2,00", "2.00", "200" oder "2m".
+function normSearch(str){
+  return String(str||'').toLowerCase().replace(/ß/g,'ss').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/,/g,'.');
+}
+function matchSearch(it, q){
+  const name = normSearch(itemName(it));
+  const hay = name + ' ' + name.replace(/(\d)\.(\d)/g,'$1$2') + ' ' + normSearch(it.id).replace(/_/g,' ') + ' ' + normSearch(catName({id:it.cat}));
+  return normSearch(q).split(/\s+/).filter(Boolean)
+    .map(tok=>/^\d+m$/.test(tok) ? tok.slice(0,-1)+'.0' : tok.replace(/^(\d+\.\d+)m$/,'$1'))
+    .every(tok=>hay.includes(tok));
+}
 function qtyControlHTML(it){
   const q = state.cart[it.id]||0;
   return `<div class="qty-ctl">
     <button type="button" data-action="qty" data-id="${it.id}" data-delta="-1" aria-label="${t('qtyMinusAria')}">−</button>
-    <div class="qty-val">${q}</div>
+    <input class="qty-val" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" data-qty="${it.id}" value="${q||''}" placeholder="0" aria-label="${t('qtyInputAria')}">
     <button type="button" data-action="qty" data-id="${it.id}" data-delta="1" aria-label="${t('qtyPlusAria')}">+</button>
   </div>`;
 }
@@ -2352,7 +2376,7 @@ function catalogHTML(){
   let rowIdx = 0;
   if(search){
     const matches = systemItems
-      .filter(it=>itemName(it).toLowerCase().includes(search))
+      .filter(it=>matchSearch(it, search))
       .sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
     rows = matches.length
       ? matches.map(it=>{ rowIdx++; return catalogRowHTML(it, rowIdx%2===0); }).join('')
@@ -2399,7 +2423,7 @@ function catalogHTML(){
   </table></div>
   <div class="mine-section">
     <h3>${t('mineTitle')}</h3>
-    ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>`}
+    ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null,`<button class="reorder-btn" data-action="reorder" data-order="${o.id}">${t('reorderBtn')}</button>`)).join('')}</div>` : `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>`}
   </div>
   <div class="order-footer">
     <span>${count? t('footerCount',{n:count}) + (weightText(cartItems())? ' · '+weightText(cartItems()) : '') : t('footerEmpty')}</span>
@@ -2568,6 +2592,7 @@ function pickListHTML(o){
       </div>
     </div>`;
   }).join('')}</div>
+  ${done < o.items.length? `<button class="pick-all-btn" data-action="pick-all" data-order="${o.id}">${t('pickAllBtn')}</button>`:''}
   <div class="pick-progress">${t('pickProgress',{a:done, n:o.items.length})}${miss? ` · <b>${t('pickMissingCount',{n:miss})}</b>`:''}</div>
   <div id="pickWarn-${o.id}"></div>`;
 }
@@ -2575,7 +2600,7 @@ function itemsListHTML(items){
   return `<ul class="order-items">${items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>`;
 }
 
-function orderCardHTML(o, role){
+function orderCardHTML(o, role, extra){
   const step = NEXT_STEP[o.status];
   const showBtn = role && step && step.role===role;
   const statusClass = 'st-'+slug(o.status);
@@ -2596,6 +2621,7 @@ function orderCardHTML(o, role){
     <button class="print-btn" data-action="print-order" data-order="${o.id}">${t('printBtn')}</button>
     ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
     ${o.status==='Geliefert'? `<div class="done-label">${t('geliefertLabel')}</div>` : ''}
+    ${extra||''}
   </div>`;
 }
 
@@ -3193,7 +3219,7 @@ function planCatalogRowsHTML(){
   let rowIdx = 0;
   if(search){
     const matches = systemItems
-      .filter(it=>itemName(it).toLowerCase().includes(search))
+      .filter(it=>matchSearch(it, search))
       .sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
     rows = matches.length
       ? matches.map(it=>{ rowIdx++; return catalogRowHTML(it, rowIdx%2===0); }).join('')
@@ -3723,6 +3749,16 @@ function chefHTML(){
 // nicht gelöscht -- zum Wieder-Einblenden einfach auf true setzen.
 const SHOW_CHEF_INVENTORY = false;
 
+// Kurze Meldung unten am Bildschirm (liegt außerhalb von #app, damit sie
+// das Neuzeichnen übersteht).
+let toastTimer = null;
+function showToast(msg){
+  let el = document.getElementById('toast');
+  if(!el){ el = document.createElement('div'); el.id = 'toast'; el.className = 'toast'; document.body.appendChild(el); }
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove('show'), 4000);
+}
+
 function formatDateDE(iso){
   const [y,m,d] = iso.split('-');
   const wt = (WEEKDAYS[state.lang]||WEEKDAYS.de)[new Date(iso+'T00:00:00').getDay()];
@@ -4064,6 +4100,19 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='open-order-review'){ openOrderReview(); }
+  if(action==='reorder'){
+    const o = state.orders.find(x=>x.id===parseInt(el.dataset.order,10));
+    if(!o) return;
+    let n = 0;
+    [...o.items, ...(o.fehlt||[])].forEach(i=>{ if(CATALOG.find(c=>c.id===i.id)){ state.cart[i.id] = (state.cart[i.id]||0) + i.qty; n++; } });
+    if(!n){ showToast(t('reorderNone')); return; }
+    if(o.projekt && state.projects.some(p=>p.id===o.projekt && p.aktiv)){ state.selProjekt = String(o.projekt); lsSet('geruest-bv', state.selProjekt); }
+    else if(!o.projekt && o.baustelle){ state.selProjekt = '_frei'; state.baustelleOrt = o.baustelle; state.baustelleCoords = o.coords || null; }
+    state.catalogSearch = '';
+    render();
+    window.scrollTo({top:0, behavior:'smooth'});
+    showToast(t('reorderToast',{id:o.id}));
+  }
   if(action==='close-order-review' || (action==='close-order-review-bg' && e.target===el)){ state.orderReview=null; render(); }
   if(action==='submit-order-final'){ await submitOrderFinal(); }
   if(action==='close-item-popup' || (action==='close-item-popup-bg' && e.target===el)){ state.itemPopup=null; render(); }
@@ -4108,6 +4157,14 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       if(order.status==='Geliefert') notify({names:[order.person]}, 'nDeliveredT', 'nDeliveredB', v);
     }
     render();
+  }
+  if(action==='pick-all'){
+    const order = state.orders.find(o=>o.id===parseInt(el.dataset.order,10));
+    if(!order) return;
+    order.pick = order.pick || {};
+    order.items.forEach((_,i)=>{ if(!order.pick[i]) order.pick[i] = {s:'ok'}; });
+    render();
+    await saveShared();
   }
   if(action==='pick'){
     const order = state.orders.find(o=>o.id===parseInt(el.dataset.order,10));
@@ -4449,6 +4506,7 @@ function fetchAddrSuggestions(q){
 // Fertig-Datum eines Bauvorhabens (Chef) -- 'change' feuert, sobald im
 // Datumsfeld ein Tag gewählt oder das Feld geleert wurde.
 document.getElementById('app').addEventListener('change', async (e)=>{
+  if(e.target.dataset && e.target.dataset.qty){ setQtyFromInput(e.target, true); return; }
   if(e.target.id && e.target.id.startsWith('fertigDate-')){
     const p = state.projects.find(x=>String(x.id)===e.target.dataset.projekt);
     if(!p) return;
@@ -4476,7 +4534,37 @@ document.getElementById('app').addEventListener('change', async (e)=>{
     state.orderReview.bis = e.target.value || null;
   }
 });
+// Mengenfeld antippen: Inhalt markieren, damit man direkt die Zahl tippt;
+// Enter = fertig (Tastatur zu).
+document.getElementById('app').addEventListener('focusin', (e)=>{
+  if(e.target.dataset && e.target.dataset.qty) setTimeout(()=>{ try{ e.target.select(); }catch(_){} }, 0);
+});
+// Nach dem Antippen setzt der Browser die Schreibmarke -- danach nochmal
+// alles markieren, damit die neue Zahl die alte ersetzt statt anzuhängen.
+document.getElementById('app').addEventListener('click', (e)=>{
+  if(e.target.dataset && e.target.dataset.qty && e.target.tagName==='INPUT'){ try{ e.target.select(); }catch(_){} }
+}, true);
+document.getElementById('app').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' && e.target.dataset && e.target.dataset.qty){ e.preventDefault(); e.target.blur(); }
+});
+// Getippte Menge übernehmen OHNE die ganze Seite neu zu zeichnen (sonst
+// würde ein direkt danach angetippter Knopf "verschluckt") -- nur die
+// Fußleiste (Anzahl, Gewicht, Knopf an/aus) wird aktualisiert.
+function setQtyFromInput(inp, final){
+  if(/\D/.test(inp.value)) inp.value = inp.value.replace(/\D/g,'');
+  const n = Math.max(0, Math.min(9999, parseInt(inp.value,10) || 0));
+  if(n) state.cart[inp.dataset.qty] = n; else delete state.cart[inp.dataset.qty];
+  if(final) inp.value = n || '';
+  document.querySelectorAll(`[data-qty="${inp.dataset.qty}"]`).forEach(x=>{ if(x!==inp) x.value = n || ''; });
+  const count = cartCount();
+  document.querySelectorAll('.order-footer').forEach(f=>{
+    const sp = f.querySelector('span'), btn = f.querySelector('button');
+    if(sp) sp.textContent = count ? t('footerCount',{n:count}) + (weightText(cartItems())? ' · '+weightText(cartItems()) : '') : t('footerEmpty');
+    if(btn) btn.disabled = !count;
+  });
+}
 document.getElementById('app').addEventListener('input', (e)=>{
+  if(e.target.dataset && e.target.dataset.qty){ setQtyFromInput(e.target, false); return; }
   if(e.target.id==='baustelleOrtInput'){
     state.baustelleOrt = e.target.value;
     state.baustelleCoords = null;
@@ -4484,6 +4572,7 @@ document.getElementById('app').addEventListener('input', (e)=>{
   }
   if(e.target.id==='projektSelect'){
     state.selProjekt = e.target.value;
+    lsSet('geruest-bv', e.target.value);
     render();
   }
   if(e.target.id==='persName'){ state.persDraftName = e.target.value; }
@@ -4538,6 +4627,7 @@ if('serviceWorker' in navigator){
 
 (async function init(){
   state.lang = loadLang();
+  state.selProjekt = lsGet('geruest-bv') || '';
   restoreSession();
   // Echte Anmeldung: gilt nur, wenn Supabase noch eine Sitzung hat
   // (bleibt gespeichert, bis man sich abmeldet; geht auch ohne Netz).

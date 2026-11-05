@@ -244,6 +244,17 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    Tippen (Nominatim-Suche, bevorzugt Umgebung des letzten GPS-Punkts)
    und einen Knopf „Meinen Standort als Adresse übernehmen" (GPS +
    Adress-Auflösung); Koordinaten werden mit der Bestellung gespeichert.
+   **Schneller bestellen** („Zeit ist Geld“, Nutzerwunsch): Die Menge ist
+   ein antippbares Zahlenfeld (`qtyControlHTML()`, `data-qty`, Zahlen-
+   Tastatur, beim Antippen alles markiert → neue Zahl ersetzt die alte;
+   `setQtyFromInput()` aktualisiert nur die Fußleiste, KEIN render(), damit
+   ein direkt danach angetippter Knopf nicht verschluckt wird); +/− bleiben.
+   „🔁 Nochmal bestellen“ an den eigenen Bestellungen (`reorder`) legt alle
+   Teile (inkl. Fehlendem) in die Bestellliste und wählt das Bauvorhaben,
+   Hinweis per `showToast()`. Das gewählte Bauvorhaben merkt sich das Gerät
+   (localStorage `geruest-bv`). Suche (`matchSearch()`/`normSearch()`):
+   mehrere Wörter, ohne Umlaut-/Großschreib-Unterschied, Längen als „2,00“,
+   „2.00“, „200“ oder „2m“ (= genau 2,00 m).
 2. **Lager** (z. B. Jochen): Drei Reiter:
    - "Bestellungen": Fahrer-Status-Liste, dann eingehende Bestellungen
      mit Buttons "Bearbeitung starten" und "Bereit melden"
@@ -261,6 +272,8 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    `fehlt[]` + `nachId`, Kasten „⚠️ Fehlt – kommt mit Nachlieferung #X“,
    auch auf dem Lieferschein) und schickt dem Besteller eine Push-Nachricht
    (`nMissingT/B`). Fehlt alles → Warnung, Bestellung bleibt offen.
+   Knopf „✓ Alles eingepackt“ (`pick-all`) hakt alle noch offenen Positionen
+   auf einmal ab.
    **Dringlichkeit/Wunschtermin**: Im Bestellschein-Entwurf wählt die
    Baustelle „Normal / 🔴 Dringend / Morgen früh / 📅 Wunschtermin“
    (`wunschPickerHTML()`, `set-wunsch`, `#wunschDate`) → `order.wunsch`
