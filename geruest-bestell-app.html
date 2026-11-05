@@ -309,6 +309,34 @@
   .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
+  .sec-h{font-size:15px;margin:22px 0 10px 0;display:flex;align-items:center;gap:8px;}
+  .sec-n{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--surface-2);font-size:12px;font-family:'Inter',sans-serif;}
+  .done-toggle{display:block;width:100%;text-align:left;margin:14px 0 10px 0;border:none;background:var(--surface-2);color:var(--muted);border-radius:12px;padding:12px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+  .card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .mini-btn{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;font-family:'Inter',sans-serif;}
+  .order-card .order-weight{padding:6px 10px;margin-top:6px;}
+  .rn-ico{display:none;}
+  .rn-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#DC2626;color:#fff;font-size:11px;font-weight:700;margin-left:6px;font-family:'Inter',sans-serif;line-height:1;}
+  .geo-badge.geo-on{padding:7px 12px;font-size:12px;}
+  @media (max-width: 899px){
+    .role-nav{position:fixed;left:0;right:0;bottom:0;margin:0;border-radius:18px 18px 0 0;z-index:20;background:var(--card);box-shadow:0 -6px 20px rgba(23,36,45,.14);padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:4px;}
+    .role-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 2px 6px 2px;font-size:11px;position:relative;border-radius:12px;min-height:54px;}
+    .role-nav button.active{background:var(--accent-soft);color:var(--accent-dark);box-shadow:none;}
+    .role-nav .rn-ico{display:block;font-size:21px;line-height:1;}
+    .role-nav .rn-lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+    .role-nav .rn-badge{position:absolute;top:3px;left:calc(50% + 6px);margin:0;}
+    body.has-nav main{padding-bottom:calc(150px + env(safe-area-inset-bottom));}
+    body.has-nav .order-footer{bottom:calc(66px + env(safe-area-inset-bottom));border-radius:16px;}
+    body.has-nav .toast{bottom:calc(150px + env(safe-area-inset-bottom));}
+    /* Info-Kacheln am Handy flacher, damit die Arbeit (Bestellungen/
+       Lieferungen) schneller im Bild ist */
+    .widget-grid:not(.three){gap:8px;margin:8px 0 12px 0;}
+    .widget-grid:not(.three) .widget{min-height:74px;padding:10px 12px;border-radius:16px;}
+    .widget-grid:not(.three) .w-value{font-size:24px;margin-top:4px;}
+    .widget-grid:not(.three) .w-value.small{font-size:15px;margin-top:6px;}
+    .widget-grid:not(.three) .w-detail{-webkit-line-clamp:1;margin-top:2px;}
+    .view-title{margin-bottom:4px;}
+  }
   .pu-open-btn{display:block;width:100%;margin:6px 0 14px 0;border:1.5px dashed #3AA0E6;background:var(--card);color:var(--ink);border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;text-align:center;}
   .pu-card::before{background:#3AA0E6 !important;}
   .pu-card.pu-done{opacity:.75;}
@@ -660,6 +688,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  doneSection:'✓ Erledigt ({n})', openOrdersHeading:'Offene Bestellungen', allDone:'Alles erledigt 👍', mapsShort:'Karte', printShort:'Lieferschein', geoOnShort:'📍 Standort wird geteilt – nur der Chef sieht ihn',
   puTitle:'Abholung', puBtnMelden:'↩ Material zurückgeben / Abholung melden', puEditorTitle:'Was geht zurück?', puEditorSub:'Übriges Material oder ganzes Gerüst – die Mengen kannst du bis zum Abladen im Lager jederzeit ändern.', puVorOrt:'vor Ort: {n}', puAllBtn:'Alles, was vor Ort ist', puZeroBtn:'Alle auf 0', puNothingVor:'Für dieses Bauvorhaben ist noch nichts als geliefert erfasst – Teile über die Suche hinzufügen.', puSearchPh:'Weiteres Teil suchen …', puAbbauLabel:'Komplettes Gerüst abbauen / alles abholen', puNotizLabel:'Hinweis für den Fahrer', puNotizPh:'z. B. liegt hinter dem Haus, ca. 1 LKW', puWannLabel:'Wann kann abgeholt werden?', puSaveNew:'Abholung melden', puSaveEdit:'Änderungen speichern', puCancel:'Abbrechen', puWarnOrt:'Bitte Bauvorhaben wählen oder Adresse eingeben.', puWarnEmpty:'Bitte Mengen eintragen oder „Komplettes Gerüst“ ankreuzen.', puGemeldet:'Gemeldet', puUnterwegs:'Fahrer kommt', puAbgeholt:'Auf dem LKW', puImLager:'Im Lager', puBtnHin:'🚚 Ich hole es ab', puBtnGeladen:'✓ Aufgeladen', puBtnLager:'🏭 Im Lager abgeladen', puEditBtn:'✏️ Mengen ändern', puDeleteBtn:'Abholung löschen', puDeleteConfirm:'Abholung #{id} wirklich löschen?', puGemeldetAm:'Gemeldet', puMine:'Meine Abholungen', puFahrerHeading:'↩ Abholen', puLagerHeading:'↩ Kommt zurück ins Lager', puChefHeading:'↩ Abholungen', puBvHeading:'↩ Abholungen hier', puBvAdd:'↩ Abholung anlegen', puSaved:'Abholung #{id} gemeldet – Fahrer und Lager wissen Bescheid.', puUpdated:'Abholung #{id} geändert.', wAbholen:'Abholen', fkAbholung:'↩ Abholung', nPuNewT:'↩ Abholung #{id}: {ort}', nPuNewB:'{person} meldet Material zum Abholen.', nPuOnWayT:'Abholung #{id}: {fahrer} kommt', nPuOnWayB:'{ort}',
   qtyInputAria:'Menge eintippen', reorderBtn:'🔁 Nochmal bestellen', reorderToast:'Teile von #{id} sind in der Bestellliste – Mengen prüfen und abschicken.', reorderNone:'Diese Teile gibt es im Katalog nicht mehr.', pickAllBtn:'✓ Alles eingepackt',
   warnLoginNet:'Anmeldung gerade nicht möglich – bitte Netz prüfen und nochmal versuchen.', loggingIn:'Anmelden …', calLoginFirst:'Bearbeiten nur für angemeldete Mitarbeiter: erst in der App anmelden, dann hier „Bearbeiten“.', persChefPwHeading:'Chef-Passwort (zusätzliche Sicherung für die Chef-Rolle)', persChefPwBtn:'Ändern', persChefPwSaved:'Chef-Passwort geändert.', persWarnPwShort:'Das Passwort braucht mindestens 4 Zeichen.', persFnMissing:'Die Mitarbeiter-Verwaltung ist auf dem Server noch nicht eingerichtet (Funktion „manage-users“) – oder kein Netz.', persErr:'Hat nicht geklappt: {msg}', persBusy:'Wird gespeichert …', persNotChef:'Nur der Chef darf Mitarbeiter verwalten.', persPwSaved:'Neues Passwort für {name} gespeichert.', persRemoveConfirm:'{name} wirklich entfernen? Das Konto wird gelöscht.', persSecurityNote:'Passwörter liegen nur verschlüsselt bei Supabase – auch der Chef kann sie nicht sehen, nur neu setzen.', logoutPendingConfirm:'Es sind noch nicht gesendete Änderungen auf dem Handy (kein Netz). Trotzdem abmelden? Dann gehen sie verloren.',
@@ -849,6 +878,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  doneSection:'✓ Zakończone ({n})', openOrdersHeading:'Otwarte zamówienia', allDone:'Wszystko zrobione 👍', mapsShort:'Mapa', printShort:'Dowód dostawy', geoOnShort:'📍 Lokalizacja jest udostępniana – widzi ją tylko szef',
   puTitle:'Odbiór', puBtnMelden:'↩ Zwróć materiał / zgłoś odbiór', puEditorTitle:'Co wraca?', puEditorSub:'Nadwyżka materiału albo całe rusztowanie – ilości możesz zmieniać aż do rozładunku w magazynie.', puVorOrt:'na miejscu: {n}', puAllBtn:'Wszystko, co jest na miejscu', puZeroBtn:'Wszystko na 0', puNothingVor:'Dla tej budowy nic nie zostało jeszcze zapisane jako dostarczone – dodaj części przez wyszukiwanie.', puSearchPh:'Szukaj innej części …', puAbbauLabel:'Demontaż całego rusztowania / odebrać wszystko', puNotizLabel:'Uwaga dla kierowcy', puNotizPh:'np. leży za domem, ok. 1 ciężarówka', puWannLabel:'Kiedy można odebrać?', puSaveNew:'Zgłoś odbiór', puSaveEdit:'Zapisz zmiany', puCancel:'Anuluj', puWarnOrt:'Wybierz budowę albo wpisz adres.', puWarnEmpty:'Wpisz ilości albo zaznacz „Całe rusztowanie”.', puGemeldet:'Zgłoszone', puUnterwegs:'Kierowca jedzie', puAbgeholt:'Na ciężarówce', puImLager:'W magazynie', puBtnHin:'🚚 Odbieram', puBtnGeladen:'✓ Załadowane', puBtnLager:'🏭 Rozładowane w magazynie', puEditBtn:'✏️ Zmień ilości', puDeleteBtn:'Usuń odbiór', puDeleteConfirm:'Na pewno usunąć odbiór #{id}?', puGemeldetAm:'Zgłoszone', puMine:'Moje odbiory', puFahrerHeading:'↩ Do odebrania', puLagerHeading:'↩ Wraca do magazynu', puChefHeading:'↩ Odbiory', puBvHeading:'↩ Odbiory tutaj', puBvAdd:'↩ Dodaj odbiór', puSaved:'Odbiór #{id} zgłoszony – kierowca i magazyn wiedzą.', puUpdated:'Odbiór #{id} zmieniony.', wAbholen:'Do odebrania', fkAbholung:'↩ Odbiór', nPuNewT:'↩ Odbiór #{id}: {ort}', nPuNewB:'{person} zgłasza materiał do odbioru.', nPuOnWayT:'Odbiór #{id}: {fahrer} jedzie', nPuOnWayB:'{ort}',
   qtyInputAria:'Wpisz ilość', reorderBtn:'🔁 Zamów ponownie', reorderToast:'Części z #{id} są na liście zamówienia – sprawdź ilości i wyślij.', reorderNone:'Tych części nie ma już w katalogu.', pickAllBtn:'✓ Wszystko spakowane',
   warnLoginNet:'Logowanie teraz niemożliwe – sprawdź sieć i spróbuj ponownie.', loggingIn:'Logowanie …', calLoginFirst:'Edycja tylko dla zalogowanych pracowników: najpierw zaloguj się w aplikacji, potem tutaj „Edytuj”.', persChefPwHeading:'Hasło szefa (dodatkowe zabezpieczenie roli szefa)', persChefPwBtn:'Zmień', persChefPwSaved:'Hasło szefa zmienione.', persWarnPwShort:'Hasło musi mieć co najmniej 4 znaki.', persFnMissing:'Zarządzanie pracownikami nie jest jeszcze skonfigurowane na serwerze (funkcja „manage-users”) – albo brak sieci.', persErr:'Nie udało się: {msg}', persBusy:'Zapisywanie …', persNotChef:'Tylko szef może zarządzać pracownikami.', persPwSaved:'Nowe hasło dla {name} zapisane.', persRemoveConfirm:'Na pewno usunąć {name}? Konto zostanie usunięte.', persSecurityNote:'Hasła są przechowywane w Supabase tylko w formie zaszyfrowanej – szef też ich nie widzi, może je tylko ustawić na nowo.', logoutPendingConfirm:'Na telefonie są jeszcze niewysłane zmiany (brak sieci). Wylogować mimo to? Wtedy przepadną.',
@@ -1038,6 +1068,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  doneSection:'✓ Hotové ({n})', openOrdersHeading:'Otvorené objednávky', allDone:'Všetko hotové 👍', mapsShort:'Mapa', printShort:'Dodací list', geoOnShort:'📍 Poloha sa zdieľa – vidí ju iba šéf',
   puTitle:'Odvoz', puBtnMelden:'↩ Vrátiť materiál / nahlásiť odvoz', puEditorTitle:'Čo ide späť?', puEditorSub:'Zvyšný materiál alebo celé lešenie – množstvá môžeš meniť až do vyloženia v sklade.', puVorOrt:'na mieste: {n}', puAllBtn:'Všetko, čo je na mieste', puZeroBtn:'Všetko na 0', puNothingVor:'Pre túto stavbu ešte nie je nič zapísané ako dodané – pridaj diely cez vyhľadávanie.', puSearchPh:'Hľadať ďalší diel …', puAbbauLabel:'Demontáž celého lešenia / odviezť všetko', puNotizLabel:'Poznámka pre vodiča', puNotizPh:'napr. leží za domom, cca 1 nákladné auto', puWannLabel:'Kedy sa dá odviezť?', puSaveNew:'Nahlásiť odvoz', puSaveEdit:'Uložiť zmeny', puCancel:'Zrušiť', puWarnOrt:'Vyber stavbu alebo zadaj adresu.', puWarnEmpty:'Zadaj množstvá alebo zaškrtni „Celé lešenie“.', puGemeldet:'Nahlásené', puUnterwegs:'Vodič ide', puAbgeholt:'Na aute', puImLager:'V sklade', puBtnHin:'🚚 Idem to vyzdvihnúť', puBtnGeladen:'✓ Naložené', puBtnLager:'🏭 Vyložené v sklade', puEditBtn:'✏️ Zmeniť množstvá', puDeleteBtn:'Vymazať odvoz', puDeleteConfirm:'Naozaj vymazať odvoz #{id}?', puGemeldetAm:'Nahlásené', puMine:'Moje odvozy', puFahrerHeading:'↩ Vyzdvihnúť', puLagerHeading:'↩ Vracia sa do skladu', puChefHeading:'↩ Odvozy', puBvHeading:'↩ Odvozy tu', puBvAdd:'↩ Pridať odvoz', puSaved:'Odvoz #{id} nahlásený – vodič aj sklad vedia.', puUpdated:'Odvoz #{id} zmenený.', wAbholen:'Vyzdvihnúť', fkAbholung:'↩ Odvoz', nPuNewT:'↩ Odvoz #{id}: {ort}', nPuNewB:'{person} hlási materiál na odvoz.', nPuOnWayT:'Odvoz #{id}: ide {fahrer}', nPuOnWayB:'{ort}',
   qtyInputAria:'Zadaj množstvo', reorderBtn:'🔁 Objednať znova', reorderToast:'Diely z #{id} sú v zozname objednávky – skontroluj množstvá a odošli.', reorderNone:'Tieto diely už v katalógu nie sú.', pickAllBtn:'✓ Všetko zabalené',
   warnLoginNet:'Prihlásenie teraz nie je možné – skontroluj sieť a skús znova.', loggingIn:'Prihlasovanie …', calLoginFirst:'Úpravy len pre prihlásených zamestnancov: najprv sa prihlás v aplikácii, potom tu „Upraviť“.', persChefPwHeading:'Heslo šéfa (dodatočné zabezpečenie roly šéfa)', persChefPwBtn:'Zmeniť', persChefPwSaved:'Heslo šéfa zmenené.', persWarnPwShort:'Heslo musí mať aspoň 4 znaky.', persFnMissing:'Správa zamestnancov ešte nie je nastavená na serveri (funkcia „manage-users“) – alebo nie je sieť.', persErr:'Nepodarilo sa: {msg}', persBusy:'Ukladá sa …', persNotChef:'Zamestnancov môže spravovať len šéf.', persPwSaved:'Nové heslo pre {name} uložené.', persRemoveConfirm:'Naozaj odstrániť {name}? Konto sa vymaže.', persSecurityNote:'Heslá sú v Supabase uložené len zašifrované – ani šéf ich nevidí, môže ich len nastaviť nanovo.', logoutPendingConfirm:'V telefóne sú ešte neodoslané zmeny (žiadna sieť). Napriek tomu odhlásiť? Potom sa stratia.',
@@ -1227,6 +1258,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  doneSection:'✓ Završeno ({n})', openOrdersHeading:'Otvorene narudžbe', allDone:'Sve gotovo 👍', mapsShort:'Karta', printShort:'Otpremnica', geoOnShort:'📍 Lokacija se dijeli – vidi je samo šef',
   puTitle:'Odvoz', puBtnMelden:'↩ Vrati materijal / prijavi odvoz', puEditorTitle:'Što se vraća?', puEditorSub:'Višak materijala ili cijela skela – količine možeš mijenjati sve do istovara u skladištu.', puVorOrt:'na licu mjesta: {n}', puAllBtn:'Sve što je na licu mjesta', puZeroBtn:'Sve na 0', puNothingVor:'Za ovo gradilište još ništa nije zabilježeno kao isporučeno – dodaj dijelove pretragom.', puSearchPh:'Traži drugi dio …', puAbbauLabel:'Demontaža cijele skele / odvesti sve', puNotizLabel:'Napomena za vozača', puNotizPh:'npr. leži iza kuće, oko 1 kamion', puWannLabel:'Kada se može odvesti?', puSaveNew:'Prijavi odvoz', puSaveEdit:'Spremi promjene', puCancel:'Odustani', puWarnOrt:'Odaberi gradilište ili upiši adresu.', puWarnEmpty:'Upiši količine ili označi „Cijela skela”.', puGemeldet:'Prijavljeno', puUnterwegs:'Vozač dolazi', puAbgeholt:'Na kamionu', puImLager:'U skladištu', puBtnHin:'🚚 Ja to preuzimam', puBtnGeladen:'✓ Utovareno', puBtnLager:'🏭 Istovareno u skladištu', puEditBtn:'✏️ Promijeni količine', puDeleteBtn:'Izbriši odvoz', puDeleteConfirm:'Stvarno izbrisati odvoz #{id}?', puGemeldetAm:'Prijavljeno', puMine:'Moji odvozi', puFahrerHeading:'↩ Preuzeti', puLagerHeading:'↩ Vraća se u skladište', puChefHeading:'↩ Odvozi', puBvHeading:'↩ Odvozi ovdje', puBvAdd:'↩ Dodaj odvoz', puSaved:'Odvoz #{id} prijavljen – vozač i skladište su obaviješteni.', puUpdated:'Odvoz #{id} promijenjen.', wAbholen:'Preuzeti', fkAbholung:'↩ Odvoz', nPuNewT:'↩ Odvoz #{id}: {ort}', nPuNewB:'{person} prijavljuje materijal za odvoz.', nPuOnWayT:'Odvoz #{id}: dolazi {fahrer}', nPuOnWayB:'{ort}',
   qtyInputAria:'Upiši količinu', reorderBtn:'🔁 Naruči ponovno', reorderToast:'Dijelovi iz #{id} su na popisu narudžbe – provjeri količine i pošalji.', reorderNone:'Ovih dijelova više nema u katalogu.', pickAllBtn:'✓ Sve spakirano',
   warnLoginNet:'Prijava trenutno nije moguća – provjeri mrežu i pokušaj ponovno.', loggingIn:'Prijava …', calLoginFirst:'Uređivanje samo za prijavljene zaposlenike: najprije se prijavi u aplikaciji, zatim ovdje „Uredi”.', persChefPwHeading:'Lozinka šefa (dodatna zaštita uloge šefa)', persChefPwBtn:'Promijeni', persChefPwSaved:'Lozinka šefa promijenjena.', persWarnPwShort:'Lozinka mora imati najmanje 4 znaka.', persFnMissing:'Upravljanje zaposlenicima još nije postavljeno na poslužitelju (funkcija „manage-users”) – ili nema mreže.', persErr:'Nije uspjelo: {msg}', persBusy:'Spremanje …', persNotChef:'Samo šef može upravljati zaposlenicima.', persPwSaved:'Nova lozinka za {name} spremljena.', persRemoveConfirm:'Stvarno ukloniti {name}? Račun će biti izbrisan.', persSecurityNote:'Lozinke su u Supabaseu spremljene samo šifrirano – ni šef ih ne vidi, može ih samo postaviti iznova.', logoutPendingConfirm:'Na mobitelu su još neposlane promjene (nema mreže). Ipak se odjaviti? Tada će se izgubiti.',
@@ -1416,6 +1448,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  doneSection:'✓ Done ({n})', openOrdersHeading:'Open orders', allDone:'All done 👍', mapsShort:'Map', printShort:'Delivery note', geoOnShort:'📍 Location shared – only the boss can see it',
   puTitle:'Pickup', puBtnMelden:'↩ Return material / request pickup', puEditorTitle:'What goes back?', puEditorSub:'Surplus material or the whole scaffold – you can change the quantities until it is unloaded at the warehouse.', puVorOrt:'on site: {n}', puAllBtn:'Everything on site', puZeroBtn:'All to 0', puNothingVor:'Nothing is recorded as delivered to this site yet – add parts via search.', puSearchPh:'Search another part …', puAbbauLabel:'Dismantle whole scaffold / collect everything', puNotizLabel:'Note for the driver', puNotizPh:'e.g. behind the house, approx. 1 truck', puWannLabel:'When can it be collected?', puSaveNew:'Request pickup', puSaveEdit:'Save changes', puCancel:'Cancel', puWarnOrt:'Please choose a project or enter an address.', puWarnEmpty:'Please enter quantities or tick “Whole scaffold”.', puGemeldet:'Requested', puUnterwegs:'Driver on the way', puAbgeholt:'On the truck', puImLager:'At the warehouse', puBtnHin:'🚚 I will collect it', puBtnGeladen:'✓ Loaded', puBtnLager:'🏭 Unloaded at warehouse', puEditBtn:'✏️ Change quantities', puDeleteBtn:'Delete pickup', puDeleteConfirm:'Really delete pickup #{id}?', puGemeldetAm:'Requested', puMine:'My pickups', puFahrerHeading:'↩ To collect', puLagerHeading:'↩ Coming back to the warehouse', puChefHeading:'↩ Pickups', puBvHeading:'↩ Pickups here', puBvAdd:'↩ Add pickup', puSaved:'Pickup #{id} requested – driver and warehouse are informed.', puUpdated:'Pickup #{id} changed.', wAbholen:'To collect', fkAbholung:'↩ Pickup', nPuNewT:'↩ Pickup #{id}: {ort}', nPuNewB:'{person} requests a material pickup.', nPuOnWayT:'Pickup #{id}: {fahrer} is coming', nPuOnWayB:'{ort}',
   qtyInputAria:'Type quantity', reorderBtn:'🔁 Order again', reorderToast:'Parts from #{id} are in the order list – check quantities and send.', reorderNone:'These parts are no longer in the catalogue.', pickAllBtn:'✓ All packed',
   warnLoginNet:'Login not possible right now – please check the network and try again.', loggingIn:'Logging in …', calLoginFirst:'Editing only for logged-in staff: log in to the app first, then tap “Edit” here.', persChefPwHeading:'Boss password (extra protection for the boss role)', persChefPwBtn:'Change', persChefPwSaved:'Boss password changed.', persWarnPwShort:'The password needs at least 4 characters.', persFnMissing:'Staff management is not set up on the server yet (function “manage-users”) – or no network.', persErr:'Did not work: {msg}', persBusy:'Saving …', persNotChef:'Only the boss can manage staff.', persPwSaved:'New password for {name} saved.', persRemoveConfirm:'Really remove {name}? The account will be deleted.', persSecurityNote:'Passwords are only stored encrypted at Supabase – even the boss cannot see them, only set new ones.', logoutPendingConfirm:'There are unsent changes on this phone (no network). Log out anyway? They will be lost.',
@@ -1728,7 +1761,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
-  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, pickups:[], pickupCounter:1, puDraft:null, puWarn:'', authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
+  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, showDone:{}, pickups:[], pickupCounter:1, puDraft:null, puWarn:'', authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
@@ -2134,6 +2167,7 @@ function menuDropdownHTML(){
   if(state.view!=='app') items.push(`<button data-action="go-app">${t('menuBackToApp')}</button>`);
   if(state.view!=='calendar') items.push(`<button data-action="go-calendar">${t('menuCalendar')}</button>`);
   if(state.view!=='lkwkalender') items.push(`<button data-action="go-lkwkalender">${t('menuLkwCalendar')}</button>`);
+  if(state.loggedIn && state.view==='app') items.push(`<button data-action="refresh">${t('refreshBtn')}</button>`);
   if(state.loggedIn && pushSupported() && !(Notification.permission==='granted' && pushActiveHere())) items.push(`<button data-action="push-enable">🔔 ${t('pushMenuItem')}</button>`);
   return `<div class="menu-dropdown">${items.join('')}</div>`;
 }
@@ -2387,7 +2421,9 @@ function catSectionHTML(id, label, items){
 }
 
 function catalogHTML(){
-  const mine = state.orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id).slice(0,5);
+  const mineAll = state.orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id);
+  const mine = mineAll.filter(o=>o.status!=='Geliefert'), mineDone = mineAll.filter(o=>o.status==='Geliefert');
+  const reorderBtn = o=>`<button class="reorder-btn" data-action="reorder" data-order="${o.id}">${t('reorderBtn')}</button>`;
   const count = cartCount();
   const aktive = state.projects.filter(p=>p.aktiv);
   const freiGewaehlt = !aktive.length || state.selProjekt==='_frei';
@@ -2447,7 +2483,8 @@ function catalogHTML(){
   </table></div>
   <div class="mine-section">
     <h3>${t('mineTitle')}</h3>
-    ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null,`<button class="reorder-btn" data-action="reorder" data-order="${o.id}">${t('reorderBtn')}</button>`)).join('')}</div>` : `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>`}
+    ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null,reorderBtn(o))).join('')}</div>` : (!mineDone.length? `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>` : '')}
+    ${doneSectionHTML('baustelle', mineDone, o=>orderCardHTML(o,null,reorderBtn(o)), 10)}
     ${(()=>{ const myPu = state.pickups.filter(p=>p.person===state.name).sort((a,b)=>b.id-a.id);
       const shown = [...myPu.filter(p=>p.status!=='Im Lager'), ...myPu.filter(p=>p.status==='Im Lager').slice(0,3)];
       return shown.length? `<h3 style="margin-top:22px;">${t('puMine')}</h3>${pickupListHTML(shown, 'baustelle')}` : ''; })()}
@@ -2736,7 +2773,7 @@ function pickupCardHTML(pu, role){
     ${pu.abbau? `<div class="pu-abbau">🏗️ ${t('puAbbauLabel')}</div>`:''}
     ${(pu.items||[]).length? itemsListHTML(pu.items) + weightLineHTML(pu.items) : ''}
     ${pu.notiz? `<div class="ev-notiz">${escapeHtml(pu.notiz)}</div>`:''}
-    ${!done? `<a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>`:''}
+    ${!done? `<div class="card-actions"><a class="mini-btn" href="${mapsUrl}" target="_blank" rel="noopener">📍 ${t('mapsShort')}</a></div>`:''}
     ${canEdit? `<button class="reorder-btn" data-action="pu-edit" data-id="${pu.id}">${t('puEditBtn')}</button>`:''}
     ${canAdvance? `<button class="advance-btn" data-action="pu-advance" data-id="${pu.id}">${t(next.key)}</button>`:''}
     ${canDelete? `<button class="pu-del" data-action="pu-delete" data-id="${pu.id}">${t('puDeleteBtn')}</button>`:''}
@@ -2803,8 +2840,10 @@ function orderCardHTML(o, role, extra){
     ${role==='lager' && o.status==='In Bearbeitung' ? pickListHTML(o) : itemsListHTML(o.items)}
     ${o.fehlt && o.fehlt.length? `<div class="fehlt-box"><b>${t('fehltHeading',{id:o.nachId})}</b>${itemsListHTML(o.fehlt)}</div>`:''}
     ${weightLineHTML(o.items)}
-    <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
-    <button class="print-btn" data-action="print-order" data-order="${o.id}">${t('printBtn')}</button>
+    <div class="card-actions">
+      <a class="mini-btn" href="${mapsUrl}" target="_blank" rel="noopener">📍 ${t('mapsShort')}</a>
+      <button class="mini-btn" data-action="print-order" data-order="${o.id}">🖨️ ${t('printShort')}</button>
+    </div>
     ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
     ${o.status==='Geliefert'? `<div class="done-label">${t('geliefertLabel')}</div>` : ''}
     ${extra||''}
@@ -2841,21 +2880,20 @@ function inventoryTableHTML(editable){
 function lagerHTML(){
   const tab = state.lagerTab;
   const orders = sortOrdersForWork(state.orders);
-  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
-  <h2 class="view-title">${t('lagerTitle')}</h2>
+  return `  <h2 class="view-title">${t('lagerTitle')}</h2>
   ${widgetsHTML('lager')}
-  <div class="seg-control">
-    <button class="${tab==='bestellungen'?'active':''}" data-action="lager-tab" data-tab="bestellungen">${t('tabBestellungen')}</button>
-    <button class="${tab==='geplant'?'active':''}" data-action="lager-tab" data-tab="geplant">${t('tabGeplant')}</button>
-    <button class="${tab==='inventur'?'active':''}" data-action="lager-tab" data-tab="inventur">${t('tabInventur')}</button>
-  </div>
+  ${roleNavHTML('lager-tab', tab, [
+    {id:'bestellungen', key:'tabBestellungen', ico:'📦', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Abgeholt').length},
+    {id:'geplant', key:'tabGeplant', ico:'🗓️'},
+    {id:'inventur', key:'tabInventur', ico:'📋'}])}
   ${tab==='bestellungen'
     ? `<p class="view-sub">${t('lagerBestellSub')}</p>
-       <h3 style="font-size:15px;margin:0 0 8px 0;">${t('fahrerStatusHeading')}</h3>
-       ${driverStatusListHTML()}
+       ${driverStatusSectionHTML()}
        ${openPickups().length? `<h3 style="font-size:15px;margin:22px 0 8px 0;">${t('puLagerHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'lager')}`:''}
-       <h3 style="font-size:15px;margin:22px 0 8px 0;">${t('allOrdersHeading')}</h3>
-       ${orders.length? `<div class="card-grid">${orders.map(o=>orderCardHTML(o,'lager')).join('')}</div>` : `<div class="empty-state">${t('lagerEmptyOrders')}</div>`}`
+       ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
+         return `${sectionH(t('openOrdersHeading'), open.length)}
+         ${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'lager')).join('')}</div>` : `<div class="empty-state">${orders.length? t('allDone') : t('lagerEmptyOrders')}</div>`}
+         ${doneSectionHTML('lager', done, o=>orderCardHTML(o,'lager'))}`; })()}`
     : tab==='geplant'
     ? `<p class="view-sub">${t('plLagerSub')}</p>
        ${geplantListHTML(false)}`
@@ -2938,6 +2976,10 @@ function navButtonHTML(ziel){
   const dest = p.coords ? `${p.coords.lat},${p.coords.lon}` : encodeURIComponent(p.adresse||p.name);
   return `<a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving" target="_blank" rel="noopener">${t('navStart')}</a>`;
 }
+function driverStatusSectionHTML(){
+  const any = Object.values(state.driverStatus).some(v=>v && v.status);
+  return any ? `${sectionH(t('fahrerStatusHeading'))}${driverStatusListHTML()}` : '';
+}
 function driverStatusListHTML(){
   const entries = Object.entries(state.driverStatus).filter(([,v])=>v && v.status);
   if(!entries.length) return `<div class="empty-state">${t('fahrerStatusEmpty')}</div>`;
@@ -2955,17 +2997,15 @@ function driverStatusListHTML(){
 
 function fahrerHTML(){
   const tab = state.fahrerTab;
-  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
-  <h2 class="view-title">${t('fahrerTitle')}</h2>
+  return `  <h2 class="view-title">${t('fahrerTitle')}</h2>
   <div id="geoBadge">${geoBadgeHTML()}</div>
   ${widgetsHTML('fahrer')}
   ${myStatusWidgetHTML()}
-  <div class="seg-control">
-    <button class="${tab==='lieferungen'?'active':''}" data-action="fahrer-tab" data-tab="lieferungen">${t('tabLieferungen')}</button>
-    <button class="${tab==='kalender'?'active':''}" data-action="fahrer-tab" data-tab="kalender">${t('tabKalender')}</button>
-    <button class="${tab==='geplant'?'active':''}" data-action="fahrer-tab" data-tab="geplant">${t('tabGeplant')}</button>
-    <button class="${tab==='bauvorhaben'?'active':''}" data-action="fahrer-tab" data-tab="bauvorhaben">${t('tabBauvorhaben')}</button>
-  </div>
+  ${roleNavHTML('fahrer-tab', tab, [
+    {id:'lieferungen', key:'tabLieferungen', ico:'🚚', badge: state.orders.filter(o=>['Bereit zur Abholung','Beladen','Unterwegs'].includes(o.status)).length + openPickups().length},
+    {id:'kalender', key:'tabKalender', ico:'📅'},
+    {id:'geplant', key:'tabGeplant', ico:'🗓️'},
+    {id:'bauvorhaben', key:'tabBauvorhaben', ico:'🏗️'}])}
   ${tab==='bauvorhaben' ? fahrerProjekteHTML() : tab==='geplant' ? fahrerGeplantHTML() : tab==='kalender' ? fahrerKalenderHTML() : fahrerLieferungenHTML()}`;
 }
 
@@ -3057,7 +3097,9 @@ function fahrerLieferungenHTML(){
   return `${pus.length? `<h3 style="font-size:15px;margin:0 0 8px 0;">${t('puFahrerHeading')} (${pus.length})</h3>${pickupListHTML(pus, 'fahrer')}<div style="height:14px;"></div>`:''}
   <p class="view-sub">${t('fahrerSub')}</p>
   ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
-  ${ready.length? `<div class="card-grid">${ready.map(o=>orderCardHTML(o,'fahrer')).join('')}</div>` : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}`;
+  ${(()=>{ const open = ready.filter(o=>o.status!=='Geliefert'), done = ready.filter(o=>o.status==='Geliefert');
+    return `${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'fahrer')).join('')}</div>` : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}
+    ${doneSectionHTML('fahrer', done, o=>orderCardHTML(o,'fahrer'))}`; })()}`;
 }
 
 function fahrerGeplantHTML(){
@@ -3765,7 +3807,7 @@ document.addEventListener('visibilitychange', ()=>{
 function geoBadgeHTML(){
   const s = state.geoStatus;
   if(!s) return '';
-  const key = {on:'geoOn', wait:'geoWait', denied:'geoDenied', unavailable:'geoUnavail'}[s];
+  const key = {on:'geoOnShort', wait:'geoWait', denied:'geoDenied', unavailable:'geoUnavail'}[s];
   return `<div class="geo-badge geo-${s}">${t(key)}${s==='denied'? ` <button class="geo-retry" data-action="geo-retry">${t('geoRetry')}</button>`:''}</div>`;
 }
 function updateGeoBadge(){
@@ -3923,24 +3965,21 @@ function chefHTML(){
   const orders = sortOrdersForWork(state.orders);
   const counts = {};
   STATUS_FLOW.forEach(s=> counts[s] = orders.filter(o=>o.status===s).length);
-  return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
-  <h2 class="view-title">${t('chefViewTitle')}</h2>
-  <div class="seg-control">
-    <button class="${tab==='uebersicht'?'active':''}" data-action="chef-tab" data-tab="uebersicht">${t('tabUebersicht')}</button>
-    <button class="${tab==='bauvorhaben'?'active':''}" data-action="chef-tab" data-tab="bauvorhaben">${t('tabBauvorhaben')}</button>
-    <button class="${tab==='planen'?'active':''}" data-action="chef-tab" data-tab="planen">${t('tabPlanen')}</button>
-    <button class="${tab==='personal'?'active':''}" data-action="chef-tab" data-tab="personal">${t('tabPersonal')}</button>
-  </div>
+  return `  <h2 class="view-title">${t('chefViewTitle')}</h2>
+  ${roleNavHTML('chef-tab', tab, [
+    {id:'uebersicht', key:'tabUebersicht', ico:'🏠', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Gemeldet').length},
+    {id:'bauvorhaben', key:'tabBauvorhaben', ico:'🏗️'},
+    {id:'planen', key:'tabPlanen', ico:'🗓️'},
+    {id:'personal', key:'tabPersonal', ico:'👥'}])}
   ${tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
   ${widgetsHTML('chef')}
-  <p class="view-sub">${t('chefOverviewSub')}</p>
-  <div class="stat-row">${STATUS_FLOW.map(s=>`<div class="stat-chip"><b>${counts[s]}</b><span>${statusLabel(s)}</span></div>`).join('')}</div>
-  <h3 style="margin-top:22px;font-size:15px;">${t('fahrerStatusHeading')}</h3>
-  ${driverStatusListHTML()}
+  ${driverStatusSectionHTML()}
   ${chefPositionsHTML()}
   ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
-  <h3 style="margin-top:22px;font-size:15px;">${t('allOrdersHeading')}</h3>
-  ${orders.length? `<div class="card-grid">${orders.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state">${t('chefEmptyOrders')}</div>`}
+  ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
+    return `${sectionH(t('openOrdersHeading'), open.length)}
+    ${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state">${orders.length? t('allDone') : t('chefEmptyOrders')}</div>`}
+    ${doneSectionHTML('chef', done, o=>orderCardHTML(o,null), 30)}`; })()}
   ${SHOW_CHEF_INVENTORY? `<h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
   ${inventoryTableHTML(false)}`:''}`}`;
 }
@@ -3957,6 +3996,21 @@ function showToast(msg){
   el.textContent = msg; el.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove('show'), 4000);
 }
+
+// Reiter einer Rolle: am PC wie bisher oben, am Handy als feste Leiste unten
+// am Daumen (CSS .role-nav), mit Symbol und roter Zahl, wenn etwas ansteht.
+function roleNavHTML(action, cur, tabs){
+  return `<nav class="seg-control role-nav">${tabs.map(tb=>`<button class="${cur===tb.id?'active':''}" data-action="${action}" data-tab="${tb.id}">
+    <span class="rn-ico">${tb.ico}</span><span class="rn-lbl">${t(tb.key)}</span>${tb.badge? `<b class="rn-badge">${tb.badge}</b>`:''}</button>`).join('')}</nav>`;
+}
+// Erledigtes zusammengeklappt unter "✓ Erledigt (n)" (state.showDone[key])
+function doneSectionHTML(key, list, renderFn, limit){
+  if(!list.length) return '';
+  const open = !!state.showDone[key];
+  return `<button class="done-toggle" data-action="toggle-done" data-key="${key}">${open? '▾':'▸'} ${t('doneSection',{n:list.length})}</button>
+    ${open? `<div class="card-grid">${list.slice(0, limit||15).map(renderFn).join('')}</div>`:''}`;
+}
+function sectionH(text, n){ return `<h3 class="sec-h">${text}${n!=null? ` <span class="sec-n">${n}</span>`:''}</h3>`; }
 
 function formatDateDE(iso){
   const [y,m,d] = iso.split('-');
@@ -4122,6 +4176,7 @@ function render(){
     ${state.puDraft ? pickupEditorHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
+  document.body.classList.toggle('has-nav', ['lager','fahrer','chef'].includes(state.role));
   mountProjectMap();
   syncGeo();
 }
@@ -4615,7 +4670,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     await saveShared();
     render();
   }
-  if(action==='refresh'){ await loadShared(); render(); }
+  if(action==='refresh'){ state.menuOpen = false; await loadShared(); render(); }
+  if(action==='toggle-done'){ state.showDone[el.dataset.key] = !state.showDone[el.dataset.key]; render(); }
   if(action==='geo-retry'){ geoDenied=false; state.geoStatus=''; syncGeo(); }
   if(action==='pos-focus'){
     const m = posMarkers[el.dataset.name];

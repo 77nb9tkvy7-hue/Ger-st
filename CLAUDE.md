@@ -390,6 +390,27 @@ w-grey`); antippbare Kacheln springen in den passenden Reiter
 - Chef (nur im Reiter Übersicht): Offene Bestellungen / Fahrer unterwegs
   (mit Ziel) / Aktive Bauvorhaben je Farbe / Nächste geplante Lieferung.
 
+## Layout / Bedienung (einfach für alle Rollen)
+
+- **Reiter unten am Daumen** (Handy < 900 px): Die Reiter von Lager,
+  Fahrer und Chef sind EIN Element (`roleNavHTML(action, cur, tabs)`,
+  `<nav class="seg-control role-nav">`), das per CSS am Handy als feste
+  Leiste unten mit Symbol + rote Zahl (`rn-badge`: Lager = neue Bestellungen
+  + abgeholte Rückläufer, Fahrer = zu laden/unterwegs + offene Abholungen,
+  Chef = neue Bestellungen + neue Abholungen) erscheint, am PC wie bisher
+  oben. `body.has-nav` (in `render()`) schiebt Fußleisten/Hinweise darüber.
+- **Erst das, was zu tun ist**: Listen zeigen offene Bestellungen
+  („Offene Bestellungen N“, `sectionH()`), Geliefertes zugeklappt unter
+  „✓ Erledigt (n)“ (`doneSectionHTML(key, …)`, `state.showDone`, Aktion
+  `toggle-done`) – Lager, Fahrer, Chef und „Meine Bestellungen“ der Baustelle.
+- **Kompakte Karten**: Karte/Lieferschein als kleine Knöpfe in einer Zeile
+  (`.card-actions` / `.mini-btn`), Hauptknopf direkt sichtbar.
+- **Weniger Ballast**: „Aktualisieren“ steht im ☰-Menü (App aktualisiert
+  sich ohnehin alle 4 s), Fahrer-Status-Bereich nur wenn jemand einen Status
+  hat (`driverStatusSectionHTML()`), Status-Kästchen beim Chef entfernt
+  (doppelt zu den Kacheln), Info-Kacheln am Handy flacher, Standort-Hinweis
+  beim Fahrer kurz, wenn alles in Ordnung ist (`geoOnShort`).
+
 ## PC-Ansicht (Chef im Büro)
 
 Mobile-first bleibt: am Handy eine Spalte wie bisher. Ab 900 px wird
