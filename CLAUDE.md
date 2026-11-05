@@ -344,6 +344,36 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    Absicherung macht der Server (Supabase Auth + Tabellen-Regeln, siehe
    „Anmeldung“).
 
+## Abholungen / Rücklieferungen
+
+Material, das von einer Baustelle zurück ins Lager soll – übriges Material
+(Betrieb liefert lieber etwas zu viel als zu wenig) oder der ganze Abbau.
+`state.pickups = [{id, projekt, baustelle, coords, person, items[], abbau,
+notiz, wunsch, bis, status, fahrer, changedBy, time}]`, Zähler
+`pickupCounter` (in `RECORD_ARRAYS`). Ablauf `PU_FLOW` (Werte deutsch
+gespeichert, Anzeige über `PU_KEY`): Gemeldet → Unterwegs (Fahrer „🚚 Ich
+hole es ab“, setzt `fahrer`, Push an Besteller `nPuOnWayT/B`) → Abgeholt
+(„✓ Aufgeladen“) → Im Lager (Fahrer oder Lager „🏭 Im Lager abgeladen“:
+Teile kommen in den Bestand zurück). Neue Abholung → Push an Fahrer, Lager,
+Chef (`nPuNewT/B`).
+- **Editor** (`pickupEditorHTML()`, `state.puDraft`, Overlay wie der
+  Bestellschein-Entwurf): Bauvorhaben oder freie Adresse; Liste vorbefüllt
+  mit dem, was dort **vor Ort** ist (`deliveredAt(pid)` = geliefert minus
+  schon zurück im Lager) mit eintippbaren Mengen (`data-pq`,
+  `setPuQtyFromInput()` ohne render), „Alles, was vor Ort ist“ / „Alle auf
+  0“, weitere Teile über Suche (`#puSearch`, `matchSearch`), Haken
+  „Komplettes Gerüst abbauen“ (`abbau`), Hinweis für den Fahrer, Wann
+  (Wunsch-Chips wie bei Bestellungen).
+- **Bis „Im Lager“ jederzeit änderbar** (`pu-edit`): Besteller solange
+  „Gemeldet“, Fahrer/Lager/Chef immer (z. B. Fahrer passt vor Ort die echte
+  Menge an, `changedBy`). Löschen: Besteller (solange Gemeldet) und Chef.
+- **Wo**: Baustelle – Knopf „↩ Material zurückgeben / Abholung melden“
+  unter der BV-Auswahl + „Meine Abholungen“; Fahrer – oben im Reiter
+  „Lieferungen“ („↩ Abholen“), Widget „Abholen“ (sonst wie früher „Zu
+  räumen“), Fahrer-Kalender (Art `abholung` am Wunschtag); Lager – Reiter
+  Bestellungen „↩ Kommt zurück ins Lager“; Chef – Übersicht + BV-Detail
+  („↩ Abholung anlegen“). „Vor Ort“ auf der BV-Karte zieht Zurückgeholtes ab.
+
 ## Widgets (kurze Übersicht oben, Idee wie iPhone-Widgets)
 
 `widgetsHTML(role)` zeigt bei jeder Rolle oben ein paar Info-Kacheln

@@ -309,6 +309,19 @@
   .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
+  .pu-open-btn{display:block;width:100%;margin:6px 0 14px 0;border:1.5px dashed #3AA0E6;background:var(--card);color:var(--ink);border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;text-align:center;}
+  .pu-card::before{background:#3AA0E6 !important;}
+  .pu-card.pu-done{opacity:.75;}
+  .pu-badge{background:rgba(58,160,230,.15);color:#1d6fa5;}
+  .pu-abbau{font-size:13px;font-weight:700;margin:6px 0;}
+  .pu-vor{font-size:11.5px;color:var(--muted);font-weight:500;}
+  .pu-quick{display:flex;gap:8px;margin:8px 0;}
+  .pu-quick .refresh-btn{flex:1;}
+  .pu-check{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin:4px 0 8px 0;cursor:pointer;}
+  .pu-check input{width:20px;height:20px;}
+  .pu-sum{font-size:13px;font-weight:700;margin-top:10px;color:var(--muted);}
+  .pu-del{display:block;margin:8px auto 0 auto;border:none;background:none;color:var(--red);font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:underline;font-family:'Inter',sans-serif;}
+  .ev-kind.abholung{background:rgba(58,160,230,.15);color:#1d6fa5;}
   .reorder-btn{display:block;width:100%;margin-top:8px;border:1.5px solid var(--accent);background:var(--card);color:var(--accent-dark);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
   .pick-all-btn{display:block;width:100%;margin-top:8px;border:1.5px solid #1E9E5A;background:rgba(30,158,90,0.08);color:var(--ink);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
   .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);max-width:calc(100% - 32px);width:max-content;background:#0B2A4A;color:#fff;border-left:5px solid #FFEE00;border-radius:12px;padding:11px 14px;font-size:13.5px;line-height:1.4;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:1000;font-family:'Inter',sans-serif;}
@@ -647,6 +660,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  puTitle:'Abholung', puBtnMelden:'↩ Material zurückgeben / Abholung melden', puEditorTitle:'Was geht zurück?', puEditorSub:'Übriges Material oder ganzes Gerüst – die Mengen kannst du bis zum Abladen im Lager jederzeit ändern.', puVorOrt:'vor Ort: {n}', puAllBtn:'Alles, was vor Ort ist', puZeroBtn:'Alle auf 0', puNothingVor:'Für dieses Bauvorhaben ist noch nichts als geliefert erfasst – Teile über die Suche hinzufügen.', puSearchPh:'Weiteres Teil suchen …', puAbbauLabel:'Komplettes Gerüst abbauen / alles abholen', puNotizLabel:'Hinweis für den Fahrer', puNotizPh:'z. B. liegt hinter dem Haus, ca. 1 LKW', puWannLabel:'Wann kann abgeholt werden?', puSaveNew:'Abholung melden', puSaveEdit:'Änderungen speichern', puCancel:'Abbrechen', puWarnOrt:'Bitte Bauvorhaben wählen oder Adresse eingeben.', puWarnEmpty:'Bitte Mengen eintragen oder „Komplettes Gerüst“ ankreuzen.', puGemeldet:'Gemeldet', puUnterwegs:'Fahrer kommt', puAbgeholt:'Auf dem LKW', puImLager:'Im Lager', puBtnHin:'🚚 Ich hole es ab', puBtnGeladen:'✓ Aufgeladen', puBtnLager:'🏭 Im Lager abgeladen', puEditBtn:'✏️ Mengen ändern', puDeleteBtn:'Abholung löschen', puDeleteConfirm:'Abholung #{id} wirklich löschen?', puGemeldetAm:'Gemeldet', puMine:'Meine Abholungen', puFahrerHeading:'↩ Abholen', puLagerHeading:'↩ Kommt zurück ins Lager', puChefHeading:'↩ Abholungen', puBvHeading:'↩ Abholungen hier', puBvAdd:'↩ Abholung anlegen', puSaved:'Abholung #{id} gemeldet – Fahrer und Lager wissen Bescheid.', puUpdated:'Abholung #{id} geändert.', wAbholen:'Abholen', fkAbholung:'↩ Abholung', nPuNewT:'↩ Abholung #{id}: {ort}', nPuNewB:'{person} meldet Material zum Abholen.', nPuOnWayT:'Abholung #{id}: {fahrer} kommt', nPuOnWayB:'{ort}',
   qtyInputAria:'Menge eintippen', reorderBtn:'🔁 Nochmal bestellen', reorderToast:'Teile von #{id} sind in der Bestellliste – Mengen prüfen und abschicken.', reorderNone:'Diese Teile gibt es im Katalog nicht mehr.', pickAllBtn:'✓ Alles eingepackt',
   warnLoginNet:'Anmeldung gerade nicht möglich – bitte Netz prüfen und nochmal versuchen.', loggingIn:'Anmelden …', calLoginFirst:'Bearbeiten nur für angemeldete Mitarbeiter: erst in der App anmelden, dann hier „Bearbeiten“.', persChefPwHeading:'Chef-Passwort (zusätzliche Sicherung für die Chef-Rolle)', persChefPwBtn:'Ändern', persChefPwSaved:'Chef-Passwort geändert.', persWarnPwShort:'Das Passwort braucht mindestens 4 Zeichen.', persFnMissing:'Die Mitarbeiter-Verwaltung ist auf dem Server noch nicht eingerichtet (Funktion „manage-users“) – oder kein Netz.', persErr:'Hat nicht geklappt: {msg}', persBusy:'Wird gespeichert …', persNotChef:'Nur der Chef darf Mitarbeiter verwalten.', persPwSaved:'Neues Passwort für {name} gespeichert.', persRemoveConfirm:'{name} wirklich entfernen? Das Konto wird gelöscht.', persSecurityNote:'Passwörter liegen nur verschlüsselt bei Supabase – auch der Chef kann sie nicht sehen, nur neu setzen.', logoutPendingConfirm:'Es sind noch nicht gesendete Änderungen auf dem Handy (kein Netz). Trotzdem abmelden? Dann gehen sie verloren.',
   plaeneHeading:'Baupläne', plaeneEmpty:'Noch keine Pläne hochgeladen.', planUploadBtn:'⬆️ Plan hochladen (PDF oder Foto)', planUploading:'Wird hochgeladen …', planHint:'Mehrere Dateien auf einmal möglich, max. {mb} MB je Datei. Alle können die Pläne zu diesem Bauvorhaben ansehen.', planTooBig:'„{name}“ ist zu groß (max. {mb} MB).', planNoBucket:'Der Datei-Speicher ist noch nicht eingerichtet – bitte einmal in Supabase anlegen.', planUploadFail:'Hochladen hat nicht geklappt – bitte Netz prüfen und nochmal versuchen.', planDelete:'Plan löschen', planDeleteConfirm:'„{name}“ wirklich löschen?',
@@ -835,6 +849,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  puTitle:'Odbiór', puBtnMelden:'↩ Zwróć materiał / zgłoś odbiór', puEditorTitle:'Co wraca?', puEditorSub:'Nadwyżka materiału albo całe rusztowanie – ilości możesz zmieniać aż do rozładunku w magazynie.', puVorOrt:'na miejscu: {n}', puAllBtn:'Wszystko, co jest na miejscu', puZeroBtn:'Wszystko na 0', puNothingVor:'Dla tej budowy nic nie zostało jeszcze zapisane jako dostarczone – dodaj części przez wyszukiwanie.', puSearchPh:'Szukaj innej części …', puAbbauLabel:'Demontaż całego rusztowania / odebrać wszystko', puNotizLabel:'Uwaga dla kierowcy', puNotizPh:'np. leży za domem, ok. 1 ciężarówka', puWannLabel:'Kiedy można odebrać?', puSaveNew:'Zgłoś odbiór', puSaveEdit:'Zapisz zmiany', puCancel:'Anuluj', puWarnOrt:'Wybierz budowę albo wpisz adres.', puWarnEmpty:'Wpisz ilości albo zaznacz „Całe rusztowanie”.', puGemeldet:'Zgłoszone', puUnterwegs:'Kierowca jedzie', puAbgeholt:'Na ciężarówce', puImLager:'W magazynie', puBtnHin:'🚚 Odbieram', puBtnGeladen:'✓ Załadowane', puBtnLager:'🏭 Rozładowane w magazynie', puEditBtn:'✏️ Zmień ilości', puDeleteBtn:'Usuń odbiór', puDeleteConfirm:'Na pewno usunąć odbiór #{id}?', puGemeldetAm:'Zgłoszone', puMine:'Moje odbiory', puFahrerHeading:'↩ Do odebrania', puLagerHeading:'↩ Wraca do magazynu', puChefHeading:'↩ Odbiory', puBvHeading:'↩ Odbiory tutaj', puBvAdd:'↩ Dodaj odbiór', puSaved:'Odbiór #{id} zgłoszony – kierowca i magazyn wiedzą.', puUpdated:'Odbiór #{id} zmieniony.', wAbholen:'Do odebrania', fkAbholung:'↩ Odbiór', nPuNewT:'↩ Odbiór #{id}: {ort}', nPuNewB:'{person} zgłasza materiał do odbioru.', nPuOnWayT:'Odbiór #{id}: {fahrer} jedzie', nPuOnWayB:'{ort}',
   qtyInputAria:'Wpisz ilość', reorderBtn:'🔁 Zamów ponownie', reorderToast:'Części z #{id} są na liście zamówienia – sprawdź ilości i wyślij.', reorderNone:'Tych części nie ma już w katalogu.', pickAllBtn:'✓ Wszystko spakowane',
   warnLoginNet:'Logowanie teraz niemożliwe – sprawdź sieć i spróbuj ponownie.', loggingIn:'Logowanie …', calLoginFirst:'Edycja tylko dla zalogowanych pracowników: najpierw zaloguj się w aplikacji, potem tutaj „Edytuj”.', persChefPwHeading:'Hasło szefa (dodatkowe zabezpieczenie roli szefa)', persChefPwBtn:'Zmień', persChefPwSaved:'Hasło szefa zmienione.', persWarnPwShort:'Hasło musi mieć co najmniej 4 znaki.', persFnMissing:'Zarządzanie pracownikami nie jest jeszcze skonfigurowane na serwerze (funkcja „manage-users”) – albo brak sieci.', persErr:'Nie udało się: {msg}', persBusy:'Zapisywanie …', persNotChef:'Tylko szef może zarządzać pracownikami.', persPwSaved:'Nowe hasło dla {name} zapisane.', persRemoveConfirm:'Na pewno usunąć {name}? Konto zostanie usunięte.', persSecurityNote:'Hasła są przechowywane w Supabase tylko w formie zaszyfrowanej – szef też ich nie widzi, może je tylko ustawić na nowo.', logoutPendingConfirm:'Na telefonie są jeszcze niewysłane zmiany (brak sieci). Wylogować mimo to? Wtedy przepadną.',
   plaeneHeading:'Plany budowy', plaeneEmpty:'Nie przesłano jeszcze planów.', planUploadBtn:'⬆️ Prześlij plan (PDF lub zdjęcie)', planUploading:'Przesyłanie …', planHint:'Można wybrać kilka plików naraz, maks. {mb} MB na plik. Wszyscy mogą oglądać plany tej budowy.', planTooBig:'„{name}” jest za duży (maks. {mb} MB).', planNoBucket:'Magazyn plików nie jest jeszcze skonfigurowany – trzeba go raz utworzyć w Supabase.', planUploadFail:'Przesyłanie nie powiodło się – sprawdź sieć i spróbuj ponownie.', planDelete:'Usuń plan', planDeleteConfirm:'Na pewno usunąć „{name}”?',
@@ -1023,6 +1038,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  puTitle:'Odvoz', puBtnMelden:'↩ Vrátiť materiál / nahlásiť odvoz', puEditorTitle:'Čo ide späť?', puEditorSub:'Zvyšný materiál alebo celé lešenie – množstvá môžeš meniť až do vyloženia v sklade.', puVorOrt:'na mieste: {n}', puAllBtn:'Všetko, čo je na mieste', puZeroBtn:'Všetko na 0', puNothingVor:'Pre túto stavbu ešte nie je nič zapísané ako dodané – pridaj diely cez vyhľadávanie.', puSearchPh:'Hľadať ďalší diel …', puAbbauLabel:'Demontáž celého lešenia / odviezť všetko', puNotizLabel:'Poznámka pre vodiča', puNotizPh:'napr. leží za domom, cca 1 nákladné auto', puWannLabel:'Kedy sa dá odviezť?', puSaveNew:'Nahlásiť odvoz', puSaveEdit:'Uložiť zmeny', puCancel:'Zrušiť', puWarnOrt:'Vyber stavbu alebo zadaj adresu.', puWarnEmpty:'Zadaj množstvá alebo zaškrtni „Celé lešenie“.', puGemeldet:'Nahlásené', puUnterwegs:'Vodič ide', puAbgeholt:'Na aute', puImLager:'V sklade', puBtnHin:'🚚 Idem to vyzdvihnúť', puBtnGeladen:'✓ Naložené', puBtnLager:'🏭 Vyložené v sklade', puEditBtn:'✏️ Zmeniť množstvá', puDeleteBtn:'Vymazať odvoz', puDeleteConfirm:'Naozaj vymazať odvoz #{id}?', puGemeldetAm:'Nahlásené', puMine:'Moje odvozy', puFahrerHeading:'↩ Vyzdvihnúť', puLagerHeading:'↩ Vracia sa do skladu', puChefHeading:'↩ Odvozy', puBvHeading:'↩ Odvozy tu', puBvAdd:'↩ Pridať odvoz', puSaved:'Odvoz #{id} nahlásený – vodič aj sklad vedia.', puUpdated:'Odvoz #{id} zmenený.', wAbholen:'Vyzdvihnúť', fkAbholung:'↩ Odvoz', nPuNewT:'↩ Odvoz #{id}: {ort}', nPuNewB:'{person} hlási materiál na odvoz.', nPuOnWayT:'Odvoz #{id}: ide {fahrer}', nPuOnWayB:'{ort}',
   qtyInputAria:'Zadaj množstvo', reorderBtn:'🔁 Objednať znova', reorderToast:'Diely z #{id} sú v zozname objednávky – skontroluj množstvá a odošli.', reorderNone:'Tieto diely už v katalógu nie sú.', pickAllBtn:'✓ Všetko zabalené',
   warnLoginNet:'Prihlásenie teraz nie je možné – skontroluj sieť a skús znova.', loggingIn:'Prihlasovanie …', calLoginFirst:'Úpravy len pre prihlásených zamestnancov: najprv sa prihlás v aplikácii, potom tu „Upraviť“.', persChefPwHeading:'Heslo šéfa (dodatočné zabezpečenie roly šéfa)', persChefPwBtn:'Zmeniť', persChefPwSaved:'Heslo šéfa zmenené.', persWarnPwShort:'Heslo musí mať aspoň 4 znaky.', persFnMissing:'Správa zamestnancov ešte nie je nastavená na serveri (funkcia „manage-users“) – alebo nie je sieť.', persErr:'Nepodarilo sa: {msg}', persBusy:'Ukladá sa …', persNotChef:'Zamestnancov môže spravovať len šéf.', persPwSaved:'Nové heslo pre {name} uložené.', persRemoveConfirm:'Naozaj odstrániť {name}? Konto sa vymaže.', persSecurityNote:'Heslá sú v Supabase uložené len zašifrované – ani šéf ich nevidí, môže ich len nastaviť nanovo.', logoutPendingConfirm:'V telefóne sú ešte neodoslané zmeny (žiadna sieť). Napriek tomu odhlásiť? Potom sa stratia.',
   plaeneHeading:'Stavebné plány', plaeneEmpty:'Zatiaľ neboli nahrané žiadne plány.', planUploadBtn:'⬆️ Nahrať plán (PDF alebo foto)', planUploading:'Nahráva sa …', planHint:'Naraz môžeš vybrať viac súborov, max. {mb} MB na súbor. Plány k tejto stavbe môžu vidieť všetci.', planTooBig:'„{name}“ je príliš veľký (max. {mb} MB).', planNoBucket:'Úložisko súborov ešte nie je nastavené – treba ho raz vytvoriť v Supabase.', planUploadFail:'Nahrávanie nevyšlo – skontroluj sieť a skús znova.', planDelete:'Vymazať plán', planDeleteConfirm:'Naozaj vymazať „{name}“?',
@@ -1211,6 +1227,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  puTitle:'Odvoz', puBtnMelden:'↩ Vrati materijal / prijavi odvoz', puEditorTitle:'Što se vraća?', puEditorSub:'Višak materijala ili cijela skela – količine možeš mijenjati sve do istovara u skladištu.', puVorOrt:'na licu mjesta: {n}', puAllBtn:'Sve što je na licu mjesta', puZeroBtn:'Sve na 0', puNothingVor:'Za ovo gradilište još ništa nije zabilježeno kao isporučeno – dodaj dijelove pretragom.', puSearchPh:'Traži drugi dio …', puAbbauLabel:'Demontaža cijele skele / odvesti sve', puNotizLabel:'Napomena za vozača', puNotizPh:'npr. leži iza kuće, oko 1 kamion', puWannLabel:'Kada se može odvesti?', puSaveNew:'Prijavi odvoz', puSaveEdit:'Spremi promjene', puCancel:'Odustani', puWarnOrt:'Odaberi gradilište ili upiši adresu.', puWarnEmpty:'Upiši količine ili označi „Cijela skela”.', puGemeldet:'Prijavljeno', puUnterwegs:'Vozač dolazi', puAbgeholt:'Na kamionu', puImLager:'U skladištu', puBtnHin:'🚚 Ja to preuzimam', puBtnGeladen:'✓ Utovareno', puBtnLager:'🏭 Istovareno u skladištu', puEditBtn:'✏️ Promijeni količine', puDeleteBtn:'Izbriši odvoz', puDeleteConfirm:'Stvarno izbrisati odvoz #{id}?', puGemeldetAm:'Prijavljeno', puMine:'Moji odvozi', puFahrerHeading:'↩ Preuzeti', puLagerHeading:'↩ Vraća se u skladište', puChefHeading:'↩ Odvozi', puBvHeading:'↩ Odvozi ovdje', puBvAdd:'↩ Dodaj odvoz', puSaved:'Odvoz #{id} prijavljen – vozač i skladište su obaviješteni.', puUpdated:'Odvoz #{id} promijenjen.', wAbholen:'Preuzeti', fkAbholung:'↩ Odvoz', nPuNewT:'↩ Odvoz #{id}: {ort}', nPuNewB:'{person} prijavljuje materijal za odvoz.', nPuOnWayT:'Odvoz #{id}: dolazi {fahrer}', nPuOnWayB:'{ort}',
   qtyInputAria:'Upiši količinu', reorderBtn:'🔁 Naruči ponovno', reorderToast:'Dijelovi iz #{id} su na popisu narudžbe – provjeri količine i pošalji.', reorderNone:'Ovih dijelova više nema u katalogu.', pickAllBtn:'✓ Sve spakirano',
   warnLoginNet:'Prijava trenutno nije moguća – provjeri mrežu i pokušaj ponovno.', loggingIn:'Prijava …', calLoginFirst:'Uređivanje samo za prijavljene zaposlenike: najprije se prijavi u aplikaciji, zatim ovdje „Uredi”.', persChefPwHeading:'Lozinka šefa (dodatna zaštita uloge šefa)', persChefPwBtn:'Promijeni', persChefPwSaved:'Lozinka šefa promijenjena.', persWarnPwShort:'Lozinka mora imati najmanje 4 znaka.', persFnMissing:'Upravljanje zaposlenicima još nije postavljeno na poslužitelju (funkcija „manage-users”) – ili nema mreže.', persErr:'Nije uspjelo: {msg}', persBusy:'Spremanje …', persNotChef:'Samo šef može upravljati zaposlenicima.', persPwSaved:'Nova lozinka za {name} spremljena.', persRemoveConfirm:'Stvarno ukloniti {name}? Račun će biti izbrisan.', persSecurityNote:'Lozinke su u Supabaseu spremljene samo šifrirano – ni šef ih ne vidi, može ih samo postaviti iznova.', logoutPendingConfirm:'Na mobitelu su još neposlane promjene (nema mreže). Ipak se odjaviti? Tada će se izgubiti.',
   plaeneHeading:'Građevinski planovi', plaeneEmpty:'Još nisu učitani planovi.', planUploadBtn:'⬆️ Učitaj plan (PDF ili fotografija)', planUploading:'Učitavanje …', planHint:'Može se odabrati više datoteka odjednom, maks. {mb} MB po datoteci. Svi mogu vidjeti planove ovog gradilišta.', planTooBig:'„{name}” je prevelika (maks. {mb} MB).', planNoBucket:'Spremište datoteka još nije postavljeno – treba ga jednom napraviti u Supabaseu.', planUploadFail:'Učitavanje nije uspjelo – provjeri mrežu i pokušaj ponovno.', planDelete:'Izbriši plan', planDeleteConfirm:'Stvarno izbrisati „{name}”?',
@@ -1399,6 +1416,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  puTitle:'Pickup', puBtnMelden:'↩ Return material / request pickup', puEditorTitle:'What goes back?', puEditorSub:'Surplus material or the whole scaffold – you can change the quantities until it is unloaded at the warehouse.', puVorOrt:'on site: {n}', puAllBtn:'Everything on site', puZeroBtn:'All to 0', puNothingVor:'Nothing is recorded as delivered to this site yet – add parts via search.', puSearchPh:'Search another part …', puAbbauLabel:'Dismantle whole scaffold / collect everything', puNotizLabel:'Note for the driver', puNotizPh:'e.g. behind the house, approx. 1 truck', puWannLabel:'When can it be collected?', puSaveNew:'Request pickup', puSaveEdit:'Save changes', puCancel:'Cancel', puWarnOrt:'Please choose a project or enter an address.', puWarnEmpty:'Please enter quantities or tick “Whole scaffold”.', puGemeldet:'Requested', puUnterwegs:'Driver on the way', puAbgeholt:'On the truck', puImLager:'At the warehouse', puBtnHin:'🚚 I will collect it', puBtnGeladen:'✓ Loaded', puBtnLager:'🏭 Unloaded at warehouse', puEditBtn:'✏️ Change quantities', puDeleteBtn:'Delete pickup', puDeleteConfirm:'Really delete pickup #{id}?', puGemeldetAm:'Requested', puMine:'My pickups', puFahrerHeading:'↩ To collect', puLagerHeading:'↩ Coming back to the warehouse', puChefHeading:'↩ Pickups', puBvHeading:'↩ Pickups here', puBvAdd:'↩ Add pickup', puSaved:'Pickup #{id} requested – driver and warehouse are informed.', puUpdated:'Pickup #{id} changed.', wAbholen:'To collect', fkAbholung:'↩ Pickup', nPuNewT:'↩ Pickup #{id}: {ort}', nPuNewB:'{person} requests a material pickup.', nPuOnWayT:'Pickup #{id}: {fahrer} is coming', nPuOnWayB:'{ort}',
   qtyInputAria:'Type quantity', reorderBtn:'🔁 Order again', reorderToast:'Parts from #{id} are in the order list – check quantities and send.', reorderNone:'These parts are no longer in the catalogue.', pickAllBtn:'✓ All packed',
   warnLoginNet:'Login not possible right now – please check the network and try again.', loggingIn:'Logging in …', calLoginFirst:'Editing only for logged-in staff: log in to the app first, then tap “Edit” here.', persChefPwHeading:'Boss password (extra protection for the boss role)', persChefPwBtn:'Change', persChefPwSaved:'Boss password changed.', persWarnPwShort:'The password needs at least 4 characters.', persFnMissing:'Staff management is not set up on the server yet (function “manage-users”) – or no network.', persErr:'Did not work: {msg}', persBusy:'Saving …', persNotChef:'Only the boss can manage staff.', persPwSaved:'New password for {name} saved.', persRemoveConfirm:'Really remove {name}? The account will be deleted.', persSecurityNote:'Passwords are only stored encrypted at Supabase – even the boss cannot see them, only set new ones.', logoutPendingConfirm:'There are unsent changes on this phone (no network). Log out anyway? They will be lost.',
   plaeneHeading:'Building plans', plaeneEmpty:'No plans uploaded yet.', planUploadBtn:'⬆️ Upload plan (PDF or photo)', planUploading:'Uploading …', planHint:'You can pick several files at once, max. {mb} MB per file. Everyone can view the plans for this project.', planTooBig:'“{name}” is too large (max. {mb} MB).', planNoBucket:'The file storage is not set up yet – it needs to be created once in Supabase.', planUploadFail:'Upload failed – please check the network and try again.', planDelete:'Delete plan', planDeleteConfirm:'Really delete “{name}”?',
@@ -1710,7 +1728,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
-  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
+  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, pickups:[], pickupCounter:1, puDraft:null, puWarn:'', authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
@@ -1753,7 +1771,7 @@ function itemOrderCounts(){
 // ======================================================================
 const CACHE_KEY = 'geruest-cache', PENDING_KEY = 'geruest-pending';
 const RECORD_ARRAYS = {orders:'counter', projects:'projektCounter', calendarEntries:'calCounter',
-  plannedDeliveries:'planCounter', lkwEntries:'lkwCounter', employees:'empCounter'};
+  plannedDeliveries:'planCounter', lkwEntries:'lkwCounter', employees:'empCounter', pickups:'pickupCounter'};
 let syncBase = null;          // letzter bekannter Server-Stand (ohne rev)
 let syncChain = Promise.resolve();
 state.syncOffline = false; state.syncPending = false;
@@ -1772,6 +1790,7 @@ function stateToValue(){
     projects:state.projects, projektCounter:state.projektCounter,
     calendarEntries:state.calendarEntries, calCounter:state.calCounter,
     driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager, chefPw:state.chefPw,
+    pickups:state.pickups, pickupCounter:state.pickupCounter,
     plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
     lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
     employees:state.employees, empCounter:state.empCounter,
@@ -1789,6 +1808,8 @@ function applyValue(v){
   state.driverStatus = v.driverStatus || {};
   state.driverPos = v.driverPos || {};
   state.lager = v.lager || null;
+  state.pickups = v.pickups || [];
+  state.pickupCounter = v.pickupCounter || 1;
   state.chefPw = v.chefPw || null;
   state.plannedDeliveries = v.plannedDeliveries || [];
   state.planCounter = v.planCounter || 1;
@@ -1868,8 +1889,10 @@ function merge3(base, local, remote){
     const m = mergeList(base[k], local[k], remote[k], 'id', true);
     out[k] = m.out; changes += m.changes;
     const maxId = Math.max(0, ...m.out.map(x=>typeof x.id==='number'? x.id : 0));
+    // Zähler laufen nur mit den Einträgen mit (neuer Eintrag = Änderung),
+    // ein fehlender/abweichender Zähler allein ist KEINE eigene Änderung
+    // (sonst "Kein Netz"-Hinweis, wenn ein neues Feld im Datensatz fehlt).
     const lc = Number(local[ck])||0, rc = Number(remote[ck])||0;
-    if(lc!==(Number(base[ck])||0)) changes++;
     out[ck] = Math.max(lc, rc, maxId+1);
   });
   [['inventory', true], ['driverStatus', false], ['driverPos', false]].forEach(([k, num])=>{
@@ -2415,6 +2438,7 @@ function catalogHTML(){
   </div>
   <button class="loc-btn" data-action="use-location">${t('locBtn')}</button>`:''}
   <div id="ortWarnArea"></div>
+  <button class="pu-open-btn" data-action="pu-open">${t('puBtnMelden')}</button>
   ${SYSTEMS.length>1? `<div class="seg-control">${SYSTEMS.map(s=>`<button class="${state.systemSel===s.id?'active':''}" data-action="system-tab" data-sys="${s.id}">${t(s.nameKey)}</button>`).join('')}</div>`:''}
   <input class="katalog-search" id="catalogSearch" placeholder="${t('searchPlaceholder')}" value="${state.catalogSearch.replace(/"/g,'&quot;')}" autocomplete="off">
   <div class="tbl-wrap"><table class="order-table">
@@ -2424,6 +2448,9 @@ function catalogHTML(){
   <div class="mine-section">
     <h3>${t('mineTitle')}</h3>
     ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null,`<button class="reorder-btn" data-action="reorder" data-order="${o.id}">${t('reorderBtn')}</button>`)).join('')}</div>` : `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>`}
+    ${(()=>{ const myPu = state.pickups.filter(p=>p.person===state.name).sort((a,b)=>b.id-a.id);
+      const shown = [...myPu.filter(p=>p.status!=='Im Lager'), ...myPu.filter(p=>p.status==='Im Lager').slice(0,3)];
+      return shown.length? `<h3 style="margin-top:22px;">${t('puMine')}</h3>${pickupListHTML(shown, 'baustelle')}` : ''; })()}
   </div>
   <div class="order-footer">
     <span>${count? t('footerCount',{n:count}) + (weightText(cartItems())? ' · '+weightText(cartItems()) : '') : t('footerEmpty')}</span>
@@ -2560,6 +2587,165 @@ function sortOrdersForWork(list){
   });
 }
 
+// ---- Abholungen / Rücklieferungen -----------------------------------
+// Material, das von einer Baustelle zurück ins Lager soll -- übriges
+// Material ("lieber etwas zu viel liefern als zu wenig") oder der ganze
+// Abbau. state.pickups = [{id, projekt, baustelle, coords, person, items[],
+// abbau, notiz, wunsch, bis, status, fahrer, time}], Zähler pickupCounter.
+// Ablauf (PU_FLOW, Werte bleiben deutsch gespeichert): Gemeldet ->
+// Unterwegs (Fahrer "Ich hole es ab") -> Abgeholt ("Aufgeladen") -> Im
+// Lager ("Im Lager abgeladen": Teile zurück in den Bestand, nicht mehr
+// "vor Ort"). Bis "Im Lager" jederzeit änderbar (Editor pickupEditorHTML,
+// state.puDraft): Mengen vorbefüllt aus dem, was am Bauvorhaben vor Ort
+// ist (deliveredAt), weitere Teile über die Suche.
+const PU_FLOW = ['Gemeldet','Unterwegs','Abgeholt','Im Lager'];
+const PU_KEY = {'Gemeldet':'puGemeldet', 'Unterwegs':'puUnterwegs', 'Abgeholt':'puAbgeholt', 'Im Lager':'puImLager'};
+const PU_NEXT = {'Gemeldet':{roles:['fahrer'], next:'Unterwegs', key:'puBtnHin'},
+                 'Unterwegs':{roles:['fahrer'], next:'Abgeholt', key:'puBtnGeladen'},
+                 'Abgeholt':{roles:['fahrer','lager'], next:'Im Lager', key:'puBtnLager'}};
+// Was ist am Bauvorhaben noch vor Ort: geliefert minus schon zurück im Lager
+function deliveredAt(pid){
+  const m = {};
+  state.orders.filter(o=>o.projekt===pid && o.status==='Geliefert').forEach(o=>o.items.forEach(i=>{ m[i.id] = (m[i.id]||0) + i.qty; }));
+  state.pickups.filter(p=>p.projekt===pid && p.status==='Im Lager').forEach(p=>(p.items||[]).forEach(i=>{ m[i.id] = (m[i.id]||0) - i.qty; }));
+  Object.keys(m).forEach(k=>{ if(m[k] <= 0) delete m[k]; });
+  return m;
+}
+function openPickups(){ return state.pickups.filter(p=>p.status!=='Im Lager'); }
+function sortPickups(list){
+  return sortOrdersForWork(list.map(p=>({...p, status: p.status==='Im Lager' ? 'Geliefert' : p.status}))).map(x=>state.pickups.find(p=>p.id===x.id) || x);
+}
+function openPickupEditor(pu, presetProjekt){
+  const aktive = state.projects.filter(p=>p.aktiv);
+  let projekt = '_frei';
+  if(pu) projekt = pu.projekt ? String(pu.projekt) : '_frei';
+  else if(presetProjekt) projekt = String(presetProjekt);
+  else if(aktive.some(p=>String(p.id)===String(state.selProjekt))) projekt = String(state.selProjekt);
+  else if(aktive.length) projekt = String(aktive[0].id);
+  state.puDraft = {id: pu? pu.id : null, projekt, ort: pu && !pu.projekt ? pu.baustelle : '',
+    items: pu ? Object.fromEntries((pu.items||[]).map(i=>[i.id, i.qty])) : {},
+    abbau: !!(pu && pu.abbau), notiz: pu ? (pu.notiz||'') : '', wunsch: pu && pu.wunsch ? pu.wunsch : 'normal', bis: pu && pu.bis ? pu.bis : '', search:''};
+  state.puWarn = '';
+  render();
+}
+function puQtyHTML(id, q){
+  return `<div class="qty-ctl">
+    <button type="button" data-action="pu-qty" data-id="${id}" data-delta="-1" aria-label="${t('qtyMinusAria')}">−</button>
+    <input class="qty-val" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" data-pq="${id}" value="${q||''}" placeholder="0" aria-label="${t('qtyInputAria')}">
+    <button type="button" data-action="pu-qty" data-id="${id}" data-delta="1" aria-label="${t('qtyPlusAria')}">+</button>
+  </div>`;
+}
+function puItemsFromDraft(d){
+  return Object.entries(d.items).filter(([,q])=>q>0).map(([id,q])=>{ const it = CATALOG.find(c=>c.id===id); return it ? {id, name:it.name, unit:it.unit, qty:q, kg:it.kg} : null; }).filter(Boolean);
+}
+function puSumText(d){
+  const items = puItemsFromDraft(d);
+  const n = items.reduce((a,i)=>a+i.qty, 0);
+  return n ? t('footerCount',{n}) + (weightText(items)? ' · '+weightText(items) : '') : t('footerEmpty');
+}
+function pickupEditorHTML(){
+  const d = state.puDraft;
+  const aktive = state.projects.filter(p=>p.aktiv);
+  const pid = d.projekt && d.projekt!=='_frei' ? parseInt(d.projekt,10) : null;
+  const vor = pid ? deliveredAt(pid) : {};
+  const ids = [...new Set([...Object.keys(vor), ...Object.keys(d.items)])].filter(id=>CATALOG.some(c=>c.id===id));
+  const row = id => { const it = CATALOG.find(c=>c.id===id); return `<tr>
+      <td class="t-name">${itemName(it)}${vor[id]? `<div class="pu-vor">${t('puVorOrt',{n:vor[id]})}</div>`:''}</td>
+      <td style="text-align:right;">${puQtyHTML(id, d.items[id]||0)}</td></tr>`; };
+  const found = d.search.trim() ? CATALOG.filter(it=>!ids.includes(it.id) && matchSearch(it, d.search)).slice(0,12) : [];
+  return `<div class="overlay" data-action="pu-cancel-bg">
+    <div class="drawer">
+      <div class="review-head">
+        <div class="eyebrow">↩ ${t('puTitle')}${d.id? ' #'+d.id : ''}</div>
+        <h3>${t('puEditorTitle')}</h3>
+      </div>
+      <p class="view-sub" style="margin:0 0 12px 0;">${t('puEditorSub')}</p>
+      <div class="field"><label>${t('projektLabel')}</label>
+        <select id="puProjekt">
+          ${aktive.map(p=>`<option value="${p.id}" ${d.projekt===String(p.id)?'selected':''}>BV ${p.id} – ${escapeHtml(p.name)}</option>`).join('')}
+          <option value="_frei" ${d.projekt==='_frei'?'selected':''}>${t('projektFreeOption')}</option>
+        </select>
+      </div>
+      ${d.projekt==='_frei'? `<div class="field"><label>${t('ortLabel')}</label><input id="puOrt" value="${escapeHtml(d.ort)}" placeholder="${t('ortPlaceholder')}" autocomplete="off"></div>`:''}
+      <label class="pu-check"><input type="checkbox" id="puAbbau" ${d.abbau?'checked':''}> 🏗️ ${t('puAbbauLabel')}</label>
+      ${Object.keys(vor).length? `<div class="pu-quick">
+        <button class="refresh-btn" data-action="pu-all">${t('puAllBtn')}</button>
+        <button class="refresh-btn" data-action="pu-zero">${t('puZeroBtn')}</button></div>`:''}
+      ${ids.length? `<div class="tbl-wrap"><table class="order-table"><tbody>${ids.map(row).join('')}</tbody></table></div>` : `<div class="order-time" style="margin:6px 0;">${t('puNothingVor')}</div>`}
+      <input class="katalog-search" id="puSearch" placeholder="${t('puSearchPh')}" value="${escapeHtml(d.search)}" autocomplete="off" style="margin-top:10px;">
+      ${found.length? `<div class="tbl-wrap"><table class="order-table"><tbody>${found.map(it=>`<tr><td class="t-name">${itemName(it)}</td><td style="text-align:right;">${puQtyHTML(it.id, 0)}</td></tr>`).join('')}</tbody></table></div>`:''}
+      <div class="pu-sum" id="puSum">${puSumText(d)}</div>
+      <div class="field" style="margin-top:12px;"><label>${t('puNotizLabel')}</label><input id="puNotiz" value="${escapeHtml(d.notiz)}" placeholder="${t('puNotizPh')}" autocomplete="off"></div>
+      <div class="wunsch-pick">
+        <div class="wunsch-pick-label">${t('puWannLabel')}</div>
+        <div class="ziel-chips">${WUNSCH_OPTS.map(([k,key])=>`<button class="ziel-chip ${d.wunsch===k?'active':''} ${k==='dringend'?'urgent':''}" data-action="pu-wunsch" data-w="${k}">${t(key)}</button>`).join('')}</div>
+        ${d.wunsch==='datum'? `<input type="date" id="puDate" class="wunsch-date" min="${todayISO()}" value="${d.bis||''}">`:''}
+      </div>
+      ${state.puWarn? `<div class="warn">${state.puWarn}</div>`:''}
+      <button class="submit-btn" data-action="pu-save" style="width:100%;">${d.id? t('puSaveEdit') : t('puSaveNew')}</button>
+      <button class="refresh-btn" data-action="pu-cancel" style="width:100%;margin-top:10px;">${t('puCancel')}</button>
+    </div>
+  </div>`;
+}
+async function savePickup(){
+  const d = state.puDraft;
+  const pid = d.projekt && d.projekt!=='_frei' ? parseInt(d.projekt,10) : null;
+  const p = pid ? state.projects.find(x=>x.id===pid) : null;
+  const items = puItemsFromDraft(d);
+  if(!p && !d.ort.trim()){ state.puWarn = t('puWarnOrt'); render(); return; }
+  if(!items.length && !d.abbau){ state.puWarn = t('puWarnEmpty'); render(); return; }
+  const dateEl = document.getElementById('puDate');
+  const bis = d.wunsch==='morgen' ? addDaysISO(todayISO(), 1) : d.wunsch==='datum' ? ((dateEl && dateEl.value) || d.bis || null) : null;
+  const base = {projekt: pid, baustelle: p ? `${p.name}, ${p.adresse}` : d.ort.trim(), coords: p ? (p.coords||null) : null,
+    items, abbau: d.abbau, notiz: d.notiz.trim()};
+  let pu;
+  if(d.id){
+    pu = state.pickups.find(x=>x.id===d.id);
+    if(!pu){ state.puDraft = null; render(); return; }
+    Object.assign(pu, base, {changedBy: state.name, changedAt: nowStr()});
+  } else {
+    pu = {id: state.pickupCounter++, ...base, person: state.name, status:'Gemeldet', time: nowStr()};
+    state.pickups.push(pu);
+  }
+  if(d.wunsch!=='normal' && (d.wunsch!=='datum' || bis)){ pu.wunsch = d.wunsch; if(bis) pu.bis = bis; else delete pu.bis; }
+  else { delete pu.wunsch; delete pu.bis; }
+  state.puDraft = null;
+  await saveShared();
+  render();
+  showToast(d.id ? t('puUpdated',{id:pu.id}) : t('puSaved',{id:pu.id}));
+  if(!d.id) notify({roles:['fahrer','lager','chef']}, 'nPuNewT', 'nPuNewB', {id:pu.id, ort:pu.baustelle, person:pu.person});
+}
+function pickupCardHTML(pu, role){
+  const st = pu.status, next = PU_NEXT[st];
+  const done = st==='Im Lager';
+  const canAdvance = !!(next && next.roles.includes(role));
+  const mine = pu.person===state.name;
+  const canEdit = !done && (['fahrer','lager','chef'].includes(role) || (mine && st==='Gemeldet'));
+  const canDelete = !done && (role==='chef' || (mine && st==='Gemeldet'));
+  const mapsUrl = pu.coords
+    ? `https://www.google.com/maps?q=${pu.coords.lat},${pu.coords.lon}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pu.baustelle)}`;
+  const wb = wunschBadgeHTML({...pu, status: done ? 'Geliefert' : st});
+  return `<div class="order-card pu-card ${done?'pu-done':''}">
+    <div class="order-head">
+      <div><div class="no">↩ ${t('puTitle')} #${pu.id}</div><div class="site">${escapeHtml(pu.baustelle)} · ${t('bestelltVonInline')} ${escapeHtml(pu.person)}</div></div>
+      <div class="status-badge pu-badge ${done?'st-Geliefert':''}">${t(PU_KEY[st]||'puGemeldet')}</div>
+    </div>
+    ${wb? `<div class="wunsch-row">${wb}</div>`:''}
+    <div class="order-time">${t('puGemeldetAm')} ${pu.time}${pu.fahrer? ' · 🚚 '+escapeHtml(pu.fahrer) : ''}${pu.changedBy? ' · ✏️ '+escapeHtml(pu.changedBy) : ''}</div>
+    ${pu.abbau? `<div class="pu-abbau">🏗️ ${t('puAbbauLabel')}</div>`:''}
+    ${(pu.items||[]).length? itemsListHTML(pu.items) + weightLineHTML(pu.items) : ''}
+    ${pu.notiz? `<div class="ev-notiz">${escapeHtml(pu.notiz)}</div>`:''}
+    ${!done? `<a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>`:''}
+    ${canEdit? `<button class="reorder-btn" data-action="pu-edit" data-id="${pu.id}">${t('puEditBtn')}</button>`:''}
+    ${canAdvance? `<button class="advance-btn" data-action="pu-advance" data-id="${pu.id}">${t(next.key)}</button>`:''}
+    ${canDelete? `<button class="pu-del" data-action="pu-delete" data-id="${pu.id}">${t('puDeleteBtn')}</button>`:''}
+  </div>`;
+}
+function pickupListHTML(list, role){
+  return list.length ? `<div class="card-grid">${sortPickups(list).map(p=>pickupCardHTML(p, role)).join('')}</div>` : '';
+}
+
 // ---- Packliste (Lager) ---------------------------------------------
 // Solange eine Bestellung "In Bearbeitung" ist, hakt das Lager jede
 // Position ab: "Eingepackt" oder "Fehlt" (mit Anzahl, die fehlt).
@@ -2667,6 +2853,7 @@ function lagerHTML(){
     ? `<p class="view-sub">${t('lagerBestellSub')}</p>
        <h3 style="font-size:15px;margin:0 0 8px 0;">${t('fahrerStatusHeading')}</h3>
        ${driverStatusListHTML()}
+       ${openPickups().length? `<h3 style="font-size:15px;margin:22px 0 8px 0;">${t('puLagerHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'lager')}`:''}
        <h3 style="font-size:15px;margin:22px 0 8px 0;">${t('allOrdersHeading')}</h3>
        ${orders.length? `<div class="card-grid">${orders.map(o=>orderCardHTML(o,'lager')).join('')}</div>` : `<div class="empty-state">${t('lagerEmptyOrders')}</div>`}`
     : tab==='geplant'
@@ -2801,6 +2988,7 @@ function calEventsOn(iso){
   state.lkwEntries.filter(e=>e.date===iso).forEach(e=>ev.push({kind:'termin', time:e.time||'', projekt:e.projekt, notiz:e.notiz||''}));
   state.plannedDeliveries.filter(pd=>pd.date===iso).forEach(pd=>ev.push({kind:'lieferung', time:'', projekt:pd.projekt, items:pd.items}));
   state.projects.filter(p=>p.fertigAm===iso).forEach(p=>ev.push({kind:'fertig', time:'', projekt:p.id}));
+  state.pickups.filter(p=>p.bis===iso && p.status!=='Im Lager').forEach(p=>ev.push({kind:'abholung', time:'', projekt:p.projekt, items:p.items||[], notiz:[p.abbau? '🏗️ '+t('puAbbauLabel') : '', p.notiz||''].filter(Boolean).join(' · ')}));
   // Termine mit Uhrzeit zuerst (nach Zeit), dann Lieferungen ohne Uhrzeit
   return ev.sort((a,b)=> (a.time? 0:1)-(b.time? 0:1) || a.time.localeCompare(b.time));
 }
@@ -2810,11 +2998,11 @@ function calEventHTML(ev){
   const mapsUrl = !p ? '' : p.coords
     ? `https://www.google.com/maps?q=${p.coords.lat},${p.coords.lon}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse)}`;
-  const items = ev.kind==='lieferung' ? ev.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('') : '';
+  const items = (ev.kind==='lieferung' || ev.kind==='abholung') ? ev.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('') : '';
   return `<div class="order-card proj-card ev-card" style="${hex?`--pc:${hex};`:''}">
     <div class="ev-head">
       <div class="ev-time">${ev.time || t('fkAllDay')}</div>
-      <span class="ev-kind ${ev.kind}">${ev.kind==='termin' ? t('fkTermin') : ev.kind==='fertig' ? '🏁 '+t('fkFertig') : t('fkLieferung')}</span>
+      <span class="ev-kind ${ev.kind}">${ev.kind==='termin' ? t('fkTermin') : ev.kind==='fertig' ? '🏁 '+t('fkFertig') : ev.kind==='abholung' ? t('fkAbholung') : t('fkLieferung')}</span>
     </div>
     <div class="no" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;">${p? `BV ${p.id} – ${p.name}` : '–'}</div>
     ${p? `<div class="order-time" style="margin:2px 0 0 0;">${p.adresse}</div>`:''}
@@ -2865,7 +3053,9 @@ function fahrerLieferungenHTML(){
   const all = sortOrdersForWork(state.orders);
   const ready = all.filter(o=>STATUS_FLOW.indexOf(o.status)>=2);
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
-  return `<p class="view-sub">${t('fahrerSub')}</p>
+  const pus = openPickups();
+  return `${pus.length? `<h3 style="font-size:15px;margin:0 0 8px 0;">${t('puFahrerHeading')} (${pus.length})</h3>${pickupListHTML(pus, 'fahrer')}<div style="height:14px;"></div>`:''}
+  <p class="view-sub">${t('fahrerSub')}</p>
   ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
   ${ready.length? `<div class="card-grid">${ready.map(o=>orderCardHTML(o,'fahrer')).join('')}</div>` : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}`;
 }
@@ -2945,10 +3135,13 @@ function widgetsHTML(role){
     const laden = by(['Bereit zur Abholung']);
     const lkw = by(['Beladen','Unterwegs']);
     const raeumen = state.projects.filter(p=>p.aktiv && p.farbe==='hellblau');
+    const pus = openPickups();
     tiles = [
       widgetTile({tone:'accent', label:t('wZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen'}),
       widgetTile({tone:'blue', label:t('wAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen'}),
-      widgetTile({tone:'sky', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
+      pus.length
+        ? widgetTile({tone:'sky', label:t('wAbholen'), value:pus.length, detail:sortPickups(pus).map(p=>p.projekt? projektLabel(p.projekt) : p.baustelle).join(', '), tab:'lieferungen'})
+        : widgetTile({tone:'sky', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
       planTile('kalender'),
     ];
   }
@@ -3074,6 +3267,8 @@ function projektCardHTML(p, editable){
     const ziel = o.status==='Geliefert' ? geliefert : offen;
     o.items.forEach(it=>{ ziel[it.id] = (ziel[it.id]||0) + it.qty; });
   });
+  // "vor Ort" = geliefert minus schon zurück im Lager (Abholungen)
+  Object.keys(geliefert).forEach(k=>delete geliefert[k]); Object.assign(geliefert, deliveredAt(p.id));
   const line = (id,q)=>{
     const cat = CATALOG.find(c=>c.id===id);
     return `<li>${q} ${cat? unitLabel(cat.unit):''} — ${cat? itemName(cat):id}</li>`;
@@ -3203,6 +3398,9 @@ function projektDetailHTML(p){
       ${projektDriversHTML(p)}
       <h3 class="section-h">${t('pvPlannedHeading')}</h3>
       ${geplant.length? geplant.map(pd=>plannedDeliveryCardHTML(pd,true)).join('') : `<div class="empty-state" style="padding:20px 10px;">${t('plEmpty')}</div>`}
+      <h3 class="section-h">${t('puBvHeading')}</h3>
+      ${pickupListHTML(state.pickups.filter(x=>x.projekt===p.id && x.status!=='Im Lager'), 'chef')}
+      ${p.aktiv? `<button class="pu-open-btn" data-action="pu-open" data-projekt="${p.id}">${t('puBvAdd')}</button>`:''}
     </div>
     <div>
       <h3 class="section-h">${t('pvAddDeliveryHeading')}</h3>
@@ -3740,6 +3938,7 @@ function chefHTML(){
   <h3 style="margin-top:22px;font-size:15px;">${t('fahrerStatusHeading')}</h3>
   ${driverStatusListHTML()}
   ${chefPositionsHTML()}
+  ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
   <h3 style="margin-top:22px;font-size:15px;">${t('allOrdersHeading')}</h3>
   ${orders.length? `<div class="card-grid">${orders.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state">${t('chefEmptyOrders')}</div>`}
   ${SHOW_CHEF_INVENTORY? `<h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
@@ -3920,6 +4119,7 @@ function render(){
     <main>${syncBannerHTML()}${pushCardHTML()}${mainHTML}</main>
     ${state.itemPopup ? itemPopupHTML() : ''}
     ${state.orderReview ? orderReviewHTML() : ''}
+    ${state.puDraft ? pickupEditorHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
   mountProjectMap();
@@ -4157,6 +4357,47 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       if(order.status==='Geliefert') notify({names:[order.person]}, 'nDeliveredT', 'nDeliveredB', v);
     }
     render();
+  }
+  if(action==='pu-open'){ openPickupEditor(null, el.dataset.projekt ? parseInt(el.dataset.projekt,10) : null); }
+  if(action==='pu-edit'){ const pu = state.pickups.find(x=>x.id===parseInt(el.dataset.id,10)); if(pu) openPickupEditor(pu); }
+  if(action==='pu-cancel' || (action==='pu-cancel-bg' && e.target===el)){ state.puDraft = null; state.puWarn = ''; render(); }
+  if(action==='pu-qty' && state.puDraft){
+    const id = el.dataset.id, q = Math.max(0, (state.puDraft.items[id]||0) + parseInt(el.dataset.delta,10));
+    if(q) state.puDraft.items[id] = q; else delete state.puDraft.items[id];
+    render();
+  }
+  if(action==='pu-all' && state.puDraft){
+    const pid = parseInt(state.puDraft.projekt,10);
+    Object.entries(deliveredAt(pid)).forEach(([id,q])=>{ state.puDraft.items[id] = q; });
+    render();
+  }
+  if(action==='pu-zero' && state.puDraft){ state.puDraft.items = {}; render(); }
+  if(action==='pu-wunsch' && state.puDraft){
+    state.puDraft.wunsch = el.dataset.w;
+    if(el.dataset.w==='datum' && !state.puDraft.bis) state.puDraft.bis = addDaysISO(todayISO(), 1);
+    render();
+  }
+  if(action==='pu-save' && state.puDraft){ await savePickup(); }
+  if(action==='pu-advance'){
+    const pu = state.pickups.find(x=>x.id===parseInt(el.dataset.id,10));
+    const step = pu && PU_NEXT[pu.status];
+    if(!step) return;
+    pu.status = step.next;
+    if(step.next==='Unterwegs') pu.fahrer = state.name;
+    if(step.next==='Im Lager'){
+      (pu.items||[]).forEach(i=>{ state.inventory[i.id] = (state.inventory[i.id] ?? 0) + i.qty; });
+      pu.imLagerAm = nowStr();
+    }
+    render();
+    await saveShared();
+    if(step.next==='Unterwegs') notify({names:[pu.person]}, 'nPuOnWayT', 'nPuOnWayB', {id:pu.id, fahrer:state.name, ort:pu.baustelle});
+  }
+  if(action==='pu-delete'){
+    const pu = state.pickups.find(x=>x.id===parseInt(el.dataset.id,10));
+    if(!pu || !confirm(t('puDeleteConfirm',{id:pu.id}))) return;
+    state.pickups = state.pickups.filter(x=>x.id!==pu.id);
+    render();
+    await saveShared();
   }
   if(action==='pick-all'){
     const order = state.orders.find(o=>o.id===parseInt(el.dataset.order,10));
@@ -4530,6 +4771,12 @@ document.getElementById('app').addEventListener('change', async (e)=>{
     e.target.value = '';
     await uploadPlans(parseInt(e.target.dataset.projekt,10), files);
   }
+  if(state.puDraft){
+    if(e.target.id==='puProjekt'){ state.puDraft.projekt = e.target.value; render(); return; }
+    if(e.target.id==='puAbbau'){ state.puDraft.abbau = e.target.checked; render(); return; }
+    if(e.target.id==='puDate'){ state.puDraft.bis = e.target.value || ''; return; }
+    if(e.target.dataset && e.target.dataset.pq){ setPuQtyFromInput(e.target, true); return; }
+  }
   if(e.target.id==='wunschDate' && state.orderReview){
     state.orderReview.bis = e.target.value || null;
   }
@@ -4537,15 +4784,15 @@ document.getElementById('app').addEventListener('change', async (e)=>{
 // Mengenfeld antippen: Inhalt markieren, damit man direkt die Zahl tippt;
 // Enter = fertig (Tastatur zu).
 document.getElementById('app').addEventListener('focusin', (e)=>{
-  if(e.target.dataset && e.target.dataset.qty) setTimeout(()=>{ try{ e.target.select(); }catch(_){} }, 0);
+  if(e.target.dataset && (e.target.dataset.qty || e.target.dataset.pq)) setTimeout(()=>{ try{ e.target.select(); }catch(_){} }, 0);
 });
 // Nach dem Antippen setzt der Browser die Schreibmarke -- danach nochmal
 // alles markieren, damit die neue Zahl die alte ersetzt statt anzuhängen.
 document.getElementById('app').addEventListener('click', (e)=>{
-  if(e.target.dataset && e.target.dataset.qty && e.target.tagName==='INPUT'){ try{ e.target.select(); }catch(_){} }
+  if(e.target.dataset && (e.target.dataset.qty || e.target.dataset.pq) && e.target.tagName==='INPUT'){ try{ e.target.select(); }catch(_){} }
 }, true);
 document.getElementById('app').addEventListener('keydown', (e)=>{
-  if(e.key==='Enter' && e.target.dataset && e.target.dataset.qty){ e.preventDefault(); e.target.blur(); }
+  if(e.key==='Enter' && e.target.dataset && (e.target.dataset.qty || e.target.dataset.pq)){ e.preventDefault(); e.target.blur(); }
 });
 // Getippte Menge übernehmen OHNE die ganze Seite neu zu zeichnen (sonst
 // würde ein direkt danach angetippter Knopf "verschluckt") -- nur die
@@ -4563,8 +4810,24 @@ function setQtyFromInput(inp, final){
     if(btn) btn.disabled = !count;
   });
 }
+function setPuQtyFromInput(inp, final){
+  if(!state.puDraft) return;
+  if(/\D/.test(inp.value)) inp.value = inp.value.replace(/\D/g,'');
+  const n = Math.max(0, Math.min(9999, parseInt(inp.value,10) || 0));
+  if(n) state.puDraft.items[inp.dataset.pq] = n; else delete state.puDraft.items[inp.dataset.pq];
+  if(final) inp.value = n || '';
+  const sum = document.getElementById('puSum'); if(sum) sum.textContent = puSumText(state.puDraft);
+}
 document.getElementById('app').addEventListener('input', (e)=>{
   if(e.target.dataset && e.target.dataset.qty){ setQtyFromInput(e.target, false); return; }
+  if(e.target.dataset && e.target.dataset.pq){ setPuQtyFromInput(e.target, false); return; }
+  if(state.puDraft && e.target.id==='puOrt'){ state.puDraft.ort = e.target.value; return; }
+  if(state.puDraft && e.target.id==='puNotiz'){ state.puDraft.notiz = e.target.value; return; }
+  if(state.puDraft && e.target.id==='puSearch'){
+    state.puDraft.search = e.target.value; render();
+    const s = document.getElementById('puSearch'); if(s){ s.focus(); s.selectionStart = s.selectionEnd = s.value.length; }
+    return;
+  }
   if(e.target.id==='baustelleOrtInput'){
     state.baustelleOrt = e.target.value;
     state.baustelleCoords = null;
@@ -4613,7 +4876,7 @@ document.getElementById('app').addEventListener('contextmenu', (e)=>{
 });
 
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.puDraft) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
