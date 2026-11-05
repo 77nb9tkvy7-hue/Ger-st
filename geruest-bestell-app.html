@@ -2047,7 +2047,7 @@ async function manageUsers(body){
 // Sofort lokal + beim Server abmelden, ohne vorher zu speichern
 // (z. B. wenn der Chef einem die Rolle entzogen hat).
 function dropAuthLocal(){
-  try{ supabaseClient.auth.signOut(); }catch(e){}
+  try{ supabaseClient.auth.signOut({scope:'local'}); }catch(e){}
   state.authed = false; state.calUnlocked = false; state.positions = {};
   syncBase = null; state.syncPending = false; state.syncOffline = false;
   lsSet(CACHE_KEY, null); lsSet(PENDING_KEY, null);
@@ -2057,7 +2057,7 @@ function dropAuthLocal(){
 // Anmeldung beenden (auch wenn der Server sie für ungültig erklärt hat)
 async function signOutAll(){
   try{ if(state.syncPending) await sync(); }catch(e){}
-  try{ await supabaseClient.auth.signOut(); }catch(e){}
+  try{ await supabaseClient.auth.signOut({scope:'local'}); }catch(e){}
   state.authed = false; state.loggedIn = false; state.role = null; state.authName = null; state.askChefPw = false;
   state.calUnlocked = false; state.positions = {};
   syncBase = null; state.syncPending = false; state.syncOffline = false;
