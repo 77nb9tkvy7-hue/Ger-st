@@ -306,6 +306,20 @@
   .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
+  .plaene{margin:12px 0 4px 0;padding:10px;border-radius:12px;background:var(--surface-2);}
+  .plaene-head{font-size:13px;font-weight:700;margin-bottom:6px;}
+  .plaene-list{display:flex;flex-direction:column;gap:6px;}
+  .plan-row{display:flex;align-items:center;gap:6px;}
+  .plan-link{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:var(--card);border-radius:10px;padding:7px 9px;text-decoration:none;color:var(--ink);}
+  .plan-thumb{width:44px;height:44px;object-fit:cover;border-radius:6px;flex-shrink:0;background:var(--surface-2);}
+  .plan-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background:var(--surface-2);border-radius:6px;}
+  .plan-txt{min-width:0;display:flex;flex-direction:column;}
+  .plan-name{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .plan-meta{font-size:11.5px;color:var(--muted);}
+  .plan-del{border:none;background:var(--card);border-radius:10px;width:40px;height:40px;font-size:17px;cursor:pointer;flex-shrink:0;}
+  .plan-upload{display:block;text-align:center;margin-top:10px;background:#FFEE00;color:#0B2A4A;font-weight:700;font-size:14px;border-radius:12px;padding:11px 14px;cursor:pointer;}
+  .plan-upload.busy{opacity:0.6;pointer-events:none;}
+  .plan-hint{font-size:11.5px;color:var(--muted);margin-top:6px;}
   .wunsch-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px 0;}
   .wunsch-badge{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--surface-2);color:var(--ink);}
   .wunsch-badge.w-urgent{background:#DC2626;color:#fff;}
@@ -625,6 +639,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  plaeneHeading:'Baupläne', plaeneEmpty:'Noch keine Pläne hochgeladen.', planUploadBtn:'⬆️ Plan hochladen (PDF oder Foto)', planUploading:'Wird hochgeladen …', planHint:'Mehrere Dateien auf einmal möglich, max. {mb} MB je Datei. Alle können die Pläne zu diesem Bauvorhaben ansehen.', planTooBig:'„{name}“ ist zu groß (max. {mb} MB).', planNoBucket:'Der Datei-Speicher ist noch nicht eingerichtet – bitte einmal in Supabase anlegen.', planUploadFail:'Hochladen hat nicht geklappt – bitte Netz prüfen und nochmal versuchen.', planDelete:'Plan löschen', planDeleteConfirm:'„{name}“ wirklich löschen?',
   wunschLabel:'Wann wird es gebraucht?', wunschNormal:'Normal', wunschDringend:'🔴 Dringend – sofort', wunschMorgen:'Morgen früh', wunschDatum:'📅 Wunschtermin', badgeDringend:'🔴 DRINGEND', badgeBis:'📅 bis {d}', badgeHeute:'📅 heute gebraucht', badgeUeberfaellig:'⚠️ überfällig – war bis {d}', gebrauchtLabel:'Gebraucht', nUrgentT:'🔴 DRINGEND: Neue Bestellung #{id}', pickHint:'Beim Zusammenstellen abhaken. Was fehlt, kommt automatisch als Nachlieferung.', pickOkBtn:'Eingepackt', pickMissBtn:'Fehlt', pickMissQty:'Davon fehlen:', pickProgress:'{a} von {n} abgehakt', pickMissingCount:'{n} fehlt', pickAllMissing:'Es fehlt alles – so kann die Bestellung nicht bereit gemeldet werden.', fehltHeading:'⚠️ Fehlt – kommt mit Nachlieferung #{id}:', nachVonBadge:'↩ Nachlieferung zu #{id}', nMissingT:'Teile fehlen bei Bestellung #{id}', nMissingB:'{n} Position(en) kommen mit Nachlieferung #{neu}.', lsFehlt:'Fehlt (kommt mit Nachlieferung #{id})',
   syncPending:'📶 Kein Netz – deine Änderungen sind auf dem Handy gemerkt und werden automatisch gesendet, sobald wieder Netz da ist.', syncOffline:'📶 Kein Netz – angezeigt wird der letzte bekannte Stand.',
   lagerHeading:'🏭 Lager-Standort', lagerHint:'Damit stellt sich der Fahrer-Status von selbst um: Kommt ein Fahrer (App offen) am Lager an, steht er auf „Am Lager“ – fährt er weg, auf „Unterwegs“. Umkreis ca. 250 m.', lagerNotSet:'Noch kein Lager eingetragen.', lagerAdresseLabel:'Adresse des Lagers', lagerSaveBtn:'Lager-Adresse speichern', lagerGpsBtn:'📍 Ich bin gerade am Lager – Standort übernehmen', lagerNotFound:'Adresse nicht gefunden – bitte mit Ort eingeben, z. B. „Musterstraße 1, München“.', lagerMapLabel:'Lager', autoTag:'automatisch', autoHint:'🔄 Stellt sich automatisch um, wenn du am Lager ankommst oder wegfährst.',
@@ -810,6 +825,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  plaeneHeading:'Plany budowy', plaeneEmpty:'Nie przesłano jeszcze planów.', planUploadBtn:'⬆️ Prześlij plan (PDF lub zdjęcie)', planUploading:'Przesyłanie …', planHint:'Można wybrać kilka plików naraz, maks. {mb} MB na plik. Wszyscy mogą oglądać plany tej budowy.', planTooBig:'„{name}” jest za duży (maks. {mb} MB).', planNoBucket:'Magazyn plików nie jest jeszcze skonfigurowany – trzeba go raz utworzyć w Supabase.', planUploadFail:'Przesyłanie nie powiodło się – sprawdź sieć i spróbuj ponownie.', planDelete:'Usuń plan', planDeleteConfirm:'Na pewno usunąć „{name}”?',
   wunschLabel:'Kiedy jest potrzebne?', wunschNormal:'Normalnie', wunschDringend:'🔴 Pilne – od razu', wunschMorgen:'Jutro rano', wunschDatum:'📅 Wybrany termin', badgeDringend:'🔴 PILNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrzebne dziś', badgeUeberfaellig:'⚠️ po terminie – było do {d}', gebrauchtLabel:'Potrzebne', nUrgentT:'🔴 PILNE: Nowe zamówienie #{id}', pickHint:'Odhaczaj przy kompletowaniu. Czego brakuje, zostanie automatycznie dosłane.', pickOkBtn:'Spakowane', pickMissBtn:'Brak', pickMissQty:'Brakuje z tego:', pickProgress:'{a} z {n} odhaczonych', pickMissingCount:'{n} brak', pickAllMissing:'Brakuje wszystkiego – zamówienia nie można zgłosić jako gotowe.', fehltHeading:'⚠️ Brak – zostanie dosłane z dostawą #{id}:', nachVonBadge:'↩ Dosyłka do #{id}', nMissingT:'Brakuje części w zamówieniu #{id}', nMissingB:'{n} pozycja(e) przyjdzie z dosyłką #{neu}.', lsFehlt:'Brak (przyjdzie z dosyłką #{id})',
   syncPending:'📶 Brak sieci – twoje zmiany są zapisane w telefonie i zostaną wysłane automatycznie, gdy sieć wróci.', syncOffline:'📶 Brak sieci – widoczny jest ostatni znany stan.',
   lagerHeading:'🏭 Lokalizacja magazynu', lagerHint:'Dzięki temu status kierowcy zmienia się sam: gdy kierowca (z otwartą aplikacją) dojedzie do magazynu, ma status „W magazynie“ – gdy odjedzie, „W trasie“. Promień ok. 250 m.', lagerNotSet:'Magazyn nie jest jeszcze wpisany.', lagerAdresseLabel:'Adres magazynu', lagerSaveBtn:'Zapisz adres magazynu', lagerGpsBtn:'📍 Jestem teraz w magazynie – użyj mojej lokalizacji', lagerNotFound:'Nie znaleziono adresu – podaj go z miejscowością, np. „Musterstraße 1, München“.', lagerMapLabel:'Magazyn', autoTag:'automatycznie', autoHint:'🔄 Zmienia się automatycznie, gdy dojeżdżasz do magazynu lub z niego odjeżdżasz.',
@@ -995,6 +1011,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  plaeneHeading:'Stavebné plány', plaeneEmpty:'Zatiaľ neboli nahrané žiadne plány.', planUploadBtn:'⬆️ Nahrať plán (PDF alebo foto)', planUploading:'Nahráva sa …', planHint:'Naraz môžeš vybrať viac súborov, max. {mb} MB na súbor. Plány k tejto stavbe môžu vidieť všetci.', planTooBig:'„{name}“ je príliš veľký (max. {mb} MB).', planNoBucket:'Úložisko súborov ešte nie je nastavené – treba ho raz vytvoriť v Supabase.', planUploadFail:'Nahrávanie nevyšlo – skontroluj sieť a skús znova.', planDelete:'Vymazať plán', planDeleteConfirm:'Naozaj vymazať „{name}“?',
   wunschLabel:'Kedy je to potrebné?', wunschNormal:'Normálne', wunschDringend:'🔴 Súrne – hneď', wunschMorgen:'Zajtra ráno', wunschDatum:'📅 Želaný termín', badgeDringend:'🔴 SÚRNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebné dnes', badgeUeberfaellig:'⚠️ po termíne – bolo do {d}', gebrauchtLabel:'Potrebné', nUrgentT:'🔴 SÚRNE: Nová objednávka #{id}', pickHint:'Pri chystaní odškrtávaj. Čo chýba, príde automaticky ako doplnenie.', pickOkBtn:'Zabalené', pickMissBtn:'Chýba', pickMissQty:'Z toho chýba:', pickProgress:'{a} z {n} odškrtnuté', pickMissingCount:'{n} chýba', pickAllMissing:'Chýba všetko – objednávku nemožno nahlásiť ako pripravenú.', fehltHeading:'⚠️ Chýba – príde s doplnením #{id}:', nachVonBadge:'↩ Doplnenie k #{id}', nMissingT:'V objednávke #{id} chýbajú diely', nMissingB:'{n} položka(y) príde s doplnením #{neu}.', lsFehlt:'Chýba (príde s doplnením #{id})',
   syncPending:'📶 Žiadna sieť – tvoje zmeny sú uložené v telefóne a odošlú sa automaticky, keď bude sieť.', syncOffline:'📶 Žiadna sieť – zobrazuje sa posledný známy stav.',
   lagerHeading:'🏭 Poloha skladu', lagerHint:'Vďaka tomu sa stav vodiča mení sám: keď vodič (s otvorenou aplikáciou) príde do skladu, má stav „V sklade“ – keď odíde, „Na ceste“. Okruh cca 250 m.', lagerNotSet:'Sklad ešte nie je zadaný.', lagerAdresseLabel:'Adresa skladu', lagerSaveBtn:'Uložiť adresu skladu', lagerGpsBtn:'📍 Som práve v sklade – použiť moju polohu', lagerNotFound:'Adresa sa nenašla – zadaj ju aj s mestom, napr. „Musterstraße 1, München“.', lagerMapLabel:'Sklad', autoTag:'automaticky', autoHint:'🔄 Mení sa automaticky, keď prídeš do skladu alebo z neho odídeš.',
@@ -1180,6 +1197,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  plaeneHeading:'Građevinski planovi', plaeneEmpty:'Još nisu učitani planovi.', planUploadBtn:'⬆️ Učitaj plan (PDF ili fotografija)', planUploading:'Učitavanje …', planHint:'Može se odabrati više datoteka odjednom, maks. {mb} MB po datoteci. Svi mogu vidjeti planove ovog gradilišta.', planTooBig:'„{name}” je prevelika (maks. {mb} MB).', planNoBucket:'Spremište datoteka još nije postavljeno – treba ga jednom napraviti u Supabaseu.', planUploadFail:'Učitavanje nije uspjelo – provjeri mrežu i pokušaj ponovno.', planDelete:'Izbriši plan', planDeleteConfirm:'Stvarno izbrisati „{name}”?',
   wunschLabel:'Kada je potrebno?', wunschNormal:'Normalno', wunschDringend:'🔴 Hitno – odmah', wunschMorgen:'Sutra ujutro', wunschDatum:'📅 Željeni termin', badgeDringend:'🔴 HITNO', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebno danas', badgeUeberfaellig:'⚠️ kasni – bilo do {d}', gebrauchtLabel:'Potrebno', nUrgentT:'🔴 HITNO: Nova narudžba #{id}', pickHint:'Odkvačuj pri slaganju. Što nedostaje, stiže automatski kao dopuna.', pickOkBtn:'Spakirano', pickMissBtn:'Nedostaje', pickMissQty:'Od toga nedostaje:', pickProgress:'{a} od {n} odkvačeno', pickMissingCount:'{n} nedostaje', pickAllMissing:'Nedostaje sve – narudžba se ne može prijaviti kao spremna.', fehltHeading:'⚠️ Nedostaje – stiže s dopunom #{id}:', nachVonBadge:'↩ Dopuna za #{id}', nMissingT:'Nedostaju dijelovi u narudžbi #{id}', nMissingB:'{n} stavka(e) stiže s dopunom #{neu}.', lsFehlt:'Nedostaje (stiže s dopunom #{id})',
   syncPending:'📶 Nema mreže – tvoje promjene su spremljene na mobitelu i bit će poslane automatski kad se mreža vrati.', syncOffline:'📶 Nema mreže – prikazano je zadnje poznato stanje.',
   lagerHeading:'🏭 Lokacija skladišta', lagerHint:'Tako se status vozača mijenja sam: kad vozač (s otvorenom aplikacijom) stigne u skladište, ima status „U skladištu“ – kad ode, „Na putu“. Radijus oko 250 m.', lagerNotSet:'Skladište još nije upisano.', lagerAdresseLabel:'Adresa skladišta', lagerSaveBtn:'Spremi adresu skladišta', lagerGpsBtn:'📍 Upravo sam u skladištu – preuzmi moju lokaciju', lagerNotFound:'Adresa nije pronađena – upiši je s mjestom, npr. „Musterstraße 1, München“.', lagerMapLabel:'Skladište', autoTag:'automatski', autoHint:'🔄 Mijenja se automatski kad stigneš u skladište ili odeš iz njega.',
@@ -1365,6 +1383,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  plaeneHeading:'Building plans', plaeneEmpty:'No plans uploaded yet.', planUploadBtn:'⬆️ Upload plan (PDF or photo)', planUploading:'Uploading …', planHint:'You can pick several files at once, max. {mb} MB per file. Everyone can view the plans for this project.', planTooBig:'“{name}” is too large (max. {mb} MB).', planNoBucket:'The file storage is not set up yet – it needs to be created once in Supabase.', planUploadFail:'Upload failed – please check the network and try again.', planDelete:'Delete plan', planDeleteConfirm:'Really delete “{name}”?',
   wunschLabel:'When is it needed?', wunschNormal:'Normal', wunschDringend:'🔴 Urgent – right away', wunschMorgen:'Tomorrow morning', wunschDatum:'📅 Preferred date', badgeDringend:'🔴 URGENT', badgeBis:'📅 by {d}', badgeHeute:'📅 needed today', badgeUeberfaellig:'⚠️ overdue – was due {d}', gebrauchtLabel:'Needed', nUrgentT:'🔴 URGENT: New order #{id}', pickHint:'Tick off while packing. Anything missing is sent automatically as a follow-up delivery.', pickOkBtn:'Packed', pickMissBtn:'Missing', pickMissQty:'Missing:', pickProgress:'{a} of {n} ticked', pickMissingCount:'{n} missing', pickAllMissing:'Everything is missing – the order cannot be marked as ready.', fehltHeading:'⚠️ Missing – comes with follow-up #{id}:', nachVonBadge:'↩ Follow-up for #{id}', nMissingT:'Parts missing in order #{id}', nMissingB:'{n} item(s) will come with follow-up #{neu}.', lsFehlt:'Missing (comes with follow-up #{id})',
   syncPending:'📶 No network – your changes are saved on the phone and will be sent automatically once the network is back.', syncOffline:'📶 No network – showing the last known data.',
   lagerHeading:'🏭 Warehouse location', lagerHint:'This makes the driver status update by itself: when a driver (app open) arrives at the warehouse, the status becomes “At the warehouse” – when they drive off, “On the road”. Radius approx. 250 m.', lagerNotSet:'No warehouse entered yet.', lagerAdresseLabel:'Warehouse address', lagerSaveBtn:'Save warehouse address', lagerGpsBtn:'📍 I am at the warehouse right now – use my location', lagerNotFound:'Address not found – please include the town, e.g. “Musterstraße 1, München”.', lagerMapLabel:'Warehouse', autoTag:'automatic', autoHint:'🔄 Updates automatically when you arrive at or leave the warehouse.',
@@ -1673,7 +1692,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
-  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, lagerWarn:'', lagerDraft:null,
+  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
@@ -2279,6 +2298,7 @@ function catalogHTML(){
       <option value="_frei" ${state.selProjekt==='_frei'?'selected':''}>${t('projektFreeOption')}</option>
     </select>
   </div>`:''}
+  ${(()=>{ const sp = aktive.find(p=>String(p.id)===String(state.selProjekt)) || (!state.selProjekt ? aktive[0] : null); return sp ? plaeneHTML(sp, false) : ''; })()}
   ${freiGewaehlt? `<div class="field">
     <label>${t('ortLabel')}</label>
     <input id="baustelleOrtInput" placeholder="${t('ortPlaceholder')}" value="${state.baustelleOrt}" autocomplete="off">
@@ -2852,6 +2872,70 @@ function widgetsHTML(role){
   return tiles.length? `<div class="widget-grid ${tiles.length===3?'three':''}">${tiles.join('')}</div>` : '';
 }
 
+// ---- Baupläne pro Bauvorhaben ---------------------------------------
+// Dateien (PDF/Fotos) liegen im Supabase-Storage-Bucket PLAN_BUCKET unter
+// bv<ID>/<zufall>-<name>, die Liste je Bauvorhaben in p.plaene =
+// [{id, name, path, type, size, date, by}] im großen Datensatz. Hochladen
+// und Löschen nur der Chef (BV-Detail), ansehen alle: Fahrer/Lager auf der
+// BV-Karte, Baustelle unter der BV-Auswahl beim Bestellen. Der Bucket ist
+// "public" (Link = Zugriff, zufälliger Dateiname) -- gleiches Schutzniveau
+// wie der Rest der App. Einrichtung: SQL in CLAUDE.md ("Baupläne").
+const PLAN_BUCKET = 'bauplaene';
+const PLAN_MAX_MB = 50;
+function planUrl(pl){
+  try{ return supabaseClient.storage.from(PLAN_BUCKET).getPublicUrl(pl.path).data.publicUrl; }catch(e){ return '#'; }
+}
+function formatSize(b){
+  if(!b) return '';
+  const mb = b/1024/1024;
+  const txt = mb >= 1 ? mb.toFixed(1)+' MB' : Math.max(1, Math.round(b/1024))+' KB';
+  return state.lang==='en' ? txt : txt.replace('.', ',');
+}
+function plaeneHTML(p, editable){
+  const list = p.plaene || [];
+  if(!list.length && !editable) return '';
+  return `<div class="plaene">
+    <div class="plaene-head">📐 ${t('plaeneHeading')} (${list.length})</div>
+    ${list.length? `<div class="plaene-list">${list.map(pl=>{
+      const url = planUrl(pl);
+      const isImg = (pl.type||'').startsWith('image/');
+      return `<div class="plan-row">
+        <a class="plan-link" href="${url}" target="_blank" rel="noopener">
+          ${isImg? `<img class="plan-thumb" src="${url}" alt="" loading="lazy">` : `<span class="plan-icon">📄</span>`}
+          <span class="plan-txt"><span class="plan-name">${escapeHtml(pl.name)}</span><span class="plan-meta">${[formatSize(pl.size), pl.date].filter(Boolean).join(' · ')}</span></span>
+        </a>
+        ${editable? `<button class="plan-del" data-action="plan-delete" data-projekt="${p.id}" data-plan="${pl.id}" aria-label="${t('planDelete')}" title="${t('planDelete')}">🗑</button>`:''}
+      </div>`;
+    }).join('')}</div>` : `<div class="order-time" style="margin:4px 0 0 0;">${t('plaeneEmpty')}</div>`}
+    ${editable? `<label class="plan-upload ${state.planUploading===p.id?'busy':''}">${state.planUploading===p.id? t('planUploading') : t('planUploadBtn')}<input type="file" id="planFile-${p.id}" data-projekt="${p.id}" accept="application/pdf,image/*" multiple hidden></label>
+      <div class="plan-hint">${t('planHint',{mb:PLAN_MAX_MB})}</div>
+      ${state.planWarnFor===p.id && state.planWarn? `<div class="warn">${state.planWarn}</div>`:''}`:''}
+  </div>`;
+}
+async function uploadPlans(pid, files){
+  state.planWarn = ''; state.planWarnFor = pid; state.planUploading = pid; render();
+  for(const f of files){
+    if(f.size > PLAN_MAX_MB*1024*1024){ state.planWarn = t('planTooBig',{name:f.name, mb:PLAN_MAX_MB}); continue; }
+    const safe = f.name.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w.\-]+/g,'_').slice(-80) || 'plan';
+    const path = `bv${pid}/${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}-${safe}`;
+    let error = null;
+    try{ ({ error } = await supabaseClient.storage.from(PLAN_BUCKET).upload(path, f, {contentType: f.type || 'application/octet-stream', upsert:false})); }
+    catch(e){ error = e; }
+    if(error){
+      console.error('Plan-Upload fehlgeschlagen', error);
+      state.planWarn = /bucket|not found/i.test(String(error.message||error)) ? t('planNoBucket') : t('planUploadFail');
+      continue;
+    }
+    const cur = state.projects.find(x=>x.id===pid);
+    if(!cur) continue;
+    cur.plaene = [...(cur.plaene||[]), {id: Date.now()*1000 + Math.floor(Math.random()*1000), name:f.name, path, type:f.type||'', size:f.size,
+      date: new Date().toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'}), by: state.name}];
+    await saveShared();
+  }
+  state.planUploading = null;
+  render();
+}
+
 function projektCardHTML(p, editable){
   const orders = state.orders.filter(o=>o.projekt===p.id).sort((a,b)=>a.id-b.id);
   const geliefert = {}, offen = {};
@@ -2891,6 +2975,7 @@ function projektCardHTML(p, editable){
       <ul class="order-items">${Object.entries(offen).map(([id,q])=>line(id,q)).join('')}</ul>`:''}
     <div class="order-time">${orders.length? t('pvBestellungenPrefix')+' '+orders.map(o=>'#'+o.id+' ('+statusLabel(o.status)+')').join(', ') : t('pvKeineBestellungen')}</div>
     ${p.fertigAm && !editable? `<div class="fertig-line">🏁 ${p.aktiv? t('pvFertigGeplant') : t('pvFertigAm')} <b>${formatDateDE(p.fertigAm)}</b></div>`:''}
+    ${plaeneHTML(p, editable)}
     <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
     ${editable? `<div class="fertig-box">
       <label for="fertigDate-${p.id}">🏁 ${p.aktiv? t('pvFertigGeplant') : t('pvFertigAm')}</label>
@@ -2919,6 +3004,7 @@ function projektRowHTML(p){
         ${geplant? `<span>${t('pvGeplantCount',{n:geplant})}</span>`:''}
         ${p.fertigAm? `<span>🏁 ${formatDateDE(p.fertigAm)}</span>`:''}
         ${fahrer.length? `<span>🚚 ${fahrer.join(', ')}</span>`:''}
+        ${(p.plaene||[]).length? `<span>📐 ${p.plaene.length}</span>`:''}
       </div>
     </div>
     <span class="proj-row-chev">›</span>
@@ -3887,6 +3973,15 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
     await saveShared();
   }
+  if(action==='plan-delete'){
+    const p = state.projects.find(x=>String(x.id)===el.dataset.projekt);
+    const pl = p && (p.plaene||[]).find(x=>String(x.id)===el.dataset.plan);
+    if(!pl || !confirm(t('planDeleteConfirm',{name:pl.name}))) return;
+    try{ await supabaseClient.storage.from(PLAN_BUCKET).remove([pl.path]); }catch(e){ console.warn('Datei nicht gelöscht', e); }
+    p.plaene = p.plaene.filter(x=>x.id!==pl.id);
+    await saveShared();
+    render();
+  }
   if(action==='set-wunsch'){
     if(!state.orderReview) return;
     state.orderReview.wunsch = el.dataset.w;
@@ -4225,6 +4320,11 @@ document.getElementById('app').addEventListener('change', async (e)=>{
     e.target.blur();
     render();
     await saveShared();
+  }
+  if(e.target.id && e.target.id.startsWith('planFile-') && e.target.files && e.target.files.length){
+    const files = [...e.target.files];
+    e.target.value = '';
+    await uploadPlans(parseInt(e.target.dataset.projekt,10), files);
   }
   if(e.target.id==='wunschDate' && state.orderReview){
     state.orderReview.bis = e.target.value || null;

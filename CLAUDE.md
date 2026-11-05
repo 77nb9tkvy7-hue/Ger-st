@@ -415,6 +415,37 @@ Hintergrund kein GPS). Sichtbar nur für den Chef.
   die Zeilen lesen. Fahrer sollten (DSGVO) informiert werden, dass ihr
   Standort während der Arbeit in der App geteilt wird.
 
+## Baupläne pro Bauvorhaben
+
+Dateien (PDF oder Fotos, max. 50 MB je Datei, `PLAN_MAX_MB`) liegen im
+Supabase-Storage-Bucket `bauplaene` (`PLAN_BUCKET`) unter
+`bv<ID>/<zufall>-<name>`; die Liste steht je Bauvorhaben in
+`p.plaene = [{id, name, path, type, size, date, by}]` im großen Datensatz.
+- **Chef** (BV-Detail, `projektCardHTML(p, true)` → `plaeneHTML(p, true)`):
+  „⬆️ Plan hochladen“ (mehrere Dateien, `#planFile-<id>`, `uploadPlans()`),
+  🗑 löschen (`plan-delete`, mit Rückfrage, löscht auch die Datei).
+  BV-Liste zeigt „📐 N“.
+- **Ansehen**: Fahrer/Lager auf der BV-Karte, Baustelle unter der
+  BV-Auswahl beim Bestellen (`plaeneHTML(p, false)`); Fotos mit Vorschau,
+  Antippen öffnet die Datei (`getPublicUrl`).
+- Fehlermeldungen: zu groß (`planTooBig`), Bucket fehlt (`planNoBucket`),
+  sonstiger Fehler/kein Netz (`planUploadFail`).
+- **Einrichtung (einmalig, Supabase → SQL Editor):**
+  ```sql
+  insert into storage.buckets (id, name, public, file_size_limit)
+  values ('bauplaene', 'bauplaene', true, 52428800)
+  on conflict (id) do update set public = true, file_size_limit = 52428800;
+  drop policy if exists "bauplaene lesen" on storage.objects;
+  drop policy if exists "bauplaene hochladen" on storage.objects;
+  drop policy if exists "bauplaene loeschen" on storage.objects;
+  create policy "bauplaene lesen" on storage.objects for select to anon using (bucket_id = 'bauplaene');
+  create policy "bauplaene hochladen" on storage.objects for insert to anon with check (bucket_id = 'bauplaene');
+  create policy "bauplaene loeschen" on storage.objects for delete to anon using (bucket_id = 'bauplaene');
+  ```
+  Schutz: öffentlicher Bucket (wer den Link hat, kann die Datei öffnen;
+  Dateinamen sind zufällig) – gleiches Niveau wie der Rest der App, bis
+  die echte Anmeldung (Supabase Auth) kommt.
+
 ## Hell-/Dunkelmodus
 
 Die App folgt automatisch der Handy-/Browser-Einstellung
@@ -487,8 +518,6 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
 
 ## Geplante nächste Schritte
 
-- Baupläne pro Bauvorhaben hochladen (braucht Supabase Storage /
-  Datei-Bucket – ausdrücklicher Wunsch des Nutzers für später)
 - Kalender-Bearbeitung: aktuell nur über das (gemeinsame) Chef-Passwort
   freischaltbar. Nutzer möchte, dass auch andere/mehrere Mitarbeiter
   Termine eintragen können, nicht nur "Chef" – noch offen, wie genau
