@@ -214,6 +214,24 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
    - "Inventur": Bestand pro Teil mit +/− und "+10". Bei "Bereit melden"
      wird der Bestand automatisch abgezogen. Negativer Bestand wird rot
      als "Fehlt: X Stk" angezeigt.
+   **Packliste** (`pickListHTML()`): Ist eine Bestellung „In Bearbeitung“,
+   zeigt die Lager-Karte statt der einfachen Liste jede Position mit
+   „✓ Eingepackt“ / „✗ Fehlt“ (+ Feld „Davon fehlen: N“, `pickMiss-<id>-<i>`,
+   per `change` gespeichert); `order.pick = {[Index]: {s:'ok'|'fehlt', n}}`.
+   „Bereit melden“ kürzt die Bestellung auf das Eingepackte, zieht NUR das
+   vom Bestand ab, legt für Fehlendes automatisch eine **Nachlieferung**
+   an (neue Bestellung `nachVon`, übernimmt Wunschtermin; alte bekommt
+   `fehlt[]` + `nachId`, Kasten „⚠️ Fehlt – kommt mit Nachlieferung #X“,
+   auch auf dem Lieferschein) und schickt dem Besteller eine Push-Nachricht
+   (`nMissingT/B`). Fehlt alles → Warnung, Bestellung bleibt offen.
+   **Dringlichkeit/Wunschtermin**: Im Bestellschein-Entwurf wählt die
+   Baustelle „Normal / 🔴 Dringend / Morgen früh / 📅 Wunschtermin“
+   (`wunschPickerHTML()`, `set-wunsch`, `#wunschDate`) → `order.wunsch`
+   (`'dringend'|'morgen'|'datum'`) + `order.bis` (ISO). Abzeichen auf allen
+   Karten (`wunschBadgeHTML()`: DRINGEND / heute / bis … / überfällig), Lager,
+   Fahrer und Chef sortieren offene Bestellungen danach
+   (`sortOrdersForWork()`: dringend → nach Datum → Rest; Geliefertes unten).
+   Dringende Bestellungen haben einen eigenen Push-Titel (`nUrgentT`).
 3. **Fahrer** (z. B. Ludwig): Oben Widgets, dann "Mein Status" (Am Lager /
    Unterwegs – bei Unterwegs „Wohin?" mit antippbaren Bauvorhaben, siehe
    Fahrer-Status), darunter vier Reiter "Lieferungen" / "Kalender" /

@@ -306,6 +306,32 @@
   .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
+  .wunsch-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px 0;}
+  .wunsch-badge{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--surface-2);color:var(--ink);}
+  .wunsch-badge.w-urgent{background:#DC2626;color:#fff;}
+  .wunsch-badge.w-today{background:var(--amber);color:#1a1a1a;}
+  .wunsch-badge.w-nach{background:var(--accent-soft);color:var(--accent-dark);}
+  .wunsch-pick{margin:16px 0 14px 0;}
+  .wunsch-pick-label{font-size:13px;font-weight:700;margin-bottom:8px;}
+  .ziel-chip.urgent.active{background:#DC2626;border-color:#DC2626;color:#fff;}
+  .wunsch-date{margin-top:10px;width:100%;padding:11px 12px;border:1.5px solid var(--line-strong);border-radius:12px;font-size:15px;background:var(--card);color:var(--ink);font-family:'Inter',sans-serif;box-sizing:border-box;}
+  .pick-hint{font-size:12px;color:var(--muted);margin:10px 0 6px 0;}
+  .pick-list{display:flex;flex-direction:column;gap:6px;}
+  .pick-row{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--card);}
+  .pick-row.pk-ok{border-color:#1E9E5A;background:rgba(30,158,90,0.08);}
+  .pick-row.pk-fehlt{border-color:#DC2626;background:rgba(220,38,38,0.07);}
+  .pick-main{flex:1;min-width:0;}
+  .pick-name{font-size:13.5px;font-weight:600;}
+  .pick-row.pk-ok .pick-name{text-decoration:line-through;opacity:0.7;}
+  .pick-miss{display:block;font-size:12.5px;margin-top:6px;color:#DC2626;font-weight:600;}
+  .pick-miss input{width:64px;padding:5px 6px;border:1.5px solid #DC2626;border-radius:8px;font-size:14px;background:var(--card);color:var(--ink);}
+  .pick-btns{display:flex;flex-direction:column;gap:5px;}
+  .pick-btn{border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;}
+  .pick-btn.ok.on{background:#1E9E5A;border-color:#1E9E5A;color:#fff;}
+  .pick-btn.miss.on{background:#DC2626;border-color:#DC2626;color:#fff;}
+  .pick-progress{font-size:12.5px;color:var(--muted);margin:8px 0 4px 0;}
+  .fehlt-box{margin:10px 0 4px 0;padding:8px 10px;border-radius:10px;background:rgba(220,38,38,0.08);border-left:4px solid #DC2626;font-size:13px;}
+  .fehlt-box .order-items{margin:4px 0 0 0;}
   .sync-banner{font-size:13px;line-height:1.45;border-radius:12px;padding:10px 12px;margin:0 0 14px 0;background:var(--surface-2);color:var(--ink);border-left:4px solid var(--amber);}
   .lager-pin{border-color:#0069B3;}
   .nav-btn{display:block;text-align:center;margin-top:12px;background:#FFEE00;color:#0B2A4A;font-weight:700;font-size:14px;border-radius:12px;padding:11px 14px;text-decoration:none;}
@@ -381,7 +407,8 @@
   #printArea .ls-items td{padding:7px 4px;border-bottom:1px solid #ccc;font-size:14px;color:#111;}
   #printArea .ls-items td.ls-menge,#printArea .ls-items th.ls-menge{text-align:right;white-space:nowrap;}
   #printArea .ls-items .ls-total{font-weight:700;border-top:2px solid #111;border-bottom:none;text-align:right;padding-top:9px;}
-  @media print{
+  .ls-fehlt{margin-top:14px;font-size:13px;}
+@media print{
     html,body{background:#fff !important;}
     body > *:not(#printArea){display:none !important;}
     #printArea{display:block !important;background:#fff;color:#111;padding:16px;font-family:'Inter',sans-serif;}
@@ -598,6 +625,7 @@ de:{
   pvBestellungenPrefix:'Bestellungen:',
   pvKeineBestellungen:'Noch keine Bestellungen zu diesem Bauvorhaben.',
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
+  wunschLabel:'Wann wird es gebraucht?', wunschNormal:'Normal', wunschDringend:'🔴 Dringend – sofort', wunschMorgen:'Morgen früh', wunschDatum:'📅 Wunschtermin', badgeDringend:'🔴 DRINGEND', badgeBis:'📅 bis {d}', badgeHeute:'📅 heute gebraucht', badgeUeberfaellig:'⚠️ überfällig – war bis {d}', gebrauchtLabel:'Gebraucht', nUrgentT:'🔴 DRINGEND: Neue Bestellung #{id}', pickHint:'Beim Zusammenstellen abhaken. Was fehlt, kommt automatisch als Nachlieferung.', pickOkBtn:'Eingepackt', pickMissBtn:'Fehlt', pickMissQty:'Davon fehlen:', pickProgress:'{a} von {n} abgehakt', pickMissingCount:'{n} fehlt', pickAllMissing:'Es fehlt alles – so kann die Bestellung nicht bereit gemeldet werden.', fehltHeading:'⚠️ Fehlt – kommt mit Nachlieferung #{id}:', nachVonBadge:'↩ Nachlieferung zu #{id}', nMissingT:'Teile fehlen bei Bestellung #{id}', nMissingB:'{n} Position(en) kommen mit Nachlieferung #{neu}.', lsFehlt:'Fehlt (kommt mit Nachlieferung #{id})',
   syncPending:'📶 Kein Netz – deine Änderungen sind auf dem Handy gemerkt und werden automatisch gesendet, sobald wieder Netz da ist.', syncOffline:'📶 Kein Netz – angezeigt wird der letzte bekannte Stand.',
   lagerHeading:'🏭 Lager-Standort', lagerHint:'Damit stellt sich der Fahrer-Status von selbst um: Kommt ein Fahrer (App offen) am Lager an, steht er auf „Am Lager“ – fährt er weg, auf „Unterwegs“. Umkreis ca. 250 m.', lagerNotSet:'Noch kein Lager eingetragen.', lagerAdresseLabel:'Adresse des Lagers', lagerSaveBtn:'Lager-Adresse speichern', lagerGpsBtn:'📍 Ich bin gerade am Lager – Standort übernehmen', lagerNotFound:'Adresse nicht gefunden – bitte mit Ort eingeben, z. B. „Musterstraße 1, München“.', lagerMapLabel:'Lager', autoTag:'automatisch', autoHint:'🔄 Stellt sich automatisch um, wenn du am Lager ankommst oder wegfährst.',
   routeEta:'ca. {min} Min. Fahrt · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Navigation starten (Google Maps)',
@@ -782,6 +810,7 @@ pl:{
   pvBestellungenPrefix:'Zamówienia:',
   pvKeineBestellungen:'Brak zamówień dla tej budowy.',
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
+  wunschLabel:'Kiedy jest potrzebne?', wunschNormal:'Normalnie', wunschDringend:'🔴 Pilne – od razu', wunschMorgen:'Jutro rano', wunschDatum:'📅 Wybrany termin', badgeDringend:'🔴 PILNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrzebne dziś', badgeUeberfaellig:'⚠️ po terminie – było do {d}', gebrauchtLabel:'Potrzebne', nUrgentT:'🔴 PILNE: Nowe zamówienie #{id}', pickHint:'Odhaczaj przy kompletowaniu. Czego brakuje, zostanie automatycznie dosłane.', pickOkBtn:'Spakowane', pickMissBtn:'Brak', pickMissQty:'Brakuje z tego:', pickProgress:'{a} z {n} odhaczonych', pickMissingCount:'{n} brak', pickAllMissing:'Brakuje wszystkiego – zamówienia nie można zgłosić jako gotowe.', fehltHeading:'⚠️ Brak – zostanie dosłane z dostawą #{id}:', nachVonBadge:'↩ Dosyłka do #{id}', nMissingT:'Brakuje części w zamówieniu #{id}', nMissingB:'{n} pozycja(e) przyjdzie z dosyłką #{neu}.', lsFehlt:'Brak (przyjdzie z dosyłką #{id})',
   syncPending:'📶 Brak sieci – twoje zmiany są zapisane w telefonie i zostaną wysłane automatycznie, gdy sieć wróci.', syncOffline:'📶 Brak sieci – widoczny jest ostatni znany stan.',
   lagerHeading:'🏭 Lokalizacja magazynu', lagerHint:'Dzięki temu status kierowcy zmienia się sam: gdy kierowca (z otwartą aplikacją) dojedzie do magazynu, ma status „W magazynie“ – gdy odjedzie, „W trasie“. Promień ok. 250 m.', lagerNotSet:'Magazyn nie jest jeszcze wpisany.', lagerAdresseLabel:'Adres magazynu', lagerSaveBtn:'Zapisz adres magazynu', lagerGpsBtn:'📍 Jestem teraz w magazynie – użyj mojej lokalizacji', lagerNotFound:'Nie znaleziono adresu – podaj go z miejscowością, np. „Musterstraße 1, München“.', lagerMapLabel:'Magazyn', autoTag:'automatycznie', autoHint:'🔄 Zmienia się automatycznie, gdy dojeżdżasz do magazynu lub z niego odjeżdżasz.',
   routeEta:'ok. {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa w Google Maps', navStart:'🧭 Uruchom nawigację (Google Maps)',
@@ -966,6 +995,7 @@ sk:{
   pvBestellungenPrefix:'Objednávky:',
   pvKeineBestellungen:'Zatiaľ žiadne objednávky k tejto stavbe.',
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
+  wunschLabel:'Kedy je to potrebné?', wunschNormal:'Normálne', wunschDringend:'🔴 Súrne – hneď', wunschMorgen:'Zajtra ráno', wunschDatum:'📅 Želaný termín', badgeDringend:'🔴 SÚRNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebné dnes', badgeUeberfaellig:'⚠️ po termíne – bolo do {d}', gebrauchtLabel:'Potrebné', nUrgentT:'🔴 SÚRNE: Nová objednávka #{id}', pickHint:'Pri chystaní odškrtávaj. Čo chýba, príde automaticky ako doplnenie.', pickOkBtn:'Zabalené', pickMissBtn:'Chýba', pickMissQty:'Z toho chýba:', pickProgress:'{a} z {n} odškrtnuté', pickMissingCount:'{n} chýba', pickAllMissing:'Chýba všetko – objednávku nemožno nahlásiť ako pripravenú.', fehltHeading:'⚠️ Chýba – príde s doplnením #{id}:', nachVonBadge:'↩ Doplnenie k #{id}', nMissingT:'V objednávke #{id} chýbajú diely', nMissingB:'{n} položka(y) príde s doplnením #{neu}.', lsFehlt:'Chýba (príde s doplnením #{id})',
   syncPending:'📶 Žiadna sieť – tvoje zmeny sú uložené v telefóne a odošlú sa automaticky, keď bude sieť.', syncOffline:'📶 Žiadna sieť – zobrazuje sa posledný známy stav.',
   lagerHeading:'🏭 Poloha skladu', lagerHint:'Vďaka tomu sa stav vodiča mení sám: keď vodič (s otvorenou aplikáciou) príde do skladu, má stav „V sklade“ – keď odíde, „Na ceste“. Okruh cca 250 m.', lagerNotSet:'Sklad ešte nie je zadaný.', lagerAdresseLabel:'Adresa skladu', lagerSaveBtn:'Uložiť adresu skladu', lagerGpsBtn:'📍 Som práve v sklade – použiť moju polohu', lagerNotFound:'Adresa sa nenašla – zadaj ju aj s mestom, napr. „Musterstraße 1, München“.', lagerMapLabel:'Sklad', autoTag:'automaticky', autoHint:'🔄 Mení sa automaticky, keď prídeš do skladu alebo z neho odídeš.',
   routeEta:'cca {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa v Google Maps', navStart:'🧭 Spustiť navigáciu (Google Maps)',
@@ -1150,6 +1180,7 @@ hr:{
   pvBestellungenPrefix:'Narudžbe:',
   pvKeineBestellungen:'Još nema narudžbi za ovo gradilište.',
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
+  wunschLabel:'Kada je potrebno?', wunschNormal:'Normalno', wunschDringend:'🔴 Hitno – odmah', wunschMorgen:'Sutra ujutro', wunschDatum:'📅 Željeni termin', badgeDringend:'🔴 HITNO', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebno danas', badgeUeberfaellig:'⚠️ kasni – bilo do {d}', gebrauchtLabel:'Potrebno', nUrgentT:'🔴 HITNO: Nova narudžba #{id}', pickHint:'Odkvačuj pri slaganju. Što nedostaje, stiže automatski kao dopuna.', pickOkBtn:'Spakirano', pickMissBtn:'Nedostaje', pickMissQty:'Od toga nedostaje:', pickProgress:'{a} od {n} odkvačeno', pickMissingCount:'{n} nedostaje', pickAllMissing:'Nedostaje sve – narudžba se ne može prijaviti kao spremna.', fehltHeading:'⚠️ Nedostaje – stiže s dopunom #{id}:', nachVonBadge:'↩ Dopuna za #{id}', nMissingT:'Nedostaju dijelovi u narudžbi #{id}', nMissingB:'{n} stavka(e) stiže s dopunom #{neu}.', lsFehlt:'Nedostaje (stiže s dopunom #{id})',
   syncPending:'📶 Nema mreže – tvoje promjene su spremljene na mobitelu i bit će poslane automatski kad se mreža vrati.', syncOffline:'📶 Nema mreže – prikazano je zadnje poznato stanje.',
   lagerHeading:'🏭 Lokacija skladišta', lagerHint:'Tako se status vozača mijenja sam: kad vozač (s otvorenom aplikacijom) stigne u skladište, ima status „U skladištu“ – kad ode, „Na putu“. Radijus oko 250 m.', lagerNotSet:'Skladište još nije upisano.', lagerAdresseLabel:'Adresa skladišta', lagerSaveBtn:'Spremi adresu skladišta', lagerGpsBtn:'📍 Upravo sam u skladištu – preuzmi moju lokaciju', lagerNotFound:'Adresa nije pronađena – upiši je s mjestom, npr. „Musterstraße 1, München“.', lagerMapLabel:'Skladište', autoTag:'automatski', autoHint:'🔄 Mijenja se automatski kad stigneš u skladište ili odeš iz njega.',
   routeEta:'oko {min} min vožnje · {km} km', routeGmaps:'🧭 Ruta u Google Maps', navStart:'🧭 Pokreni navigaciju (Google Maps)',
@@ -1334,6 +1365,7 @@ en:{
   pvBestellungenPrefix:'Orders:',
   pvKeineBestellungen:'No orders for this project yet.',
   pvAktivBadge:'Active', pvFertigBadge:'Done',
+  wunschLabel:'When is it needed?', wunschNormal:'Normal', wunschDringend:'🔴 Urgent – right away', wunschMorgen:'Tomorrow morning', wunschDatum:'📅 Preferred date', badgeDringend:'🔴 URGENT', badgeBis:'📅 by {d}', badgeHeute:'📅 needed today', badgeUeberfaellig:'⚠️ overdue – was due {d}', gebrauchtLabel:'Needed', nUrgentT:'🔴 URGENT: New order #{id}', pickHint:'Tick off while packing. Anything missing is sent automatically as a follow-up delivery.', pickOkBtn:'Packed', pickMissBtn:'Missing', pickMissQty:'Missing:', pickProgress:'{a} of {n} ticked', pickMissingCount:'{n} missing', pickAllMissing:'Everything is missing – the order cannot be marked as ready.', fehltHeading:'⚠️ Missing – comes with follow-up #{id}:', nachVonBadge:'↩ Follow-up for #{id}', nMissingT:'Parts missing in order #{id}', nMissingB:'{n} item(s) will come with follow-up #{neu}.', lsFehlt:'Missing (comes with follow-up #{id})',
   syncPending:'📶 No network – your changes are saved on the phone and will be sent automatically once the network is back.', syncOffline:'📶 No network – showing the last known data.',
   lagerHeading:'🏭 Warehouse location', lagerHint:'This makes the driver status update by itself: when a driver (app open) arrives at the warehouse, the status becomes “At the warehouse” – when they drive off, “On the road”. Radius approx. 250 m.', lagerNotSet:'No warehouse entered yet.', lagerAdresseLabel:'Warehouse address', lagerSaveBtn:'Save warehouse address', lagerGpsBtn:'📍 I am at the warehouse right now – use my location', lagerNotFound:'Address not found – please include the town, e.g. “Musterstraße 1, München”.', lagerMapLabel:'Warehouse', autoTag:'automatic', autoHint:'🔄 Updates automatically when you arrive at or leave the warehouse.',
   routeEta:'approx. {min} min drive · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Start navigation (Google Maps)',
@@ -1817,6 +1849,11 @@ function merge3(base, local, remote){
   });
   return {value:out, changes};
 }
+// Gibt es eigene, noch nicht gespeicherte Änderungen? Gleiche Logik wie
+// beim Zusammenführen (leere Liste = fehlende Liste usw.).
+function hasLocalChanges(){
+  return !!syncBase && merge3(syncBase, stateToValue(), syncBase).changes > 0;
+}
 function savePending(){
   if(state.syncPending && syncBase) lsSet(PENDING_KEY, JSON.stringify({base:syncBase, local:stateToValue(), ts:Date.now()}));
   else lsSet(PENDING_KEY, null);
@@ -1886,7 +1923,7 @@ async function doSync(){
     const result = same(now, captured) ? merged : merge3(captured, now, merged).value;
     syncBase = merged;
     applyValue(clone(result));   // eigene Kopie, sonst ändert die App syncBase mit
-    state.syncPending = !same(stateToValue(), syncBase);
+    state.syncPending = hasLocalChanges();
     savePending();
     lsSet(CACHE_KEY, JSON.stringify(syncBase));
     enforceSession();
@@ -2297,9 +2334,19 @@ function orderReviewHTML(){
         <thead><tr><th>${t('thTeil')}</th><th class="num">${t('thMenge')}</th></tr></thead>
         <tbody>${items.map(i=>`<tr><td>${i.name}</td><td class="num">${i.qty} ${i.unit}</td></tr>`).join('')}</tbody>
       </table>${weightLineHTML(items)}` : `<div class="empty-state">${t('reviewEmpty')}</div>`}
+      ${wunschPickerHTML()}
       <button class="submit-btn" data-action="submit-order-final" style="width:100%;" ${items.length? '':'disabled'}>${t('reviewSubmitBtn')}</button>
       <button class="refresh-btn" data-action="close-order-review" style="width:100%;margin-top:10px;">${t('reviewBackBtn')}</button>
     </div>
+  </div>`;
+}
+
+function wunschPickerHTML(){
+  const w = state.orderReview.wunsch || 'normal';
+  return `<div class="wunsch-pick">
+    <div class="wunsch-pick-label">${t('wunschLabel')}</div>
+    <div class="ziel-chips">${WUNSCH_OPTS.map(([k,key])=>`<button class="ziel-chip ${w===k?'active':''} ${k==='dringend'?'urgent':''}" data-action="set-wunsch" data-w="${k}">${t(key)}</button>`).join('')}</div>
+    ${w==='datum'? `<input type="date" id="wunschDate" class="wunsch-date" min="${todayISO()}" value="${state.orderReview.bis||''}">`:''}
   </div>`;
 }
 
@@ -2316,6 +2363,7 @@ function confirmHTML(o){
           <div class="ticket-row"><span>${t('baustelleLabel')}</span><span>${o.baustelle}</span></div>
           <div class="ticket-row"><span>${t('bestelltVonLabel')}</span><span>${o.person}</span></div>
           <div class="ticket-row"><span>${t('zeitLabel')}</span><span>${o.time}</span></div>
+          ${wunschBadgeHTML(o)? `<div class="ticket-row"><span>${t('gebrauchtLabel')}</span><span>${wunschBadgeHTML(o)}</span></div>`:''}
           <div style="border-top:1px solid var(--concrete);margin:10px 0;"></div>
           <ul class="order-items">${o.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>
           ${weightLineHTML(o.items)}
@@ -2351,8 +2399,75 @@ function printOrder(id){
       <tbody>${rowsHtml}</tbody>
       ${wt? `<tfoot><tr><td colspan="3" class="ls-total">${t('weightTotal')}: ${wt}</td></tr></tfoot>`:''}
     </table>
+    ${o.fehlt && o.fehlt.length? `<p class="ls-fehlt"><b>${t('lsFehlt',{id:o.nachId})}:</b> ${o.fehlt.map(i=>{const r=resolvedItem(i); return `${i.qty} ${r.unit} ${r.name}`;}).join(', ')}</p>`:''}
   `;
   window.print();
+}
+
+// ---- Dringlichkeit / Wunschtermin -----------------------------------
+// Die Baustelle wählt im Bestellschein-Entwurf, wann sie die Teile
+// braucht: normal / dringend / morgen früh / Wunschtermin. Gespeichert als
+// order.wunsch ('dringend'|'morgen'|'datum') + order.bis (ISO-Datum).
+// Lager/Fahrer/Chef sehen offene Bestellungen danach sortiert
+// (sortOrdersForWork): dringend zuerst, dann nach Datum, Rest nach Nummer.
+const WUNSCH_OPTS = [['normal','wunschNormal'],['dringend','wunschDringend'],['morgen','wunschMorgen'],['datum','wunschDatum']];
+function wunschBadgeHTML(o){
+  if(o.status==='Geliefert') return '';
+  if(o.wunsch==='dringend') return `<span class="wunsch-badge w-urgent">${t('badgeDringend')}</span>`;
+  if(!o.bis) return '';
+  const today = todayISO();
+  if(o.bis < today) return `<span class="wunsch-badge w-urgent">${t('badgeUeberfaellig',{d:formatDateDE(o.bis)})}</span>`;
+  if(o.bis === today) return `<span class="wunsch-badge w-today">${t('badgeHeute')}</span>`;
+  return `<span class="wunsch-badge">${t('badgeBis',{d:formatDateDE(o.bis)})}</span>`;
+}
+function sortOrdersForWork(list){
+  const rank = o => o.status==='Geliefert' ? 3 : o.wunsch==='dringend' ? 0 : o.bis ? 1 : 2;
+  return [...list].sort((a,b)=>{
+    const ra = rank(a), rb = rank(b);
+    if(ra!==rb) return ra-rb;
+    if(ra===1 && a.bis!==b.bis) return a.bis < b.bis ? -1 : 1;
+    if(ra===3) return b.id-a.id;   // Geliefertes: neueste zuerst, ganz unten
+    return a.id-b.id;
+  });
+}
+
+// ---- Packliste (Lager) ---------------------------------------------
+// Solange eine Bestellung "In Bearbeitung" ist, hakt das Lager jede
+// Position ab: "Eingepackt" oder "Fehlt" (mit Anzahl, die fehlt).
+// order.pick = {[Positions-Index]: {s:'ok'|'fehlt', n:fehlende Stück}}.
+// Bei "Bereit melden" wird die Bestellung auf das Eingepackte gekürzt,
+// nur das vom Bestand abgezogen und für das Fehlende automatisch eine
+// Nachlieferung angelegt (neue Bestellung, nachVon = alte Nummer; die
+// alte bekommt fehlt[] + nachId). Der Besteller bekommt eine Nachricht.
+function pickState(o, i){ return (o.pick||{})[i] || null; }
+function pickMissN(o, i){
+  const p = pickState(o, i);
+  if(!p || p.s!=='fehlt') return 0;
+  const q = o.items[i].qty;
+  return Math.min(q, Math.max(1, parseInt(p.n,10) || q));
+}
+function pickListHTML(o){
+  const done = o.items.filter((_,i)=>pickState(o,i)).length;
+  const miss = o.items.filter((_,i)=>pickMissN(o,i)>0).length;
+  return `<div class="pick-hint">${t('pickHint')}</div>
+  <div class="pick-list">${o.items.map((it,i)=>{
+    const r = resolvedItem(it), p = pickState(o,i);
+    return `<div class="pick-row ${p? 'pk-'+p.s : ''}">
+      <div class="pick-main">
+        <div class="pick-name">${it.qty} ${r.unit} — ${r.name}</div>
+        ${p && p.s==='fehlt'? `<label class="pick-miss">${t('pickMissQty')} <input type="number" min="1" max="${it.qty}" inputmode="numeric" id="pickMiss-${o.id}-${i}" data-order="${o.id}" data-idx="${i}" value="${pickMissN(o,i)}"> ${r.unit}</label>`:''}
+      </div>
+      <div class="pick-btns">
+        <button class="pick-btn ok ${p&&p.s==='ok'?'on':''}" data-action="pick" data-order="${o.id}" data-idx="${i}" data-s="ok">✓ ${t('pickOkBtn')}</button>
+        <button class="pick-btn miss ${p&&p.s==='fehlt'?'on':''}" data-action="pick" data-order="${o.id}" data-idx="${i}" data-s="fehlt">✗ ${t('pickMissBtn')}</button>
+      </div>
+    </div>`;
+  }).join('')}</div>
+  <div class="pick-progress">${t('pickProgress',{a:done, n:o.items.length})}${miss? ` · <b>${t('pickMissingCount',{n:miss})}</b>`:''}</div>
+  <div id="pickWarn-${o.id}"></div>`;
+}
+function itemsListHTML(items){
+  return `<ul class="order-items">${items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>`;
 }
 
 function orderCardHTML(o, role){
@@ -2367,8 +2482,10 @@ function orderCardHTML(o, role){
       <div><div class="no">#${o.id}</div><div class="site">${o.baustelle} · ${t('bestelltVonInline')} ${o.person}</div></div>
       <div class="status-badge ${statusClass}">${statusLabel(o.status)}</div>
     </div>
+    ${wunschBadgeHTML(o) || o.nachVon? `<div class="wunsch-row">${wunschBadgeHTML(o)}${o.nachVon? `<span class="wunsch-badge w-nach">${t('nachVonBadge',{id:o.nachVon})}</span>`:''}</div>`:''}
     <div class="order-time">${t('bestelltPrefix')} ${o.time}</div>
-    <ul class="order-items">${o.items.map(i=>{const r=resolvedItem(i); return `<li>${i.qty} ${r.unit} — ${r.name}</li>`;}).join('')}</ul>
+    ${role==='lager' && o.status==='In Bearbeitung' ? pickListHTML(o) : itemsListHTML(o.items)}
+    ${o.fehlt && o.fehlt.length? `<div class="fehlt-box"><b>${t('fehltHeading',{id:o.nachId})}</b>${itemsListHTML(o.fehlt)}</div>`:''}
     ${weightLineHTML(o.items)}
     <a class="maps-btn" href="${mapsUrl}" target="_blank" rel="noopener">${t('mapsLink')}</a>
     <button class="print-btn" data-action="print-order" data-order="${o.id}">${t('printBtn')}</button>
@@ -2406,7 +2523,7 @@ function inventoryTableHTML(editable){
 
 function lagerHTML(){
   const tab = state.lagerTab;
-  const orders = [...state.orders].sort((a,b)=>a.id-b.id);
+  const orders = sortOrdersForWork(state.orders);
   return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
   <h2 class="view-title">${t('lagerTitle')}</h2>
   ${widgetsHTML('lager')}
@@ -2614,7 +2731,7 @@ function fahrerKalenderHTML(){
 }
 
 function fahrerLieferungenHTML(){
-  const all = [...state.orders].sort((a,b)=>a.id-b.id);
+  const all = sortOrdersForWork(state.orders);
   const ready = all.filter(o=>STATUS_FLOW.indexOf(o.status)>=2);
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
   return `<p class="view-sub">${t('fahrerSub')}</p>
@@ -3363,7 +3480,7 @@ function updateTruckMarkers(){
 
 function chefHTML(){
   const tab = state.chefTab;
-  const orders = [...state.orders].sort((a,b)=>a.id-b.id);
+  const orders = sortOrdersForWork(state.orders);
   const counts = {};
   STATUS_FLOW.forEach(s=> counts[s] = orders.filter(o=>o.status===s).length);
   return `<div class="refresh-row"><button class="refresh-btn" data-action="refresh">${t('refreshBtn')}</button></div>
@@ -3582,6 +3699,9 @@ function openOrderReview(){
 async function submitOrderFinal(){
   if(!state.orderReview) return;
   const {ort, coords, projektId} = state.orderReview;
+  const wunsch = state.orderReview.wunsch || 'normal';
+  const wd = document.getElementById('wunschDate');
+  let bis = wunsch==='morgen' ? addDaysISO(todayISO(), 1) : wunsch==='datum' ? ((wd && wd.value) || state.orderReview.bis || null) : null;
   const items = Object.entries(state.cart).filter(([id,q])=>q>0).map(([id,q])=>{
     const it = CATALOG.find(c=>c.id===id);
     return {id:it.id, name:it.name, unit:it.unit, qty:q, kg:it.kg};
@@ -3598,6 +3718,8 @@ async function submitOrderFinal(){
     status:'Neu',
     time: new Date().toLocaleString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),
   };
+  if(wunsch!=='normal' && (wunsch!=='datum' || bis)) order.wunsch = wunsch;
+  if(bis && order.wunsch) order.bis = bis;
   state.orders.push(order);
   state.cart = {};
   state.confirmOrder = order;
@@ -3605,7 +3727,7 @@ async function submitOrderFinal(){
   if(!projektId) state.baustelleOrt = ort;
   await saveShared();
   render();
-  notify({roles:['lager','chef']}, 'nNewOrderT', 'nNewOrderB', {id:order.id, ort:order.baustelle, person:order.person});
+  notify({roles:['lager','chef']}, order.wunsch==='dringend' ? 'nUrgentT' : 'nNewOrderT', 'nNewOrderB', {id:order.id, ort:order.baustelle, person:order.person});
 }
 
 document.getElementById('app').addEventListener('click', async (e)=>{
@@ -3719,16 +3841,56 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const order = state.orders.find(o=>o.id===id);
     const step = NEXT_STEP[order.status];
     if(step){
+      let nach = null;
       if(step.next==='Bereit zur Abholung'){
-        order.items.forEach(it=>{ state.inventory[it.id] = (state.inventory[it.id] ?? 0) - it.qty; });
+        // Packliste auswerten: nur Eingepacktes bleibt, Fehlendes -> Nachlieferung
+        const packed = [], missing = [];
+        order.items.forEach((it,i)=>{
+          const n = pickMissN(order, i);
+          if(it.qty-n > 0) packed.push({...it, qty:it.qty-n});
+          if(n > 0) missing.push({...it, qty:n});
+        });
+        if(!packed.length){
+          const w = document.getElementById('pickWarn-'+order.id);
+          if(w) w.innerHTML = `<div class="warn">${t('pickAllMissing')}</div>`;
+          return;
+        }
+        packed.forEach(it=>{ state.inventory[it.id] = (state.inventory[it.id] ?? 0) - it.qty; });
+        if(missing.length){
+          nach = {id: state.orderCounter++, baustelle:order.baustelle, coords:order.coords||null, projekt:order.projekt||null,
+            person:order.person, items:missing, status:'Neu', time:new Date().toLocaleString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+            nachVon:order.id};
+          if(order.wunsch) nach.wunsch = order.wunsch;
+          if(order.bis) nach.bis = order.bis;
+          state.orders.push(nach);
+          order.items = packed; order.fehlt = missing; order.nachId = nach.id;
+        }
+        delete order.pick;
       }
       order.status = step.next;
       await saveShared();
       const v = {id:order.id, ort:order.baustelle};
+      if(nach) notify({names:[order.person]}, 'nMissingT', 'nMissingB', {id:order.id, n:nach.items.length, neu:nach.id});
       if(order.status==='Bereit zur Abholung') notify({roles:['fahrer']}, 'nReadyT', 'nReadyB', v);
       if(order.status==='Unterwegs') notify({names:[order.person]}, 'nOnWayT', 'nOnWayB', v);
       if(order.status==='Geliefert') notify({names:[order.person]}, 'nDeliveredT', 'nDeliveredB', v);
     }
+    render();
+  }
+  if(action==='pick'){
+    const order = state.orders.find(o=>o.id===parseInt(el.dataset.order,10));
+    if(!order) return;
+    const i = el.dataset.idx, s = el.dataset.s;
+    order.pick = order.pick || {};
+    if(order.pick[i] && order.pick[i].s===s) delete order.pick[i];
+    else order.pick[i] = s==='fehlt' ? {s, n:order.items[i].qty} : {s};
+    render();
+    await saveShared();
+  }
+  if(action==='set-wunsch'){
+    if(!state.orderReview) return;
+    state.orderReview.wunsch = el.dataset.w;
+    if(el.dataset.w==='datum' && !state.orderReview.bis) state.orderReview.bis = addDaysISO(todayISO(), 1);
     render();
   }
   if(action==='use-location'){
@@ -4053,6 +4215,19 @@ document.getElementById('app').addEventListener('change', async (e)=>{
     await saveShared();
     e.target.blur();
     render();
+  }
+  if(e.target.id && e.target.id.startsWith('pickMiss-')){
+    const order = state.orders.find(o=>String(o.id)===e.target.dataset.order);
+    const i = e.target.dataset.idx;
+    if(!order || !order.pick || !order.pick[i]) return;
+    const q = order.items[i].qty;
+    order.pick[i].n = Math.min(q, Math.max(1, parseInt(e.target.value,10) || q));
+    e.target.blur();
+    render();
+    await saveShared();
+  }
+  if(e.target.id==='wunschDate' && state.orderReview){
+    state.orderReview.bis = e.target.value || null;
   }
 });
 document.getElementById('app').addEventListener('input', (e)=>{
