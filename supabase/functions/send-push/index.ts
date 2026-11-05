@@ -9,7 +9,11 @@
 //                            als VAPID_PUBLIC_KEY)
 //       VAPID_PRIVATE_KEY = (geheimer Schlüssel -- NIE ins Repo schreiben)
 //       VAPID_SUBJECT     = mailto:<Firmen-E-Mail>
-//  "Verify JWT" bleibt an: die App ruft die Funktion mit dem Anon-Key auf.
+//  "Verify JWT" bleibt an. Seit der echten Anmeldung (Supabase Auth)
+//  nimmt die Funktion nur noch Aufrufe von ANGEMELDETEN Mitarbeitern an
+//  (die App schickt deren Anmelde-Token automatisch mit) -- mit dem
+//  öffentlichen Anon-Key allein lassen sich keine Nachrichten auslösen.
+//  Nach einer Änderung dieser Datei: im Dashboard neu "Deploy".
 //
 // Ablauf: Die App schickt {roles, names, exclude, msgs, url}. Die Funktion
 // liest den gemeinsamen Datensatz (app_state / shopfloor-data-v2), sucht
@@ -61,9 +65,15 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
   try {
     setupVapid();
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    // Nur angemeldete Mitarbeiter (nicht der öffentliche Anon-Key)
+    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+    const { data: who } = token ? await sb.auth.getUser(token) : { data: null };
+    if (!who?.user) return json({ error: "nicht angemeldet" }, 401);
     const { roles = [], names = [], exclude = null, msgs = {}, url = "./geruest-bestell-app.html" } = await req.json();
 
-    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { data, error } = await sb.from("app_state").select("value").eq("key", STORAGE_KEY).maybeSingle();
     if (error) throw error;
     const value = data?.value ?? {};
