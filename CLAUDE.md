@@ -389,6 +389,15 @@ w-grey`); antippbare Kacheln springen in den passenden Reiter
   < 0) / Nächste geplante Lieferung.
 - Chef (nur im Reiter Übersicht): Offene Bestellungen / Fahrer unterwegs
   (mit Ziel) / Aktive Bauvorhaben je Farbe / Nächste geplante Lieferung.
+- **Jede Kachel ist antippbar** und springt zur passenden Liste
+  (`widgetTile({tab, go, done})` → `data-tab`/`data-go`/`data-done`, Aktion
+  `widget-go` → `jumpTo(id)`: scrollt unter den Header und lässt den
+  Abschnitt kurz gelb aufleuchten, `.jump-flash`). Ziele: `sec-offen`
+  (Offene Bestellungen Chef/Lager), `sec-lkw` (Chef-Karte „Wo sind die
+  LKWs?“), `sec-geplant` (geplante Lieferungen), `sec-mine` (Baustelle
+  „Meine Bestellungen“), `done-<key>` (+ Erledigt aufklappen, z. B.
+  Baustelle „Geliefert“), `sec-fahrer-offen`/`sec-fahrer-pu`. Fehlt das
+  Ziel, geht es nach oben.
 
 ## Layout / Bedienung (einfach für alle Rollen)
 
