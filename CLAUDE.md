@@ -763,6 +763,19 @@ Formular einen Hinweis statt der leeren Auswahl.
 - Mobile-first: wird hauptsächlich am Handy benutzt (meta viewport!);
   am PC breiter und mehrspaltig (siehe „PC-Ansicht")
 - Kein Amazon-/Shop-Feeling: Bestellschein-Charakter statt Warenkorb
+- **Symbole statt Emojis** (Nutzerwunsch „seriöser“, gewählt: kräftige
+  Linien, wichtige Symbole in kleinen farbigen Kacheln): Lucide-Icons
+  (ISC-Lizenz), die benötigten Formen stehen direkt in der Datei
+  (`SYM_ICONS`, nichts wird nachgeladen), `ic('truck')` liefert das SVG
+  (Strichstärke 2.4, läuft in der Textfarbe mit). Emojis im Wörterbuch `T`
+  und in Vorlagen bleiben im Code stehen; `render()` ruft danach
+  `iconize(#app)` auf, das in allen Textstellen Emojis über die Tabelle
+  `EMO` durch Symbole ersetzt (Attribute unberührt, in `<option>` werden sie
+  entfernt). Neues Emoji → in `EMO` eintragen (+ Form in `SYM_ICONS`), sonst
+  bleibt es als Emoji stehen. Push-Texte ohne Emojis (`stripEmo()` in
+  `tlv()`). Reiter unten: `ico` = Symbol-Name. Info-Kacheln: `widgetTile({icon})`
+  → farbige Kachel `.w-ico` in der Kachel-Farbe. Karten-Marker/Popups nutzen
+  `ic()` direkt. Sprach-Flaggen bleiben.
 
 ## Offen
 
