@@ -221,9 +221,28 @@ Gesamtgewicht (siehe „Gewicht").
 
 Die Datei bindet eine `manifest.json` sowie `icon-192.png`/`icon-512.png`
 (quadratische Kacheln, generiert aus `logo.png`) und `sw.js` ein (Service
-Worker: Installierbarkeit + Push-Nachrichten, kein Offline-Cache). Dadurch bieten Handy-Browser „Zum
+Worker: Installierbarkeit, Push-Nachrichten, Offline-Start). Dadurch bieten Handy-Browser „Zum
 Startbildschirm hinzufügen" an; die App startet dann ohne Adressleiste wie
 eine eigenständige App (`display: standalone` in der Manifest-Datei).
+
+**Startet auch ohne Netz** (Keller, Land, schlechtes Netz): `sw.js` legt die
+App selbst auf dem Handy ab (Caches `geruest-shell-<VERSION>` = App-Seite,
+index, manifest, Logo, Icons; `geruest-runtime-<VERSION>` = supabase-js von
+jsDelivr, Google-Schriften, Leaflet von cdnjs).
+- App-Seite: **erst Netz** (Neuerungen kommen sofort an), nach 4 s ohne
+  Antwort (`PAGE_TIMEOUT_MS`) oder ohne Netz die gespeicherte Fassung.
+- Logo/Icons/Bibliotheken/Schriften: sofort aus dem Speicher, im Hintergrund
+  aktualisiert.
+- NIE gespeichert: Supabase-Daten, Nominatim, OSRM, Kartenkacheln.
+- Ändert sich, WAS gespeichert wird: `VERSION` in `sw.js` hochzählen (alte
+  Caches werden beim Aktivieren gelöscht).
+- In der App: `init` zeigt den letzten Stand (`restoreOfflineState()`)
+  SOFORT an und lädt danach frisch; ohne Netz kann Supabase eine abgelaufene
+  Sitzung nicht verlängern → `getSession()` meldet Fehler, dann bleibt man
+  angemeldet, solange die Sitzung noch auf dem Gerät liegt (`hasStoredAuth()`).
+- Tests mit Playwright: Service Worker in Tests mit Supabase-Nachbau per
+  `page.route` blockieren (`service_workers='block'`), sonst lädt der SW die
+  echte Bibliothek an der Attrappe vorbei.
 
 ## Die 4 Rollen
 
