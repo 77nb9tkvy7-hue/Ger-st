@@ -239,6 +239,17 @@
   .widget::after{content:'';position:absolute;inset:0;background:var(--wc);opacity:0.07;pointer-events:none;}
   .w-top{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:0.01em;}
   .w-dot{width:9px;height:9px;border-radius:50%;background:var(--wc);flex:none;}
+  .w-ico{width:22px;height:22px;border-radius:7px;background:var(--wc);color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none;}
+  .w-ico .ic{width:14px;height:14px;vertical-align:0;margin:0;}
+  .widget-grid.three .w-ico{width:20px;height:20px;border-radius:6px;}
+  .widget-grid.three .w-ico .ic{width:13px;height:13px;}
+  /* Symbole (ic()) – laufen in der Textfarbe mit */
+  .ic{width:1.15em;height:1.15em;vertical-align:-0.2em;flex:none;display:inline-block;}
+  .ic-red{color:var(--red);}
+  .wunsch-badge .ic-red, .active > .ic-red{color:inherit;}
+  .menu-btn .ic{width:20px;height:20px;vertical-align:middle;}
+  .plan-icon .ic{width:24px;height:24px;color:var(--accent);}
+  .plan-del .ic{width:18px;height:18px;vertical-align:middle;}
   .w-value{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;line-height:1.1;margin-top:8px;color:var(--wc);}
   .w-value.small{font-size:17px;margin-top:10px;color:var(--ink);}
   .w-detail{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
@@ -308,7 +319,7 @@
   .bv-map{height:340px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);background:var(--surface-2);z-index:0;}
   .bv-tip{background:var(--card);color:var(--ink);border:none;box-shadow:0 1px 4px rgba(0,0,0,0.25);font-weight:700;font-size:11px;padding:2px 6px;}
   .bv-tip::before{display:none;}
-  .truck-pin{font-size:24px;line-height:34px;text-align:center;background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
+  .truck-pin{display:flex;align-items:center;justify-content:center;color:var(--blue);background:var(--card);border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.35);border:2px solid #FFEE00;}
   .truck-tip{font-size:12px;}
   .pos-chip.live{border-color:#1E9E5A;}
   .sec-h{font-size:15px;margin:22px 0 10px 0;display:flex;align-items:center;gap:8px;}
@@ -324,7 +335,8 @@
     .role-nav{position:fixed;left:0;right:0;bottom:0;margin:0;border-radius:18px 18px 0 0;z-index:20;background:var(--card);box-shadow:0 -6px 20px rgba(23,36,45,.14);padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:4px;}
     .role-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 2px 6px 2px;font-size:11px;position:relative;border-radius:12px;min-height:54px;}
     .role-nav button.active{background:var(--accent-soft);color:var(--accent-dark);box-shadow:none;}
-    .role-nav .rn-ico{display:block;font-size:21px;line-height:1;}
+    .role-nav .rn-ico{display:block;line-height:1;}
+    .role-nav .rn-ico .ic{width:22px;height:22px;vertical-align:0;}
     .role-nav .rn-lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
     .role-nav .rn-badge{position:absolute;top:3px;left:calc(50% + 6px);margin:0;}
     body.has-nav main{padding-bottom:calc(150px + env(safe-area-inset-bottom));}
@@ -2344,7 +2356,7 @@ function pushCardHTML(){
     ${state.pushMsg? `<div class="warn">${state.pushMsg}</div>`:''}${btns(true)}</div>`;
 }
 function tlv(lang, key, vars){
-  let s = tl(lang, key);
+  let s = stripEmo(tl(lang, key));
   if(vars) Object.keys(vars).forEach(k=>{ s = s.split('{'+k+'}').join(vars[k]); });
   return s;
 }
@@ -2596,6 +2608,7 @@ function printOrder(id){
     </table>
     ${o.fehlt && o.fehlt.length? `<p class="ls-fehlt"><b>${t('lsFehlt',{id:o.nachId})}:</b> ${o.fehlt.map(i=>{const r=resolvedItem(i); return `${i.qty} ${r.unit} ${r.name}`;}).join(', ')}</p>`:''}
   `;
+  iconize(area);
   window.print();
 }
 
@@ -2885,9 +2898,9 @@ function lagerHTML(){
   return `  <h2 class="view-title">${t('lagerTitle')}</h2>
   ${widgetsHTML('lager')}
   ${roleNavHTML('lager-tab', tab, [
-    {id:'bestellungen', key:'tabBestellungen', ico:'📦', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Abgeholt').length},
-    {id:'geplant', key:'tabGeplant', ico:'🗓️'},
-    {id:'inventur', key:'tabInventur', ico:'📋'}])}
+    {id:'bestellungen', key:'tabBestellungen', ico:'package', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Abgeholt').length},
+    {id:'geplant', key:'tabGeplant', ico:'calendar-clock'},
+    {id:'inventur', key:'tabInventur', ico:'clipboard-list'}])}
   ${tab==='bestellungen'
     ? `<p class="view-sub">${t('lagerBestellSub')}</p>
        ${driverStatusSectionHTML()}
@@ -3004,10 +3017,10 @@ function fahrerHTML(){
   ${widgetsHTML('fahrer')}
   ${myStatusWidgetHTML()}
   ${roleNavHTML('fahrer-tab', tab, [
-    {id:'lieferungen', key:'tabLieferungen', ico:'🚚', badge: state.orders.filter(o=>['Bereit zur Abholung','Beladen','Unterwegs'].includes(o.status)).length + openPickups().length},
-    {id:'kalender', key:'tabKalender', ico:'📅'},
-    {id:'geplant', key:'tabGeplant', ico:'🗓️'},
-    {id:'bauvorhaben', key:'tabBauvorhaben', ico:'🏗️'}])}
+    {id:'lieferungen', key:'tabLieferungen', ico:'truck', badge: state.orders.filter(o=>['Bereit zur Abholung','Beladen','Unterwegs'].includes(o.status)).length + openPickups().length},
+    {id:'kalender', key:'tabKalender', ico:'calendar-days'},
+    {id:'geplant', key:'tabGeplant', ico:'calendar-clock'},
+    {id:'bauvorhaben', key:'tabBauvorhaben', ico:'building-2'}])}
   ${tab==='bauvorhaben' ? fahrerProjekteHTML() : tab==='geplant' ? fahrerGeplantHTML() : tab==='kalender' ? fahrerKalenderHTML() : fahrerLieferungenHTML()}`;
 }
 
@@ -3152,7 +3165,7 @@ function widgetTile(o){
   const tag = go ? 'button' : 'div';
   const attrs = go ? `data-action="widget-go"${o.tab? ` data-tab="${o.tab}"`:''}${o.go? ` data-go="${o.go}"`:''}${o.done? ` data-done="${o.done}"`:''}` : '';
   return `<${tag} class="widget w-${o.tone||'grey'}" ${attrs}>
-    <div class="w-top"><span class="w-dot"></span>${o.label}</div>
+    <div class="w-top">${o.icon? `<span class="w-ico">${ic(o.icon)}</span>` : '<span class="w-dot"></span>'}${o.label}</div>
     <div class="w-value ${o.small?'small':''}">${o.value}</div>
     ${o.detail? `<div class="w-detail">${o.detail}</div>`:''}
   </${tag}>`;
@@ -3162,7 +3175,7 @@ function widgetsHTML(role){
   const by = s=>orders.filter(o=>s.includes(o.status));
   const firstLine = list=>list.length? `#${list[0].id} · ${list[0].baustelle}` : '';
   const np = nextPlanned();
-  const planTile = tab=>widgetTile({tone:'grey', label:t('wNaechsteGeplant'), small:true,
+  const planTile = tab=>widgetTile({tone:'grey', icon:'calendar-clock', label:t('wNaechsteGeplant'), small:true,
     value: np? formatDateDE(np.date) : t('wNichtsGeplant'), detail: np? projektLabel(np.projekt) : '', tab, go:'sec-geplant'});
   let tiles = [];
   if(role==='baustelle'){
@@ -3172,9 +3185,9 @@ function widgetsHTML(role){
     const lager = mine.filter(o=>['Neu','In Bearbeitung','Bereit zur Abholung'].includes(o.status));
     const geliefert = mine.filter(o=>o.status==='Geliefert');
     tiles = [
-      widgetTile({tone:'blue', label:t('wUnterwegsZuDir'), value:unterwegs.length, detail:firstLine(unterwegs), go:'sec-mine'}),
-      widgetTile({tone:'amber', label:t('wImLager'), value:lager.length, detail: lager.length? `#${lager[0].id} · ${statusLabel(lager[0].status)}` : '', go:'sec-mine'}),
-      widgetTile({tone:'green', label:t('wGeliefert'), value:geliefert.length, detail:firstLine(geliefert), go: geliefert.length? 'done-baustelle' : 'sec-mine', done: geliefert.length? 'baustelle' : ''}),
+      widgetTile({tone:'blue', icon:'truck', label:t('wUnterwegsZuDir'), value:unterwegs.length, detail:firstLine(unterwegs), go:'sec-mine'}),
+      widgetTile({tone:'amber', icon:'warehouse', label:t('wImLager'), value:lager.length, detail: lager.length? `#${lager[0].id} · ${statusLabel(lager[0].status)}` : '', go:'sec-mine'}),
+      widgetTile({tone:'green', icon:'circle-check', label:t('wGeliefert'), value:geliefert.length, detail:firstLine(geliefert), go: geliefert.length? 'done-baustelle' : 'sec-mine', done: geliefert.length? 'baustelle' : ''}),
     ];
   }
   if(role==='fahrer'){
@@ -3183,11 +3196,11 @@ function widgetsHTML(role){
     const raeumen = state.projects.filter(p=>p.aktiv && p.farbe==='hellblau');
     const pus = openPickups();
     tiles = [
-      widgetTile({tone:'accent', label:t('wZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'}),
-      widgetTile({tone:'blue', label:t('wAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'}),
+      widgetTile({tone:'accent', icon:'package', label:t('wZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'}),
+      widgetTile({tone:'blue', icon:'truck', label:t('wAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'}),
       pus.length
-        ? widgetTile({tone:'sky', label:t('wAbholen'), value:pus.length, detail:sortPickups(pus).map(p=>p.projekt? projektLabel(p.projekt) : p.baustelle).join(', '), tab:'lieferungen', go:'sec-fahrer-pu'})
-        : widgetTile({tone:'sky', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
+        ? widgetTile({tone:'sky', icon:'undo-2', label:t('wAbholen'), value:pus.length, detail:sortPickups(pus).map(p=>p.projekt? projektLabel(p.projekt) : p.baustelle).join(', '), tab:'lieferungen', go:'sec-fahrer-pu'})
+        : widgetTile({tone:'sky', icon:'building-2', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
       planTile('kalender'),
     ];
   }
@@ -3195,9 +3208,9 @@ function widgetsHTML(role){
     const neu = by(['Neu']), arbeit = by(['In Bearbeitung']);
     const fehlt = CATALOG.filter(it=>(state.inventory[it.id]??0)<0);
     tiles = [
-      widgetTile({tone:'grey', label:t('wNeu'), value:neu.length, detail:firstLine(neu), tab:'bestellungen', go:'sec-offen'}),
-      widgetTile({tone:'amber', label:t('wInArbeit'), value:arbeit.length, detail:firstLine(arbeit), tab:'bestellungen', go:'sec-offen'}),
-      widgetTile({tone: fehlt.length?'red':'green', label:t('wFehlt'), value:fehlt.length, detail:fehlt.map(itemName).join(', '), tab:'inventur'}),
+      widgetTile({tone:'grey', icon:'package', label:t('wNeu'), value:neu.length, detail:firstLine(neu), tab:'bestellungen', go:'sec-offen'}),
+      widgetTile({tone:'amber', icon:'package-open', label:t('wInArbeit'), value:arbeit.length, detail:firstLine(arbeit), tab:'bestellungen', go:'sec-offen'}),
+      widgetTile({tone: fehlt.length?'red':'green', icon:'triangle-alert', label:t('wFehlt'), value:fehlt.length, detail:fehlt.map(itemName).join(', '), tab:'inventur'}),
       planTile('geplant'),
     ];
   }
@@ -3209,12 +3222,12 @@ function widgetsHTML(role){
     const cnt = c=>aktive.filter(p=>p.farbe===c).length;
     const dots = `<div class="w-dots">${PROJECT_COLORS.map(c=>`<span><i style="background:${projektColorMeta(c).hex}"></i>${cnt(c)}</span>`).join('')}</div>`;
     tiles = [
-      widgetTile({tone:'amber', label:t('wOffen'), value:offen.length,
+      widgetTile({tone:'amber', icon:'package', label:t('wOffen'), value:offen.length,
         detail:t('wOffenDetail',{neu:by(['Neu']).length, unterwegs:by(['Beladen','Unterwegs']).length}), tab:'uebersicht', go:'sec-offen'}),
-      widgetTile({tone:'blue', label:t('wFahrerUnterwegs'), value:`${unterwegs.length}/${drivers.length}`,
+      widgetTile({tone:'blue', icon:'truck', label:t('wFahrerUnterwegs'), value:`${unterwegs.length}/${drivers.length}`,
         detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', '), tab:'uebersicht', go:'sec-lkw'}),
       `<button class="widget w-green" data-action="widget-go" data-tab="bauvorhaben">
-        <div class="w-top"><span class="w-dot"></span>${t('wBauvorhaben')}</div>
+        <div class="w-top"><span class="w-ico">${ic('building-2')}</span>${t('wBauvorhaben')}</div>
         <div class="w-value">${aktive.length}</div>${dots}</button>`,
       planTile('planen'),
     ];
@@ -3637,9 +3650,9 @@ function updateMapMarkers(){
   bvMapSig = sig;
   bvLayer.clearLayers();
   if(lc){
-    L.marker([lc.lat, lc.lon], {icon:L.divIcon({className:'truck-pin lager-pin', html:'🏭', iconSize:[34,34], iconAnchor:[17,17]})})
+    L.marker([lc.lat, lc.lon], {icon:L.divIcon({className:'truck-pin lager-pin', html:ic('warehouse'), iconSize:[34,34], iconAnchor:[17,17]})})
       .bindTooltip(t('lagerMapLabel'), {permanent:true, direction:'top', offset:[0,-16], className:'bv-tip'})
-      .bindPopup(`<b>🏭 ${t('lagerMapLabel')}</b>${state.lager.adresse? `<br>${escapeHtml(state.lager.adresse)}`:''}`)
+      .bindPopup(`<b>${ic('warehouse')} ${t('lagerMapLabel')}</b>${state.lager.adresse? `<br>${escapeHtml(state.lager.adresse)}`:''}`)
       .addTo(bvLayer);
   }
   aktive.forEach(p=>{
@@ -3650,7 +3663,7 @@ function updateMapMarkers(){
       .bindTooltip(`BV ${p.id}`, {permanent:true, direction:'top', offset:[0,-10], className:'bv-tip'})
       .bindPopup(`<b>BV ${p.id} – ${escapeHtml(p.name)}</b><br>${escapeHtml(p.adresse)}<br>
         <span style="color:${m.hex||'#64748B'};font-weight:700;">● ${t(m.key)}</span>
-        ${p.fertigAm? `<br>🏁 ${t('pvFertigGeplant')} ${formatDateDE(p.fertigAm)}`:''}
+        ${p.fertigAm? `<br>${ic('flag')} ${t('pvFertigGeplant')} ${formatDateDE(p.fertigAm)}`:''}
         <br><a href="${maps}" target="_blank" rel="noopener">${t('mapsLink')}</a>`)
       .addTo(bvLayer);
   });
@@ -3863,7 +3876,7 @@ function truckPopupHTML(n, v){
   const p = routeTarget(n), c = routeCache[n];
   const eta = c && c.info ? `<br><b>${routeInfoText(c.info)}</b>` : '';
   const gRoute = p ? `<br><a href="https://www.google.com/maps/dir/?api=1&origin=${v.lat},${v.lon}&destination=${p.coords.lat},${p.coords.lon}&travelmode=driving" target="_blank" rel="noopener">${t('routeGmaps')}</a>` : '';
-  return `<b>🚚 ${escapeHtml(n)}</b>${ziel}${eta}<br>${posAgoText(v.ts)}${v.acc? `<br>${t('posAcc',{m:v.acc})}`:''}
+  return `<b>${ic('truck')} ${escapeHtml(n)}</b>${ziel}${eta}<br>${posAgoText(v.ts)}${v.acc? `<br>${t('posAcc',{m:v.acc})}`:''}
     <br><a href="https://www.google.com/maps?q=${v.lat},${v.lon}" target="_blank" rel="noopener">${t('mapsLink')}</a>${gRoute}`;
 }
 
@@ -3947,10 +3960,10 @@ function updateTruckMarkers(){
   list.forEach(([n,v])=>{
     const ll = [v.lat, v.lon];
     const live = Date.now()-v.ts < POS_LIVE_MS;
-    const tip = `🚚 ${escapeHtml(n)} · ${posAgoText(v.ts)}`;
+    const tip = `${ic('truck')} ${escapeHtml(n)} · ${posAgoText(v.ts)}`;
     let m = posMarkers[n];
     if(!m){
-      m = L.marker(ll, {icon:L.divIcon({className:'truck-pin', html:'🚚', iconSize:[34,34], iconAnchor:[17,17]}), zIndexOffset:1000})
+      m = L.marker(ll, {icon:L.divIcon({className:'truck-pin', html:ic('truck'), iconSize:[34,34], iconAnchor:[17,17]}), zIndexOffset:1000})
         .bindTooltip(tip, {permanent:true, direction:'right', offset:[14,0], className:'bv-tip truck-tip'})
         .bindPopup(truckPopupHTML(n, v))
         .addTo(posLayer);
@@ -3971,10 +3984,10 @@ function chefHTML(){
   STATUS_FLOW.forEach(s=> counts[s] = orders.filter(o=>o.status===s).length);
   return `  <h2 class="view-title">${t('chefViewTitle')}</h2>
   ${roleNavHTML('chef-tab', tab, [
-    {id:'uebersicht', key:'tabUebersicht', ico:'🏠', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Gemeldet').length},
-    {id:'bauvorhaben', key:'tabBauvorhaben', ico:'🏗️'},
-    {id:'planen', key:'tabPlanen', ico:'🗓️'},
-    {id:'personal', key:'tabPersonal', ico:'👥'}])}
+    {id:'uebersicht', key:'tabUebersicht', ico:'house', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Gemeldet').length},
+    {id:'bauvorhaben', key:'tabBauvorhaben', ico:'building-2'},
+    {id:'planen', key:'tabPlanen', ico:'calendar-clock'},
+    {id:'personal', key:'tabPersonal', ico:'users'}])}
   ${tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
   ${widgetsHTML('chef')}
   ${driverStatusSectionHTML()}
@@ -3997,7 +4010,7 @@ let toastTimer = null;
 function showToast(msg){
   let el = document.getElementById('toast');
   if(!el){ el = document.createElement('div'); el.id = 'toast'; el.className = 'toast'; document.body.appendChild(el); }
-  el.textContent = msg; el.classList.add('show');
+  el.textContent = msg; iconize(el); el.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove('show'), 4000);
 }
 
@@ -4005,7 +4018,7 @@ function showToast(msg){
 // am Daumen (CSS .role-nav), mit Symbol und roter Zahl, wenn etwas ansteht.
 function roleNavHTML(action, cur, tabs){
   return `<nav class="seg-control role-nav">${tabs.map(tb=>`<button class="${cur===tb.id?'active':''}" data-action="${action}" data-tab="${tb.id}">
-    <span class="rn-ico">${tb.ico}</span><span class="rn-lbl">${t(tb.key)}</span>${tb.badge? `<b class="rn-badge">${tb.badge}</b>`:''}</button>`).join('')}</nav>`;
+    <span class="rn-ico">${ic(tb.ico)}</span><span class="rn-lbl">${t(tb.key)}</span>${tb.badge? `<b class="rn-badge">${tb.badge}</b>`:''}</button>`).join('')}</nav>`;
 }
 // Erledigtes zusammengeklappt unter "✓ Erledigt (n)" (state.showDone[key])
 function doneSectionHTML(key, list, renderFn, limit){
@@ -4158,7 +4171,93 @@ function lkwKalenderPageHTML(){
   </div>`;
 }
 
+// ---- Symbole (statt Emojis) ---------------------------------------------
+// Kräftige Linien-Symbole (Nutzerwahl „Idee B“). Quelle: Lucide Icons
+// (lucide.dev, ISC-Lizenz, Copyright Lucide Contributors / Feather MIT),
+// die benötigten Formen stehen direkt hier, damit nichts nachgeladen wird.
+// ic('truck') liefert das SVG. Emojis in Texten (auch im Wörterbuch T)
+// ersetzt iconize() nach jedem render() automatisch durch das passende
+// Symbol (Tabelle EMO); neue Emojis also dort eintragen.
+const SYM_ICONS = {
+  'map-pin':'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  'map':'<path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/>',
+  'truck':'<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  'warehouse':'<path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z"/><path d="M6 18h12"/><path d="M6 14h12"/><rect width="12" height="12" x="6" y="10"/>',
+  'calendar-days':'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>',
+  'calendar-range':'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/>',
+  'calendar-clock':'<path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.3V14"/><circle cx="16" cy="16" r="6"/>',
+  'lock':'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  'lock-keyhole':'<circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/>',
+  'key-round':'<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>',
+  'triangle-alert':'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  'wifi-off':'<path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/>',
+  'navigation':'<polygon points="3 11 22 2 13 21 11 13 3 11"/>',
+  'pencil':'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+  'refresh-cw':'<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+  'printer':'<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
+  'circle-check':'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  'repeat':'<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+  'upload':'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>',
+  'star':'<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
+  'building-2':'<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>',
+  'flag':'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
+  'bell':'<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
+  'drafting-compass':'<path d="m12.99 6.74 1.93 3.44"/><path d="M19.136 12a10 10 0 0 1-14.271 0"/><path d="m21 21-2.16-3.84"/><path d="m3 21 8.02-14.26"/><circle cx="12" cy="5" r="2"/>',
+  'weight':'<circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"/>',
+  'globe':'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+  'check':'<path d="M20 6 9 17l-5-5"/>',
+  'x':'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  'package':'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/>',
+  'package-open':'<path d="M12 22v-9"/><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/>',
+  'clipboard-list':'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+  'file-text':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  'trash-2':'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
+  'house':'<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  'users':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  'undo-2':'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
+  'circle-alert':'<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>',
+  'menu':'<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>'
+};
+function ic(name, cls){
+  const body = SYM_ICONS[name]; if(!body) return '';
+  return `<svg class="ic ${cls||''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+}
+const EMO = {
+  '📍':'map-pin', '🗺':'map', '🚚':'truck', '🏭':'warehouse', '📅':'calendar-days', '🗓':'calendar-range',
+  '🔒':'lock', '🔐':'lock-keyhole', '🔑':'key-round', '⚠':'triangle-alert', '📶':'wifi-off', '🧭':'navigation',
+  '✏':'pencil', '🔄':'refresh-cw', '↻':'refresh-cw', '🖨':'printer', '👍':'circle-check', '🔁':'repeat',
+  '⬆':'upload', '⭐':'star', '🏗':'building-2', '🏁':'flag', '🔔':'bell', '📐':'drafting-compass',
+  '⚖':'weight', '🌐':'globe', '✓':'check', '✗':'x', '📦':'package', '📋':'clipboard-list', '📄':'file-text',
+  '🗑':'trash-2', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu',
+};
+const EMO_RE = new RegExp('(' + Object.keys(EMO).join('|') + ')\\uFE0F?', 'gu');
+function emoIcon(ch){ const v = EMO[ch]; return Array.isArray(v) ? ic(v[0], v[1]) : ic(v); }
+// Emojis aus Texten entfernen (Push-Nachrichten, Auswahllisten)
+function stripEmo(str){ return String(str).replace(EMO_RE, '').replace(/^\s+/, '').replace(/\s{2,}/g, ' '); }
+// Alle Textstellen unter root: Emoji -> Symbol. Attribute bleiben unberührt.
+function iconize(root){
+  if(!root) return;
+  const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const hits = [];
+  for(let n; (n = tw.nextNode());){ EMO_RE.lastIndex = 0; if(EMO_RE.test(n.nodeValue)) hits.push(n); }
+  hits.forEach(n=>{
+    const par = n.parentNode; if(!par) return;
+    if(/^(OPTION|TEXTAREA|SCRIPT|STYLE|TITLE)$/.test(par.nodeName)){ n.nodeValue = stripEmo(n.nodeValue); return; }
+    const parts = n.nodeValue.split(EMO_RE);
+    const frag = document.createDocumentFragment();
+    parts.forEach((part, i)=>{
+      if(i % 2){ const tpl = document.createElement('template'); tpl.innerHTML = emoIcon(part); frag.appendChild(tpl.content); }
+      else if(part) frag.appendChild(document.createTextNode(part));
+    });
+    par.replaceChild(frag, n);
+  });
+}
+
 function render(){
+  renderView();
+  iconize(document.getElementById('app'));
+}
+function renderView(){
   if(state.loading){ document.getElementById('app').innerHTML = `<div class="loading">${t('loadingText')}</div>`; return; }
   if(state.view==='calendar'){ document.getElementById('app').innerHTML = calendarPageHTML(); return; }
   if(state.view==='lkwkalender'){ document.getElementById('app').innerHTML = lkwKalenderPageHTML(); return; }
