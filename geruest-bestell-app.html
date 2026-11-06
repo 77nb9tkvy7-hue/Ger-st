@@ -559,6 +559,11 @@ function clearSession(){
 }
 // Nach jedem Laden prüfen, ob die gespeicherte Anmeldung noch gültig ist
 // (Chef könnte den Mitarbeiter entfernt oder ihm die Rolle entzogen haben).
+// Liegt noch eine Supabase-Sitzung auf dem Gerät? (für den Start ohne Netz)
+function hasStoredAuth(){
+  try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(/^sb-.*-auth-token$/.test(k) && localStorage.getItem(k)) return true; } }catch(e){}
+  return false;
+}
 function enforceSession(){
   if(!state.loggedIn) return;
   if(!state.authed){ state.loggedIn=false; state.role=null; state.authName=null; state.askChefPw=false; clearSession(); return; }
@@ -5069,12 +5074,18 @@ if('serviceWorker' in navigator){
   restoreSession();
   // Echte Anmeldung: gilt nur, wenn Supabase noch eine Sitzung hat
   // (bleibt gespeichert, bis man sich abmeldet; geht auch ohne Netz).
+  // Ohne Netz kann Supabase eine abgelaufene Sitzung nicht verlängern und
+  // meldet dann "keine Sitzung" -- liegt sie aber noch auf dem Handy, bleibt
+  // man angemeldet (sonst würde man beim Offline-Start rausgeworfen).
   try{
-    const { data } = await supabaseClient.auth.getSession();
-    state.authed = !!(data && data.session);
-  }catch(e){ state.authed = false; }
+    const { data, error } = await supabaseClient.auth.getSession();
+    state.authed = !!(data && data.session) || (!!error && hasStoredAuth());
+  }catch(e){ state.authed = hasStoredAuth(); }
   if(!state.authed){ state.loggedIn=false; state.role=null; state.authName=null; clearSession(); lsSet(CACHE_KEY, null); lsSet(PENDING_KEY, null); }
-  else restoreOfflineState();   // letzter Stand + gemerkte Änderungen, falls gerade kein Netz
+  // letzter Stand + gemerkte Änderungen sofort zeigen (auch ohne Netz),
+  // frische Daten kommen gleich danach über loadShared()
+  else if(restoreOfflineState()){ state.loading = false; render(); }
+  if(!state.authed && !navigator.onLine){ state.loading = false; render(); }
   try{
     supabaseClient.auth.onAuthStateChange((event)=>{
       if(event==='SIGNED_OUT' && state.authed){ signOutAll().then(render); }
