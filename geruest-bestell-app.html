@@ -233,6 +233,8 @@
   .widget-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 16px 0;}
   .widget{--wc:var(--muted);display:flex;flex-direction:column;align-items:flex-start;text-align:left;background:var(--card);border:none;border-radius:20px;padding:14px 14px 13px 14px;box-shadow:var(--shadow);font-family:'Inter',sans-serif;color:var(--ink);min-height:104px;position:relative;overflow:hidden;}
   button.widget{cursor:pointer;}
+  .jump-flash{animation:jumpFlash 1.6s ease-out;border-radius:10px;}
+  @keyframes jumpFlash{0%{background:rgba(255,238,0,0.45);box-shadow:0 0 0 6px rgba(255,238,0,0.45);}100%{background:transparent;box-shadow:0 0 0 6px transparent;}}
   button.widget:active{transform:scale(0.98);}
   .widget::after{content:'';position:absolute;inset:0;background:var(--wc);opacity:0.07;pointer-events:none;}
   .w-top{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:0.01em;}
@@ -2482,7 +2484,7 @@ function catalogHTML(){
     <tbody>${rows}</tbody>
   </table></div>
   <div class="mine-section">
-    <h3>${t('mineTitle')}</h3>
+    <h3 id="sec-mine">${t('mineTitle')}</h3>
     ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null,reorderBtn(o))).join('')}</div>` : (!mineDone.length? `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>` : '')}
     ${doneSectionHTML('baustelle', mineDone, o=>orderCardHTML(o,null,reorderBtn(o)), 10)}
     ${(()=>{ const myPu = state.pickups.filter(p=>p.person===state.name).sort((a,b)=>b.id-a.id);
@@ -2891,12 +2893,12 @@ function lagerHTML(){
        ${driverStatusSectionHTML()}
        ${openPickups().length? `<h3 style="font-size:15px;margin:22px 0 8px 0;">${t('puLagerHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'lager')}`:''}
        ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
-         return `${sectionH(t('openOrdersHeading'), open.length)}
+         return `${sectionH(t('openOrdersHeading'), open.length, 'sec-offen')}
          ${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'lager')).join('')}</div>` : `<div class="empty-state">${orders.length? t('allDone') : t('lagerEmptyOrders')}</div>`}
          ${doneSectionHTML('lager', done, o=>orderCardHTML(o,'lager'))}`; })()}`
     : tab==='geplant'
     ? `<p class="view-sub">${t('plLagerSub')}</p>
-       ${geplantListHTML(false)}`
+       <div id="sec-geplant"></div>${geplantListHTML(false)}`
     : `<p class="view-sub">${t('lagerInventurSub')}</p>
        ${inventoryTableHTML(true)}`
   }`;
@@ -3094,9 +3096,10 @@ function fahrerLieferungenHTML(){
   const ready = all.filter(o=>STATUS_FLOW.indexOf(o.status)>=2);
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
   const pus = openPickups();
-  return `${pus.length? `<h3 style="font-size:15px;margin:0 0 8px 0;">${t('puFahrerHeading')} (${pus.length})</h3>${pickupListHTML(pus, 'fahrer')}<div style="height:14px;"></div>`:''}
+  return `${pus.length? `<h3 id="sec-fahrer-pu" style="font-size:15px;margin:0 0 8px 0;">${t('puFahrerHeading')} (${pus.length})</h3>${pickupListHTML(pus, 'fahrer')}<div style="height:14px;"></div>`:''}
   <p class="view-sub">${t('fahrerSub')}</p>
   ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
+  <div id="sec-fahrer-offen"></div>
   ${(()=>{ const open = ready.filter(o=>o.status!=='Geliefert'), done = ready.filter(o=>o.status==='Geliefert');
     return `${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'fahrer')).join('')}</div>` : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}
     ${doneSectionHTML('fahrer', done, o=>orderCardHTML(o,'fahrer'))}`; })()}`;
@@ -3145,8 +3148,9 @@ function driverNames(){
 
 // ---- Widgets: kurze Info-Kacheln oben, je Rolle das Wichtigste ----------
 function widgetTile(o){
-  const tag = o.tab ? 'button' : 'div';
-  const attrs = o.tab ? `data-action="widget-go" data-tab="${o.tab}"` : '';
+  const go = o.tab || o.go;
+  const tag = go ? 'button' : 'div';
+  const attrs = go ? `data-action="widget-go"${o.tab? ` data-tab="${o.tab}"`:''}${o.go? ` data-go="${o.go}"`:''}${o.done? ` data-done="${o.done}"`:''}` : '';
   return `<${tag} class="widget w-${o.tone||'grey'}" ${attrs}>
     <div class="w-top"><span class="w-dot"></span>${o.label}</div>
     <div class="w-value ${o.small?'small':''}">${o.value}</div>
@@ -3159,7 +3163,7 @@ function widgetsHTML(role){
   const firstLine = list=>list.length? `#${list[0].id} · ${list[0].baustelle}` : '';
   const np = nextPlanned();
   const planTile = tab=>widgetTile({tone:'grey', label:t('wNaechsteGeplant'), small:true,
-    value: np? formatDateDE(np.date) : t('wNichtsGeplant'), detail: np? projektLabel(np.projekt) : '', tab});
+    value: np? formatDateDE(np.date) : t('wNichtsGeplant'), detail: np? projektLabel(np.projekt) : '', tab, go:'sec-geplant'});
   let tiles = [];
   if(role==='baustelle'){
     const mine = orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id);
@@ -3168,9 +3172,9 @@ function widgetsHTML(role){
     const lager = mine.filter(o=>['Neu','In Bearbeitung','Bereit zur Abholung'].includes(o.status));
     const geliefert = mine.filter(o=>o.status==='Geliefert');
     tiles = [
-      widgetTile({tone:'blue', label:t('wUnterwegsZuDir'), value:unterwegs.length, detail:firstLine(unterwegs)}),
-      widgetTile({tone:'amber', label:t('wImLager'), value:lager.length, detail: lager.length? `#${lager[0].id} · ${statusLabel(lager[0].status)}` : ''}),
-      widgetTile({tone:'green', label:t('wGeliefert'), value:geliefert.length, detail:firstLine(geliefert)}),
+      widgetTile({tone:'blue', label:t('wUnterwegsZuDir'), value:unterwegs.length, detail:firstLine(unterwegs), go:'sec-mine'}),
+      widgetTile({tone:'amber', label:t('wImLager'), value:lager.length, detail: lager.length? `#${lager[0].id} · ${statusLabel(lager[0].status)}` : '', go:'sec-mine'}),
+      widgetTile({tone:'green', label:t('wGeliefert'), value:geliefert.length, detail:firstLine(geliefert), go: geliefert.length? 'done-baustelle' : 'sec-mine', done: geliefert.length? 'baustelle' : ''}),
     ];
   }
   if(role==='fahrer'){
@@ -3179,10 +3183,10 @@ function widgetsHTML(role){
     const raeumen = state.projects.filter(p=>p.aktiv && p.farbe==='hellblau');
     const pus = openPickups();
     tiles = [
-      widgetTile({tone:'accent', label:t('wZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen'}),
-      widgetTile({tone:'blue', label:t('wAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen'}),
+      widgetTile({tone:'accent', label:t('wZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'}),
+      widgetTile({tone:'blue', label:t('wAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'}),
       pus.length
-        ? widgetTile({tone:'sky', label:t('wAbholen'), value:pus.length, detail:sortPickups(pus).map(p=>p.projekt? projektLabel(p.projekt) : p.baustelle).join(', '), tab:'lieferungen'})
+        ? widgetTile({tone:'sky', label:t('wAbholen'), value:pus.length, detail:sortPickups(pus).map(p=>p.projekt? projektLabel(p.projekt) : p.baustelle).join(', '), tab:'lieferungen', go:'sec-fahrer-pu'})
         : widgetTile({tone:'sky', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
       planTile('kalender'),
     ];
@@ -3191,8 +3195,8 @@ function widgetsHTML(role){
     const neu = by(['Neu']), arbeit = by(['In Bearbeitung']);
     const fehlt = CATALOG.filter(it=>(state.inventory[it.id]??0)<0);
     tiles = [
-      widgetTile({tone:'grey', label:t('wNeu'), value:neu.length, detail:firstLine(neu), tab:'bestellungen'}),
-      widgetTile({tone:'amber', label:t('wInArbeit'), value:arbeit.length, detail:firstLine(arbeit), tab:'bestellungen'}),
+      widgetTile({tone:'grey', label:t('wNeu'), value:neu.length, detail:firstLine(neu), tab:'bestellungen', go:'sec-offen'}),
+      widgetTile({tone:'amber', label:t('wInArbeit'), value:arbeit.length, detail:firstLine(arbeit), tab:'bestellungen', go:'sec-offen'}),
       widgetTile({tone: fehlt.length?'red':'green', label:t('wFehlt'), value:fehlt.length, detail:fehlt.map(itemName).join(', '), tab:'inventur'}),
       planTile('geplant'),
     ];
@@ -3206,9 +3210,9 @@ function widgetsHTML(role){
     const dots = `<div class="w-dots">${PROJECT_COLORS.map(c=>`<span><i style="background:${projektColorMeta(c).hex}"></i>${cnt(c)}</span>`).join('')}</div>`;
     tiles = [
       widgetTile({tone:'amber', label:t('wOffen'), value:offen.length,
-        detail:t('wOffenDetail',{neu:by(['Neu']).length, unterwegs:by(['Beladen','Unterwegs']).length})}),
+        detail:t('wOffenDetail',{neu:by(['Neu']).length, unterwegs:by(['Beladen','Unterwegs']).length}), tab:'uebersicht', go:'sec-offen'}),
       widgetTile({tone:'blue', label:t('wFahrerUnterwegs'), value:`${unterwegs.length}/${drivers.length}`,
-        detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', ')}),
+        detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', '), tab:'uebersicht', go:'sec-lkw'}),
       `<button class="widget w-green" data-action="widget-go" data-tab="bauvorhaben">
         <div class="w-top"><span class="w-dot"></span>${t('wBauvorhaben')}</div>
         <div class="w-value">${aktive.length}</div>${dots}</button>`,
@@ -3510,7 +3514,7 @@ function planenHTML(){
   }
   return `<p class="view-sub">${t('plSub')}</p>
   ${planFormHTML(null)}
-  <h3 style="margin-top:22px;font-size:15px;">${t('plListHeading')}</h3>
+  <h3 id="sec-geplant" style="margin-top:22px;font-size:15px;">${t('plListHeading')}</h3>
   ${geplantListHTML(true)}`;
 }
 
@@ -3845,7 +3849,7 @@ function posAgoText(ts){
 }
 function chefPositionsHTML(){
   const list = livePositions();
-  return `<h3 style="margin-top:22px;font-size:15px;">${t('posHeading')}</h3>
+  return `<h3 id="sec-lkw" style="margin-top:22px;font-size:15px;">${t('posHeading')}</h3>
   <p class="view-sub" style="margin-top:-4px;">${t('posHint')}</p>
   <div id="bvMapSlot" class="bv-map-slot"></div>
   ${list.length? `<div class="ziel-chips" style="margin-top:-6px;">${list.map(([n,v])=>{
@@ -3977,7 +3981,7 @@ function chefHTML(){
   ${chefPositionsHTML()}
   ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
   ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
-    return `${sectionH(t('openOrdersHeading'), open.length)}
+    return `${sectionH(t('openOrdersHeading'), open.length, 'sec-offen')}
     ${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state">${orders.length? t('allDone') : t('chefEmptyOrders')}</div>`}
     ${doneSectionHTML('chef', done, o=>orderCardHTML(o,null), 30)}`; })()}
   ${SHOW_CHEF_INVENTORY? `<h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
@@ -4007,10 +4011,21 @@ function roleNavHTML(action, cur, tabs){
 function doneSectionHTML(key, list, renderFn, limit){
   if(!list.length) return '';
   const open = !!state.showDone[key];
-  return `<button class="done-toggle" data-action="toggle-done" data-key="${key}">${open? '▾':'▸'} ${t('doneSection',{n:list.length})}</button>
+  return `<button class="done-toggle" id="done-${key}" data-action="toggle-done" data-key="${key}">${open? '▾':'▸'} ${t('doneSection',{n:list.length})}</button>
     ${open? `<div class="card-grid">${list.slice(0, limit||15).map(renderFn).join('')}</div>`:''}`;
 }
-function sectionH(text, n){ return `<h3 class="sec-h">${text}${n!=null? ` <span class="sec-n">${n}</span>`:''}</h3>`; }
+// Zu einem Abschnitt springen (Kacheln oben) und ihn kurz aufleuchten lassen
+function jumpTo(id){
+  requestAnimationFrame(()=>{
+    const el = document.getElementById(id);
+    if(!el){ window.scrollTo({top:0, behavior:'smooth'}); return; }
+    const hd = document.querySelector('header.chrome');
+    const top = el.getBoundingClientRect().top + window.scrollY - (hd? hd.offsetHeight : 0) - 12;
+    window.scrollTo({top: Math.max(0, top), behavior:'smooth'});
+    el.classList.remove('jump-flash'); void el.offsetWidth; el.classList.add('jump-flash');
+  });
+}
+function sectionH(text, n, id){ return `<h3 class="sec-h"${id? ` id="${id}"`:''}>${text}${n!=null? ` <span class="sec-n">${n}</span>`:''}</h3>`; }
 
 function formatDateDE(iso){
   const [y,m,d] = iso.split('-');
@@ -4523,8 +4538,13 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='print-order'){ printOrder(parseInt(el.dataset.order,10)); }
   if(action==='chef-tab'){ state.chefTab = el.dataset.tab; state.chefProjekt = null; render(); }
   if(action==='widget-go'){
+    // Kachel antippen: passenden Reiter öffnen und zur Liste springen
     const key = state.role+'Tab';
-    if(key in state){ state[key] = el.dataset.tab; if(state.role==='chef') state.chefProjekt=null; render(); }
+    if(el.dataset.tab && key in state){ state[key] = el.dataset.tab; if(state.role==='chef') state.chefProjekt=null; }
+    if(el.dataset.done) state.showDone[el.dataset.done] = true;
+    render();
+    if(el.dataset.go) jumpTo(el.dataset.go);
+    else window.scrollTo({top:0, behavior:'smooth'});
   }
   if(action==='open-projekt'){ state.chefProjekt = parseInt(el.dataset.id,10); state.cart = {}; state.planDraft = {projekt:'', date:''}; state.planWarn=''; render(); window.scrollTo(0,0); }
   if(action==='close-projekt'){ state.chefProjekt = null; render(); }
