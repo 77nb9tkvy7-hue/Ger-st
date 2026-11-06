@@ -54,6 +54,25 @@ Einrichtung: Aktion `bootstrap` (nur solange es noch kein Konto gibt) legt
 für alle Mitarbeiter Konten mit ihren bisherigen Passwörtern an und
 entfernt die Passwörter aus dem Datensatz.
 
+**Passwort vergessen** (Nutzerwunsch, „wird bestimmt passieren“):
+- Anmeldeseite: Link „Passwort vergessen?“ (`forgot-pw`, `state.forgotPw`)
+  erklärt: beim Chef melden.
+- Chef, Reiter Personal: pro Person „🔑 Neues Passwort erzeugen“
+  (`emp-new-pin`, `randomPin()` = zufällige 4-stellige Zahl, Rückfrage) →
+  `manage-users` `set-pw`; das neue Passwort steht groß in einem Kasten in
+  DERSELBEN Karte (`state.newPin = {id, pin}`, bleibt bis „Erledigt –
+  weitergegeben“/Reiterwechsel; auch beim manuellen „Passwort setzen“). Wird
+  nirgends gespeichert.
+- Jeder selbst: Menü ☰ → „🔑 Mein Passwort ändern“ (`my-pw-open`,
+  `myPwCardHTML()` oben in `<main>`, `saveMyPw()` →
+  `supabaseClient.auth.updateUser({password: PW_PREFIX + neu})`, zweimal
+  eingeben, mind. `MIN_PW`; Meldungen für gleiches Passwort/erneute Anmeldung
+  nötig/kein Netz). Während das Formular offen ist, pausiert das 4-s-Neuzeichnen.
+- Notfall, wenn kein Chef mehr in die App kommt (Chef-PIN oder Chef-Passwort
+  vergessen): `supabase/notfall.sql` im SQL Editor (A: neues Passwort per
+  `extensions.crypt(..., gen_salt('bf'))` in `auth.users`, B: `chefPw` aus dem
+  Datensatz löschen → nächstes eingegebenes gilt). Lokal gegen Postgres getestet.
+
 **Chef-Passwort** (zusätzliche Sicherung der Chef-Rolle + Kalender-
 Bearbeiten): nicht mehr im Code, sondern als `state.chefPw = {salt, hash}`
 (SHA-256) im Datensatz, `verifyChefPw()`; ändern im Reiter Personal
