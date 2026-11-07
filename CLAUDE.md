@@ -695,6 +695,16 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
   Datenschutzhinweis, ggf. Betriebsrat (§ 87 BetrVG), Speicherdauer; die
   Stunden dürfen NICHT im für alle Angemeldeten lesbaren Datensatz liegen
   (siehe Sicherheits-Umbau).
+- **Idee (nur gemerkt): Beweis-Fotos.** Fotos mit Datum, Uhrzeit, GPS und
+  Name direkt in der App aufnehmen und am Bauvorhaben ablegen, damit man im
+  Streitfall etwas in der Hand hat. Anlässe: Fahrer fotografiert das
+  abgeladene Material beim „Lieferung bestätigen“ (Liefernachweis),
+  Zustand des Gerüsts bei Übergabe/Abnahme und vor dem Abbau, Schäden
+  (fremde Gewerke, Diebstahl, Unwetter), Regiearbeiten (vorher/nachher als
+  Beleg zum Regiebericht). Speicher: wie Baupläne im privaten Bucket
+  (`bauplaene`-Muster, signierte Links), Fotos dürfen nachträglich nicht
+  geändert werden. Datenschutz: keine Personen fotografieren bzw. vorher
+  klären.
 - **Sicherheits-Umbau (in Planung):** Heute kann jeder Angemeldete (egal
   welche Rolle) den ganzen Datensatz lesen und ändern; ohne Anmeldung sind
   Namensliste, beide Kalender und BV-Adressen über `public_info()` offen.
