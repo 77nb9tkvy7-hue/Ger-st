@@ -682,6 +682,26 @@ mit den eigenen Werten aus dem Supabase-Dashboard ersetzt werden.
   Mitarbeiter nicht – noch nicht umgesetzt, nur besprochen.
 - Weitere Ideen: Realtime-Updates statt Polling (Supabase Realtime),
   Export der Bestellungen als PDF/CSV.
+- **Idee (nur gemerkt, noch nicht besprochen/gebaut): Einchecken auf der
+  Baustelle + Regieberichte.** Mitarbeiter checken auf der Baustelle ein/aus
+  → man sieht, wann sie da waren und wie lange sie gearbeitet haben.
+  Einchecken nur VOR ORT möglich (nicht „von irgendwo“, z. B. GPS-Abstand
+  zum Bauvorhaben wie `autoDriverStatus()` beim Lager). **Kolonnen**:
+  mehrere arbeiten als Team (z. B. Kolonnenführer checkt die ganze Kolonne
+  ein). Die Stunden sollen pro **Bauvorhaben** gesammelt werden und in
+  **Regieberichte** (Stundenlohnarbeiten für den Kunden) einfließen. Hängt
+  mit der Stunden-Spalte im Kalender zusammen (nur Chef sieht sie).
+  Rechtlich beachten: Arbeitszeit-/Ortserfassung von Mitarbeitern →
+  Datenschutzhinweis, ggf. Betriebsrat (§ 87 BetrVG), Speicherdauer; die
+  Stunden dürfen NICHT im für alle Angemeldeten lesbaren Datensatz liegen
+  (siehe Sicherheits-Umbau).
+- **Sicherheits-Umbau (in Planung):** Heute kann jeder Angemeldete (egal
+  welche Rolle) den ganzen Datensatz lesen und ändern; ohne Anmeldung sind
+  Namensliste, beide Kalender und BV-Adressen über `public_info()` offen.
+  Geplante Stücke: 1) nichts Persönliches ohne Anmeldung, 2) Server prüft
+  Rollen beim Ändern, 3) nur nötige Daten lesen (Stunden/Personal/
+  Standorte nur Chef), 4) Schriften/Bibliotheken selbst ausliefern statt
+  Google Fonts/CDN.
 
 ## Große Erweiterung Chef/Lager/Fahrer (umgesetzt)
 
