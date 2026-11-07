@@ -815,6 +815,17 @@ Formular einen Hinweis statt der leeren Auswahl.
   → farbige Kachel `.w-ico` in der Kachel-Farbe. Karten-Marker/Popups nutzen
   `ic()` direkt. Sprach-Flaggen bleiben.
 
+## Projekt-Skills und Prüf-Skript
+
+- `.claude/skills/teile-einpflegen/` – Ablauf für neue Teile/Systeme (Excel →
+  `PARTS`/`SYSTEMS`/`CATEGORY_ORDER`), Artikel-IDs nie ändern.
+- `.claude/skills/texte-uebersetzen/` – jeder sichtbare Text in allen 5
+  Sprachen, Datum/Uhrzeit über `LOCALES[state.lang]`, Emojis in `EMO`.
+- `node scripts/check-katalog.js` – prüft Wörterbuch (alle Sprachen,
+  Platzhalter, benutzte `t()`-Schlüssel), Teile, `CATEGORY_ORDER`, doppelte
+  Artikel-IDs, Symbole. Mit `--ids-speichern DATEI` / `--ids-vorher DATEI`
+  meldet es verschwundene Artikel-IDs. Nur Node, keine Installation.
+
 ## Offen
 
 - Reiter „Tribüne": keine Teile-Liste vorhanden (im Kunden-Excel nur
