@@ -296,6 +296,29 @@ const CHECKS = {
     await page.click('[data-action="numpad-open"][data-id="konsole70M"]');
     await page.keyboard.press('9'); await page.keyboard.press('Escape');
     if (await page.evaluate(() => state.numpad || state.cart.konsole70M)) problems.push('Esc hat nicht abgebrochen');
+    // Barrierefreiheit: Dialog-Rolle, Fokus auf OK beim Öffnen, zurück auf den Mengen-Knopf beim Schließen, Zahl im aria-label
+    await page.evaluate(() => { state.cart.konsole70M = 4; render(); });
+    await page.click('[data-action="numpad-open"][data-id="konsole70M"]');
+    const a1 = await page.evaluate(() => { const d = document.querySelector('.drawer.numpad'); const a = document.activeElement;
+      return { role: d.getAttribute('role'), modal: d.getAttribute('aria-modal'), label: d.getAttribute('aria-label') || '', ok: a.classList.contains('np-ok') }; });
+    await page.click('.np-key[data-k="5"]');
+    const a2 = await page.evaluate(() => (document.activeElement.dataset || {}).k);
+    await page.keyboard.press('Escape');
+    const a3 = await page.evaluate(() => { const a = document.activeElement; return { back: a.classList.contains('qty-num') && a.dataset.numfor === 'konsole70M', label: a.getAttribute('aria-label') || '', np: !!state.numpad,
+      strip: (document.querySelector('.stat-strip') || { getAttribute: () => 'ohne Leiste' }).getAttribute('aria-label') }; });
+    console.log('  a11y: ' + JSON.stringify({ a1, a2, a3 }));
+    if (a1.role !== 'dialog' || a1.modal !== 'true' || !a1.label) problems.push('Ziffernblock ohne role=dialog/aria-modal/aria-label');
+    if (!a1.ok) problems.push('Fokus beim Öffnen nicht auf OK');
+    if (a2 !== '5') problems.push('Fokus nach Tastendruck nicht auf der Taste (' + a2 + ')');
+    if (!a3.back || a3.np) problems.push('Fokus nach Schließen nicht auf dem Mengen-Knopf');
+    if (!/4/.test(a3.label)) problems.push('aria-label des Mengen-Knopfs ohne Zahl: ' + a3.label);
+    if (!a3.strip) problems.push('.stat-strip ohne aria-label');
+    // Enter auf fokussiertem OK darf den Ziffernblock nicht gleich wieder öffnen
+    await page.click('[data-action="numpad-open"][data-id="konsole70M"]');
+    await page.keyboard.press('7'); await page.keyboard.press('Enter'); await page.waitForTimeout(150);
+    const a4 = await page.evaluate(() => ({ np: !!state.numpad, q: state.cart.konsole70M }));
+    if (a4.np || a4.q !== 7) problems.push('Enter: ' + JSON.stringify(a4));
+    await page.evaluate(() => { delete state.cart.konsole70M; render(); });
     // Kein Neu-Abspielen: Popup -> Ziffernblock -> OK darf das Popup nicht erneut animieren
     await page.evaluate(() => { state.itemPopup = 'konsole70M'; render(); });
     await page.waitForTimeout(400);
