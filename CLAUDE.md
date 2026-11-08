@@ -458,6 +458,33 @@ w-grey`); antippbare Kacheln springen in den passenden Reiter
   (doppelt zu den Kacheln), Info-Kacheln am Handy flacher, Standort-Hinweis
   beim Fahrer kurz, wenn alles in Ordnung ist (`geoOnShort`).
 
+## Bewegung / Druck-Rückmeldung (Feinschliff)
+
+Sachlich und schnell, kein Shop-Gefühl. Kurven als Variablen `--ease-out`
+(Rückmeldung) und `--ease-drawer` (Fenster) im `:root`.
+- **Knöpfe** geben beim Drücken nach (`scale(0.97)`, 140 ms; Kacheln 0.98,
+  BV-Zeilen 0.99), `touch-action: manipulation` (kein Doppeltipp-Zoom beim
+  schnellen +/+), kein grauer Tipp-Blitz. Liste der Knopf-Klassen im Block
+  „Feinschliff (Bedienung)“ am Ende des CSS – neue Knopf-Arten dort ergänzen.
+  Gesperrte Knöpfe reagieren nicht (`:not(:disabled)`). „Bereit melden“ wird
+  beim Drücken nur etwas dunkler statt blau.
+- **KEINE Einblend-Animationen auf Karten/Listen/Reitern**: `render()`
+  zeichnet alle 4 s per innerHTML neu, sie würden ständig neu abspielen.
+- **Fenster** (Teile-Popup, Bestellschein-Entwurf, Abholung, Bestätigung):
+  `animateOverlayOnOpen()` am Ende von `render()` animiert per Web Animations
+  API nur, wenn ein ANDERES Fenster aufgeht (Schlüssel = `data-action` des
+  `.overlay`); +/− im Fenster spielt nichts neu ab. Schließen sofort.
+- **Langes Drücken**: `.lp-fill` in der `.t-name`-Zelle füllt sich in 480 ms
+  (= `lpTimer`), Klasse `holding` (gesetzt in `pointerdown`, entfernt in
+  `clearLongPress()`).
+- **Meldung** (`showToast()`): rein 220 ms, raus 150 ms; die 4 s pausieren,
+  solange die App im Hintergrund ist (`visibilitychange`).
+- Zahlen in Kacheln/Abzeichen mit `tabular-nums` (wackeln nicht beim
+  Aktualisieren); Hover nur mit Maus (`@media (hover:hover)`); einheitlicher
+  Fokus-Rahmen `:focus-visible`.
+- **Reduzierte Bewegung** (Geräte-Einstellung): kein Skalieren/Gleiten, nur
+  Blenden; `scrollBehavior()` statt fest `'smooth'` verwenden.
+
 ## PC-Ansicht (Chef im Büro)
 
 Mobile-first bleibt: am Handy eine Spalte wie bisher. Ab 900 px wird

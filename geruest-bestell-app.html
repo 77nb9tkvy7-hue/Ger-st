@@ -17,6 +17,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
+    /* Bewegungs-Kurven (Feinschliff): kräftiges ease-out für Rückmeldungen,
+       iOS-artige Kurve für Fenster, die von unten hereingleiten. */
+    --ease-out:cubic-bezier(0.23,1,0.32,1); --ease-drawer:cubic-bezier(0.32,0.72,0,1);
     --bg:#F2F4F6; --card:#FFFFFF; --ink:#17242D; --muted:#64748B; --line:#E2E8F0; --line-strong:#CBD5E1;
     --accent:#0069B3; --accent-dark:#00538D; --accent-soft:#E1F0FA;
     /* Feste Marken-Füllfarbe für Knöpfe mit weißer Schrift -- bleibt in
@@ -72,7 +75,8 @@
   .role-btn{display:flex;align-items:center;gap:14px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--ink);text-align:left;}
   .role-btn svg{width:24px;height:24px;flex:none;color:var(--accent);}
   .role-btn small{display:block;font-family:'Inter';font-size:11.5px;color:var(--muted);font-weight:400;margin-top:2px;}
-  .role-btn:hover{border-color:var(--accent);background:var(--accent-soft);}
+  /* Hover nur mit Maus – am Handy bliebe er nach dem Antippen "hängen" */
+  @media (hover:hover) and (pointer:fine){ .role-btn:hover{border-color:var(--accent);background:var(--accent-soft);} }
   .warn{color:var(--red);font-size:12.5px;margin-top:8px;}
 
   header.chrome{background:var(--card);color:var(--ink);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #FFEE00;position:sticky;top:0;z-index:20;}
@@ -113,8 +117,11 @@
   .order-table tbody tr.cat-row:active td{background:var(--accent-soft);filter:brightness(0.95);}
   .cat-chevron{display:inline-block;width:14px;}
   .cat-count{color:var(--accent-dark);opacity:0.65;font-weight:600;text-transform:none;letter-spacing:0;}
-  .t-name{display:flex;align-items:center;gap:9px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
-  .t-name:active{background:var(--accent-soft);}
+  .t-name{display:flex;align-items:center;gap:9px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;isolation:isolate;}
+  /* Langes Drücken: Zeile füllt sich in 480 ms (= lpTimer), dann kommt das
+     Detail-Popup. Loslassen zieht die Füllung schnell zurück. */
+  .lp-fill{position:absolute;inset:0;z-index:-1;background:var(--accent-soft);clip-path:inset(0 100% 0 0);transition:clip-path 150ms var(--ease-out);pointer-events:none;}
+  .t-name.holding .lp-fill{clip-path:inset(0 0 0 0);transition:clip-path 480ms linear;}
   .t-icon{width:22px;height:22px;color:var(--accent);flex:none;}
   .t-unit{color:var(--muted);font-size:12.5px;}
   .t-kg{font-size:10.5px;color:var(--muted);opacity:0.85;white-space:nowrap;}
@@ -188,7 +195,7 @@
   .order-items li{margin-left:18px;}
   .order-time{font-size:11.5px;color:var(--muted);margin-bottom:4px;}
   .advance-btn{width:100%;background:#FFEE00;color:#0B2A42;border:none;padding:12px;border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;margin-top:10px;}
-  .advance-btn:active{background:var(--accent-solid);color:#fff;}
+  .advance-btn:active{filter:brightness(0.94);}
   .done-label{font-size:12.5px;color:var(--green);font-weight:700;margin-top:8px;}
   .empty-state{text-align:center;color:var(--muted);padding:44px 10px;font-size:13.5px;}
   .waiting-note{font-size:12px;color:#92400E;background:#FEF3C7;padding:10px 12px;border-radius:12px;margin-bottom:12px;}
@@ -233,8 +240,9 @@
   .widget-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 16px 0;}
   .widget{--wc:var(--muted);display:flex;flex-direction:column;align-items:flex-start;text-align:left;background:var(--card);border:none;border-radius:20px;padding:14px 14px 13px 14px;box-shadow:var(--shadow);font-family:'Inter',sans-serif;color:var(--ink);min-height:104px;position:relative;overflow:hidden;}
   button.widget{cursor:pointer;}
-  .jump-flash{animation:jumpFlash 1.6s ease-out;border-radius:10px;}
+  .jump-flash{animation:jumpFlash 1.2s var(--ease-out);border-radius:10px;}
   @keyframes jumpFlash{0%{background:rgba(255,238,0,0.45);box-shadow:0 0 0 6px rgba(255,238,0,0.45);}100%{background:transparent;box-shadow:0 0 0 6px transparent;}}
+  @keyframes jumpFlashSoft{0%{background:rgba(255,238,0,0.45);}100%{background:transparent;}}
   button.widget:active{transform:scale(0.98);}
   .widget::after{content:'';position:absolute;inset:0;background:var(--wc);opacity:0.07;pointer-events:none;}
   .w-top{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:0.01em;}
@@ -374,8 +382,9 @@
   .ev-kind.abholung{background:rgba(58,160,230,.15);color:#1d6fa5;}
   .reorder-btn{display:block;width:100%;margin-top:8px;border:1.5px solid var(--accent);background:var(--card);color:var(--accent-dark);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
   .pick-all-btn{display:block;width:100%;margin-top:8px;border:1.5px solid #1E9E5A;background:rgba(30,158,90,0.08);color:var(--ink);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
-  .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);max-width:calc(100% - 32px);width:max-content;background:#0B2A4A;color:#fff;border-left:5px solid #FFEE00;border-radius:12px;padding:11px 14px;font-size:13.5px;line-height:1.4;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:1000;font-family:'Inter',sans-serif;}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);max-width:calc(100% - 32px);width:max-content;background:#0B2A4A;color:#fff;border-left:5px solid #FFEE00;border-radius:12px;padding:11px 14px;font-size:13.5px;line-height:1.4;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity 150ms ease-out, transform 150ms ease-out;z-index:1000;font-family:'Inter',sans-serif;}
+  /* rein 220 ms mit kräftigem ease-out, raus schneller (150 ms, Regel oben) */
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);transition-duration:220ms;transition-timing-function:var(--ease-out);}
   .plaene{margin:12px 0 4px 0;padding:10px;border-radius:12px;background:var(--surface-2);}
   .plaene-head{font-size:13px;font-weight:700;margin-bottom:6px;}
   .plaene-list{display:flex;flex-direction:column;gap:6px;}
@@ -492,6 +501,34 @@
   #printArea .ls-items td.ls-menge,#printArea .ls-items th.ls-menge{text-align:right;white-space:nowrap;}
   #printArea .ls-items .ls-total{font-weight:700;border-top:2px solid #111;border-bottom:none;text-align:right;padding-top:9px;}
   .ls-fehlt{margin-top:14px;font-size:13px;}
+  /* Feinschliff (Bedienung): Knöpfe geben beim Drücken leicht nach, kein
+     Doppeltipp-Zoom, kein grauer System-Blitz. Bewusst KEINE Einblend-
+     Animationen auf Karten/Listen: render() zeichnet alle 4 s per innerHTML
+     neu, die würden ständig neu abspielen. Fenster: animateOverlayOnOpen(). */
+  .submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
+  .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,
+  .inv-actions button,.refresh-btn,.role-chip,.geo-retry,.back-link,.print-btn,
+  button.widget,.proj-row{
+    transition:transform 140ms var(--ease-out), filter 140ms var(--ease-out);
+    touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+  }
+  .submit-btn:active:not(:disabled),.advance-btn:active:not(:disabled),.chip-btn:active:not(:disabled),
+  .mini-btn:active,.ziel-chip:active,.pick-btn:active,.day-cell:active,.role-btn:active,.loc-btn:active,
+  .done-toggle:active,.reorder-btn:active,.pick-all-btn:active,.pu-open-btn:active,.seg-control button:active,
+  .qty-ctl button:active,.inv-actions button:active,.refresh-btn:active,.role-chip:active,.geo-retry:active,
+  .print-btn:active{transform:scale(0.97);}
+  /* Zahlen, die sich bei der Aktualisierung ändern: gleich breite Ziffern, damit nichts wackelt */
+  .w-value,.sec-n,.rn-badge,.stat-chip b,.w-dots{font-variant-numeric:tabular-nums;}
+  /* Sichtbarer, einheitlicher Fokus-Rahmen für Tastatur (Chef am PC) */
+  button:focus-visible,a:focus-visible,[data-action]:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  /* Weniger Bewegung, wenn am Gerät eingestellt: kein Skalieren/Gleiten, Blenden bleibt */
+  @media (prefers-reduced-motion: reduce){
+    :root :is(.submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
+      .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.inv-actions button,
+      .refresh-btn,.role-chip,.geo-retry,.print-btn,button.widget,.proj-row):active{transform:none;}
+    .toast,.toast.show{transform:translateX(-50%);}
+    .jump-flash{animation-name:jumpFlashSoft;}
+  }
 @media print{
     html,body{background:#fff !important;}
     body > *:not(#printArea){display:none !important;}
@@ -2431,7 +2468,7 @@ function qtyControlHTML(it){
 
 function catalogRowHTML(it, alt){
   return `<tr class="${alt? 'row-alt':''}">
-    <td class="t-name" data-longpress="${it.id}"><span class="t-icon">${ICONS[it.icon]}</span>${itemName(it)}</td>
+    <td class="t-name" data-longpress="${it.id}"><span class="lp-fill"></span><span class="t-icon">${ICONS[it.icon]}</span>${itemName(it)}</td>
     <td class="t-unit">${unitLabel(it.unit)}${it.kg!=null? `<div class="t-kg">${it.kg.toLocaleString(LOCALES[state.lang]||'de-DE')} kg</div>`:''}</td>
     <td>${qtyControlHTML(it)}</td>
   </tr>`;
@@ -4071,12 +4108,52 @@ const SHOW_CHEF_INVENTORY = false;
 
 // Kurze Meldung unten am Bildschirm (liegt außerhalb von #app, damit sie
 // das Neuzeichnen übersteht).
-let toastTimer = null;
+// Die 4 s laufen nur, solange die App sichtbar ist: wer kurz in Google Maps
+// o. Ä. wechselt, verpasst die Meldung nicht (toastLeft = Rest-Zeit).
+let toastTimer = null, toastLeft = 0, toastStart = 0;
 function showToast(msg){
   let el = document.getElementById('toast');
   if(!el){ el = document.createElement('div'); el.id = 'toast'; el.className = 'toast'; document.body.appendChild(el); }
   el.textContent = msg; iconize(el); el.classList.add('show');
-  clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove('show'), 4000);
+  toastLeft = 4000; startToastTimer();
+}
+function startToastTimer(){
+  clearTimeout(toastTimer); toastStart = Date.now();
+  toastTimer = setTimeout(()=>{ toastLeft = 0; const el = document.getElementById('toast'); if(el) el.classList.remove('show'); }, toastLeft);
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(!toastLeft) return;
+  if(document.hidden){ clearTimeout(toastTimer); toastLeft = Math.max(800, toastLeft - (Date.now() - toastStart)); }
+  else startToastTimer();
+});
+
+// Weiches Scrollen nur, wenn am Gerät keine reduzierte Bewegung eingestellt ist
+const REDUCE_MOTION = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : {matches:false};
+function scrollBehavior(){ return REDUCE_MOTION.matches ? 'auto' : 'smooth'; }
+
+// Fenster (Teile-Popup, Bestellschein-Entwurf, Abholung, Bestätigung) beim
+// ÖFFNEN kurz einblenden. Nicht per CSS-Animation, weil render() das Fenster
+// bei jeder Änderung darin (+/−, Chips) neu baut – dann würde es jedes Mal
+// neu hereingleiten. Gemerkt wird, welches Fenster offen war (data-action
+// des Hintergrunds); nur bei einem Wechsel wird animiert. Schließen: sofort.
+let overlayOpenKey = null;
+function animateOverlayOnOpen(){
+  const ov = document.querySelector('#app > .overlay');
+  const key = ov ? ov.dataset.action : null;
+  if(ov && key !== overlayOpenKey && ov.animate){
+    const reduce = REDUCE_MOTION.matches;
+    ov.animate([{opacity:0},{opacity:1}], {duration:200, easing:'ease-out'});
+    const pop = ov.querySelector('.item-popup');
+    const sheet = pop || ov.querySelector('.drawer');
+    if(sheet){
+      const frames = reduce ? [{opacity:0},{opacity:1}]
+        : pop ? [{opacity:0, transform:'scale(0.96)'},{opacity:1, transform:'scale(1)'}]
+              : [{transform:'translateY(100%)'},{transform:'translateY(0)'}];
+      sheet.animate(frames, pop ? {duration:180, easing:'cubic-bezier(0.23,1,0.32,1)'}
+                                : {duration:280, easing:'cubic-bezier(0.32,0.72,0,1)'});
+    }
+  }
+  overlayOpenKey = key;
 }
 
 // Reiter einer Rolle: am PC wie bisher oben, am Handy als feste Leiste unten
@@ -4096,10 +4173,10 @@ function doneSectionHTML(key, list, renderFn, limit){
 function jumpTo(id){
   requestAnimationFrame(()=>{
     const el = document.getElementById(id);
-    if(!el){ window.scrollTo({top:0, behavior:'smooth'}); return; }
+    if(!el){ window.scrollTo({top:0, behavior:scrollBehavior()}); return; }
     const hd = document.querySelector('header.chrome');
     const top = el.getBoundingClientRect().top + window.scrollY - (hd? hd.offsetHeight : 0) - 12;
-    window.scrollTo({top: Math.max(0, top), behavior:'smooth'});
+    window.scrollTo({top: Math.max(0, top), behavior:scrollBehavior()});
     el.classList.remove('jump-flash'); void el.offsetWidth; el.classList.add('jump-flash');
   });
 }
@@ -4321,6 +4398,7 @@ function iconize(root){
 function render(){
   renderView();
   iconize(document.getElementById('app'));
+  animateOverlayOnOpen();
 }
 function renderView(){
   if(state.loading){ document.getElementById('app').innerHTML = `<div class="loading">${t('loadingText')}</div>`; return; }
@@ -4519,7 +4597,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   }
   if(action==='new-pin-done'){ state.newPin = null; render(); }
   if(action==='forgot-pw'){ state.forgotPw = !state.forgotPw; render(); }
-  if(action==='my-pw-open'){ state.menuOpen = false; state.myPwOpen = true; state.myPwWarn = ''; render(); window.scrollTo({top:0, behavior:'smooth'}); const f = document.getElementById('myPwNew'); if(f) f.focus(); }
+  if(action==='my-pw-open'){ state.menuOpen = false; state.myPwOpen = true; state.myPwWarn = ''; render(); window.scrollTo({top:0, behavior:scrollBehavior()}); const f = document.getElementById('myPwNew'); if(f) f.focus(); }
   if(action==='my-pw-cancel'){ state.myPwOpen = false; state.myPwWarn = ''; render(); }
   if(action==='my-pw-save'){ await saveMyPw(); }
   if(action==='emp-remove'){
@@ -4555,7 +4633,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     else if(!o.projekt && o.baustelle){ state.selProjekt = '_frei'; state.baustelleOrt = o.baustelle; state.baustelleCoords = o.coords || null; }
     state.catalogSearch = '';
     render();
-    window.scrollTo({top:0, behavior:'smooth'});
+    window.scrollTo({top:0, behavior:scrollBehavior()});
     showToast(t('reorderToast',{id:o.id}));
   }
   if(action==='close-order-review' || (action==='close-order-review-bg' && e.target===el)){ state.orderReview=null; render(); }
@@ -4719,7 +4797,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     if(el.dataset.done) state.showDone[el.dataset.done] = true;
     render();
     if(el.dataset.go) jumpTo(el.dataset.go);
-    else window.scrollTo({top:0, behavior:'smooth'});
+    else window.scrollTo({top:0, behavior:scrollBehavior()});
   }
   if(action==='open-projekt'){ state.chefProjekt = parseInt(el.dataset.id,10); state.cart = {}; state.planDraft = {projekt:'', date:''}; state.planWarn=''; render(); window.scrollTo(0,0); }
   if(action==='close-projekt'){ state.chefProjekt = null; render(); }
@@ -5104,12 +5182,16 @@ document.getElementById('app').addEventListener('input', (e)=>{
 // Name antippen und halten öffnet das Detail-Popup (Foto/Menge) --
 // nützlich sobald echte Teile-Fotos zur Sicherheit dabei sind.
 let lpTimer=null, lpStartX=0, lpStartY=0, lpId=null;
-function clearLongPress(){ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } lpId=null; }
+function clearLongPress(){
+  if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } lpId=null;
+  document.querySelectorAll('.t-name.holding').forEach(c=>c.classList.remove('holding'));
+}
 document.getElementById('app').addEventListener('pointerdown', (e)=>{
   const cell = e.target.closest('[data-longpress]');
   if(!cell) return;
   lpId = cell.dataset.longpress;
   lpStartX = e.clientX; lpStartY = e.clientY;
+  cell.classList.add('holding');   // Füllung zeigt, wie lange noch halten
   lpTimer = setTimeout(()=>{
     lpTimer = null;
     state.itemPopup = lpId;
