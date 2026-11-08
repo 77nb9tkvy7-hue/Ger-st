@@ -62,8 +62,15 @@ Je Punkt ein eigener Commit beim Übernehmen.
 - **SQL**: `supabase/neue-funktionen.sql` einmal im SQL Editor ausführen (nach
   `security.sql`): `login_lookup`, `public_info` leer, Bucket `fotos` + Regeln
   (Löschen nur 5 Min. durch Hochlader), geschützte Zeilen (`prot_read`,
-  `prot_upsert`, `prot_team`, `kolonne_get/set`), `zeit_cleanup` (+ pg_cron-Zeile
-  im Kommentar), `freigabe_info`. Lokal getestet: `supabase/test-neue-funktionen.sql`.
+  `prot_upsert`, `prot_team`, `kolonne_get/set`), `zeit_cleanup`/`zeit_cleanup_now`,
+  `freigabe_info`. Lokal getestet: `supabase/test-neue-funktionen.sql`.
+- **PFLICHT: pg_cron-Job fürs Aufräumen** (sonst bleiben Einchecken-Daten ewig):
+  `select cron.schedule('zeit-cleanup', '30 2 * * *', 'select public.zeit_cleanup()');`
+- **Nach dem SQL prüfen**: `prot_team`/`zeit_cleanup` dürfen für `anon` und
+  `authenticated` NICHT ausführbar sein (Supabase vergibt das sonst automatisch).
+- **Beweis-Fotos/Prüfungen/Mängel**: liegen bis Paket 4 im gemeinsamen Datensatz;
+  „nicht änderbar“ sichert nur die App, nicht der Server. So kommunizieren.
+- **vendor/supabase/**: auch die nachgeladene Datei `591.supabase.js` mitnehmen.
 - **Demo-Teile NICHT übernehmen**: `demoSeedExtras`, `demoSeedFotos`,
   `demoIdb`, `demoAgeFoto`, `demoUserName`, `demoRoleNow`, die `rpc`-/`storage`-
   Nachbauten im Demo-Client, Beispieldaten.

@@ -340,7 +340,7 @@
   .mat-table th.num,.mat-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
   .inv-extra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex-basis:100%;padding-left:52px;}
   .inv-row{flex-wrap:wrap;}
-  .inv-min-link{border:none;background:none;color:var(--accent-dark);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;min-height:44px;padding:0 4px;}
+  .inv-min-link{border:none;background:none;color:var(--accent-dark);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;min-height:var(--tap);padding:0 4px;}
   .inv-def{font-weight:700;font-size:13px;}
   .inv-min{font-size:13px;color:var(--muted);}
   .pu-def{margin-top:6px;}
@@ -853,7 +853,7 @@ async function demoSeedFotos(){
     await demoIdb('put', path, {data: c.toDataURL('image/jpeg', 0.8), created_at: Date.now() - 864e5, owner:'Max'});
   }
   // Vorschau-Links, die vor dem Anlegen der Beispielbilder leer abgefragt wurden, neu holen
-  try{ Object.keys(fotoUrlCache).forEach(k=>{ if(!fotoUrlCache[k]) delete fotoUrlCache[k]; }); if(state.loggedIn) render(); }catch(e){}
+  try{ Object.keys(fotoUrlCache).forEach(k=>{ if(!fotoUrl(k)) delete fotoUrlCache[k]; }); if(state.loggedIn) render(); }catch(e){}
 }
 function demoLoad(){
   // Version steht in EIGENEM Schlüssel, nicht im Datensatz (sonst weicht syncBase von stateToValue() ab -> "Kein Netz"-Leiste)
@@ -927,7 +927,7 @@ function createDemoClient(){
         try{ localStorage.setItem('demo-kolonnen', JSON.stringify(kol)); }catch(e){}
         return {data:true, error:null};
       }
-      if(fn==='zeit_cleanup'){
+      if(fn==='zeit_cleanup_now'){
         let rows = {}; try{ rows = JSON.parse(localStorage.getItem('demo-rows')||'{}'); }catch(e){}
         const projs = cur().projects||[]; let n = 0;
         Object.keys(rows).filter(k=>k.startsWith('zeit:')).forEach(k=>{
@@ -953,7 +953,7 @@ function createDemoClient(){
         if(!chef && (!mine(en.person) || en.korr)) return {data:false, error:{message:'nicht erlaubt'}};
         const row = rows[key] || (rows[key] = {entries:[]});
         const i = row.entries.findIndex(x=>x.id===en.id);
-        if(i>=0){ if(!chef && !mine(row.entries[i].person)) return {data:false, error:{message:'nicht erlaubt'}}; row.entries[i] = {...row.entries[i], ...en}; }
+        if(i>=0){ if(!chef && !mine(row.entries[i].person)) return {data:false, error:{message:'nicht erlaubt'}}; const upd = chef ? en : Object.fromEntries(Object.entries(en).filter(([k])=>k==='out'||k==='outPos')); row.entries[i] = {...row.entries[i], ...upd}; }
         else row.entries.push(en);
         try{ localStorage.setItem('demo-rows', JSON.stringify(rows)); }catch(e){}
         return {data:true, error:null};
@@ -2602,6 +2602,11 @@ function mergeRecord(b, l, r, isOrder){
       Object.keys(ls).forEach(k=>{ if(!same(ls[k], bs[k]) && !(m[k] && !same(m[k], bs[k]) && String(m[k])>String(ls[k]))) m[k] = ls[k]; });
       out.steps = m; return;
     }
+    if(f==='pruefungen' || f==='plaene'){ // Listen im BV: je Eintrag (id) zusammenführen, nichts geht verloren
+      const bl = (b||{})[f]||[], ll = (l||{})[f]||[], rl = (r||{})[f]||[];
+      if(same(ll, bl)) return;
+      out[f] = mergeList(bl, ll, rl, 'id', false, false).out; return;
+    }
     if(isOrder && f==='pick'){ // Packliste: je Zeile zusammenführen (zwei Geräte haken verschiedene Zeilen ab)
       const bp = (b||{}).pick||{}, lp = (l||{}).pick||{}, rp = (r||{}).pick||{};
       if(same(lp, bp)) return;
@@ -2806,7 +2811,11 @@ async function loadShared(){
   try{
     await sync();
     if(state.loggedIn && state.role==='chef') await loadPositions();
-    if(state.loggedIn && (state.role==='chef' || state.role==='baustelle')){ await loadKolonnen(); await loadZeit(); }
+    if(state.loggedIn && (state.role==='chef' || state.role==='baustelle')){
+      await loadKolonnen();
+      const full = state.role==='chef' && (state.view==='calendar' || state.chefProjekt!=null) && Date.now()-zeitFullAt > 60000;
+      await loadZeit(full);
+    }
     if(state.loggedIn && state.unterweisungen.length) await loadUwBest();
     refreshPlanUrls();
   }catch(e){
@@ -3462,7 +3471,7 @@ function printOrder(id){
       ${wt? `<tfoot><tr><td colspan="3" class="ls-total">${t('weightTotal')}: ${wt}</td></tr></tfoot>`:''}
     </table>
     ${o.fehlt && o.fehlt.length? `<p class="ls-fehlt"><b>${t('lsFehlt',{id:o.nachId})}:</b> ${o.fehlt.map(i=>{const r=resolvedItem(i); return `${i.qty} ${r.unit} ${r.name}`;}).join(', ')}</p>`:''}
-    ${o.signatur? `<div class="ls-sig-box"><b>${t('sigLabel')}:</b> ${escapeHtml(o.signatur.name||'')} · ${o.signatur.ts}${fotoUrlCache[o.signatur.path]? `<br><img class="ls-sig" src="${fotoUrlCache[o.signatur.path]}" alt="${t('sigLabel')}">`:''}</div>`:''}
+    ${o.signatur? `<div class="ls-sig-box"><b>${t('sigLabel')}:</b> ${escapeHtml(o.signatur.name||'')} · ${o.signatur.ts}${fotoUrl(o.signatur.path)? `<br><img class="ls-sig" src="${fotoUrl(o.signatur.path)}" alt="${t('sigLabel')}">`:''}</div>`:''}
   `;
   iconize(area);
   window.print();
@@ -4251,7 +4260,7 @@ async function loadProtected(prefix){
     const {data, error} = await supabaseClient.rpc('prot_read', {p_prefix: prefix});
     if(error) throw error;
     return (data||[]).map(r=>({key:r.key, entries:r.entries||[]}));
-  }catch(e){ console.warn('Geschützte Daten nicht ladbar', e); return []; }
+  }catch(e){ console.warn('Geschützte Daten nicht ladbar', e); return null; }   // null = Fehler: Aufrufer behält den alten Stand
 }
 async function appendProtected(key, entry){
   try{
@@ -4265,9 +4274,16 @@ async function appendProtected(key, entry){
 // Stunden = von–bis (oder Chef-Korrektur), auf 0,25 h gerundet; sehen nur Chef + man selbst.
 const CI_RADIUS_M = 150, CI_MAX_ACC = 100;
 const CI_HINT_KEY = 'geruest-ci-ok-';
-async function loadZeit(){
-  const rows = await loadProtected('zeit:');
-  state.zeit = rows.flatMap(r=>r.entries.map(e=>({...e, _key:r.key})));
+// full=false: nur aktueller + Vormonat (alle 4 s); full=true: alle Monate (Chef-Ansichten,
+// höchstens einmal pro Minute). Ältere Monate bleiben dabei im Speicher erhalten.
+let zeitFullAt = 0;
+async function loadZeit(full){
+  const d = new Date(), prefixes = full ? ['zeit:'] : [zeitKey(d), zeitKey(new Date(d.getFullYear(), d.getMonth()-1, 1))];
+  const rows = [];
+  for(const pre of prefixes){ const r = await loadProtected(pre); if(r===null) return; rows.push(...r); }
+  const keep = full ? [] : state.zeit.filter(e=>!prefixes.includes(e._key));
+  state.zeit = [...keep, ...rows.flatMap(r=>r.entries.map(e=>({...e, _key:r.key})))];
+  if(full) zeitFullAt = Date.now();
 }
 async function loadKolonnen(){
   try{ const {data, error} = await supabaseClient.rpc('kolonne_get', {}); if(!error && data) state.kolonnen = data; }catch(e){}
@@ -4459,7 +4475,7 @@ function pruefDraftHTML(){
     <div class="review-head"><div class="eyebrow">${t('pruefEyebrow')} · BV ${d.projekt}</div><h3>${t('pruefTitle')}</h3></div>
     <div class="pick-hint">${t('pruefHint')}</div>
     <div class="pick-list">${PRUEF_PUNKTE.map(k=>`<button class="pick-tap pp-row ${d.punkte[k]?'pk-ok':''}" data-action="pp-toggle" data-k="${k}" aria-pressed="${d.punkte[k]?'true':'false'}"><span class="pick-box">${d.punkte[k]?'✓':''}</span><span class="pick-name">${t('pp_'+k)}</span></button>`).join('')}</div>
-    ${d.fotoIds.length? `<div class="foto-grid" style="margin-top:10px;">${d.fotoIds.map(id=>state.fotos.find(f=>f.id===id)).filter(Boolean).map(fotoThumbHTML).join('')}</div>`:''}
+    ${d.fotoIds.length? `<div class="foto-grid" style="margin-top:10px;">${d.fotoIds.map(fotoById).filter(Boolean).map(fotoThumbHTML).join('')}</div>`:''}
     <label class="anlass-btn" style="margin-top:10px;">${state.fotoBusy? t('fotoSaving') : '📷 '+t('pruefFotoBtn')}<input type="file" accept="image/*" capture="environment" data-anlass="uebergabe" data-projekt="${d.projekt}" data-pruef="1" hidden></label>
     <div class="field" style="margin-top:10px;"><label for="pruefBem">${t('pruefBem')}</label><textarea id="pruefBem" rows="2">${escapeHtml(d.bemerkung||'')}</textarea></div>
     ${d.warn? `<div class="warn">${d.warn}</div>`:''}
@@ -4505,6 +4521,7 @@ async function createUnterweisung(titel, text){
 }
 async function loadUwBest(){
   const rows = await loadProtected('unterweisung:');
+  if(rows===null) return;   // Fehler: alten Stand behalten
   const m = {}; rows.forEach(r=>{ m[parseInt(r.key.split(':')[1],10)] = r.entries; });
   state.uwBest = m;
 }
@@ -4540,8 +4557,9 @@ const FOTO_BUCKET = 'fotos';
 const FOTO_ANLAESSE = ['abladen','uebergabe','vor_abbau','schaden','vorher','nachher','mangel'];
 const FOTO_DELETE_MS = 5*60*1000;
 const fotoUrlCache = {};
-let fotoUrlBusy = false;
-function fotosOf(pid){ return state.fotos.filter(f=>f.projekt===pid && (!f.hidden || state.role==='chef')).sort((a,b)=>b.id-a.id); }
+let fotoUrlBusy = null;   // Promise, solange Links geholt werden
+function fotosOf(pid){ return state.fotos.filter(f=>f.projekt===pid && (!f.hidden || state.role==='chef')).sort((a,b)=>String(b.ts).localeCompare(String(a.ts))); }
+function fotoById(id){ return state.fotos.find(x=>String(x.id)===String(id)); }
 function canDeleteFoto(f){ return !!f && f.by===state.name && (Date.now() - Date.parse(f.ts)) < FOTO_DELETE_MS; }
 function loadImg(file){
   return new Promise((res, rej)=>{ const u = URL.createObjectURL(file); const im = new Image();
@@ -4585,7 +4603,7 @@ async function takePhotoFromFile(file, projekt, anlass){
     const path = `bv${projekt}/${now.toISOString().slice(0,7)}/${Math.random().toString(36).slice(2,12)}.jpg`;
     const {error} = await supabaseClient.storage.from(FOTO_BUCKET).upload(path, blob, {contentType:'image/jpeg', upsert:false});
     if(error) throw error;
-    const f = {id: state.fotoCounter++, projekt, anlass, by: state.name, ts: now.toISOString(),
+    const f = {id: 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2,7), projekt, anlass, by: state.name, ts: now.toISOString(),
       lat: pos? pos.lat : null, lon: pos? pos.lon : null, acc: pos? pos.acc : null, path, w, h, size: blob.size, hidden: null};
     state.fotos.push(f);
     await saveShared();
@@ -4598,36 +4616,46 @@ async function takePhotoFromFile(file, projekt, anlass){
   }finally{ state.fotoBusy = false; render(); }
 }
 async function deleteFoto(id){
-  const f = state.fotos.find(x=>x.id===id);
+  const f = fotoById(id);
   if(!canDeleteFoto(f)) return false;
   const {error} = await supabaseClient.storage.from(FOTO_BUCKET).remove([f.path]);
   if(error){ showToast(t('fotoDelFail')); return false; }
-  state.fotos = state.fotos.filter(x=>x.id!==id);
+  state.fotos = state.fotos.filter(x=>String(x.id)!==String(id));
   delete fotoUrlCache[f.path];
-  if(state.fotoView===id) state.fotoView = null;
+  if(String(state.fotoView)===String(id)) state.fotoView = null;
   await saveShared(); render();
   return true;
 }
 async function toggleHideFoto(id){
-  const f = state.fotos.find(x=>x.id===id);
+  const f = fotoById(id);
   if(!f || state.role!=='chef') return;
   f.hidden = f.hidden ? null : {by: state.name, ts: nowStr()};
   await saveShared(); render();
 }
+// fotoUrlCache[path] = {url, exp}: zeitlich begrenzter Link (6 h), 30 Min. vor Ablauf neu holen;
+// Fehlschlag ({url:'', exp:+60 s}) wird nach 1 Minute erneut versucht.
+const FOTO_URL_TTL = 6*3600*1000, FOTO_URL_RENEW = 30*60*1000;
+function fotoUrl(path){ const c = fotoUrlCache[path]; return c && c.url ? c.url : ''; }
+function fotoUrlStale(path){ const c = fotoUrlCache[path], now = Date.now(); return !c || (c.url ? c.exp - now < FOTO_URL_RENEW : now > c.exp); }
 async function refreshFotoUrls(){
+  if(fotoUrlBusy){ await fotoUrlBusy; }   // läuft schon: abwarten, dann selbst prüfen (nichts geht verloren)
   if(fotoUrlBusy || !state.fotos.length) return;
-  const need = state.fotos.filter(f=>!(f.path in fotoUrlCache)).map(f=>f.path);
+  const need = state.fotos.filter(f=>fotoUrlStale(f.path)).map(f=>f.path);
   if(!need.length) return;
-  fotoUrlBusy = true;
+  let done; fotoUrlBusy = new Promise(r=>{ done = r; });
+  const now = Date.now();
   try{
-    const {data} = await supabaseClient.storage.from(FOTO_BUCKET).createSignedUrls(need, 6*3600);
-    (data||[]).forEach(x=>{ fotoUrlCache[x.path] = x.signedUrl || ''; });
-  }catch(e){ need.forEach(p=>{ fotoUrlCache[p] = ''; }); }
-  fotoUrlBusy = false;
-  render();
+    const {data} = await supabaseClient.storage.from(FOTO_BUCKET).createSignedUrls(need, FOTO_URL_TTL/1000);
+    const got = new Set();
+    (data||[]).forEach(x=>{ got.add(x.path); fotoUrlCache[x.path] = x.signedUrl ? {url:x.signedUrl, exp: now + FOTO_URL_TTL} : {url:'', exp: now + 60000}; });
+    need.forEach(p=>{ if(!got.has(p)) fotoUrlCache[p] = {url:'', exp: now + 60000}; });
+  }catch(e){ need.forEach(p=>{ fotoUrlCache[p] = {url:'', exp: now + 60000}; }); }
+  fotoUrlBusy = null; done();
+  const ae = document.activeElement;   // nicht neu zeichnen, während jemand tippt
+  if(!(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) render();
 }
 function fotoThumbHTML(f){
-  const u = fotoUrlCache[f.path];
+  const u = fotoUrl(f.path);
   return `<button class="foto-thumb${f.hidden?' foto-hidden':''}" data-action="foto-view" data-id="${f.id}" aria-label="${t('anl_'+f.anlass)}">${u? `<img src="${u}" alt="" loading="lazy">` : '<span class="foto-ph"></span>'}<span class="foto-cap">${t('anl_'+f.anlass)}</span></button>`;
 }
 function fotosHTML(pid){
@@ -4649,8 +4677,8 @@ function fotoPickerHTML(){
   </div></div>`;
 }
 function fotoViewHTML(){
-  const f = state.fotos.find(x=>x.id===state.fotoView); if(!f) return '';
-  const u = fotoUrlCache[f.path], p = state.projects.find(x=>x.id===f.projekt);
+  const f = fotoById(state.fotoView); if(!f) return '';
+  const u = fotoUrl(f.path), p = state.projects.find(x=>x.id===f.projekt);
   const when = new Date(f.ts).toLocaleString('de-DE', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
   return `<div class="overlay overlay-center" data-action="foto-view-close-bg"><div class="foto-view" role="dialog" aria-modal="true" aria-label="${t('anl_'+f.anlass)}">
     ${u? `<img src="${u}" alt="${t('anl_'+f.anlass)}">` : '<div class="foto-ph big"></div>'}
@@ -4668,7 +4696,7 @@ function fotoViewHTML(){
 // Chef bekommt Push, sieht offene Mängel in der Übersicht + im BV und hakt ab.
 function openMaengel(pid){ return state.maengel.filter(m=>m.status==='offen' && (pid==null || m.projekt===pid)).sort((a,b)=>b.id-a.id); }
 function mangelCardHTML(m, canDone){
-  const p = state.projects.find(x=>x.id===m.projekt), f = m.fotoId!=null ? state.fotos.find(x=>x.id===m.fotoId) : null;
+  const p = state.projects.find(x=>x.id===m.projekt), f = m.fotoId!=null ? fotoById(m.fotoId) : null;
   return `<div class="order-card mangel-card${m.status==='erledigt'?' mangel-done':''}">
     <div class="order-head"><div><div class="no">⚠ BV ${m.projekt}${p? ' – '+escapeHtml(p.name):''}</div><div class="site">${t('mangelBy',{name:escapeHtml(m.by), ts:m.ts})}</div></div></div>
     <div class="mangel-text">${escapeHtml(m.text)}</div>
@@ -4684,7 +4712,7 @@ function maengelSectionHTML(pid){
     ${open.length? `<div class="card-grid">${open.map(m=>mangelCardHTML(m, state.role==='chef')).join('')}</div>` : `<div class="empty-state" style="padding:14px 10px;">${t('maengelNone')}</div>`}`;
 }
 function mangelHTML(){
-  const d = state.mangelDraft, f = d.fotoId!=null ? state.fotos.find(x=>x.id===d.fotoId) : null;
+  const d = state.mangelDraft, f = d.fotoId!=null ? fotoById(d.fotoId) : null;
   return `<div class="overlay" data-action="mangel-close-bg"><div class="drawer" role="dialog" aria-modal="true" aria-label="${t('mangelTitle')}">
     <div class="review-head"><div class="eyebrow">BV ${d.projekt}</div><h3>${t('mangelTitle')}</h3></div>
     <div class="field"><label for="mangelText">${t('mangelTextLabel')}</label><textarea id="mangelText" rows="3" placeholder="${t('mangelTextPh')}">${escapeHtml(d.text||'')}</textarea></div>
@@ -4761,8 +4789,8 @@ async function saveSig(){
 }
 async function printOrderWithSig(id){
   const o = state.orders.find(x=>x.id===id);
-  if(o && o.signatur && !fotoUrlCache[o.signatur.path]){
-    try{ const {data} = await supabaseClient.storage.from(FOTO_BUCKET).createSignedUrls([o.signatur.path], 6*3600); if(data && data[0] && data[0].signedUrl) fotoUrlCache[o.signatur.path] = data[0].signedUrl; }catch(e){}
+  if(o && o.signatur && fotoUrlStale(o.signatur.path)){
+    try{ const {data} = await supabaseClient.storage.from(FOTO_BUCKET).createSignedUrls([o.signatur.path], FOTO_URL_TTL/1000); if(data && data[0] && data[0].signedUrl) fotoUrlCache[o.signatur.path] = {url: data[0].signedUrl, exp: Date.now() + FOTO_URL_TTL}; }catch(e){}
   }
   printOrder(id);
 }
@@ -5852,7 +5880,7 @@ function render(){
   animateOverlayOnOpen();
   numpadFocusAfter(np);
   if(state.sigDraft) drawSig();
-  if(state.loggedIn && state.fotos.some(f=>!(f.path in fotoUrlCache))) setTimeout(refreshFotoUrls, 0);
+  if(state.loggedIn && state.fotos.some(f=>fotoUrlStale(f.path))) setTimeout(refreshFotoUrls, 0);
 }
 // Ziffernblock (Barrierefreiheit): beim Öffnen Fokus auf OK, beim Neuzeichnen
 // bleibt die zuletzt fokussierte Taste, beim Schließen zurück auf den Mengen-Knopf.
@@ -6156,7 +6184,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='regie-print'){ printRegie(parseInt(el.dataset.id,10)); }
   if(action==='monat-print'){ const sel = document.getElementById('monatSel-'+el.dataset.id); printMonat(parseInt(el.dataset.id,10), sel && sel.value); }
   if(action==='kol-toggle'){ const l = el.dataset.leader, m = el.dataset.member, cur = (state.kolonnen||{})[l] || []; const ok = await setKolonne(l, cur.includes(m) ? cur.filter(x=>x!==m) : [...cur, m]); if(!ok) showToast(t('warnLoginNet')); render(); }
-  if(action==='zeit-cleanup'){ try{ const {data} = await supabaseClient.rpc('zeit_cleanup', {}); showToast(t('persCleanupDone', {n: data||0})); }catch(e){} await loadZeit(); render(); }
+  if(action==='zeit-cleanup'){ try{ const {data, error} = await supabaseClient.rpc('zeit_cleanup_now', {}); if(error || data==null) throw error || new Error('nicht erlaubt'); showToast(t('persCleanupDone', {n: data})); }catch(e){ showToast(t('warnLoginNet')); } await loadZeit(true); render(); }
   if(action==='mangel-open'){ state.mangelDraft = {projekt: parseInt(el.dataset.projekt,10), text:'', fotoId:null, warn:''}; render(); }
   if(action==='mangel-close' || (action==='mangel-close-bg' && e.target===el)){ state.mangelDraft = null; render(); }
   if(action==='mangel-send'){ await sendMangel(); }
@@ -6167,10 +6195,10 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='sig-save'){ await saveSig(); }
   if(action==='foto-open'){ state.fotoDraft = {projekt: parseInt(el.dataset.projekt,10)}; render(); }
   if(action==='foto-close' || (action==='foto-close-bg' && e.target===el)){ state.fotoDraft = null; render(); }
-  if(action==='foto-view'){ state.fotoView = parseInt(el.dataset.id,10); render(); }
+  if(action==='foto-view'){ const f = fotoById(el.dataset.id); state.fotoView = f ? f.id : null; render(); }
   if(action==='foto-view-close' || (action==='foto-view-close-bg' && e.target===el)){ state.fotoView = null; render(); }
-  if(action==='foto-delete'){ if(confirm(t('fotoDeleteConfirm'))) await deleteFoto(parseInt(el.dataset.id,10)); }
-  if(action==='foto-hide'){ await toggleHideFoto(parseInt(el.dataset.id,10)); }
+  if(action==='foto-delete'){ if(confirm(t('fotoDeleteConfirm'))) await deleteFoto(el.dataset.id); }
+  if(action==='foto-hide'){ await toggleHideFoto(el.dataset.id); }
   if(action==='material-print'){ printMaterial(parseInt(el.dataset.id,10)); }
   if(action==='export-open'){ state.exportOpen = {range:'month'}; render(); }
   if(action==='export-range' && state.exportOpen){ state.exportOpen.range = el.dataset.r; render(); }

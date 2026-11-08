@@ -57,7 +57,8 @@ create or replace function public.prot_team(me text) returns jsonb
 language sql stable security definer set search_path = public as $$
   select coalesce((select value -> me from public.app_state where key = 'kolonnen'), '[]'::jsonb)
 $$;
-revoke all on function public.prot_team(text) from public;
+-- Supabase gibt neuen Funktionen automatisch execute an anon + authenticated: ausdrücklich entziehen.
+revoke all on function public.prot_team(text) from public, anon, authenticated;
 
 create or replace function public.kolonne_get() returns jsonb
 language sql stable security definer set search_path = public as $$
@@ -66,7 +67,7 @@ language sql stable security definer set search_path = public as $$
               else coalesce((select jsonb_build_object(public.jwt_name(), value -> public.jwt_name()) from public.app_state
                              where key = 'kolonnen' and value ? public.jwt_name()), '{}'::jsonb) end
 $$;
-revoke all on function public.kolonne_get() from public;
+revoke all on function public.kolonne_get() from public, anon;
 grant execute on function public.kolonne_get() to authenticated;
 
 create or replace function public.kolonne_set(p_name text, p_members jsonb) returns boolean
@@ -79,7 +80,7 @@ begin
    where key = 'kolonnen';
   return true;
 end $$;
-revoke all on function public.kolonne_set(text, jsonb) from public;
+revoke all on function public.kolonne_set(text, jsonb) from public, anon;
 grant execute on function public.kolonne_set(text, jsonb) to authenticated;
 
 create or replace function public.prot_read(p_prefix text) returns jsonb
@@ -92,7 +93,7 @@ begin
                 where chef or x ->> 'person' = me or team ? (x ->> 'person')), '[]'::jsonb)))
     from public.app_state a where a.key like p_prefix || '%' and a.key ~ '^(zeit|unterweisung):'), '[]'::jsonb);
 end $$;
-revoke all on function public.prot_read(text) from public;
+revoke all on function public.prot_read(text) from public, anon;
 grant execute on function public.prot_read(text) to authenticated;
 
 create or replace function public.prot_upsert(p_key text, p_entry jsonb) returns boolean
@@ -103,6 +104,7 @@ declare me text := public.jwt_name(); chef boolean := public.jwt_is_chef(); team
 begin
   if not public.jwt_has_role() then return false; end if;
   if p_key !~ '^(zeit:[0-9]{4}-[0-9]{2}|unterweisung:[0-9]+)$' or p_entry ->> 'id' is null or p_entry ->> 'person' is null then return false; end if;
+  if octet_length(p_entry::text) > 4000 then return false; end if;   -- ein Eintrag ist klein; schützt die Zeile
   if not chef then
     if not (p_entry ->> 'person' = me or team ? (p_entry ->> 'person')) or p_entry ? 'korr' then return false; end if;
     if p_entry ? 'in'  then p_entry := jsonb_set(p_entry, '{in}',  to_jsonb(stamp)); end if;
@@ -114,7 +116,11 @@ begin
   select t.i - 1, t.x into idx, old from jsonb_array_elements(coalesce(cur -> 'entries', '[]'::jsonb)) with ordinality t(x, i)
     where t.x ->> 'id' = p_entry ->> 'id' limit 1;
   if idx is not null then
-    if not chef and not (old ->> 'person' = me or team ? (old ->> 'person')) then return false; end if;
+    if not chef then
+      if not (old ->> 'person' = me or team ? (old ->> 'person')) then return false; end if;
+      -- bestehende Einträge: nur auschecken (Zeit setzt der Server), alles andere bleibt
+      p_entry := jsonb_strip_nulls(jsonb_build_object('out', p_entry -> 'out', 'outPos', p_entry -> 'outPos'));
+    end if;
     cur := jsonb_set(cur, array['entries', idx::text], old || p_entry);
   else
     cur := jsonb_set(cur, '{entries}', coalesce(cur -> 'entries', '[]'::jsonb) || jsonb_build_array(p_entry));
@@ -122,7 +128,7 @@ begin
   update public.app_state set value = cur where key = p_key;
   return true;
 end $$;
-revoke all on function public.prot_upsert(text, jsonb) from public;
+revoke all on function public.prot_upsert(text, jsonb) from public, anon;
 grant execute on function public.prot_upsert(text, jsonb) to authenticated;
 
 -- 5) Speicherdauer: Einchecken-Daten 12 Monate nach Abrechnung des BV löschen
@@ -142,7 +148,18 @@ begin
   end loop;
   return n;
 end $$;
-revoke all on function public.zeit_cleanup() from public;
+revoke all on function public.zeit_cleanup() from public, anon, authenticated;
+
+-- Knopf „Jetzt aufräumen“ in der App (Reiter Personal): nur Chef, sonst null.
+-- Das tägliche Aufräumen per pg_cron (Zeile oben) ist trotzdem PFLICHT.
+create or replace function public.zeit_cleanup_now() returns integer
+language plpgsql security definer set search_path = public as $$
+begin
+  if not public.jwt_is_chef() then return null; end if;
+  return public.zeit_cleanup();
+end $$;
+revoke all on function public.zeit_cleanup_now() from public, anon;
+grant execute on function public.zeit_cleanup_now() to authenticated;
 
 -- 6) Öffentliche Gerüst-Freigabe (QR-Aushang, freigabe.html?t=<token>) ---------
 -- Liefert zu einem Token NUR BV-Nummer, Ergebnis der letzten Prüfung und Datum.

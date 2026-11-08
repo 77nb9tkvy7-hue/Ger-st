@@ -459,6 +459,67 @@ module.exports = ({ switchRole, shot }) => {
       if (!/^﻿?Datum;Fahrer;Bestellung;Bauvorhaben;km/.test(r.csv)) p.push('CSV-Kopf: ' + r.csv);
       return errs(errors, p);
     },
+    // Gesamtprüfung: Funde I2, I3, I4, I5, I7, I9
+    'review-fixes': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      // I2: Ladefehler darf vorhandene Zeiten/Bestätigungen nicht löschen
+      const i2 = await ev(page, async () => {
+        await loadZeit(); await loadUwBest();
+        const z0 = state.zeit.length, u0 = JSON.stringify(state.uwBest);
+        const orig = supabaseClient.rpc;
+        supabaseClient.rpc = async (fn, a) => (fn === 'prot_read' ? { data: null, error: { message: 'kein Netz' } } : orig(fn, a));
+        await loadZeit(); await loadUwBest();
+        supabaseClient.rpc = orig;
+        return { z0, z1: state.zeit.length, same: JSON.stringify(state.uwBest) === u0 };
+      });
+      if (!i2.z0 || i2.z1 !== i2.z0 || !i2.same) p.push('I2 Ladefehler löscht Daten: ' + JSON.stringify(i2));
+      // I3: Abfragen alle 4 s nur aktueller + Vormonat (nicht die ganze Historie)
+      const i3 = await ev(page, async () => {
+        const seen = []; const orig = supabaseClient.rpc;
+        supabaseClient.rpc = async (fn, a) => { if (fn === 'prot_read') seen.push(a.p_prefix); return orig(fn, a); };
+        await loadShared();
+        supabaseClient.rpc = orig;
+        return seen;
+      });
+      if (i3.includes('zeit:') || !i3.some(x => /^zeit:\d{4}-\d{2}$/.test(x))) p.push('I3 Abfrage-Präfixe: ' + i3.join(','));
+      // I4: zwei Geräte legen je ein Prüfprotokoll an -> beide bleiben
+      const i4 = await ev(page, () => {
+        const base = { projects: [{ id: 101, pruefungen: [{ id: 1, ergebnis: 'frei' }] }] };
+        const l = { projects: [{ id: 101, pruefungen: [{ id: 1, ergebnis: 'frei' }, { id: 2, ergebnis: 'gesperrt' }] }] };
+        const r = { projects: [{ id: 101, pruefungen: [{ id: 1, ergebnis: 'frei' }, { id: 3, ergebnis: 'frei' }] }] };
+        return merge3(base, l, r).value.projects[0].pruefungen.map(x => x.id).sort().join(',');
+      });
+      if (i4 !== '1,2,3') p.push('I4 Prüfprotokolle zusammengeführt: ' + i4);
+      // I5: Foto-Nummern kollidieren nicht zwischen Geräten (keine Umnummerierung)
+      const i5 = await ev(page, async () => {
+        const c = document.createElement('canvas'); c.width = 10; c.height = 10; const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+        const f = await takePhotoFromFile(new File([blob], 'x.png', { type: 'image/png' }), 101, 'vorher');
+        const m = merge3({ fotos: [] }, { fotos: [{ id: 'fa', path: 'a' }] }, { fotos: [{ id: 'fb', path: 'b' }] }).value.fotos.map(x => x.id).sort().join(',');
+        return { type: typeof (f && f.id), m };
+      });
+      if (i5.type !== 'string' || i5.m !== 'fa,fb') p.push('I5 Foto-Ids: ' + JSON.stringify(i5));
+      // I7: abgelaufene/fehlgeschlagene Foto-Links werden neu geholt
+      const i7 = await ev(page, async () => {
+        const f = state.fotos.find(x => x.projekt === 101);
+        fotoUrlCache[f.path] = { url: 'alt', exp: Date.now() - 1000 };
+        await refreshFotoUrls();
+        const e = fotoUrlCache[f.path];
+        return { isObj: !!e && typeof e === 'object', renewed: !!e && e.url !== 'alt' && e.exp > Date.now() };
+      });
+      if (!i7.isObj || !i7.renewed) p.push('I7 Foto-Links: ' + JSON.stringify(i7));
+      // I9: neue Knöpfe mind. 48 px hoch
+      const h = async sel => ev(page, s => Math.min(...[...document.querySelectorAll(s)].filter(e => e.offsetParent).map(e => e.getBoundingClientRect().height), 999), sel);
+      const small = [];
+      for (const s of ['.fotos-btns .mini-btn']) { const v = await h(s); if (v < 48) small.push(s + '=' + Math.round(v)); }
+      await switchRole(page, 'chef');
+      for (const s of ['.export-row .mini-btn']) { const v = await h(s); if (v < 48) small.push(s + '=' + Math.round(v)); }
+      await switchRole(page, 'lager');
+      await ev(page, () => { state.lagerTab = 'inventur'; render(); });
+      for (const s of ['.inv-extra .mini-btn', '.inv-min-link']) { const v = await h(s); if (v < 48) small.push(s + '=' + Math.round(v)); }
+      if (small.length) p.push('I9 Knöpfe unter 48 px: ' + small.join(', '));
+      return errs(errors, p);
+    },
   };
 };
 
