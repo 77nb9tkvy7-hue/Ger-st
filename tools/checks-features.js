@@ -57,5 +57,64 @@ module.exports = ({ switchRole, shot }) => {
       if (!r.row || !r.minBtn) p.push('Inventur ohne Knapp-Hinweis/Min-Knopf');
       return errs(errors, p);
     },
+    // Task 2: Materialliste je BV
+    material: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      const r = await ev(page, () => {
+        const pid = 990;
+        state.projects.push({ id: pid, name: 'Testbau', adresse: 'X', aktiv: true });
+        state.orders.push({ id: 9901, projekt: pid, person: 'Max', status: 'Geliefert', items: [{ id: 'anker', name: 'Anker', unit: 'Stk', qty: 20 }], time: '01.11.2026, 08:00' });
+        state.orders.push({ id: 9902, projekt: pid, person: 'Max', status: 'Unterwegs', items: [{ id: 'anker', name: 'Anker', unit: 'Stk', qty: 5 }], time: '02.11.2026, 08:00' });
+        state.pickups.push({ id: 9903, projekt: pid, status: 'Im Lager', items: [{ id: 'anker', qty: 15, defekt: 2 }] });
+        const b = materialBalance(pid).find(x => x.id === 'anker');
+        state.chefTab = 'bauvorhaben'; state.chefProjekt = pid; render();
+        return { b, sec: !!document.getElementById('sec-material'), print: !!document.querySelector('[data-action="material-print"]') };
+      });
+      const b = r.b || {};
+      if (b.geliefert !== 20 || b.zurueck !== 15 || b.defekt !== 2 || b.vorOrt !== 5) p.push(`materialBalance: ${JSON.stringify(b)} (erwartet 20/15/2/5)`);
+      if (!r.sec || !r.print) p.push('BV-Detail ohne Abschnitt Material / Drucken');
+      await shot(page, 'material', 'chef', 390, false);
+      return errs(errors, p);
+    },
+    // Task 2: Pause-Knopf
+    pause: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'fahrer');
+      const btn = await page.$('[data-action="set-driver-status"][data-status="pause"]');
+      if (!btn) { p.push('kein Pause-Knopf'); return errs(errors, p); }
+      await btn.click(); await page.waitForTimeout(300);
+      const r = await ev(page, async () => {
+        const s1 = state.driverStatus[state.name].status;
+        // simulierter Zonenwechsel (weg vom Lager) darf Pause nicht überschreiben
+        state.lager = state.lager || { coords: { lat: 48.1, lon: 11.5 } };
+        geoName = state.name; geoZone = 'in';
+        await autoDriverStatus({ lat: state.lager.coords.lat + 0.05, lon: state.lager.coords.lon, acc: 20 });
+        return { s1, s2: state.driverStatus[state.name].status };
+      });
+      if (r.s1 !== 'pause' || r.s2 !== 'pause') p.push(`Pause: ${r.s1} → nach Zonenwechsel ${r.s2} (erwartet pause/pause)`);
+      await switchRole(page, 'chef');
+      const lkw = await ev(page, () => { state.chefTab = 'lkws'; render(); return /Pause/.test(document.body.innerText); });
+      if (!lkw) p.push('Chef sieht Pause nicht');
+      return errs(errors, p);
+    },
+    // Task 2: Export
+    export: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      const r = await ev(page, () => {
+        const csv = exportCSV('all');
+        const lines = csv.replace(/^﻿/, '').trim().split('\n');
+        const pos = state.orders.reduce((a, o) => a + (o.items || []).length, 0);
+        const btn = !!document.querySelector('[data-action="export-open"]');
+        return { bom: csv.charCodeAt(0) === 0xFEFF, head: lines[0], n: lines.length - 1, pos, btn };
+      });
+      if (!r.bom) p.push('CSV ohne BOM');
+      if (r.head !== 'Nr;Datum;Bauvorhaben;Besteller;Status;Teil;Menge;Einheit;kg') p.push('Kopfzeile: ' + r.head);
+      if (r.n !== r.pos) p.push(`Zeilen ${r.n} ≠ Positionen ${r.pos}`);
+      if (!r.btn) p.push('kein Export-Knopf in der Chef-Übersicht');
+      return errs(errors, p);
+    },
   };
 };
+

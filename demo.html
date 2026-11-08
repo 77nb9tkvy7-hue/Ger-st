@@ -279,6 +279,8 @@
   .inv-qty{font-size:13px;color:var(--muted);margin-top:2px;}
   .inv-qty.stock-low{color:#B45309;font-weight:700;}
   .inv-qty.stock-missing{color:var(--red);font-weight:700;}
+  .export-row{display:flex;justify-content:flex-end;margin:4px 0 0 0;}
+  .mat-table th.num,.mat-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
   .inv-extra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;}
   .inv-def{font-weight:700;font-size:13px;}
   .inv-min{font-size:13px;color:var(--muted);}
@@ -983,6 +985,7 @@ de:{
   bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
   mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
   stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  driverStatusPause:'Pause', matTitle:'Material', matEmpty:'Noch nichts geliefert.', matTeil:'Teil', matGeliefert:'geliefert', matZurueck:'zurück', matDefekt:'defekt', matVorOrt:'vor Ort', matPrint:'Materialliste drucken', exportOpenBtn:'Export', exportEyebrow:'Bestellungen', exportTitle:'Export', exportRange_month:'Dieser Monat', exportRange_last:'Letzter Monat', exportRange_all:'Alle', exportCount:'{n} Bestellung(en)', exportCsv:'Excel-Liste (CSV) herunterladen', exportPrint:'PDF / Drucken', exportDone:'Liste heruntergeladen', exportDatum:'Datum', exportBV:'Bauvorhaben', exportMenge:'Menge',
   invDefekt:'Defekt: {n}', defectRepair:'Repariert', defectScrap:'Verschrottet', invMin:'Min: {n}', invMinSet:'Min festlegen', stockKnapp:'Knapp (Min {n})', wKnapp:'Knapp im Lager', scKnapp:'Knapp', puDefekt:'davon defekt', npMin:'Mindestbestand', npRepair:'Repariert – Stück', npScrap:'Verschrottet – Stück', npDefekt:'Davon defekt – Stück',
   lagerTitle:'Lager', tabBestellungen:'Bestellungen', tabInventur:'Inventur',
   lagerBestellSub:'Eingehende Bestellungen bearbeiten und für den Fahrer bereitstellen.',
@@ -1179,6 +1182,7 @@ pl:{
   bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
   mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
   stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  driverStatusPause:'Przerwa', matTitle:'Materiał', matEmpty:'Jeszcze nic nie dostarczono.', matTeil:'Część', matGeliefert:'dostarczone', matZurueck:'zwrócone', matDefekt:'uszkodzone', matVorOrt:'na miejscu', matPrint:'Drukuj listę materiałów', exportOpenBtn:'Eksport', exportEyebrow:'Zamówienia', exportTitle:'Eksport', exportRange_month:'Ten miesiąc', exportRange_last:'Poprzedni miesiąc', exportRange_all:'Wszystkie', exportCount:'{n} zamówień', exportCsv:'Pobierz listę Excel (CSV)', exportPrint:'PDF / Drukuj', exportDone:'Lista pobrana', exportDatum:'Data', exportBV:'Budowa', exportMenge:'Ilość',
   invDefekt:'Uszkodzone: {n}', defectRepair:'Naprawione', defectScrap:'Złomowane', invMin:'Min: {n}', invMinSet:'Ustaw minimum', stockKnapp:'Mało (min {n})', wKnapp:'Mało w magazynie', scKnapp:'Mało', puDefekt:'w tym uszkodzone', npMin:'Stan minimalny', npRepair:'Naprawione – szt.', npScrap:'Złomowane – szt.', npDefekt:'W tym uszkodzone – szt.',
   lagerTitle:'Magazyn', tabBestellungen:'Zamówienia', tabInventur:'Inwentarz',
   lagerBestellSub:'Obsłuż napływające zamówienia i przygotuj dla kierowcy.',
@@ -1375,6 +1379,7 @@ sk:{
   bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
   mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
   stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  driverStatusPause:'Prestávka', matTitle:'Materiál', matEmpty:'Zatiaľ nič nedodané.', matTeil:'Diel', matGeliefert:'dodané', matZurueck:'vrátené', matDefekt:'poškodené', matVorOrt:'na mieste', matPrint:'Tlačiť zoznam materiálu', exportOpenBtn:'Export', exportEyebrow:'Objednávky', exportTitle:'Export', exportRange_month:'Tento mesiac', exportRange_last:'Minulý mesiac', exportRange_all:'Všetky', exportCount:'{n} objednávok', exportCsv:'Stiahnuť zoznam pre Excel (CSV)', exportPrint:'PDF / Tlač', exportDone:'Zoznam stiahnutý', exportDatum:'Dátum', exportBV:'Stavba', exportMenge:'Množstvo',
   invDefekt:'Poškodené: {n}', defectRepair:'Opravené', defectScrap:'Vyradené', invMin:'Min: {n}', invMinSet:'Nastaviť minimum', stockKnapp:'Málo (min {n})', wKnapp:'Málo v sklade', scKnapp:'Málo', puDefekt:'z toho poškodené', npMin:'Minimálny stav', npRepair:'Opravené – ks', npScrap:'Vyradené – ks', npDefekt:'Z toho poškodené – ks',
   lagerTitle:'Sklad', tabBestellungen:'Objednávky', tabInventur:'Inventúra',
   lagerBestellSub:'Spracujte prichádzajúce objednávky a pripravte ich pre vodiča.',
@@ -1571,6 +1576,7 @@ hr:{
   bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
   mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
   stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  driverStatusPause:'Pauza', matTitle:'Materijal', matEmpty:'Još ništa nije isporučeno.', matTeil:'Dio', matGeliefert:'isporučeno', matZurueck:'vraćeno', matDefekt:'oštećeno', matVorOrt:'na gradilištu', matPrint:'Ispiši popis materijala', exportOpenBtn:'Izvoz', exportEyebrow:'Narudžbe', exportTitle:'Izvoz', exportRange_month:'Ovaj mjesec', exportRange_last:'Prošli mjesec', exportRange_all:'Sve', exportCount:'{n} narudžbi', exportCsv:'Preuzmi Excel popis (CSV)', exportPrint:'PDF / Ispis', exportDone:'Popis preuzet', exportDatum:'Datum', exportBV:'Gradilište', exportMenge:'Količina',
   invDefekt:'Oštećeno: {n}', defectRepair:'Popravljeno', defectScrap:'Otpisano', invMin:'Min: {n}', invMinSet:'Postavi minimum', stockKnapp:'Malo (min {n})', wKnapp:'Malo na skladištu', scKnapp:'Malo', puDefekt:'od toga oštećeno', npMin:'Minimalna zaliha', npRepair:'Popravljeno – kom', npScrap:'Otpisano – kom', npDefekt:'Od toga oštećeno – kom',
   lagerTitle:'Skladište', tabBestellungen:'Narudžbe', tabInventur:'Inventura',
   lagerBestellSub:'Obradite pristigle narudžbe i pripremite ih za vozača.',
@@ -1767,6 +1773,7 @@ en:{
   bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
   mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
   stockMissingLabel:'Missing:', stockLow:'Stock low',
+  driverStatusPause:'Break', matTitle:'Material', matEmpty:'Nothing delivered yet.', matTeil:'Part', matGeliefert:'delivered', matZurueck:'returned', matDefekt:'damaged', matVorOrt:'on site', matPrint:'Print material list', exportOpenBtn:'Export', exportEyebrow:'Orders', exportTitle:'Export', exportRange_month:'This month', exportRange_last:'Last month', exportRange_all:'All', exportCount:'{n} order(s)', exportCsv:'Download Excel list (CSV)', exportPrint:'PDF / Print', exportDone:'List downloaded', exportDatum:'Date', exportBV:'Site', exportMenge:'Qty',
   invDefekt:'Damaged: {n}', defectRepair:'Repaired', defectScrap:'Scrapped', invMin:'Min: {n}', invMinSet:'Set minimum', stockKnapp:'Low (min {n})', wKnapp:'Low in stock', scKnapp:'Low', puDefekt:'of which damaged', npMin:'Minimum stock', npRepair:'Repaired – pcs', npScrap:'Scrapped – pcs', npDefekt:'Of which damaged – pcs',
   lagerTitle:'Warehouse', tabBestellungen:'Orders', tabInventur:'Stock',
   lagerBestellSub:'Process incoming orders and prepare them for the driver.',
@@ -3503,11 +3510,12 @@ function geplantListHTML(editable){
 // ist (nicht ein gemeinsamer LKW-Status, da mehrere Fahrer gleichzeitig
 // unterwegs sein können). Gespeichert in state.driverStatus, keyed per
 // Mitarbeitername: {status:'lager'|'unterwegs', time:'...'}.
-const DRIVER_STATUSES = ['lager','unterwegs'];
+const DRIVER_STATUSES = ['lager','unterwegs','pause'];
 function driverStatusMeta(s){
   const map = {
     lager:{key:'driverStatusLager', cls:'st-Geliefert'},
     unterwegs:{key:'driverStatusUnterwegs', cls:'st-Unterwegs'},
+    pause:{key:'driverStatusPause', cls:'st-Neu'},
   };
   return map[s] || null;
 }
@@ -4020,6 +4028,69 @@ function projektDriversHTML(p){
   }).join('')}</div>`;
 }
 
+// Materialbilanz eines Bauvorhabens: geliefert (Bestellungen "Geliefert"),
+// zurück (Abholungen "Im Lager", davon defekt), noch vor Ort = geliefert − zurück
+function materialBalance(pid){
+  const m = {};
+  const get = id => m[id] || (m[id] = {id, geliefert:0, zurueck:0, defekt:0, vorOrt:0});
+  state.orders.filter(o=>o.projekt===pid && o.status==='Geliefert').forEach(o=>(o.items||[]).forEach(i=>{ get(i.id).geliefert += i.qty; }));
+  state.pickups.filter(x=>x.projekt===pid && x.status==='Im Lager').forEach(x=>(x.items||[]).forEach(i=>{ const r = get(i.id); r.zurueck += i.qty; r.defekt += (i.defekt||0); }));
+  return Object.values(m).map(r=>({...r, vorOrt: r.geliefert - r.zurueck}));
+}
+function materialName(id){ const it = CATALOG.find(c=>c.id===id); return it ? itemName(it) : id; }
+function materialTableHTML(pid, forPrint){
+  const rows = materialBalance(pid);
+  if(!rows.length) return `<div class="empty-state" style="padding:16px 10px;">${t('matEmpty')}</div>`;
+  return `<div class="tbl-wrap"><table class="${forPrint?'ls-items':'order-table mat-table'}"><thead><tr><th>${t('matTeil')}</th><th class="num">${t('matGeliefert')}</th><th class="num">${t('matZurueck')}</th><th class="num">${t('matDefekt')}</th><th class="num">${t('matVorOrt')}</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td>${materialName(r.id)}</td><td class="num">${r.geliefert}</td><td class="num">${r.zurueck}</td><td class="num">${r.defekt||''}</td><td class="num"><b>${r.vorOrt}</b></td></tr>`).join('')}</tbody></table></div>`;
+}
+function printMaterial(pid){
+  const p = state.projects.find(x=>x.id===pid); if(!p) return;
+  document.getElementById('printArea').innerHTML = `<img class="ls-logo" src="logo.png" alt="SGM"><h1>${t('matTitle')} – BV ${p.id} ${p.name}</h1>
+    <p>${p.adresse||''} · ${new Date().toLocaleDateString('de-DE')}</p>${materialTableHTML(pid, true)}`;
+  window.print();
+}
+// Export der Bestellungen (Chef): Zeitraum 'month' | 'last' | 'all'
+function orderDate(o){ const m = /(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(o.time||''); return m ? new Date(+m[3], +m[2]-1, +m[1]) : null; }
+function exportOrders(range){
+  const now = new Date(); let from = null, to = null;
+  if(range==='month'){ from = new Date(now.getFullYear(), now.getMonth(), 1); to = new Date(now.getFullYear(), now.getMonth()+1, 1); }
+  if(range==='last'){ from = new Date(now.getFullYear(), now.getMonth()-1, 1); to = new Date(now.getFullYear(), now.getMonth(), 1); }
+  return state.orders.filter(o=>{ if(!from) return true; const d = orderDate(o); return d && d>=from && d<to; }).sort((a,b)=>a.id-b.id);
+}
+function csvCell(v){ v = v==null ? '' : String(v); return /[;"\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+function exportCSV(range){
+  const rows = ['Nr;Datum;Bauvorhaben;Besteller;Status;Teil;Menge;Einheit;kg'];
+  exportOrders(range).forEach(o=>(o.items||[]).forEach(i=>{
+    const r = resolvedItem(i), kg = itemKg(i);
+    rows.push([o.id, (o.time||'').split(',')[0], o.baustelle||'', o.person||'', o.status, r.name, i.qty, r.unit, kg!=null ? String(Math.round(kg*i.qty*10)/10).replace('.',',') : ''].map(csvCell).join(';'));
+  }));
+  return '\uFEFF' + rows.join('\n') + '\n';
+}
+function downloadText(name, text, type){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type: type || 'text/csv;charset=utf-8'}));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+}
+function exportFileName(range){ const d = new Date(); if(range==='last') d.setMonth(d.getMonth()-1); return range==='all' ? 'bestellungen-alle.csv' : `bestellungen-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}.csv`; }
+function exportHTML(){
+  const r = state.exportOpen.range, list = exportOrders(r);
+  return `<div class="overlay" data-action="export-close-bg"><div class="drawer" role="dialog" aria-modal="true">
+    <div class="review-head"><div class="eyebrow">${t('exportEyebrow')}</div><h3>${t('exportTitle')}</h3></div>
+    <div class="ziel-chips">${['month','last','all'].map(k=>`<button class="ziel-chip ${r===k?'active':''}" data-action="export-range" data-r="${k}">${t('exportRange_'+k)}</button>`).join('')}</div>
+    <div class="pick-hint">${t('exportCount',{n:list.length})}</div>
+    <button class="advance-btn" data-action="export-csv" ${list.length?'':'disabled'}>${t('exportCsv')}</button>
+    <div class="btn-row-secondary"><button class="mini-btn" data-action="export-print" ${list.length?'':'disabled'}>${t('exportPrint')}</button><button class="mini-btn" data-action="export-close">${t('closeBtn')}</button></div>
+  </div></div>`;
+}
+function printExport(range){
+  const list = exportOrders(range);
+  document.getElementById('printArea').innerHTML = `<img class="ls-logo" src="logo.png" alt="SGM"><h1>${t('exportTitle')} – ${t('exportRange_'+range)}</h1>
+    <table class="ls-items"><thead><tr><th>Nr</th><th>${t('exportDatum')}</th><th>${t('exportBV')}</th><th>${t('matTeil')}</th><th class="ls-menge">${t('exportMenge')}</th><th>Status</th></tr></thead><tbody>
+    ${list.map(o=>(o.items||[]).map((i,k)=>{ const r = resolvedItem(i); return `<tr><td>${k?'':'#'+o.id}</td><td>${k?'':(o.time||'').split(',')[0]}</td><td>${k?'':(o.baustelle||'')}</td><td>${r.name}</td><td class="ls-menge">${i.qty} ${r.unit}</td><td>${k?'':statusLabel(o.status)}</td></tr>`; }).join('')).join('')}</tbody></table>`;
+  window.print();
+}
 function projektDetailHTML(p){
   const geplant = [...state.plannedDeliveries].filter(pd=>pd.projekt===p.id).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
   return `<button class="back-link" data-action="close-projekt">${t('pvBack')}</button>
@@ -4032,6 +4103,9 @@ function projektDetailHTML(p){
       ${geplant.length? geplant.map(pd=>plannedDeliveryCardHTML(pd,true)).join('') : `<div class="empty-state" style="padding:20px 10px;">${t('plEmpty')}</div>`}
       <h3 class="section-h">${t('puBvHeading')}</h3>
       ${pickupListHTML(state.pickups.filter(x=>x.projekt===p.id && x.status!=='Im Lager'), 'chef')}
+      <h3 class="section-h" id="sec-material">${t('matTitle')}</h3>
+      ${materialTableHTML(p.id, false)}
+      <button class="mini-btn" style="margin-top:8px;" data-action="material-print" data-id="${p.id}">${t('matPrint')}</button>
       ${p.aktiv? `<button class="pu-open-btn" data-action="pu-open" data-projekt="${p.id}">${t('puBvAdd')}</button>`:''}
     </div>
     <div>
@@ -4383,13 +4457,14 @@ async function autoDriverStatus(pos){
   geoZone = zone;
   const want = zone==='in' ? 'lager' : 'unterwegs';
   const cur = state.driverStatus[geoName];
+  if(cur && cur.status==='pause') return;   // Pause nie automatisch beenden
   if(cur && cur.status===want) return;
   if(first && cur && cur.ts && Date.now()-cur.ts < 15*60*1000) return;
   autoBusy = true;
   try{
     await loadShared();  // frisch laden, damit nichts Neueres überschrieben wird
     const c2 = state.driverStatus[geoName];
-    if(!geoName || (c2 && c2.status===want)) return;
+    if(!geoName || (c2 && (c2.status===want || c2.status==='pause'))) return;
     state.driverStatus[geoName] = {status:want, ziel:null, by:null, time:nowStr(), ts:Date.now(), auto:true};
     await saveShared();
     const ae = document.activeElement;
@@ -4582,6 +4657,7 @@ function chefHTML(){
     {id:'personal', key:'tabPersonal', ico:'users'}])}
   ${tab==='lkws' ? `${chefPositionsHTML()}${sectionH(t('fahrerStatusHeading'))}${driverStatusListHTML()}` : tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
   ${widgetsHTML('chef')}${statStripHTML('chef')}
+  <div class="export-row"><button class="mini-btn" data-action="export-open">${t('exportOpenBtn')}</button></div>
   ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
   ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
     return `${sectionH(t('openOrdersHeading'), open.length, 'sec-offen')}
@@ -4943,6 +5019,7 @@ function renderView(){
     ${state.itemPopup ? itemPopupHTML() : ''}
     ${state.orderReview ? orderReviewHTML() : ''}
     ${state.puDraft ? pickupEditorHTML() : ''}
+    ${state.exportOpen ? exportHTML() : ''}
     ${state.numpad ? numpadHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
@@ -5147,6 +5224,12 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     numpadReturn = {id:el.dataset.id, i:[...document.querySelectorAll('.qty-num')].filter(x=>x.dataset.numfor===el.dataset.id).indexOf(el)};
     state.numpad = {id:el.dataset.id, val:''}; render();
   }
+  if(action==='material-print'){ printMaterial(parseInt(el.dataset.id,10)); }
+  if(action==='export-open'){ state.exportOpen = {range:'month'}; render(); }
+  if(action==='export-range' && state.exportOpen){ state.exportOpen.range = el.dataset.r; render(); }
+  if(action==='export-close' || (action==='export-close-bg' && e.target===el)){ state.exportOpen = null; render(); }
+  if(action==='export-csv' && state.exportOpen){ const r = state.exportOpen.range; downloadText(exportFileName(r), exportCSV(r)); showToast(t('exportDone')); }
+  if(action==='export-print' && state.exportOpen){ printExport(state.exportOpen.range); }
   if(action==='min-open'){ state.numpad = {id:el.dataset.id, val:'', mode:'min'}; render(); }
   if(action==='defect-repair'){ state.numpad = {id:el.dataset.id, val:'', mode:'repair'}; render(); }
   if(action==='defect-scrap'){ state.numpad = {id:el.dataset.id, val:'', mode:'scrap'}; render(); }
@@ -5807,7 +5890,7 @@ document.addEventListener('keydown', (e)=>{
 });
 
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.puDraft || state.myPwOpen) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.puDraft || state.myPwOpen) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
