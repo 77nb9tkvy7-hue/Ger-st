@@ -552,7 +552,7 @@
     .stat-chip-btn .sc-dot{width:10px;height:10px;border-radius:50%;background:var(--wc);flex:none;}
     .stat-chip-btn b{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;}
     .my-status{padding:10px 12px;}
-    .my-status .ms-label,.my-status .ms-meta{display:none;}
+    .my-status .ms-label,.my-status .ms-hint{display:none;}
     .my-status .st-full{display:none;} .my-status .st-short{display:inline;}
     .my-status .seg-control{margin-top:0;}
     .my-status .nav-btn{margin-top:10px;}
@@ -3217,8 +3217,8 @@ function myStatusWidgetHTML(){
         return `<button class="ziel-chip ${cur.ziel===p.id?'active':''}" data-action="set-driver-ziel" data-id="${p.id}"><i style="${hex?`background:${hex};`:''}"></i>BV ${p.id} – ${p.name}</button>`;
       }).join('')}</div>` : `<div class="order-time" style="margin-top:6px;">${t('pvEmptyActive')}</div>`}`:''}
     ${unterwegs && cur.ziel ? navButtonHTML(cur.ziel) : ''}
-    ${cur? `<div class="order-time ms-meta" style="margin-top:10px;">${t('statusUpdatedPrefix')} ${cur.time}${cur.auto? ' · 🔄 '+t('autoTag'):''}</div>`:''}
-    ${state.lager && state.lager.coords && state.geoStatus==='on'? `<div class="order-time ms-meta" style="margin-top:4px;">${t('autoHint')}</div>`:''}
+    ${cur? `<div class="order-time ms-meta" style="margin-top:8px;">${t('statusUpdatedPrefix')} ${cur.time}${cur.auto? ' · 🔄 '+t('autoTag'):''}</div>`:''}
+    ${state.lager && state.lager.coords && state.geoStatus==='on'? `<div class="order-time ms-hint" style="margin-top:4px;">${t('autoHint')}</div>`:''}
   </div>`;
 }
 // Startet Google Maps mit Navigation zum Ziel-Bauvorhaben (Start = eigener

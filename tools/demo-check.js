@@ -97,6 +97,7 @@ const CHECKS = {
   },
   // Task 3: Zahlen-Leiste am Handy (< 900 px), Kacheln am PC; Chips springen ohne Fehler.
   async strip(ctx) {
+    ctx.page.on('dialog', d => d.dismiss());
     const { page, errors } = ctx;
     const problems = [];
     for (const width of [390, 1280]) {
@@ -118,9 +119,14 @@ const CHECKS = {
           if (r.minH < 44) problems.push(`${tag}: Chip nur ${r.minH}px hoch`);
           if (r.overflowX) problems.push(`${tag}: horizontaler Überlauf`);
           if (r.chips) {
+            const tgt = await page.evaluate(() => { const b = document.querySelector('.stat-chip-btn'); return { go: b.dataset.go || '', tab: b.dataset.tab || '' }; });
+            await page.evaluate(() => { window.__flash = false; new MutationObserver(() => { if (document.querySelector('.jump-flash')) window.__flash = true; }).observe(document.getElementById('app'), { subtree: true, attributes: true, childList: true }); });
             await page.click('.stat-chip-btn');
-            await page.waitForTimeout(600);
+            await page.waitForTimeout(700);
             if (!(await page.$('.stat-strip'))) problems.push(`${tag}: Leiste nach Tipp weg`);
+            const hit = await page.evaluate(g => window.__flash || !!document.querySelector('.jump-flash'), tgt.go);
+            const exists = tgt.go ? await page.evaluate(g => !!document.getElementById(g), tgt.go) : true;
+            if (tgt.go && exists && !hit) problems.push(`${tag}: Ziel ${tgt.go} bekam kein jump-flash`);
           }
           await shot(page, 'strip', role, width);
         } else {
