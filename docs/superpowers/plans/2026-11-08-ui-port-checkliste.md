@@ -54,3 +54,33 @@ Suchbegriffe in `demo.html` stehen jeweils dabei.
 - Anmelden mit echter Supabase-Sitzung, alle 4 Rollen, Polling, Offline-Start.
 - CLAUDE.md um die neuen Bedienteile ergänzen (Packliste per Zeilen-Tipp,
   Ziffernblock, Zahlen-Leiste, Reiter „LKWs“, Tour-Modus, Status-Zeiten).
+
+## Zusätzlich: neue Funktionen (Branch features-demo, Plan docs/plan-neue-funktionen.md)
+
+Je Punkt ein eigener Commit beim Übernehmen.
+
+- **SQL**: `supabase/neue-funktionen.sql` einmal im SQL Editor ausführen (nach
+  `security.sql`): `login_lookup`, `public_info` leer, Bucket `fotos` + Regeln
+  (Löschen nur 5 Min. durch Hochlader), geschützte Zeilen (`prot_read`,
+  `prot_upsert`, `prot_team`, `kolonne_get/set`), `zeit_cleanup` (+ pg_cron-Zeile
+  im Kommentar), `freigabe_info`. Lokal getestet: `supabase/test-neue-funktionen.sql`.
+- **Demo-Teile NICHT übernehmen**: `demoSeedExtras`, `demoSeedFotos`,
+  `demoIdb`, `demoAgeFoto`, `demoUserName`, `demoRoleNow`, die `rpc`-/`storage`-
+  Nachbauten im Demo-Client, Beispieldaten.
+- **vendor/**: Schriften (`vendor/fonts/fonts.css` statt Google-Fonts-Link),
+  Leaflet (`vendor/leaflet/`), QR (`vendor/qrcode/qrcode.js`), supabase-js
+  (`vendor/supabase/supabase.js` statt jsDelivr). Lizenzdateien mitnehmen.
+- **sw.js**: Cacheliste auf die `vendor/`-Dateien + `freigabe.html` umstellen,
+  Google/jsDelivr/cdnjs aus `CDN_HOSTS`/Liste nehmen, `VERSION` hochzählen.
+  Kartenkacheln (OpenStreetMap) und OSRM bleiben extern.
+- **freigabe.html** mit übernehmen (öffentliche QR-Seite). Sie nutzt die
+  öffentlichen `SUPABASE_URL`/`SUPABASE_ANON_KEY` – bei anderem Projekt anpassen.
+- **Anmeldung**: Namensliste entfällt; Name wird eingetippt (`login_lookup`).
+  Erst nach dem SQL ausrollen, sonst kann sich niemand anmelden.
+- **Datenschutz/Recht** (vom Chef mit Fachmann zu klären, App liefert nur die
+  Technik): Text des Einchecken-Hinweises (Reiter Personal), Speicherdauer
+  (Standard 12 Monate nach „Abgerechnet am“), Betriebsrat, Datenschutzhinweis.
+- **Nicht in dieser Runde**: Kundenansicht, Tribünen, Paketgrößen, Realtime,
+  vollständige Aufteilung von Bestellungen/Bestand auf eigene Server-Zeilen
+  (Foto-/Mängel-Einträge liegen bis dahin im gemeinsamen Datensatz).
+- CLAUDE.md um die neuen Funktionen ergänzen.

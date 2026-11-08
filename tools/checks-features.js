@@ -179,13 +179,14 @@ module.exports = ({ switchRole, shot }) => {
       await switchRole(page, 'chef');
       // Testbild als Datei erzeugen (im Browser) und über die echte Datei-Eingabe wählen
       const pid = await ev(page, () => { const pr = state.projects.find(x => x.aktiv); state.chefTab = 'bauvorhaben'; state.chefProjekt = pr.id; render(); return pr.id; });
+      const n0 = await ev(page, () => state.fotos.length);
       await page.click('[data-action="foto-open"]');
       const inp = await page.$('input[type=file][data-anlass="uebergabe"]');
       if (!inp) { p.push('keine Foto-Auswahl mit Anlass „Übergabe“'); return errs(errors, p); }
       const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVR42mP8z8DwnwEIGBkYGBgYAAAeAQH/5o7nAAAAAElFTkSuQmCC', 'base64');
       await inp.setInputFiles({ name: 'test.png', mimeType: 'image/png', buffer: png });
-      await page.waitForFunction(() => state.fotos && state.fotos.length > 0, null, { timeout: 8000 }).catch(() => {});
-      const a = await ev(page, () => { const f = state.fotos[state.fotos.length - 1]; return f ? { f, thumb: !!document.querySelector('.foto-thumb') } : null; });
+      await page.waitForFunction(n0 => state.fotos && state.fotos.length > n0, n0, { timeout: 8000 }).catch(() => {});
+      const a = await ev(page, n0 => { const f = state.fotos.length > n0 ? state.fotos[state.fotos.length - 1] : null; return f ? { f, thumb: !!document.querySelector('.foto-thumb') } : null; }, n0);
       if (!a) p.push('(a) Foto nicht gespeichert');
       else {
         if (a.f.anlass !== 'uebergabe' || a.f.by !== 'Chefin' || a.f.projekt !== pid || !a.f.ts || !a.f.path) p.push('(a) Foto-Eintrag unvollständig: ' + JSON.stringify(a.f));
@@ -287,12 +288,12 @@ module.exports = ({ switchRole, shot }) => {
         const foreign = await appendProtected('zeit:2026-11', { id: 't2', person: 'Jochen', projekt: 101, in: '2026-11-08T07:00:00Z' });
         const korr = await appendProtected('zeit:2026-11', { id: 't1', person: 'Max', projekt: 101, in: '2026-11-08T07:00:00Z', korr: { in: 'x' } });
         const rows = await loadProtected('zeit:');
-        return { own, foreign, korr, persons: rows.flatMap(r => r.entries.map(e => e.person)) };
+        return { own, foreign, korr, persons: rows.flatMap(r => r.entries.map(e => e.person)), team: ciTeam() };
       });
       if (!a.own) p.push('eigener Eintrag nicht gespeichert');
       if (a.foreign) p.push('Baustelle konnte fremden Eintrag schreiben');
       if (a.korr) p.push('Baustelle konnte Korrektur setzen');
-      if (a.persons.some(n => n !== 'Max')) p.push('Baustelle liest fremde Einträge: ' + a.persons.join(','));
+      if (a.persons.some(n => !a.team.includes(n))) p.push('Baustelle liest fremde Einträge: ' + a.persons.join(','));
       await switchRole(page, 'chef');
       const b = await ev(page, async () => {
         const w = await appendProtected('zeit:2026-11', { id: 't3', person: 'Ludwig', projekt: 101, in: '2026-11-08T06:00:00Z' });
@@ -372,11 +373,12 @@ module.exports = ({ switchRole, shot }) => {
       if (!btn) { p.push('kein Knopf für das Prüfprotokoll bei der Baustelle'); return errs(errors, p); }
       await btn.click();
       const pid = await ev(page, () => state.pruefDraft.projekt);
+      const n0 = await ev(page, pid => (state.projects.find(x => x.id === pid).pruefungen || []).length, pid);
       const ks = await ev(page, () => [...document.querySelectorAll('[data-action="pp-toggle"]')].map(b => b.dataset.k));
       for (const k of ks) await page.click('[data-action="pp-toggle"][data-k="' + k + '"]');
       await page.click('[data-action="pruef-save"][data-erg="frei"]'); await page.waitForTimeout(300);
       const noFoto = await ev(page, pid => ({ warn: (state.pruefDraft || {}).warn || '', n: (state.projects.find(x => x.id === pid).pruefungen || []).length }), pid);
-      if (!/Foto/.test(noFoto.warn) || noFoto.n) p.push('ohne Foto nicht gesperrt: ' + JSON.stringify(noFoto));
+      if (!/Foto/.test(noFoto.warn) || noFoto.n !== n0) p.push('ohne Foto nicht gesperrt: ' + JSON.stringify(noFoto));
       const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVR42mP8z8DwnwEIGBkYGBgYAAAeAQH/5o7nAAAAAElFTkSuQmCC', 'base64');
       await (await page.$('input[type=file][data-pruef="1"]')).setInputFiles({ name: 'g.png', mimeType: 'image/png', buffer: png });
       await page.waitForFunction(() => state.pruefDraft && state.pruefDraft.fotoIds.length > 0, null, { timeout: 8000 }).catch(() => {});
@@ -389,9 +391,10 @@ module.exports = ({ switchRole, shot }) => {
       }, pid);
       if (r.erg !== 'frei' || !r.fotos || !r.token) p.push('Protokoll nicht gespeichert: ' + JSON.stringify(r));
       if (!r.qr) p.push('Aushang ohne QR-Bild');
+      await page.waitForFunction(t => (localStorage.getItem('demo-state') || '').includes(t), r.token, { timeout: 8000 }).catch(() => {});  // gespeichert, bevor die öffentliche Seite liest
       const pub = await context.newPage();
       await pub.goto('file://' + require('path').resolve(__dirname, '..', 'freigabe.html') + '?t=' + r.token);
-      await pub.waitForTimeout(600);
+      await pub.waitForFunction(() => document.getElementById('status').textContent !== '…', null, { timeout: 8000 }).catch(() => {});
       const txt = await pub.evaluate(() => document.body.innerText);
       if (!/freigegeben/i.test(txt) || !new RegExp('BV ' + pid).test(txt)) p.push('Freigabe-Seite zeigt Status nicht: ' + txt.slice(0, 100));
       if (/Max|Jochen|Ludwig|Chefin/.test(txt)) p.push('Freigabe-Seite zeigt Namen');
@@ -407,8 +410,8 @@ module.exports = ({ switchRole, shot }) => {
       await switchRole(page, 'fahrer');
       const card = await page.$('.uw-card [data-action="uw-ok"]');
       if (!card) { p.push('Fahrer sieht keine Unterweisung'); return errs(errors, p); }
-      await card.click(); await page.waitForTimeout(600);
-      const gone = await ev(page, () => !document.querySelector('.uw-card'));
+      for (let n = 0; n < 5 && await page.$('.uw-card [data-action="uw-ok"]'); n++) { await page.click('.uw-card [data-action="uw-ok"]'); await page.waitForTimeout(500); }
+      const gone = await ev(page, id => !document.querySelector('.uw-card') && ((state.uwBest || {})[id] || []).some(e => e.person === 'Ludwig'), id);
       if (!gone) p.push('Karte nach Bestätigen noch sichtbar');
       await switchRole(page, 'chef');
       const r = await ev(page, () => { state.chefTab = 'personal'; render(); const el = document.getElementById('sec-uw'); return el ? el.parentElement.textContent : ''; });

@@ -120,12 +120,29 @@ const CHECKS = {
     if (leaked.length) problems.push('Demo schreibt echte App-Schlüssel: ' + leaked.join(', '));
     await page.evaluate(s => { for (const k in s) localStorage.setItem(k, s[k]); }, SENT);
     await switchRole(page, 'chef');
-    await Promise.all([page.waitForEvent('load'), page.click('#demoBar [data-action="demo-reset"]')]);
-    await page.waitForSelector('main', { timeout: 10000 }); await page.waitForTimeout(500);
+    // Zurücksetzen eindeutig prüfen: aufzeichnen, WAS gelöscht wird (vor dem Neuladen).
+    // Hinweis: Der Test-Browser verliert bei file:// nach einem Neuladen gelegentlich den
+    // ganzen localStorage (auch schon im Stand ui-demo) – darauf verlässt sich die Prüfung nicht.
+    const rec = await page.evaluate(() => {
+      const removed = []; let cleared = false;
+      const origRemove = Storage.prototype.removeItem, origClear = Storage.prototype.clear, origReload = location.reload;
+      Storage.prototype.removeItem = function (k) { removed.push(k); return origRemove.call(this, k); };
+      Storage.prototype.clear = function () { cleared = true; return origClear.call(this); };
+      document.querySelector('#demoBar [data-action="demo-reset"]').click();
+      Storage.prototype.removeItem = origRemove; Storage.prototype.clear = origClear;
+      const left = Object.keys(localStorage).filter(k => k.startsWith('geruest-'));
+      return { removed, cleared, left };
+    });
+    console.log('  Zurücksetzen löscht: ' + rec.removed.sort().join(', '));
+    if (rec.cleared) problems.push('Zurücksetzen ruft localStorage.clear() auf');
+    const bad = rec.removed.filter(k => !k.startsWith('demo-'));
+    if (bad.length) problems.push('Zurücksetzen löscht echte Schlüssel: ' + bad.join(', '));
+    for (const k in SENT) if (!rec.left.includes(k)) problems.push(`echter Schlüssel ${k} nach Zurücksetzen weg`);
+    // das vom Knopf ausgelöste Neuladen abwarten: App startet wieder sauber
+    await page.waitForLoadState('load'); await page.waitForTimeout(800);
+    await page.waitForSelector('main', { timeout: 10000 }); await page.waitForTimeout(300);
     const ls = await page.evaluate(() => { const o = {}; Object.keys(localStorage).forEach(k => { o[k] = localStorage.getItem(k); }); return { o, name: state.name }; });
     const keys = Object.keys(ls.o);
-    console.log('  localStorage nach Zurücksetzen: ' + keys.sort().join(', '));
-    for (const k in SENT) if (ls.o[k] !== SENT[k]) problems.push(`echter Schlüssel ${k} verändert/gelöscht`);
     const extra = keys.filter(k => k.startsWith('geruest-') && !(k in SENT));
     if (extra.length) problems.push('echte App-Schlüssel geschrieben: ' + extra.join(', '));
     if (ls.name === 'Echt') problems.push('Demo hat echte Sitzung gelesen');
@@ -215,6 +232,8 @@ const CHECKS = {
     const problems = [];
     await page.setViewportSize({ width: 390, height: 844 });
     await switchRole(page, 'baustelle');
+    // offene Unterweisungen (einmalig beim ersten Öffnen) erst bestätigen
+    for (let n = 0; n < 5 && await page.$('.uw-card [data-action="uw-ok"]'); n++) { await page.click('.uw-card [data-action="uw-ok"]'); await page.waitForTimeout(300); }
     await page.evaluate(() => { state.cart = {}; state.openArt = null; state.catalogSearch = ''; render(); window.scrollTo(0, 0); });
     const top = await page.evaluate(() => { const s = document.getElementById('catalogSearch'); return s ? Math.round(s.getBoundingClientRect().top + window.scrollY) : null; });
     const sh = await page.evaluate(() => { const s = document.getElementById('catalogSearch'); return s ? Math.round(s.getBoundingClientRect().height) : 0; });
@@ -443,7 +462,7 @@ const CHECKS = {
     await switchRole(page, 'lager');
     await page.evaluate(() => { state.lagerTab = 'bestellungen'; render(); });
     // Pick-Liste schon bei "Neu", kein "Bearbeitung starten"
-    const b0 = await page.evaluate(() => { const c = [...document.querySelectorAll('.order-card')].find(x => x.querySelector('.no').textContent.includes('1002')); return { pick: !!c.querySelector('.pick-tap'), adv: !!c.querySelector('.advance-btn'), open: (c.querySelector('.pick-open') || {}).textContent, rowH: Math.min(...[...c.querySelectorAll('.pick-tap')].map(r => r.getBoundingClientRect().height)), missH: Math.min(...[...c.querySelectorAll('.pick-btn')].map(r => r.getBoundingClientRect().height)) }; });
+    const b0 = await page.evaluate(() => { const c = [...document.querySelectorAll('.order-card')].find(x => (x.querySelector('.no') || {textContent:''}).textContent.includes('1002')); return { pick: !!c.querySelector('.pick-tap'), adv: !!c.querySelector('.advance-btn'), open: (c.querySelector('.pick-open') || {}).textContent, rowH: Math.min(...[...c.querySelectorAll('.pick-tap')].map(r => r.getBoundingClientRect().height)), missH: Math.min(...[...c.querySelectorAll('.pick-btn')].map(r => r.getBoundingClientRect().height)) }; });
     console.log('  1002 Neu: ' + JSON.stringify(b0));
     if (!b0.pick) problems.push('Packliste bei "Neu" fehlt');
     if (b0.adv) problems.push('Hauptknopf bei Neu noch da');
@@ -671,7 +690,9 @@ Object.assign(CHECKS, require('./checks-features')({ switchRole, measure, shot }
     // Jede Prüfung in einem eigenen Prozess (eigener Browser, frischer Demo-Zustand); eine Zeile je Prüfung.
     const { spawnSync } = require('child_process');
     const runs = [['baseline'], ['strip'], ['cards'], ['order-flow'], ['numpad'], ['plan'], ['fahrer'], ['lager'], ['chef'], ['contrast'], ['nav'], ['nav', '--lang=pl'],
-      ['baseline', '--width=1280'], ['baseline', '--dark'], ['contrast', '--dark']];
+      ['baseline', '--width=1280'], ['baseline', '--dark'], ['contrast', '--dark'],
+      ['defekt'], ['stock'], ['material'], ['pause'], ['export'], ['login'], ['calendar-lock'], ['vendor'], ['fotos'], ['maengel'], ['signatur'],
+      ['schutz'], ['zeit'], ['pruefung'], ['unterweisung'], ['reihenfolge'], ['fahrten']];
     let bad = 0;
     for (const r of runs) {
       const res = spawnSync('node', [__filename, ...r], { encoding: 'utf8' });
@@ -681,7 +702,7 @@ Object.assign(CHECKS, require('./checks-features')({ switchRole, measure, shot }
       if (!ok) bad++;
       console.log(`${ok ? 'PASS' : 'FAIL'} ${r.join(' ')}${ok ? '' : ' -> ' + last + (res.stderr ? ' | ' + res.stderr.trim().split('\n')[0] : '')}`);
     }
-    const g = spawnSync('git', ['diff', '--quiet', '82ee6a1', '--', 'geruest-bestell-app.html'], { cwd: ROOT });
+    const g = spawnSync('git', ['diff', '--quiet', '82ee6a1', '--', 'geruest-bestell-app.html', 'sw.js'], { cwd: ROOT });
     console.log(`${g.status === 0 ? 'PASS' : 'FAIL'} Original unverändert (geruest-bestell-app.html)`);
     if (g.status !== 0) bad++;
     console.log(bad ? `FAIL all: ${bad} Prüfung(en) fehlgeschlagen` : 'PASS all');

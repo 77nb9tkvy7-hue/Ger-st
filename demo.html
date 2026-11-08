@@ -314,12 +314,15 @@
   #printArea .aushang-bv{font-size:20px;}
   #printArea img.qr{width:260px;height:260px;margin:16px auto;display:block;image-rendering:pixelated;}
   .ci-wrap{margin:0 0 10px 0;}
-  .ci-team{margin:0 0 8px 0;}
+  .ci-team{margin:8px 0 0 0;}
+  .ci-row{display:flex;gap:8px;}
+  .ci-row .ci-in-btn{flex:1;}
   .ci-btn{min-height:var(--tap);font-size:15px;font-weight:700;}
   .ci-in-btn{width:100%;}
   .ci-bar{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;padding:6px 6px 6px 12px;border-radius:12px;background:var(--card);border-left:5px solid var(--green);box-shadow:var(--shadow);}
   .ci-bar .ci-line{flex:1;min-width:0;font-size:14px;}
   .ci-hint-text{font-size:15px;line-height:1.5;margin:0 0 14px 0;white-space:pre-wrap;}
+  .korr-btn{min-width:var(--tap);padding:0 10px;}
   .korr-tag{font-size:13px;color:var(--muted);font-weight:600;}
   .cal-hours{font-size:14px;border-left:5px solid var(--accent);}
   .kol-row{margin:8px 0 10px 0;}
@@ -335,7 +338,9 @@
   .field textarea{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;font-family:inherit;background:var(--card);color:var(--ink);}
   .export-row{display:flex;justify-content:flex-end;margin:4px 0 0 0;}
   .mat-table th.num,.mat-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
-  .inv-extra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;}
+  .inv-extra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex-basis:100%;padding-left:52px;}
+  .inv-row{flex-wrap:wrap;}
+  .inv-min-link{border:none;background:none;color:var(--accent-dark);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;min-height:44px;padding:0 4px;}
   .inv-def{font-weight:700;font-size:13px;}
   .inv-min{font-size:13px;color:var(--muted);}
   .pu-def{margin-top:6px;}
@@ -753,7 +758,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Nachbau (createDemoClient), der Datensatz liegt in localStorage['demo-state'].
 window.DEMO_MODE = true; // Kern-Code fragt nur window.DEMO_MODE ab (fehlt im echten App-Code -> undefined)
 const DEMO_STORE_KEY = 'demo-state';
-const DEMO_VERSION = 2; // bei Änderungen an DEMO_DATA hochzählen: alter gespeicherter Stand wird verworfen
+const DEMO_VERSION = 3; // bei Änderungen an DEMO_DATA hochzählen: alter gespeicherter Stand wird verworfen
 const DEMO_DATA = (function(){
   const iso = (add)=>{ const d = new Date(); d.setDate(d.getDate()+add); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
   const at = (daysAgo, h, m)=>{ const d = new Date(); d.setDate(d.getDate()-daysAgo); d.setHours(h, m, 0, 0); return d.toLocaleString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); };
@@ -804,11 +809,56 @@ const DEMO_DATA = (function(){
       {id:5, name:'Chefin', roles:['chef'], uid:'demo-5'},
     ], empCounter:6,
     pushSubs:[],
+    // Beispiele für die neuen Funktionen (Plan docs/plan-neue-funktionen.md)
+    minStock:{rohr_300:60, belag_200:80}, defect:{rohr_300:3},
+    fotos:[
+      {id:1, projekt:101, anlass:'uebergabe', by:'Max', ts:new Date(Date.now()-3*864e5).toISOString(), lat:48.1416, lon:11.4511, acc:8, path:'bv101/demo/uebergabe.jpg', w:1200, h:900, size:90000, hidden:null},
+      {id:2, projekt:101, anlass:'abladen', by:'Ludwig', ts:new Date(Date.now()-864e5).toISOString(), lat:48.1414, lon:11.4509, acc:12, path:'bv101/demo/abladen.jpg', w:1200, h:900, size:90000, hidden:null},
+      {id:3, projekt:102, anlass:'mangel', by:'Max', ts:new Date(Date.now()-2*36e5).toISOString(), lat:48.1137, lon:11.5801, acc:10, path:'bv102/demo/mangel.jpg', w:1200, h:900, size:90000, hidden:null},
+    ], fotoCounter:4,
+    maengel:[{id:1, projekt:102, fotoId:3, text:'Seitenschutz an Ebene 3 fehlt', by:'Max', ts:at(0,9,10), status:'offen', doneBy:null, doneTs:null}], mangelCounter:2,
+    unterweisungen:[{id:1, titel:'Leitergang immer schließen', text:'Nach jedem Durchstieg die Luke im Leitergang schließen. Offene Luken sind die häufigste Absturzursache.', ab:iso(-1), by:'Chefin'}], uwCounter:2,
   };
 })();
+// Freigabe-Beispiel an BV 101 (Prüfprotokoll mit Foto 1)
+DEMO_DATA.projects.filter(p=>p.id===101).forEach(p=>{ p.pruefungen = [{id:1, datum:new Date(Date.now()-3*864e5).toISOString().slice(0,10), ts:'', by:'Max', punkte:{verankerung:true, belaege:true, seitenschutz:true, aufstiege:true, fuss:true, kennzeichnung:true}, fotoIds:[1], ergebnis:'frei', bemerkung:''}]; p.freigabeToken = 'demo-bv101'; });
+// Abholung mit defekten Teilen, schon im Lager
+DEMO_DATA.pickups.push({id:2, projekt:101, baustelle:'Schulhaus Pasing, Landsberger Str. 400, 81241 München', coords:{lat:48.1415, lon:11.4510}, person:'Max', items:[{id:'rohr_300', name:'Rohr 3,00 m', unit:'Stk', qty:6, kg:11.4, defekt:2}], abbau:false, notiz:'', status:'Im Lager', fahrer:'Ludwig', time:'', imLagerAm:''});
+DEMO_DATA.pickupCounter = 3;
+// Geschützte Zeilen (Einchecken der letzten Tage) + Kolonne + Beispielfotos – nur beim frischen Start
+function demoSeedExtras(){
+  const rows = {}; const day = n=>{ const d = new Date(); d.setDate(d.getDate()-n); return d; };
+  for(let n=5; n>=1; n--){
+    const d = day(n); if(d.getDay()===0 || d.getDay()===6) continue;
+    const t = (h, m)=>{ const x = new Date(d); x.setHours(h, m, 0, 0); return x.toISOString(); };
+    const key = `zeit:${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const r = rows[key] || (rows[key] = {entries:[]});
+    r.entries.push({id:`Max-demo-${n}`, person:'Max', projekt:101, in:t(7,0), out:t(15,30), by:'Max'});
+    r.entries.push({id:`Kemal-demo-${n}`, person:'Kemal', projekt:101, in:t(7,0), out:t(15,30), by:'Max'});
+    if(n===2) r.entries[r.entries.length-2].korr = {in:t(7,30), out:t(15,30), grund:'Arzttermin', by:'Chefin', ts:''};
+  }
+  try{ localStorage.setItem('demo-rows', JSON.stringify(rows)); localStorage.setItem('demo-kolonnen', JSON.stringify({Max:['Kemal']})); }catch(e){}
+}
+async function demoSeedFotos(){
+  const items = [['bv101/demo/uebergabe.jpg','#3A6EA5','Übergabe'],['bv101/demo/abladen.jpg','#5B7F3A','Abladen'],['bv102/demo/mangel.jpg','#9A4A2A','Mangel']];
+  for(const [path, col, label] of items){
+    if(await demoIdb('get', path)) continue;
+    const c = document.createElement('canvas'); c.width = 600; c.height = 450; const g = c.getContext('2d');
+    g.fillStyle = col; g.fillRect(0, 0, 600, 450);
+    g.strokeStyle = 'rgba(255,255,255,0.55)'; g.lineWidth = 10;
+    for(let x=60; x<600; x+=110){ g.beginPath(); g.moveTo(x, 40); g.lineTo(x, 380); g.stroke(); }
+    for(let y=80; y<380; y+=100){ g.beginPath(); g.moveTo(40, y); g.lineTo(560, y); g.stroke(); }
+    g.fillStyle = 'rgba(0,0,0,0.72)'; g.fillRect(0, 395, 600, 55); g.fillStyle = '#FFFFFF'; g.font = '600 20px Inter, sans-serif';
+    g.fillText('Beispielfoto · ' + label, 14, 430);
+    await demoIdb('put', path, {data: c.toDataURL('image/jpeg', 0.8), created_at: Date.now() - 864e5, owner:'Max'});
+  }
+  // Vorschau-Links, die vor dem Anlegen der Beispielbilder leer abgefragt wurden, neu holen
+  try{ Object.keys(fotoUrlCache).forEach(k=>{ if(!fotoUrlCache[k]) delete fotoUrlCache[k]; }); if(state.loggedIn) render(); }catch(e){}
+}
 function demoLoad(){
   // Version steht in EIGENEM Schlüssel, nicht im Datensatz (sonst weicht syncBase von stateToValue() ab -> "Kein Netz"-Leiste)
   try{ const s = localStorage.getItem(DEMO_STORE_KEY); if(s && localStorage.getItem(DEMO_STORE_KEY+'-version')===String(DEMO_VERSION)){ const v = JSON.parse(s); if(v && v.demoVersion===undefined) return v; } }catch(e){}
+  demoSeedExtras();
   return Object.assign(JSON.parse(JSON.stringify(DEMO_DATA)), {rev:1});
 }
 let demoMem = null;
@@ -965,6 +1015,7 @@ function demoIdb(op, key, val){
 // nur für Prüfungen: Foto künstlich älter machen
 async function demoAgeFoto(path, ms){ const r = await demoIdb('get', path); if(r){ r.created_at -= ms; await demoIdb('put', path, r); } }
 const supabaseClient = createDemoClient();
+(async ()=>{ try{ if(localStorage.getItem('demo-clear-fotos')){ localStorage.removeItem('demo-clear-fotos'); await demoIdb('clear'); } }catch(e){} demoSeedFotos(); })();
 // Öffentlicher VAPID-Schlüssel für Push-Nachrichten. Der passende GEHEIME
 // Schlüssel steht NUR als Secret in Supabase (Edge Function "send-push",
 // siehe supabase/functions/send-push/index.ts) -- nie ins Repo schreiben.
@@ -1136,6 +1187,7 @@ de:{
   bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
   mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
   stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  ciInTeam:'Einchecken ({n} Pers.)', ciWho:'Wer?',
   tourOrderBtn:'Reihenfolge vorschlagen', tourOrderNoGps:'Kein Startpunkt (Lager-Standort fehlt) oder zu wenige Ziele.', tourMapsRoute:'Route in Google Maps', fahrtenBtn:'Fahrtenliste', fahrtenTitle:'Fahrtenliste', fahrtenHint:'Aus den Lieferungen berechnet – kein steuerliches Fahrtenbuch. km = einfache Strecke Lager → Bauvorhaben.', fahrtenFahrer:'Fahrer', fahrtenKm:'km', fahrtenCa:'ca.', fahrtenSum:'Summe', fahrtenCsv:'Excel-Liste (CSV) herunterladen', fahrtenNone:'Keine Fahrten im Zeitraum.', fahrtenLoading:'Kilometer werden berechnet …',
   pruefTitle:'Prüfung & Freigabe', pruefOpen:'Gerüst prüfen', pruefNone:'Noch nicht geprüft', pruefFrei:'Freigegeben am {d} ({name})', pruefGesperrt:'Gesperrt seit {d} ({name})', pruefEyebrow:'Prüfprotokoll', pruefHint:'Alle Punkte prüfen und mindestens ein Foto machen.', pruefFotoBtn:'Foto vom Gerüst', pruefNeedFoto:'Mindestens ein Foto ist Pflicht.', pruefNeedAll:'Zum Freigeben müssen alle Punkte abgehakt sein.', pruefBem:'Bemerkung', pruefFreigeben:'Freigeben', pruefSperren:'Sperren', pruefSaved:'Prüfprotokoll gespeichert', aushangPrint:'Aushang mit QR drucken', aushangFrei:'GERÜST FREIGEGEBEN', aushangGesperrt:'GERÜST GESPERRT – NICHT BETRETEN', aushangScan:'QR-Code scannen: aktueller Stand', pp_verankerung:'Verankerung', pp_belaege:'Beläge vollständig und fest', pp_seitenschutz:'Seitenschutz', pp_aufstiege:'Aufstiege / Leitergänge', pp_fuss:'Fußplatten / Spindeln', pp_kennzeichnung:'Kennzeichnung angebracht', uwTitle:'Unterweisungen', uwTitel:'Thema', uwText:'Text', uwAdd:'Unterweisung anlegen', uwAdded:'Unterweisung angelegt', uwOk:'Gelesen und verstanden', uwEyebrow:'Unterweisung', uwCount:'bestätigt {n} / {m}', uwDone:'Bestätigt – danke!', uwNone:'Noch keine Unterweisungen.',
   ciIn:'Einchecken', ciOut:'Auschecken', ciChecking:'Standort wird geprüft …', ciCheckedIn:'Eingecheckt: {bv} seit {t}', ciTeamLabel:'Wer ist dabei?', ciTooFar:'Zu weit weg vom Bauvorhaben ({m} m). Einchecken geht nur vor Ort.', ciBadGps:'GPS zu ungenau (±{m} m) – kurz warten und nochmal.', ciNoGps:'Kein Standort – bitte Standort freigeben.', ciDone:'Eingecheckt: {bv}', ciOutDone:'Ausgecheckt', ciHintTitle:'Hinweis zum Einchecken', ciHintDefault:'Beim Ein- und Auschecken werden Uhrzeit und Standort gespeichert, damit die Arbeitszeit pro Bauvorhaben erfasst wird. Sehen kann das nur die Geschäftsleitung. Gelöscht wird 12 Monate nach der Abrechnung.', ciHintOk:'Verstanden', ciHintSaved:'Hinweis gespeichert', ciRunning:'läuft', calHours:'Stunden', hoursKorr:'korrigiert', regieTitle:'Regiebericht', regieEmpty:'Noch keine Zeiten.', regieSum:'Summe', regieDatum:'Datum', regiePerson:'Person', regieZeit:'von–bis', regieStd:'Std.', regieKorrBtn:'Korrigieren', regiePrint:'Regiebericht drucken', korrTitle:'Zeit korrigieren', korrVon:'von', korrBis:'bis', korrGrund:'Grund', korrSave:'Speichern', monatTitle:'Monatsübersicht', monatPrint:'Drucken', monatLief:'Lieferungen', monatStunden:'Stunden', abrechLabel:'Abgerechnet am', persCiTitle:'Einchecken', persCiHinweis:'Datenschutzhinweis (wird vor dem ersten Einchecken gezeigt)', persKolonnen:'Kolonnen: Kolonnenführer checkt diese Leute mit ein', persCleanup:'Alte Einchecken-Daten jetzt löschen', persCleanupDone:'{n} alte Einträge gelöscht',
@@ -1339,6 +1391,7 @@ pl:{
   bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
   mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
   stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  ciInTeam:'Zamelduj ({n} os.)', ciWho:'Kto?',
   tourOrderBtn:'Zaproponuj kolejność', tourOrderNoGps:'Brak punktu startowego (brak lokalizacji magazynu) lub za mało celów.', tourMapsRoute:'Trasa w Google Maps', fahrtenBtn:'Lista przejazdów', fahrtenTitle:'Lista przejazdów', fahrtenHint:'Obliczone z dostaw – nie jest to ewidencja przebiegu dla celów podatkowych. km = w jedną stronę magazyn → budowa.', fahrtenFahrer:'Kierowca', fahrtenKm:'km', fahrtenCa:'ok.', fahrtenSum:'Suma', fahrtenCsv:'Pobierz listę Excel (CSV)', fahrtenNone:'Brak przejazdów w tym okresie.', fahrtenLoading:'Obliczanie kilometrów …',
   pruefTitle:'Kontrola i odbiór', pruefOpen:'Sprawdź rusztowanie', pruefNone:'Jeszcze nie sprawdzone', pruefFrei:'Dopuszczone {d} ({name})', pruefGesperrt:'Zablokowane od {d} ({name})', pruefEyebrow:'Protokół kontroli', pruefHint:'Sprawdź wszystkie punkty i zrób co najmniej jedno zdjęcie.', pruefFotoBtn:'Zdjęcie rusztowania', pruefNeedFoto:'Co najmniej jedno zdjęcie jest obowiązkowe.', pruefNeedAll:'Aby dopuścić, wszystkie punkty muszą być zaznaczone.', pruefBem:'Uwagi', pruefFreigeben:'Dopuść', pruefSperren:'Zablokuj', pruefSaved:'Protokół zapisany', aushangPrint:'Drukuj tablicę z QR', aushangFrei:'RUSZTOWANIE DOPUSZCZONE', aushangGesperrt:'RUSZTOWANIE ZABLOKOWANE – NIE WCHODZIĆ', aushangScan:'Zeskanuj kod QR: aktualny stan', pp_verankerung:'Kotwienie', pp_belaege:'Pomosty kompletne i stabilne', pp_seitenschutz:'Zabezpieczenie boczne', pp_aufstiege:'Wejścia / drabiny', pp_fuss:'Podstawy / śruby', pp_kennzeichnung:'Oznakowanie', uwTitle:'Instruktaże', uwTitel:'Temat', uwText:'Tekst', uwAdd:'Dodaj instruktaż', uwAdded:'Instruktaż dodany', uwOk:'Przeczytałem i zrozumiałem', uwEyebrow:'Instruktaż', uwCount:'potwierdzone {n} / {m}', uwDone:'Potwierdzone – dziękujemy!', uwNone:'Brak instruktaży.',
   ciIn:'Zamelduj się', ciOut:'Wymelduj się', ciChecking:'Sprawdzanie lokalizacji …', ciCheckedIn:'Zameldowany: {bv} od {t}', ciTeamLabel:'Kto jest na miejscu?', ciTooFar:'Za daleko od budowy ({m} m). Meldowanie tylko na miejscu.', ciBadGps:'GPS zbyt niedokładny (±{m} m) – poczekaj chwilę i spróbuj ponownie.', ciNoGps:'Brak lokalizacji – zezwól na lokalizację.', ciDone:'Zameldowano: {bv}', ciOutDone:'Wymeldowano', ciHintTitle:'Informacja o meldowaniu', ciHintDefault:'Przy zameldowaniu i wymeldowaniu zapisywane są godzina i lokalizacja, aby rejestrować czas pracy na budowie. Widzi to tylko kierownictwo. Dane są usuwane 12 miesięcy po rozliczeniu.', ciHintOk:'Rozumiem', ciHintSaved:'Informacja zapisana', ciRunning:'trwa', calHours:'Godziny', hoursKorr:'poprawione', regieTitle:'Raport godzinowy', regieEmpty:'Brak czasów.', regieSum:'Suma', regieDatum:'Data', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'godz.', regieKorrBtn:'Popraw', regiePrint:'Drukuj raport', korrTitle:'Popraw czas', korrVon:'od', korrBis:'do', korrGrund:'Powód', korrSave:'Zapisz', monatTitle:'Zestawienie miesięczne', monatPrint:'Drukuj', monatLief:'Dostawy', monatStunden:'Godziny', abrechLabel:'Rozliczono dnia', persCiTitle:'Meldowanie', persCiHinweis:'Informacja o ochronie danych (pokazywana przed pierwszym zameldowaniem)', persKolonnen:'Brygady: brygadzista melduje te osoby', persCleanup:'Usuń teraz stare dane meldowania', persCleanupDone:'Usunięto {n} starych wpisów',
@@ -1542,6 +1595,7 @@ sk:{
   bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
   mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
   stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  ciInTeam:'Prihlásiť ({n} os.)', ciWho:'Kto?',
   tourOrderBtn:'Navrhnúť poradie', tourOrderNoGps:'Chýba štart (poloha skladu) alebo málo cieľov.', tourMapsRoute:'Trasa v Google Maps', fahrtenBtn:'Zoznam jázd', fahrtenTitle:'Zoznam jázd', fahrtenHint:'Vypočítané z dodávok – nie je to daňová kniha jázd. km = jednosmerne sklad → stavba.', fahrtenFahrer:'Vodič', fahrtenKm:'km', fahrtenCa:'cca', fahrtenSum:'Spolu', fahrtenCsv:'Stiahnuť zoznam pre Excel (CSV)', fahrtenNone:'V tomto období žiadne jazdy.', fahrtenLoading:'Počítajú sa kilometre …',
   pruefTitle:'Kontrola a uvoľnenie', pruefOpen:'Skontrolovať lešenie', pruefNone:'Zatiaľ neskontrolované', pruefFrei:'Uvoľnené {d} ({name})', pruefGesperrt:'Zablokované od {d} ({name})', pruefEyebrow:'Kontrolný protokol', pruefHint:'Skontroluj všetky body a urob aspoň jednu fotku.', pruefFotoBtn:'Fotka lešenia', pruefNeedFoto:'Aspoň jedna fotka je povinná.', pruefNeedAll:'Na uvoľnenie musia byť odškrtnuté všetky body.', pruefBem:'Poznámka', pruefFreigeben:'Uvoľniť', pruefSperren:'Zablokovať', pruefSaved:'Protokol uložený', aushangPrint:'Tlačiť oznam s QR', aushangFrei:'LEŠENIE UVOĽNENÉ', aushangGesperrt:'LEŠENIE ZABLOKOVANÉ – NEVSTUPOVAŤ', aushangScan:'Naskenuj QR kód: aktuálny stav', pp_verankerung:'Ukotvenie', pp_belaege:'Podlahy kompletné a pevné', pp_seitenschutz:'Bočná ochrana', pp_aufstiege:'Výstupy / rebríky', pp_fuss:'Pätky / vretená', pp_kennzeichnung:'Označenie', uwTitle:'Školenia', uwTitel:'Téma', uwText:'Text', uwAdd:'Pridať školenie', uwAdded:'Školenie pridané', uwOk:'Prečítal som a rozumiem', uwEyebrow:'Školenie', uwCount:'potvrdené {n} / {m}', uwDone:'Potvrdené – ďakujeme!', uwNone:'Zatiaľ žiadne školenia.',
   ciIn:'Prihlásiť sa na stavbe', ciOut:'Odhlásiť sa', ciChecking:'Overuje sa poloha …', ciCheckedIn:'Prihlásený: {bv} od {t}', ciTeamLabel:'Kto je pri tom?', ciTooFar:'Príliš ďaleko od stavby ({m} m). Prihlásiť sa dá len na mieste.', ciBadGps:'GPS príliš nepresné (±{m} m) – chvíľu počkaj a skús znova.', ciNoGps:'Žiadna poloha – povoľ polohu.', ciDone:'Prihlásené: {bv}', ciOutDone:'Odhlásené', ciHintTitle:'Upozornenie k prihláseniu', ciHintDefault:'Pri prihlásení a odhlásení sa uloží čas a poloha, aby sa evidoval pracovný čas na stavbe. Vidí to len vedenie. Údaje sa mažú 12 mesiacov po vyúčtovaní.', ciHintOk:'Rozumiem', ciHintSaved:'Upozornenie uložené', ciRunning:'prebieha', calHours:'Hodiny', hoursKorr:'opravené', regieTitle:'Výkaz prác', regieEmpty:'Zatiaľ žiadne časy.', regieSum:'Spolu', regieDatum:'Dátum', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'hod.', regieKorrBtn:'Opraviť', regiePrint:'Tlačiť výkaz', korrTitle:'Opraviť čas', korrVon:'od', korrBis:'do', korrGrund:'Dôvod', korrSave:'Uložiť', monatTitle:'Mesačný prehľad', monatPrint:'Tlačiť', monatLief:'Dodávky', monatStunden:'Hodiny', abrechLabel:'Vyúčtované dňa', persCiTitle:'Prihlásenie na stavbe', persCiHinweis:'Upozornenie o ochrane údajov (zobrazí sa pred prvým prihlásením)', persKolonnen:'Čaty: vedúci čaty prihlási aj týchto ľudí', persCleanup:'Teraz zmazať staré údaje prihlásení', persCleanupDone:'Zmazaných {n} starých záznamov',
@@ -1745,6 +1799,7 @@ hr:{
   bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
   mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
   stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  ciInTeam:'Prijava ({n} os.)', ciWho:'Tko?',
   tourOrderBtn:'Predloži redoslijed', tourOrderNoGps:'Nema početne točke (lokacija skladišta) ili premalo odredišta.', tourMapsRoute:'Ruta u Google Maps', fahrtenBtn:'Popis vožnji', fahrtenTitle:'Popis vožnji', fahrtenHint:'Izračunato iz isporuka – nije porezna knjiga vožnji. km = u jednom smjeru skladište → gradilište.', fahrtenFahrer:'Vozač', fahrtenKm:'km', fahrtenCa:'oko', fahrtenSum:'Ukupno', fahrtenCsv:'Preuzmi Excel popis (CSV)', fahrtenNone:'Nema vožnji u razdoblju.', fahrtenLoading:'Kilometri se računaju …',
   pruefTitle:'Pregled i odobrenje', pruefOpen:'Pregledaj skelu', pruefNone:'Još nije pregledano', pruefFrei:'Odobreno {d} ({name})', pruefGesperrt:'Zaključano od {d} ({name})', pruefEyebrow:'Zapisnik pregleda', pruefHint:'Provjeri sve točke i napravi barem jednu fotografiju.', pruefFotoBtn:'Fotografija skele', pruefNeedFoto:'Barem jedna fotografija je obavezna.', pruefNeedAll:'Za odobrenje sve točke moraju biti označene.', pruefBem:'Napomena', pruefFreigeben:'Odobri', pruefSperren:'Zaključaj', pruefSaved:'Zapisnik spremljen', aushangPrint:'Ispiši obavijest s QR', aushangFrei:'SKELA ODOBRENA', aushangGesperrt:'SKELA ZAKLJUČANA – NE ULAZITI', aushangScan:'Skeniraj QR kod: trenutno stanje', pp_verankerung:'Sidrenje', pp_belaege:'Podnice potpune i čvrste', pp_seitenschutz:'Bočna zaštita', pp_aufstiege:'Usponi / ljestve', pp_fuss:'Podnožja / vretena', pp_kennzeichnung:'Oznaka postavljena', uwTitle:'Upute', uwTitel:'Tema', uwText:'Tekst', uwAdd:'Dodaj uputu', uwAdded:'Uputa dodana', uwOk:'Pročitao sam i razumijem', uwEyebrow:'Uputa', uwCount:'potvrđeno {n} / {m}', uwDone:'Potvrđeno – hvala!', uwNone:'Još nema uputa.',
   ciIn:'Prijava na gradilište', ciOut:'Odjava', ciChecking:'Provjera lokacije …', ciCheckedIn:'Prijavljen: {bv} od {t}', ciTeamLabel:'Tko je tu?', ciTooFar:'Predaleko od gradilišta ({m} m). Prijava je moguća samo na licu mjesta.', ciBadGps:'GPS je preneprecizan (±{m} m) – pričekaj malo i pokušaj ponovno.', ciNoGps:'Nema lokacije – dopusti lokaciju.', ciDone:'Prijavljeno: {bv}', ciOutDone:'Odjavljeno', ciHintTitle:'Napomena o prijavi', ciHintDefault:'Pri prijavi i odjavi spremaju se vrijeme i lokacija kako bi se evidentiralo radno vrijeme po gradilištu. Vidi to samo uprava. Podaci se brišu 12 mjeseci nakon obračuna.', ciHintOk:'Razumijem', ciHintSaved:'Napomena spremljena', ciRunning:'u tijeku', calHours:'Sati', hoursKorr:'ispravljeno', regieTitle:'Izvještaj o radu', regieEmpty:'Još nema vremena.', regieSum:'Ukupno', regieDatum:'Datum', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'sati', regieKorrBtn:'Ispravi', regiePrint:'Ispiši izvještaj', korrTitle:'Ispravi vrijeme', korrVon:'od', korrBis:'do', korrGrund:'Razlog', korrSave:'Spremi', monatTitle:'Mjesečni pregled', monatPrint:'Ispiši', monatLief:'Isporuke', monatStunden:'Sati', abrechLabel:'Obračunato dana', persCiTitle:'Prijava na gradilište', persCiHinweis:'Napomena o zaštiti podataka (prikazuje se prije prve prijave)', persKolonnen:'Ekipe: voditelj ekipe prijavljuje i ove ljude', persCleanup:'Sada obriši stare podatke prijava', persCleanupDone:'Obrisano {n} starih unosa',
@@ -1948,6 +2003,7 @@ en:{
   bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
   mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
   stockMissingLabel:'Missing:', stockLow:'Stock low',
+  ciInTeam:'Check in ({n} people)', ciWho:'Who?',
   tourOrderBtn:'Suggest order', tourOrderNoGps:'No start point (depot location missing) or too few stops.', tourMapsRoute:'Route in Google Maps', fahrtenBtn:'Trip list', fahrtenTitle:'Trip list', fahrtenHint:'Calculated from deliveries – not a tax logbook. km = one way depot → site.', fahrtenFahrer:'Driver', fahrtenKm:'km', fahrtenCa:'approx.', fahrtenSum:'Total', fahrtenCsv:'Download Excel list (CSV)', fahrtenNone:'No trips in this period.', fahrtenLoading:'Calculating kilometres …',
   pruefTitle:'Inspection & release', pruefOpen:'Inspect scaffold', pruefNone:'Not inspected yet', pruefFrei:'Released on {d} ({name})', pruefGesperrt:'Closed since {d} ({name})', pruefEyebrow:'Inspection record', pruefHint:'Check all points and take at least one photo.', pruefFotoBtn:'Photo of the scaffold', pruefNeedFoto:'At least one photo is required.', pruefNeedAll:'All points must be ticked to release.', pruefBem:'Remark', pruefFreigeben:'Release', pruefSperren:'Close', pruefSaved:'Inspection saved', aushangPrint:'Print notice with QR', aushangFrei:'SCAFFOLD RELEASED', aushangGesperrt:'SCAFFOLD CLOSED – DO NOT ENTER', aushangScan:'Scan QR code: current status', pp_verankerung:'Anchoring', pp_belaege:'Decks complete and secure', pp_seitenschutz:'Side protection', pp_aufstiege:'Access / ladders', pp_fuss:'Base plates / jacks', pp_kennzeichnung:'Tag attached', uwTitle:'Safety briefings', uwTitel:'Topic', uwText:'Text', uwAdd:'Add briefing', uwAdded:'Briefing added', uwOk:'Read and understood', uwEyebrow:'Safety briefing', uwCount:'confirmed {n} / {m}', uwDone:'Confirmed – thank you!', uwNone:'No briefings yet.',
   ciIn:'Check in', ciOut:'Check out', ciChecking:'Checking location …', ciCheckedIn:'Checked in: {bv} since {t}', ciTeamLabel:'Who is here?', ciTooFar:'Too far from the site ({m} m). Check-in only works on site.', ciBadGps:'GPS too inaccurate (±{m} m) – wait a moment and try again.', ciNoGps:'No location – please allow location.', ciDone:'Checked in: {bv}', ciOutDone:'Checked out', ciHintTitle:'About checking in', ciHintDefault:'When checking in and out, time and location are stored to record working time per site. Only management can see this. Data is deleted 12 months after billing.', ciHintOk:'Understood', ciHintSaved:'Notice saved', ciRunning:'running', calHours:'Hours', hoursKorr:'corrected', regieTitle:'Time report', regieEmpty:'No times yet.', regieSum:'Total', regieDatum:'Date', regiePerson:'Person', regieZeit:'from–to', regieStd:'h', regieKorrBtn:'Correct', regiePrint:'Print time report', korrTitle:'Correct time', korrVon:'from', korrBis:'to', korrGrund:'Reason', korrSave:'Save', monatTitle:'Monthly summary', monatPrint:'Print', monatLief:'Deliveries', monatStunden:'Hours', abrechLabel:'Billed on', persCiTitle:'Site check-in', persCiHinweis:'Privacy notice (shown before the first check-in)', persKolonnen:'Crews: the crew leader also checks in these people', persCleanup:'Delete old check-in data now', persCleanupDone:'{n} old entries deleted',
@@ -3708,7 +3764,7 @@ function inventoryRowHTML(it, editable){
   if(qty<0){ qtyClass='stock-missing'; tag=`${t('stockMissingLabel')} ${-qty} ${unitLabel(it.unit)}`; }
   else if(stockStatus(it.id)==='knapp'){ qtyClass='stock-low'; tag=t('stockKnapp',{n:min}); }
   else if(min==null && qty>0 && qty<10){ qtyClass='stock-low'; tag=t('stockLow'); }
-  const extra = (editable || min!=null || def) ? `<div class="inv-extra">
+  const extra = (min!=null || def) ? `<div class="inv-extra">
       ${editable? `<button class="mini-btn" data-action="min-open" data-id="${it.id}">${min!=null? t('invMin',{n:min}) : t('invMinSet')}</button>` : (min!=null? `<span class="inv-min">${t('invMin',{n:min})}</span>`:'')}
       ${def? `<span class="inv-def">${t('invDefekt',{n:def})}</span>${editable? `<button class="mini-btn" data-action="defect-repair" data-id="${it.id}">${t('defectRepair')}</button><button class="mini-btn" data-action="defect-scrap" data-id="${it.id}">${t('defectScrap')}</button>`:''}`:''}
     </div>` : '';
@@ -3716,14 +3772,14 @@ function inventoryRowHTML(it, editable){
     <div class="inv-icon">${ICONS[it.icon]}</div>
     <div class="inv-main">
       <div class="inv-name">${itemName(it)}</div>
-      <div class="inv-qty ${qtyClass}">${qty} ${unitLabel(it.unit)} ${tag? `<span class="tag">${tag}</span>`:''}</div>
-      ${extra}
+      <div class="inv-qty ${qtyClass}">${qty} ${unitLabel(it.unit)} ${tag? `<span class="tag">${tag}</span>`:''}${editable && min==null && !def? ` <button class="inv-min-link" data-action="min-open" data-id="${it.id}">${t('invMinSet')}</button>`:''}</div>
     </div>
     ${editable? `<div class="inv-actions">
       <button data-action="inv" data-id="${it.id}" data-delta="-1">−</button>
       <button data-action="inv" data-id="${it.id}" data-delta="1">+</button>
       <button class="inv-restock" data-action="inv" data-id="${it.id}" data-delta="10">+10</button>
     </div>` : ''}
+  ${extra}
   </div>`;
 }
 function inventoryTableHTML(editable){
@@ -4287,9 +4343,11 @@ function ciCardHTML(){
       <button class="mini-btn ci-btn" data-action="ci-out" ${state.ciBusy?'disabled':''}>${t('ciOut')}</button>
     </div>`;
   }
+  const n = sel.filter(x=>team.includes(x)).length;
   return `<div class="ci-wrap">
-    ${team.length>1? `<div class="ziel-chips ci-team" aria-label="${t('ciTeamLabel')}">${team.map(n=>`<button class="ziel-chip ${sel.includes(n)?'active':''}" data-action="ci-sel" data-name="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('')}</div>`:''}
-    <button class="mini-btn ci-btn ci-in-btn" data-action="ci-in" ${state.ciBusy?'disabled':''}>⏱ ${state.ciBusy? t('ciChecking') : t('ciIn')}</button>
+    <div class="ci-row"><button class="mini-btn ci-btn ci-in-btn" data-action="ci-in" ${state.ciBusy?'disabled':''}>⏱ ${state.ciBusy? t('ciChecking') : team.length>1? t('ciInTeam',{n}) : t('ciIn')}</button>
+    ${team.length>1? `<button class="mini-btn ci-btn" data-action="ci-team-toggle" aria-expanded="${state.ciTeamOpen?'true':'false'}">${t('ciWho')}</button>`:''}</div>
+    ${team.length>1 && state.ciTeamOpen? `<div class="ziel-chips ci-team" aria-label="${t('ciTeamLabel')}">${team.map(n=>`<button class="ziel-chip ${sel.includes(n)?'active':''}" data-action="ci-sel" data-name="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('')}</div>`:''}
     ${state.ciMsg? `<div class="warn">${state.ciMsg}</div>`:''}
   </div>`;
 }
@@ -4308,7 +4366,7 @@ function regieTableHTML(pid, forPrint, month){
   if(!rows.length) return `<div class="empty-state" style="padding:14px 10px;">${t('regieEmpty')}</div>`;
   const sum = rows.reduce((a,e)=>a+(hoursOf(e)||0), 0);
   return `<div class="tbl-wrap"><table class="${forPrint?'ls-items':'order-table mat-table'}"><thead><tr><th>${t('regieDatum')}</th><th>${t('regiePerson')}</th><th>${t('regieZeit')}</th><th class="num">${t('regieStd')}</th>${forPrint?'':'<th></th>'}</tr></thead><tbody>
-    ${rows.map(e=>`<tr><td>${formatDateDE(isoDay(e.in))}</td><td>${escapeHtml(e.person)}</td><td>${hhmm((e.korr&&e.korr.in)||e.in)}–${e.out||(e.korr&&e.korr.out)? hhmm((e.korr&&e.korr.out)||e.out) : t('ciRunning')}</td><td class="num">${fmtH(hoursOf(e))}${e.korr? ` <span class="korr-tag">${t('hoursKorr')}</span>`:''}</td>${forPrint?'':`<td><button class="mini-btn" data-action="korr-open" data-id="${escapeHtml(e.id)}">${t('regieKorrBtn')}</button></td>`}</tr>`).join('')}
+    ${rows.map(e=>`<tr><td>${formatDateDE(isoDay(e.in))}</td><td>${escapeHtml(e.person)}</td><td>${hhmm((e.korr&&e.korr.in)||e.in)}–${e.out||(e.korr&&e.korr.out)? hhmm((e.korr&&e.korr.out)||e.out) : t('ciRunning')}</td><td class="num">${fmtH(hoursOf(e))}${e.korr? ` <span class="korr-tag">${t('hoursKorr')}</span>`:''}</td>${forPrint?'':`<td><button class="mini-btn korr-btn" data-action="korr-open" data-id="${escapeHtml(e.id)}" aria-label="${t('regieKorrBtn')}" title="${t('regieKorrBtn')}">✏</button></td>`}</tr>`).join('')}
     </tbody><tfoot><tr><td colspan="3"><b>${t('regieSum')}</b></td><td class="num"><b>${fmtH(sum)}</b></td>${forPrint?'':'<td></td>'}</tr></tfoot></table></div>`;
 }
 function monthsOf(pid){
@@ -6090,6 +6148,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='ci-hint-ok'){ lsSet(CI_HINT_KEY + state.name, '1'); state.ciHintOpen = false; await doCheckIn(); }
   if(action==='ci-hint-close-bg' && e.target===el){ state.ciHintOpen = false; render(); }
   if(action==='ci-out'){ await doCheckOut(); }
+  if(action==='ci-team-toggle'){ state.ciTeamOpen = !state.ciTeamOpen; render(); }
   if(action==='ci-sel'){ const n = el.dataset.name, cur = state.ciSel || ciTeam(); state.ciSel = cur.includes(n) ? cur.filter(x=>x!==n) : [...cur, n]; render(); }
   if(action==='korr-open'){ state.korrDraft = {id: el.dataset.id}; render(); }
   if(action==='korr-close' || (action==='korr-close-bg' && e.target===el)){ state.korrDraft = null; render(); }
@@ -6827,7 +6886,10 @@ function demoBarUpdate(){
     if(b.dataset.action==='demo-reset'){
       // nur Demo-Schlüssel löschen (alle mit 'demo-'), echte App-Daten bleiben
       try{ Object.keys(localStorage).filter(k=>k.startsWith('demo-')).forEach(k=>localStorage.removeItem(k)); }catch(e){}
-      demoIdb('clear').then(()=>location.reload());
+      // Foto-Speicher erst beim nächsten Start leeren: sofort neu laden (Neuladen aus einer
+      // IndexedDB-Rückmeldung heraus ließ im Test gelegentlich den ganzen localStorage verschwinden)
+      try{ localStorage.setItem('demo-clear-fotos', '1'); }catch(e){}
+      location.reload();
     }
   });
 })();
