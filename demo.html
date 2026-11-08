@@ -2361,7 +2361,7 @@ function same(a, b){ return stableStr(a)===stableStr(b); }
 
 function stateToValue(){
   return clone({orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
-    minStock:state.minStock, defect:state.defect, fotos:state.fotos, fotoCounter:state.fotoCounter, maengel:state.maengel, mangelCounter:state.mangelCounter, ciHinweis:state.ciHinweis,
+    minStock:state.minStock, defect:state.defect, fotos:state.fotos, fotoCounter:state.fotoCounter, maengel:state.maengel, mangelCounter:state.mangelCounter, ciHinweis:state.ciHinweis || null,
     projects:state.projects, projektCounter:state.projektCounter,
     calendarEntries:state.calendarEntries, calCounter:state.calCounter,
     driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager, chefPw:state.chefPw,
