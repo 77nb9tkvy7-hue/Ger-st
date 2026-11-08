@@ -132,7 +132,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 3: Zahlen-Leiste am Handy (< 900 px), Kacheln am PC; Chips springen ohne Fehler.
+  // Zahlen-Leiste am Handy (< 900 px), Kacheln am PC; Chips springen ohne Fehler.
   async strip(ctx) {
     ctx.page.on('dialog', d => d.dismiss());
     const { page, errors } = ctx;
@@ -175,7 +175,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 4: Hauptknopf zuerst. Lager/Fahrer: erster Hauptknopf am Handy ohne Scrollen sichtbar;
+  // Hauptknopf zuerst. Lager/Fahrer: erster Hauptknopf am Handy ohne Scrollen sichtbar;
   // in jeder Karte steht der Hauptknopf vor .btn-row-secondary, Zweitknöpfe >= 44 px hoch.
   async cards(ctx) {
     const { page, errors } = ctx;
@@ -208,8 +208,8 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 5: Baustelle bestellt über Suchfeld oben -> Teile-Art -> Variante -> Bestellschein.
-  // Tipps werden gezählt und gedruckt; die "<= 4 Tipps"-Grenze prüft erst Task 6 (Schnellwahl).
+  // Baustelle bestellt über Suchfeld oben -> Teile-Art -> Variante -> Bestellschein.
+  // Tipps werden gezählt und gedruckt; die "<= 4 Tipps"-Grenze prüft die Prüfung numpad (Schnellwahl).
   async 'order-flow'(ctx) {
     const { page, errors, opts } = ctx;
     const problems = [];
@@ -263,7 +263,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 6: Ziffernblock – öffnen, 1 + 2 tippen, Polling (5 s) übersteht, OK -> 12; Tastatur; Chips ohne Überlauf.
+  // Ziffernblock – öffnen, 1 + 2 tippen, Polling (5 s) übersteht, OK -> 12; Tastatur; Chips ohne Überlauf.
   async numpad(ctx) {
     const { page, errors } = ctx;
     const problems = [];
@@ -336,7 +336,7 @@ const CHECKS = {
     const anims = await page.evaluate(() => document.getAnimations().length);
     if (anims !== 0) problems.push(`${anims} Animation(en) nach Schließen des Ziffernblocks (Popup spielt neu)`);
     await page.evaluate(() => { state.itemPopup = null; render(); });
-    // R6: Chip setzt Menge, "Häufig bestellt"-Dopplung + Art-Zeile ziehen mit
+    // Chip setzt Menge, "Häufig bestellt"-Dopplung + Art-Zeile ziehen mit
     await page.click('[data-action="qty-quick"][data-id="konsole70M"][data-q="10"]');
     const synced = await page.evaluate(() => {
       const bad = [];
@@ -355,7 +355,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 5: Chef "Planen" nutzt dieselbe Teile-Art-Liste – Teil wählen und Lieferung einplanen.
+  // Chef "Planen" nutzt dieselbe Teile-Art-Liste – Teil wählen und Lieferung einplanen.
   async plan(ctx) {
     const { page, errors } = ctx;
     const problems = [];
@@ -380,7 +380,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 7: Verladen & losfahren, Tour-Modus, Status-Zeiten.
+  // Verladen & losfahren, Tour-Modus, Status-Zeiten.
   async fahrer(ctx) {
     const { page, errors } = ctx;
     const problems = [];
@@ -433,7 +433,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 8: Packliste – Zeile antippen = eingepackt; erster Haken startet die Bearbeitung.
+  // Packliste – Zeile antippen = eingepackt; erster Haken startet die Bearbeitung.
   async lager(ctx) {
     ctx.page.on('dialog', d => d.accept());
     const { page, errors } = ctx;
@@ -524,7 +524,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 9: Chef-Reiter "LKWs" (5 Reiter, Karte dort, Übersicht ohne Karte).
+  // Chef-Reiter "LKWs" (5 Reiter, Karte dort, Übersicht ohne Karte).
   async chef(ctx) {
     const { page, errors, opts } = ctx;
     const problems = [];
@@ -559,7 +559,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 10: Kontrast-Stichprobe (WCAG, < 4,5 = FAIL). Je Rolle werden ALLE sichtbaren Abzeichen (.status-badge, .pu-badge, .ev-kind,
+  // Kontrast-Stichprobe (WCAG, < 4,5 = FAIL). Je Rolle werden ALLE sichtbaren Abzeichen (.status-badge, .pu-badge, .ev-kind,
   // .wunsch-badge, .rn-badge) und --muted-Texte (.order-time, .view-sub, .ms-meta) gemessen; Hintergrund = über den nächsten deckenden
   // Vorfahren zusammengesetzt, Vorfahren-opacity eingerechnet; je (Farbe, Hintergrund)-Paar einmal. Erledigt-Bereiche und der
   // Fahrer-Kalender (Tage -7..+21) werden vorher geöffnet.
@@ -642,7 +642,7 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // R11: Reiter-Beschriftungen unten werden nie abgeschnitten (Umbruch auf 2 Zeilen), kein Überlauf; alle Rollen in der gewählten Sprache.
+  // Reiter-Beschriftungen unten werden nie abgeschnitten (Umbruch auf 2 Zeilen), kein Überlauf; alle Rollen in der gewählten Sprache.
   async nav(ctx) {
     const { page, errors } = ctx;
     const problems = [];
