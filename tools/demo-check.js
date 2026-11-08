@@ -138,6 +138,42 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
+  // Task 4: Hauptknopf zuerst. Lager/Fahrer: erster Hauptknopf am Handy ohne Scrollen sichtbar;
+  // in jeder Karte steht der Hauptknopf vor .btn-row-secondary, Zweitknöpfe >= 44 px hoch.
+  async cards(ctx) {
+    const { page, errors } = ctx;
+    const problems = [];
+    await page.setViewportSize({ width: 390, height: 844 });
+    for (const role of ['lager', 'fahrer']) {
+      await switchRole(page, role);
+      // Die Demo zeigt kurz nach dem Start die Leiste "Kein Netz" (Abgleich läuft noch) - abwarten
+      try { await page.waitForSelector('.sync-banner', { state: 'detached', timeout: 12000 }); } catch (e) {}
+      await page.waitForTimeout(300);
+      const m = await measure(page);
+      console.log(`  [${role}] ${fmt(m)}`);
+      if (m.firstPrimaryY == null || m.firstPrimaryY >= 700) problems.push(`${role}: firstPrimaryY=${m.firstPrimaryY} (soll < 700)`);
+      const r = await page.evaluate(() => {
+        const bad = [];
+        const vis = el => { const b = el.getBoundingClientRect(); return b.width > 0 && b.height > 0; };
+        let n = 0;
+        document.querySelectorAll('.order-card').forEach(c => {
+          if (!vis(c) || c.classList.contains('my-status')) return;
+          const sec = c.querySelector('.btn-row-secondary'); if (!sec) return;
+          n++;
+          const main = c.querySelector('.advance-btn');
+          const id = (c.querySelector('.no') || {}).textContent || '?';
+          if (main && !(main.compareDocumentPosition(sec) & Node.DOCUMENT_POSITION_FOLLOWING)) bad.push(`${id}: Hauptknopf nach Zweitreihe`);
+          sec.querySelectorAll('button,a').forEach(b => { if (b.getBoundingClientRect().height < 44) bad.push(`${id}: Zweitknopf ${Math.round(b.getBoundingClientRect().height)}px`); });
+        });
+        return { n, bad };
+      });
+      if (!r.n) problems.push(`${role}: keine Karte mit Zweitreihe`);
+      r.bad.forEach(b => problems.push(`${role}: ${b}`));
+      await shot(page, 'cards', role, 390);
+    }
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
 };
 
 (async () => {
