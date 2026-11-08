@@ -233,6 +233,50 @@ module.exports = ({ switchRole, shot }) => {
       await shot(page, 'fotos', 'chef', 390, false);
       return errs(errors, p);
     },
+    // Task 6: Mängel melden
+    maengel: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      const btn = await page.$('[data-action="mangel-open"]');
+      if (!btn) { p.push('kein Knopf „Mangel melden“ bei der Baustelle'); return errs(errors, p); }
+      await btn.click();
+      await page.fill('#mangelText', 'Belag lose');
+      await page.click('[data-action="mangel-send"]'); await page.waitForTimeout(600);
+      const a = await ev(page, () => { const m = (state.maengel || []).filter(x => x.status === 'offen'); return { n: m.length, last: m[m.length - 1] }; });
+      if (a.n < 1 || !a.last || a.last.text !== 'Belag lose' || a.last.by !== 'Max') p.push('Mangel nicht gespeichert: ' + JSON.stringify(a));
+      await switchRole(page, 'chef');
+      const b = await ev(page, () => { state.chefTab = 'uebersicht'; render(); const sec = document.getElementById('sec-maengel'); return { sec: !!sec, done: document.querySelectorAll('[data-action="mangel-done"]').length, chip: [...document.querySelectorAll('.stat-chip-btn')].some(x => /Mängel/.test(x.textContent)) }; });
+      if (!b.sec || b.done < 1) p.push('Chef sieht offenen Mangel nicht: ' + JSON.stringify(b));
+      if (!b.chip) p.push('Chef-Leiste ohne Chip „Mängel“');
+      const n0 = a.n;
+      await page.click('[data-action="mangel-done"]'); await page.waitForTimeout(400);
+      const c = await ev(page, () => (state.maengel || []).filter(x => x.status === 'offen').length);
+      if (c !== n0 - 1) p.push(`nach Erledigt noch ${c} offen (erwartet ${n0 - 1})`);
+      await shot(page, 'maengel', 'chef', 390, false);
+      return errs(errors, p);
+    },
+    // Task 6: Unterschrift
+    signatur: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'fahrer');
+      const oid = await ev(page, () => { const o = state.orders.find(x => x.status === 'Unterwegs'); state.fahrerTab = 'lieferungen'; render(); return o && o.id; });
+      const btn = await page.$(`[data-action="sig-open"][data-order="${oid}"]`);
+      if (!btn) { p.push('kein Knopf „Unterschrift“ auf der Karte „Unterwegs“'); return errs(errors, p); }
+      await btn.click(); await page.waitForSelector('#sigCanvas');
+      const box = await (await page.$('#sigCanvas')).boundingBox();
+      await page.mouse.move(box.x + 30, box.y + 60); await page.mouse.down();
+      for (let i = 1; i <= 12; i++) await page.mouse.move(box.x + 30 + i * 20, box.y + 60 + (i % 2 ? 50 : 0));
+      await page.mouse.up();
+      await page.waitForTimeout(5000);  // Neuzeichnen/Polling abwarten
+      const b = await ev(page, () => { const c = document.getElementById('sigCanvas'); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let ink = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 0 && d[i - 1] < 128) ink++; return { strokes: (state.sigDraft || {}).strokes ? state.sigDraft.strokes.length : 0, ink }; });
+      if (b.strokes < 1 || b.ink < 20) p.push('(b) Striche nach 5 s weg: ' + JSON.stringify(b));
+      await page.fill('#sigName', 'Herr Huber');
+      await page.click('[data-action="sig-save"]'); await page.waitForTimeout(800);
+      const a = await ev(page, async id => { const o = state.orders.find(x => x.id === id); await printOrderWithSig(id); return { sig: o.signatur || null, img: !!document.querySelector('#printArea img.ls-sig'), name: /Herr Huber/.test(document.getElementById('printArea').innerHTML) }; }, oid);
+      if (!a.sig || !a.sig.path || a.sig.name !== 'Herr Huber') p.push('(a) Unterschrift nicht gespeichert: ' + JSON.stringify(a.sig));
+      if (!a.img || !a.name) p.push('(a) Lieferschein ohne Unterschrift-Bild/Name');
+      return errs(errors, p);
+    },
   };
 };
 
