@@ -1,8 +1,8 @@
-# Neue Funktionen (Pakete 1–3) – Plan
+# Neue Funktionen (Pakete 1–7) – Plan
 
 > Umsetzung: Native (ein Durchgang in einer Sitzung, eine Gesamtprüfung am Ende) – Nutzerwunsch „nutzungslimit-freundlich“. Schritte mit `- [ ]`.
 
-**Ziel:** Pakete 1–3 der Funktionsliste in `demo.html` (Branch `features-demo`, abgezweigt von `ui-demo`) mit Beispieldaten zeigen. `geruest-bestell-app.html` bleibt unverändert.
+**Ziel:** Pakete 1–7 der Funktionsliste (ohne Kundenansicht) in `demo.html` (Branch `features-demo`, abgezweigt von `ui-demo`) mit Beispieldaten zeigen. `geruest-bestell-app.html` bleibt unverändert.
 
 **Aufbau:** Alles in `demo.html` (eine Datei, Vanilla). Prüfungen als benannte Checks in `tools/demo-check.js` (vorhandene Technik). Server-Teile (SQL) werden nur als Datei vorbereitet, nicht ausgeführt. Selbst mitgelieferte Bausteine in `vendor/`.
 
@@ -17,6 +17,11 @@
 | Kalender | beide nur nach Anmeldung |
 | Fotos | Fotograf kann 5 Min. lang selbst löschen (auch Server-Regel); danach fest, Chef kann nur aus-/einblenden mit Vermerk |
 | Unterschrift | nur auf Wunsch: Extra-Knopf auf der Karte, „Lieferung bestätigen“ bleibt 1 Tipp |
+| Erweiterung | auch Pakete 4–7 in die Demo (Nutzerwunsch), außer Kundenansicht (bleibt offen) |
+| Stunden | automatisch aus Ein-/Auschecken, Chef kann jeden Wert korrigieren (mit Vermerk); nur Chef sieht sie |
+| Einchecken | jeder selbst + Kolonnenführer checkt sein Team mit einem Tipp; nur in GPS-Nähe zum BV (≤ 150 m, Genauigkeit ≤ 100 m) |
+| Speicherdauer | Einchecken-Daten bis Abrechnung des BV + 12 Monate, dann automatisch gelöscht (Summen im Regiebericht bleiben); Wert einstellbar |
+| Nicht in dieser Runde | Kundenansicht (offen), Tribünen + Paketgrößen (warten auf Daten), Sofort-Aktualisierung (Realtime – ohne echten Server in der Demo nicht vorführbar), vollständige Aufteilung von Bestellungen/Bestand auf eigene Server-Zeilen (in der Demo unsichtbar, eigener Umbau) |
 
 ## Global Constraints
 
@@ -77,9 +82,33 @@
 - [ ] Unterschrift: Mini-Knopf „Unterschrift“ auf Fahrer-Karten „Unterwegs“/„Geliefert“ → Fenster mit Zeichenfläche (≥ 260 px hoch, Pointer-Events, `touch-action:none`), Feld „Name Empfänger“, „Neu“, „Speichern“; PNG in Bucket `fotos` (`bv<ID>/unterschrift-<Bestellnr>-<zufall>.png`); `order.signatur = {path, name, ts, by}`; Lieferschein-Druck zeigt Unterschrift + Name + Zeit. Polling pausiert solange offen. Check `signatur`: (a) Striche zeichnen, Speichern → `order.signatur` gesetzt, Lieferschein enthält `<img>`; (b) 5 s warten vor Speichern → Striche noch da.
 - [ ] Checks + `baseline` → PASS. Commit „Demo: Mängel melden, Unterschrift“.
 
-### Task 7: Abschluss
+### Task 7: Paket 4 (Teil) – geschützte Zeilen für Personen-Daten
 
-- [ ] `DEMO_DATA` ergänzen (Min-Werte, ein Defekt-Bestand, eine Abholung mit defekten Teilen, 3 Beispiel-Fotos, 1 offener Mangel), `DEMO_VERSION` hochzählen. Port-Checkliste `docs/superpowers/plans/2026-11-08-ui-port-checkliste.md` ergänzen (SQL ausführen, `sw.js` Cacheliste, Bucket `fotos`).
+Nur was die neuen Funktionen brauchen: Einchecken, Stunden und Unterweisungs-Bestätigungen liegen NICHT im großen Datensatz, sondern in eigenen Zeilen wie heute die LKW-Standorte: `app_state.key = 'zeit:<JJJJ-MM>'` (Einchecken + Stunden eines Monats, lesen/schreiben nur Chef; Mitarbeiter dürfen nur eigene Einträge anhängen) und `'unterweisung:<id>'`. Funktionen: `loadProtected(prefix) → Promise<object[]>`, `appendProtected(key, entry) → Promise<bool>`.
+- [ ] Check `schutz` zuerst: als Baustelle/Fahrer/Lager angemeldet liefert `loadProtected('zeit:')` nur eigene Einträge (Demo-Client simuliert die Regeln anhand `app_metadata.roles`/`name`), als Chef alle; Baustelle kann fremden Eintrag nicht ändern. → FAIL.
+- [ ] Umsetzen (Demo-Client + App-Funktionen) und SQL in `supabase/security.sql` (Datei, nicht ausführen): RLS für `zeit:%` (insert eigener Eintrag über Funktion `zeit_append(entry jsonb)` security definer; select/update nur `jwt_is_chef()`), Lösch-Funktion `zeit_cleanup()` + pg_cron-Vorschlag. Commit „Demo: geschützte Zeilen für Zeiterfassung“.
+
+### Task 8: Paket 5 – Einchecken, Stunden, Regiebericht, Monatsübersicht
+
+**Daten (Zeile `zeit:<JJJJ-MM>`):** `{checkins:[{id, person, projekt, in, out, inPos:{lat,lon,acc}, outPos, by, korr:null|{in,out,by,ts,grund}}]}`. Funktionen: `nearestProject(pos) → {p, dist}|null` (≤ 150 m), `checkIn(persons[], projekt)`, `checkOut(persons[])`, `hoursOf(c) → Stunden (korrigiert falls vorhanden, auf 0,25 gerundet)`.
+- [ ] Check `zeit` zuerst: (a) Position 80 m vom BV → „Einchecken“ möglich; 400 m → Hinweis `ciTooFar` mit Entfernung, kein Eintrag; Genauigkeit 250 m → `ciBadGps`; (b) Kolonnenführer (neues Mitarbeiter-Feld `kolonne:[Namen]`) checkt 3 Personen mit einem Tipp ein und aus → 3 Einträge; (c) 07:00–15:30 → 8,5 h; Chef korrigiert auf 8,0 mit Grund → Kalender-Spalte zeigt 8,0 und „korrigiert“; (d) Baustelle/Fahrer/Lager sehen im Kalender keine Stunden-Spalte und keine Stunden im DOM. → FAIL.
+- [ ] Umsetzen: Baustelle oben großer Knopf „Einchecken – BV 101“ (bzw. „Auschecken · seit 07:02“), Kolonnenführer mit Personen-Chips; vor dem ERSTEN Einchecken einmalig Datenschutzhinweis (Text als Platzhalter, vom Chef im Reiter Personal hinterlegbar, Feld `state.ciHinweis`) mit „Verstanden“. Chef: Kalender-Spalte „Stunden“ je Person/Tag; Reiter Personal „Kolonnen“ (Mitglieder wählen); BV-Detail „Regiebericht“ (Datum, Person, von–bis, Stunden, Summe; Drucken über `#printArea`); Übersicht/Reiter „Monat“: Monatsübersicht je BV (Material aus `materialBalance`, Lieferungen, Stunden-Summe) zum Drucken. Speicherdauer: BV-Feld `abgerechnetAm`; `zeit_cleanup` löscht Einchecken-Daten älter als Abrechnung + 12 Monate (Demo: Knopf im Personal „Alte Daten löschen“ zeigt Anzahl).
+- [ ] Checks + `baseline` → PASS. Commit „Demo: Einchecken, Stunden, Regiebericht, Monatsübersicht“.
+
+### Task 9: Paket 6 – Prüfprotokoll + QR-Freigabe, Unterweisungen
+
+- [ ] Prüfprotokoll: BV-Feld `pruefungen = [{id, datum, by, punkte:{<key>:true|false}, fotoIds[], ergebnis:'frei'|'gesperrt', bemerkung}]`; Prüfpunkte als feste Liste (Schlüssel `pp_*` in 5 Sprachen: Verankerung, Beläge, Seitenschutz, Aufstiege, Fußplatten/Spindeln, Kennzeichnung); mindestens 1 Foto Pflicht; Ergebnis „freigegeben“/„gesperrt“. QR: `vendor/qrcode-generator` (npm `qrcode-generator`, MIT) erzeugt QR für Link `freigabe.html?t=<token>` (BV-Feld `freigabeToken`, zufällig); `freigabe.html` (eigene kleine Datei, keine Anmeldung) zeigt nur „Gerüst BV 101 – freigegeben am … / gesperrt“ über SQL-Funktion `freigabe_info(token)` (Datei); Demo: liest aus `demo-state`. Druck: Aushang A4 mit QR + Status.
+- [ ] Unterweisungen: Chef legt Thema + Text an (`state.unterweisungen=[{id, titel, text, ab, by}]`, Zähler); jeder Mitarbeiter sieht offene Unterweisungen als Karte oben, liest, tippt „Gelesen und verstanden“ → Bestätigung in geschützter Zeile `unterweisung:<id>` (Name, Zeit). Chef sieht je Unterweisung „bestätigt 5 / 8“ mit Namen.
+- [ ] Check `pruefung`: Protokoll ohne Foto → Speichern gesperrt; mit Foto → „frei“, QR-Bild vorhanden, `freigabe.html?t=…` zeigt Datum ohne Namen. Check `unterweisung`: neue Unterweisung → Fahrer sieht Karte, bestätigt → Chef „1 / n“. Commit „Demo: Prüfprotokoll mit QR-Freigabe, Unterweisungen“.
+
+### Task 10: Paket 7 – Reihenfolge + Fahrtenliste
+
+- [ ] Reihenfolge: im Tour-Modus Knopf „Reihenfolge vorschlagen“ → `orderStops(start, stops[]) → stops[]` über OSRM `trip`-Dienst (`ROUTE_URL`-Host, `source=first`), Rückfall ohne Antwort: nächster-Nachbar nach Luftlinie; Karten werden in dieser Reihenfolge nummeriert („1.“, „2.“ …), Knopf „Route in Google Maps“ mit allen Zwischenzielen. Check `reihenfolge`: OSRM abgebrochen → Rückfall liefert für 3 bekannte Punkte die erwartete Folge.
+- [ ] Fahrtenliste (kein steuerliches Fahrtenbuch – so beschriftet): Chef/Fahrer, Monat wählbar; je ausgelieferter Bestellung Datum, Fahrer, von Lager → BV, km (OSRM-Route Lager→BV, zwischengespeichert je BV; ohne Antwort Luftlinie × 1,3 mit „ca.“); CSV + Drucken. Keine GPS-Spuren (bleibt bei „nur letzter Standort“). Check `fahrten`: 2 gelieferte Bestellungen im Monat → 2 Zeilen, km > 0. Commit „Demo: Reihenfolge vorschlagen, Fahrtenliste“.
+
+### Task 11: Abschluss
+
+- [ ] `DEMO_DATA` ergänzen (Min-Werte, ein Defekt-Bestand, eine Abholung mit defekten Teilen, 3 Beispiel-Fotos, 1 offener Mangel, Einchecken-Daten der letzten 5 Tage für 3 Personen, eine Kolonne, 1 Prüfprotokoll, 1 Unterweisung), `DEMO_VERSION` hochzählen. Port-Checkliste `docs/superpowers/plans/2026-11-08-ui-port-checkliste.md` ergänzen (SQL ausführen, `sw.js` Cacheliste, Bucket `fotos`).
 - [ ] `node tools/demo-check.js all` (inkl. neuer Checks) → alle PASS; Screenshots 390 px je Rolle ansehen.
 - [ ] Eine Gesamtprüfung (ein Prüfer, mittleres Modell) über den Branch; gefundene wichtige Fehler in einer Runde beheben.
 - [ ] Commit + Push `features-demo`; Übersicht „Punkt / was umgesetzt / wo in der App“ für den Nutzer.
