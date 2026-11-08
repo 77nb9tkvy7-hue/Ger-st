@@ -68,10 +68,10 @@ async function measure(page) {
   });
 }
 
-async function shot(page, check, role, width) {
+async function shot(page, check, role, width, full = true) {
   fs.mkdirSync(SHOTS, { recursive: true });
   const file = path.join(SHOTS, `${check}-${role}-${width}${OPTS.dark ? '-dark' : ''}${args.some(a => a.startsWith('--lang=')) ? '-' + OPTS.lang : ''}.png`);
-  await page.screenshot({ path: file, fullPage: true });
+  await page.screenshot({ path: file, fullPage: full });
   return file;
 }
 
@@ -200,22 +200,19 @@ const CHECKS = {
     if (!(await art.count())) { problems.push('Zeile "Konsole" fehlt'); return problems; }
     await art.click(); taps++;
     await page.waitForTimeout(150);
-    const vars = await page.evaluate(() => [...document.querySelectorAll('.art.open .var-row')].map(r => ({ label: r.querySelector('.var-label').textContent.trim(), qty: !!r.querySelector('.qty-ctl [data-qty]') })));
+    const vars = await page.evaluate(() => [...document.querySelectorAll('.art.open .var-row')].map(r => ({ label: r.querySelector('.var-label').textContent.trim(), qty: !!r.querySelector('.qty-ctl [data-numfor]') })));
     console.log(`  Varianten: ${vars.map(v => v.label).join(' | ')}`);
     for (const n of ['30', '70', '100']) {
       const v = vars.find(x => new RegExp('\\b' + n + '\\b').test(x.label));
       if (!v) problems.push(`Variante ${n} fehlt`); else if (!v.qty) problems.push(`Variante ${n} ohne Mengen-Steuerung`);
     }
-    // Menge 20 bei Konsole 70 (Schnellwahl kommt in Task 6 – hier über das Zahlenfeld)
-    const row70 = page.locator('.art.open .var-row', { has: page.locator('[data-qty="konsole70M"]') });
-    const quick = row70.locator('[data-action="qty-quick"][data-n="20"]');
-    if (await quick.count()) { await quick.click(); taps++; }
-    else {
-      console.log('  (Schnellwahl "20" fehlt noch – Zahlenfeld benutzt, Task 6)');
-      await row70.locator('[data-qty]').click(); taps++;
-      await row70.locator('[data-qty]').fill('20');
-      await row70.locator('[data-qty]').press('Enter');
-    }
+    // Menge 20 bei Konsole 70 per Schnellwahl (ohne Tastatur)
+    const row70 = page.locator('.art.open .var-row', { has: page.locator('[data-numfor="konsole70M"]') });
+    const quick = row70.locator('[data-action="qty-quick"][data-q="20"]');
+    if (!(await quick.count())) { problems.push('Schnellwahl "20" fehlt in der Variant-Zeile'); return problems; }
+    const qb = await quick.boundingBox();
+    if (qb.height < 44) problems.push(`Chip nur ${Math.round(qb.height)}px hoch`);
+    await quick.click(); taps++;
     await page.waitForTimeout(150);
     const cart = await page.evaluate(() => Object.entries(state.cart).filter(([, q]) => q > 0));
     const footer = await page.evaluate(() => (document.querySelector('.order-footer span') || {}).textContent || '');
@@ -231,8 +228,69 @@ const CHECKS = {
     console.log(`  Bestellschein: ${rows.join(' | ')}`);
     const k70 = await page.evaluate(() => t('part_konsole70'));
     if (!(rows.length === 1 && rows[0].includes(k70) && /\b20\b/.test(rows[0]))) problems.push(`Bestellschein falsch: ${rows.join(' | ')}`);
-    console.log(`  Tipps gezählt: ${taps} (Grenze <= 4 wird in Task 6 geprüft)`);
+    console.log(`  Tipps gezählt: ${taps} (Grenze <= 4)`);
+    if (taps > 4) problems.push(`${taps} Tipps (Grenze 4)`);
     await shot(page, 'order-flow-review', 'baustelle', 390);
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
+  // Task 6: Ziffernblock – öffnen, 1 + 2 tippen, Polling (5 s) übersteht, OK -> 12; Tastatur; Chips ohne Überlauf.
+  async numpad(ctx) {
+    const { page, errors } = ctx;
+    const problems = [];
+    await page.setViewportSize({ width: 390, height: 844 });
+    await switchRole(page, 'baustelle');
+    await page.evaluate(() => { state.cart = {}; state.openArt = null; state.catalogSearch = ''; state.numpad = null; render(); window.scrollTo(0, 0); });
+    await page.locator('.art-row', { hasText: await page.evaluate(() => t('group_konsole')) }).first().click();
+    const ovf = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (ovf > 0) problems.push(`horizontaler Überlauf ${ovf}px bei 390`);
+    const chipH = await page.evaluate(() => Math.min(...[...document.querySelectorAll('.qty-chip')].map(c => c.getBoundingClientRect().height)));
+    if (chipH < 44) problems.push(`Chip ${chipH}px hoch`);
+    await page.click('[data-action="numpad-open"][data-id="konsole70M"]');
+    await page.waitForSelector('.drawer.numpad');
+    await page.click('.np-key[data-k="1"]'); await page.click('.np-key[data-k="2"]');
+    const keyH = await page.evaluate(() => Math.min(...[...document.querySelectorAll('.np-key')].map(k => k.getBoundingClientRect().height)));
+    if (keyH < 64) problems.push(`Taste ${keyH}px hoch (< 64)`);
+    await shot(page, 'numpad', 'baustelle', 390, false);
+    console.log('  warte 5 s (Polling)…');
+    await page.waitForTimeout(5200);
+    const disp = await page.evaluate(() => (document.getElementById('npDisplay') || {}).textContent);
+    if (disp !== '12' || !(await page.locator('.drawer.numpad').count())) problems.push(`Ziffernblock nach Polling weg/verändert (Anzeige ${disp})`);
+    await page.click('.np-key.np-ok');
+    await page.waitForTimeout(250);
+    let q = await page.evaluate(() => state.cart.konsole70M);
+    if (q !== 12) problems.push(`Menge ${q} statt 12`);
+    const txt = await page.evaluate(() => document.querySelector('[data-numfor="konsole70M"]').textContent);
+    if (txt !== '12') problems.push(`Zahlknopf zeigt ${txt}`);
+    // Tastatur: öffnen, 7, Rücktaste, 3, Enter -> 3 ; dann 0 -> entfernen
+    await page.click('[data-action="numpad-open"][data-id="konsole70M"]');
+    await page.keyboard.press('7'); await page.keyboard.press('Backspace'); await page.keyboard.press('3'); await page.keyboard.press('Enter');
+    q = await page.evaluate(() => state.cart.konsole70M);
+    if (q !== 3) problems.push(`Tastatur: Menge ${q} statt 3`);
+    await page.click('[data-action="numpad-open"][data-id="konsole70M"]');
+    await page.keyboard.press('0'); await page.keyboard.press('Enter');
+    q = await page.evaluate(() => state.cart.konsole70M);
+    if (q) problems.push(`0 hat nicht entfernt (${q})`);
+    // Hintergrund bricht ab; Esc bricht ab
+    await page.click('[data-action="numpad-open"][data-id="konsole70M"]');
+    await page.keyboard.press('9'); await page.keyboard.press('Escape');
+    if (await page.evaluate(() => state.numpad || state.cart.konsole70M)) problems.push('Esc hat nicht abgebrochen');
+    // R6: Chip setzt Menge, "Häufig bestellt"-Dopplung + Art-Zeile ziehen mit
+    await page.click('[data-action="qty-quick"][data-id="konsole70M"][data-q="10"]');
+    const synced = await page.evaluate(() => {
+      const bad = [];
+      document.querySelectorAll('[data-numfor="konsole70M"]').forEach(x => { if (x.textContent !== '10') bad.push('Zahl ' + x.textContent); });
+      document.querySelectorAll('.qty-chip[data-id="konsole70M"]').forEach(c => { if (c.classList.contains('on') !== (c.dataset.q === '10')) bad.push('Chip ' + c.dataset.q); });
+      document.querySelectorAll('.art').forEach(a => { if (a.querySelector('[data-numfor="konsole70M"]') && !a.classList.contains('has-cart')) bad.push('.art ohne has-cart'); });
+      return bad;
+    });
+    if (synced.length) problems.push('Nachziehen: ' + synced.join(', '));
+    // Einzel-Variante inline (ohne Aufklappen)
+    const single = await page.evaluate(() => { state.openArt = null; render(); return document.querySelectorAll('.art.single .qty-ctl').length; });
+    console.log(`  Teile-Arten mit nur einer Variante (Steuerung inline): ${single}`);
+    if (!single) problems.push('keine Einzel-Variante inline');
+    const ovf2 = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (ovf2 > 0) problems.push(`Überlauf ${ovf2}px`);
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
@@ -248,8 +306,7 @@ const CHECKS = {
     await page.selectOption('#planProjektSelect', pid);
     await page.fill('#planDateInput', '2026-12-01');
     await page.locator('.art-row', { hasText: await page.evaluate(() => t('group_konsole')) }).first().click();
-    await page.locator('.art.open [data-qty="konsole30M"]').fill('5');
-    await page.locator('.art.open [data-qty="konsole30M"]').press('Enter');
+    await page.locator('.art.open [data-action="qty-quick"][data-id="konsole30M"][data-q="5"]').click();
     await page.locator('.art.open [data-action="qty"][data-id="konsole30M"][data-delta="1"]').click();
     await page.waitForTimeout(150);
     await page.click('[data-action="add-planned-delivery"]');
