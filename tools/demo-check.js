@@ -70,7 +70,7 @@ async function measure(page) {
 
 async function shot(page, check, role, width) {
   fs.mkdirSync(SHOTS, { recursive: true });
-  const file = path.join(SHOTS, `${check}-${role}-${width}.png`);
+  const file = path.join(SHOTS, `${check}-${role}-${width}${OPTS.dark ? '-dark' : ''}${args.some(a => a.startsWith('--lang=')) ? '-' + OPTS.lang : ''}.png`);
   await page.screenshot({ path: file, fullPage: true });
   return file;
 }
@@ -100,10 +100,9 @@ const CHECKS = {
 (async () => {
   const fn = CHECKS[checkName];
   if (!fn) { console.log(`FAIL ${checkName}: unbekannte Prüfung (vorhanden: ${Object.keys(CHECKS).join(', ')})`); process.exit(1); }
-  const ctx = await launch();
-  let problems;
-  try { problems = await fn(ctx); } catch (e) { problems = ['Ausnahme: ' + (e && e.message || e)]; }
-  await ctx.browser.close();
+  let ctx, problems;
+  try { ctx = await launch(); problems = await fn(ctx); } catch (e) { problems = ['Ausnahme: ' + (e && e.message || e)]; }
+  if (ctx) await ctx.browser.close();
   if (problems && problems.length) { console.log(`FAIL ${checkName}: ${problems.join('; ')}`); process.exit(1); }
   console.log(`PASS ${checkName}`);
 })();
