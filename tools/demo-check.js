@@ -450,6 +450,31 @@ const CHECKS = {
     const need = await page.evaluate(() => t('stockMissingLabel') + ' 4');
     if (!txt.includes(need)) problems.push('Inventur zeigt "' + need + '" nicht');
     await shot(page, 'lager-inventur', 'lager', 390);
+    // (e) Merge zweier Geräte: Status läuft nie rückwärts, Packliste je Zeile, nach "Bereit melden" keine Packliste mehr
+    const mr = await page.evaluate(() => {
+      const base = { orders: [{ id: 1, status: 'Neu', items: [{ id: 'a', qty: 5 }, { id: 'b', qty: 3 }] }], counter: 2 };
+      const local = JSON.parse(JSON.stringify(base)); Object.assign(local.orders[0], { status: 'In Bearbeitung', pick: { 0: { s: 'ok' } }, steps: { 'In Bearbeitung': '2026-11-08T10:00:05Z' } });
+      const remote = JSON.parse(JSON.stringify(base)); Object.assign(remote.orders[0], { status: 'Bereit zur Abholung', items: [{ id: 'a', qty: 5 }, { id: 'b', qty: 1 }], fehlt: [{ id: 'b', qty: 2 }], nachId: 2,
+        steps: { 'In Bearbeitung': '2026-11-08T10:00:00Z', 'Bereit zur Abholung': '2026-11-08T10:00:03Z' } });
+      const m = merge3(base, local, remote).value.orders[0];
+      // zwei Geräte haken verschiedene Zeilen ab
+      const b2 = { orders: [{ id: 1, status: 'In Bearbeitung', items: [{ id: 'a', qty: 5 }, { id: 'b', qty: 3 }], pick: {} }] };
+      const l2 = JSON.parse(JSON.stringify(b2)); l2.orders[0].pick = { 0: { s: 'ok' } };
+      const r2 = JSON.parse(JSON.stringify(b2)); r2.orders[0].pick = { 1: { s: 'fehlt', n: 3 } };
+      const m2 = merge3(b2, l2, r2).value.orders[0];
+      // umgekehrt: lokal "Bereit melden", Server hat noch einen Haken gesetzt
+      const l3 = JSON.parse(JSON.stringify(remote)); delete l3.orders[0].pick;
+      const r3 = JSON.parse(JSON.stringify(b2)); r3.orders[0].pick = { 0: { s: 'ok' } };
+      const m3 = merge3(b2, l3, r3).value.orders[0];
+      return { st: m.status, pick: 'pick' in m, items: m.items.map(x => x.id + ':' + x.qty).join(','), nachId: m.nachId,
+        pick2: JSON.stringify(m2.pick), st2: m2.status, st3: m3.status, pick3: 'pick' in m3 };
+    });
+    console.log('  Merge: ' + JSON.stringify(mr));
+    if (mr.st !== 'Bereit zur Abholung') problems.push('(e) Status rückwärts beim Zusammenführen: ' + mr.st);
+    if (mr.pick) problems.push('(e) Packliste nach Bereit melden noch da');
+    if (mr.items !== 'a:5,b:1' || mr.nachId !== 2) problems.push('(e) Server-Positionen verloren: ' + mr.items);
+    if (mr.pick2 !== '{"0":{"s":"ok"},"1":{"s":"fehlt","n":3}}' || mr.st2 !== 'In Bearbeitung') problems.push('(e) Haken zweier Geräte: ' + mr.pick2);
+    if (mr.st3 !== 'Bereit zur Abholung' || mr.pick3) problems.push('(e) lokal Bereit melden: ' + mr.st3 + ' pick ' + mr.pick3);
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
