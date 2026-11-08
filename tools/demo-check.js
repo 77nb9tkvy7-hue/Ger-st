@@ -328,6 +328,50 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
+  // Task 7: Verladen & losfahren, Tour-Modus, Status-Zeiten.
+  async fahrer(ctx) {
+    const { page, errors } = ctx;
+    const problems = [];
+    const st = id => page.evaluate(i => { const o = state.orders.find(x => x.id === i); return o && { status: o.status, steps: o.steps || null }; }, id);
+    await switchRole(page, 'fahrer');
+    await page.evaluate(() => { state.fahrerTab = 'lieferungen'; render(); });
+    // (a) ein Tipp load-go
+    await page.click('[data-action="load-go"][data-order="1004"]');
+    await page.waitForTimeout(300);
+    const a = await st(1004);
+    if (a.status !== 'Unterwegs' || !a.steps || !a.steps['Beladen'] || !a.steps['Unterwegs']) problems.push('(a) load-go: ' + JSON.stringify(a));
+    // (b)+(c) Tour: 1005 (Bereit) und 1006 (Beladen) anhaken
+    await page.click('[data-action="tour-toggle"][data-order="1005"]');
+    await page.click('[data-action="tour-toggle"][data-order="1006"]');
+    const bar = await page.evaluate(() => { const b = document.querySelector('.tour-bar'); const r = b && b.getBoundingClientRect(); const tick = document.querySelector('.tour-tick'); const tr = tick.getBoundingClientRect();
+      return b && { h: r.height, btnH: Math.min(...[...b.querySelectorAll('button')].map(x => x.getBoundingClientRect().height)), tickW: tr.width, tickH: tr.height, aria: tick.getAttribute('aria-label'), text: b.textContent.trim().replace(/\s+/g, ' ') }; });
+    console.log('  Leiste: ' + JSON.stringify(bar));
+    if (!bar) problems.push('Tour-Leiste fehlt');
+    else { if (bar.btnH < 48) problems.push('Leisten-Knopf nur ' + bar.btnH + 'px'); if (bar.tickW < 48 || bar.tickH < 48) problems.push('Ankreuz-Feld zu klein'); if (!bar.aria) problems.push('aria-label fehlt'); }
+    await shot(page, 'fahrer', 'fahrer-tour', 390);
+    await page.waitForTimeout(5200);
+    const sel = await page.evaluate(() => state.tourSel.slice());
+    if (sel.length !== 2) problems.push('(c) Auswahl nach Polling: ' + JSON.stringify(sel));
+    await page.click('[data-action="tour-load"]');
+    await page.waitForTimeout(300);
+    const b5 = await st(1005), b6 = await st(1006);
+    if (b5.status !== 'Beladen' || b6.status !== 'Beladen') problems.push('(b) tour-load: ' + b5.status + '/' + b6.status);
+    await page.click('[data-action="tour-go"]');
+    await page.waitForTimeout(300);
+    const c5 = await st(1005), c6 = await st(1006);
+    if (c5.status !== 'Unterwegs' || c6.status !== 'Unterwegs') problems.push('(b) tour-go: ' + c5.status + '/' + c6.status);
+    if (!c5.steps || !c5.steps['Beladen'] || !c5.steps['Unterwegs']) problems.push('(b) steps fehlen bei 1005');
+    if (await page.$('.tour-bar')) problems.push('Leiste nach tour-go noch da');
+    // (d) Bestellung ohne steps (1007, Unterwegs) normal weiterschalten
+    const d0 = await st(1007);
+    if (d0.steps) problems.push('1007 hat unerwartet steps');
+    await page.click('[data-action="advance"][data-order="1007"]');
+    await page.waitForTimeout(300);
+    const d1 = await st(1007);
+    if (d1.status !== 'Geliefert') problems.push('(d) 1007: ' + d1.status);
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
 };
 
 (async () => {

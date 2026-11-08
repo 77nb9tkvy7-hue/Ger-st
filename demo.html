@@ -629,12 +629,29 @@
   .btn-row-secondary > *{flex:1 1 0;}
   .btn-row-secondary .mini-btn{border-radius:12px;min-height:var(--tap);}
   .order-meta{margin:2px 0 4px 0;}
+  .order-head-main{flex:1;min-width:0;}
+  .advance-row{display:flex;gap:8px;margin-top:10px;}
+  .advance-row .advance-btn{margin-top:0;}
+  .advance-row .advance-btn:first-child{flex:1 1 0;}
+  .advance-row .advance-alt{flex:0 0 34%;background:var(--card);color:var(--ink);border:1.5px solid var(--line-strong);}
+  .tour-tick{flex:0 0 48px;width:48px;height:48px;margin:-6px 4px -6px -8px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+  .tour-tick i{width:26px;height:26px;border-radius:8px;border:2px solid var(--line-strong);background:var(--card);display:block;position:relative;transition:transform 140ms var(--ease-out), background-color 140ms var(--ease-out);}
+  .tour-tick.on i{background:var(--accent-solid);border-color:var(--accent-solid);}
+  .tour-tick.on i::after{content:"";position:absolute;left:8px;top:3px;width:6px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg);}
+  .tour-tick:active i{transform:scale(0.9);}
+  .tour-bar{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;z-index:16;background:var(--card);box-shadow:0 -6px 20px rgba(23,36,45,.16);border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:8px;}
+  .tour-bar .tour-n{font-weight:700;font-size:var(--fs-small);white-space:nowrap;margin-right:2px;}
+  .tour-bar .advance-btn{width:auto;flex:1 1 0;margin:0;min-height:48px;padding:8px 6px;font-size:13px;}
+  .tour-bar .advance-btn:disabled{opacity:.4;cursor:default;}
+  @media (min-width: 900px){ .tour-bar{bottom:0;max-width:1060px;border-radius:16px 16px 0 0;} }
+  body.has-tour main{padding-bottom:calc(230px + env(safe-area-inset-bottom));}
   .order-card .wunsch-row{margin:6px 0 0 0;}
   .order-card .order-items{margin:6px 0;}
   @media (prefers-reduced-motion: reduce){
     :root :is(.submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
       .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.qty-chip,.np-key,.inv-actions button,
       .refresh-btn,.role-chip,.geo-retry,.print-btn,button.widget,.proj-row,.art-row,.reorder-chip):active{transform:none;}
+    .tour-tick:active i{transform:none;}
     :root button.stat-chip-btn:active{transform:none;}
     .toast,.toast.show{transform:translateX(-50%);}
     .jump-flash{animation-name:jumpFlashSoft;}
@@ -997,6 +1014,7 @@ de:{
   forgotPwLink:'Passwort vergessen?', forgotPwText:'Kein Problem: Melde dich beim Chef. Dort bekommst du in der App sofort ein neues (Reiter Personal → „Neues Passwort erzeugen“). Danach kannst du es selbst ändern: Menü ☰ → „Mein Passwort ändern“.', persNewPinBtn:'🔑 Neues Passwort erzeugen', persNewPinConfirm:'Neues Passwort für {name} erzeugen? Das alte gilt dann nicht mehr.', persNewPinTitle:'Neues Passwort für {name}', persNewPinHint:'Bitte persönlich weitergeben. Es wird nirgends gespeichert und nur jetzt angezeigt.', persNewPinDone:'Erledigt – weitergegeben', myPwMenu:'🔑 Mein Passwort ändern', myPwTitle:'Mein Passwort ändern', myPwSub:'Mindestens 4 Zeichen, z. B. eine 4-stellige Zahl, die du dir merken kannst.', myPwNew:'Neues Passwort', myPwRepeat:'Neues Passwort wiederholen', myPwSave:'Speichern', myPwCancel:'Abbrechen', myPwMismatch:'Die beiden Eingaben sind nicht gleich.', myPwSaved:'Dein Passwort ist geändert. Ab jetzt mit dem neuen anmelden.', myPwSame:'Das ist schon dein Passwort – bitte ein anderes wählen.', myPwReauth:'Bitte einmal abmelden, neu anmelden und dann nochmal versuchen.', myPwFail:'Hat nicht geklappt – bitte Internet prüfen und nochmal versuchen.',
   warnLoginNet:'Anmeldung gerade nicht möglich – bitte Netz prüfen und nochmal versuchen.', loggingIn:'Anmelden …', calLoginFirst:'Bearbeiten nur für angemeldete Mitarbeiter: erst in der App anmelden, dann hier „Bearbeiten“.', persChefPwHeading:'Chef-Passwort (zusätzliche Sicherung für die Chef-Rolle)', persChefPwBtn:'Ändern', persChefPwSaved:'Chef-Passwort geändert.', persWarnPwShort:'Das Passwort braucht mindestens 4 Zeichen.', persFnMissing:'Die Mitarbeiter-Verwaltung ist auf dem Server noch nicht eingerichtet (Funktion „manage-users“) – oder kein Netz.', persErr:'Hat nicht geklappt: {msg}', persBusy:'Wird gespeichert …', persNotChef:'Nur der Chef darf Mitarbeiter verwalten.', persPwSaved:'Neues Passwort für {name} gespeichert.', persRemoveConfirm:'{name} wirklich entfernen? Das Konto wird gelöscht.', persSecurityNote:'Passwörter liegen nur verschlüsselt bei Supabase – auch der Chef kann sie nicht sehen, nur neu setzen.', logoutPendingConfirm:'Es sind noch nicht gesendete Änderungen auf dem Handy (kein Netz). Trotzdem abmelden? Dann gehen sie verloren.',
   plaeneHeading:'Baupläne', plaeneEmpty:'Noch keine Pläne hochgeladen.', planUploadBtn:'⬆️ Plan hochladen (PDF oder Foto)', planUploading:'Wird hochgeladen …', planHint:'Mehrere Dateien auf einmal möglich, max. {mb} MB je Datei. Alle können die Pläne zu diesem Bauvorhaben ansehen.', planTooBig:'„{name}“ ist zu groß (max. {mb} MB).', planNoBucket:'Der Datei-Speicher ist noch nicht eingerichtet – bitte einmal in Supabase anlegen.', planUploadFail:'Hochladen hat nicht geklappt – bitte Netz prüfen und nochmal versuchen.', planDelete:'Plan löschen', planDeleteConfirm:'„{name}“ wirklich löschen?',
+  loadGoBtn:'Verladen & losfahren', onlyLoadBtn:'Nur verladen', tourPickAria:'Für die Tour auswählen', tourSelected:'{n} ausgewählt', tourLoadAll:'Alle verladen', tourGoAll:'Alle losfahren', stepTimeLoaded:'verladen {t}', stepTimeGo:'los {t}', stepTimeDone:'geliefert {t}',
   wunschLabel:'Wann wird es gebraucht?', wunschNormal:'Normal', wunschDringend:'🔴 Dringend – sofort', wunschMorgen:'Morgen früh', wunschDatum:'📅 Wunschtermin', badgeDringend:'🔴 DRINGEND', badgeBis:'📅 bis {d}', badgeHeute:'📅 heute gebraucht', badgeUeberfaellig:'⚠️ überfällig – war bis {d}', gebrauchtLabel:'Gebraucht', nUrgentT:'🔴 DRINGEND: Neue Bestellung #{id}', pickHint:'Beim Zusammenstellen abhaken. Was fehlt, kommt automatisch als Nachlieferung.', pickOkBtn:'Eingepackt', pickMissBtn:'Fehlt', pickMissQty:'Davon fehlen:', pickProgress:'{a} von {n} abgehakt', pickMissingCount:'{n} fehlt', pickAllMissing:'Es fehlt alles – so kann die Bestellung nicht bereit gemeldet werden.', fehltHeading:'⚠️ Fehlt – kommt mit Nachlieferung #{id}:', nachVonBadge:'↩ Nachlieferung zu #{id}', nMissingT:'Teile fehlen bei Bestellung #{id}', nMissingB:'{n} Position(en) kommen mit Nachlieferung #{neu}.', lsFehlt:'Fehlt (kommt mit Nachlieferung #{id})',
   syncPending:'📶 Kein Netz – deine Änderungen sind auf dem Handy gemerkt und werden automatisch gesendet, sobald wieder Netz da ist.', syncOffline:'📶 Kein Netz – angezeigt wird der letzte bekannte Stand.',
   lagerHeading:'🏭 Lager-Standort', lagerHint:'Damit stellt sich der Fahrer-Status von selbst um: Kommt ein Fahrer (App offen) am Lager an, steht er auf „Am Lager“ – fährt er weg, auf „Unterwegs“. Umkreis ca. 250 m.', lagerNotSet:'Noch kein Lager eingetragen.', lagerAdresseLabel:'Adresse des Lagers', lagerSaveBtn:'Lager-Adresse speichern', lagerGpsBtn:'📍 Ich bin gerade am Lager – Standort übernehmen', lagerNotFound:'Adresse nicht gefunden – bitte mit Ort eingeben, z. B. „Musterstraße 1, München“.', lagerMapLabel:'Lager', autoTag:'automatisch', autoHint:'🔄 Stellt sich automatisch um, wenn du am Lager ankommst oder wegfährst.',
@@ -1191,6 +1209,7 @@ pl:{
   forgotPwLink:'Nie pamiętasz hasła?', forgotPwText:'Nie ma problemu: powiedz szefowi. Od razu nada ci nowe w aplikacji (zakładka Personel → „Utwórz nowe hasło“). Potem możesz je sam zmienić: menu ☰ → „Zmień moje hasło“.', persNewPinBtn:'🔑 Utwórz nowe hasło', persNewPinConfirm:'Utworzyć nowe hasło dla {name}? Stare przestanie działać.', persNewPinTitle:'Nowe hasło dla {name}', persNewPinHint:'Przekaż je osobiście. Nie jest nigdzie zapisywane i jest pokazane tylko teraz.', persNewPinDone:'Gotowe – przekazane', myPwMenu:'🔑 Zmień moje hasło', myPwTitle:'Zmień moje hasło', myPwSub:'Co najmniej 4 znaki, np. 4-cyfrowa liczba, którą zapamiętasz.', myPwNew:'Nowe hasło', myPwRepeat:'Powtórz nowe hasło', myPwSave:'Zapisz', myPwCancel:'Anuluj', myPwMismatch:'Oba wpisy nie są takie same.', myPwSaved:'Hasło zostało zmienione. Od teraz loguj się nowym.', myPwSame:'To już jest twoje hasło – wybierz inne.', myPwReauth:'Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.', myPwFail:'Nie udało się – sprawdź internet i spróbuj ponownie.',
   warnLoginNet:'Logowanie teraz niemożliwe – sprawdź sieć i spróbuj ponownie.', loggingIn:'Logowanie …', calLoginFirst:'Edycja tylko dla zalogowanych pracowników: najpierw zaloguj się w aplikacji, potem tutaj „Edytuj”.', persChefPwHeading:'Hasło szefa (dodatkowe zabezpieczenie roli szefa)', persChefPwBtn:'Zmień', persChefPwSaved:'Hasło szefa zmienione.', persWarnPwShort:'Hasło musi mieć co najmniej 4 znaki.', persFnMissing:'Zarządzanie pracownikami nie jest jeszcze skonfigurowane na serwerze (funkcja „manage-users”) – albo brak sieci.', persErr:'Nie udało się: {msg}', persBusy:'Zapisywanie …', persNotChef:'Tylko szef może zarządzać pracownikami.', persPwSaved:'Nowe hasło dla {name} zapisane.', persRemoveConfirm:'Na pewno usunąć {name}? Konto zostanie usunięte.', persSecurityNote:'Hasła są przechowywane w Supabase tylko w formie zaszyfrowanej – szef też ich nie widzi, może je tylko ustawić na nowo.', logoutPendingConfirm:'Na telefonie są jeszcze niewysłane zmiany (brak sieci). Wylogować mimo to? Wtedy przepadną.',
   plaeneHeading:'Plany budowy', plaeneEmpty:'Nie przesłano jeszcze planów.', planUploadBtn:'⬆️ Prześlij plan (PDF lub zdjęcie)', planUploading:'Przesyłanie …', planHint:'Można wybrać kilka plików naraz, maks. {mb} MB na plik. Wszyscy mogą oglądać plany tej budowy.', planTooBig:'„{name}” jest za duży (maks. {mb} MB).', planNoBucket:'Magazyn plików nie jest jeszcze skonfigurowany – trzeba go raz utworzyć w Supabase.', planUploadFail:'Przesyłanie nie powiodło się – sprawdź sieć i spróbuj ponownie.', planDelete:'Usuń plan', planDeleteConfirm:'Na pewno usunąć „{name}”?',
+  loadGoBtn:'Załadować i jechać', onlyLoadBtn:'Tylko załadować', tourPickAria:'Wybierz do trasy', tourSelected:'Wybrano: {n}', tourLoadAll:'Załaduj wszystkie', tourGoAll:'Jedź ze wszystkimi', stepTimeLoaded:'załadowano {t}', stepTimeGo:'wyjazd {t}', stepTimeDone:'dostarczono {t}',
   wunschLabel:'Kiedy jest potrzebne?', wunschNormal:'Normalnie', wunschDringend:'🔴 Pilne – od razu', wunschMorgen:'Jutro rano', wunschDatum:'📅 Wybrany termin', badgeDringend:'🔴 PILNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrzebne dziś', badgeUeberfaellig:'⚠️ po terminie – było do {d}', gebrauchtLabel:'Potrzebne', nUrgentT:'🔴 PILNE: Nowe zamówienie #{id}', pickHint:'Odhaczaj przy kompletowaniu. Czego brakuje, zostanie automatycznie dosłane.', pickOkBtn:'Spakowane', pickMissBtn:'Brak', pickMissQty:'Brakuje z tego:', pickProgress:'{a} z {n} odhaczonych', pickMissingCount:'{n} brak', pickAllMissing:'Brakuje wszystkiego – zamówienia nie można zgłosić jako gotowe.', fehltHeading:'⚠️ Brak – zostanie dosłane z dostawą #{id}:', nachVonBadge:'↩ Dosyłka do #{id}', nMissingT:'Brakuje części w zamówieniu #{id}', nMissingB:'{n} pozycja(e) przyjdzie z dosyłką #{neu}.', lsFehlt:'Brak (przyjdzie z dosyłką #{id})',
   syncPending:'📶 Brak sieci – twoje zmiany są zapisane w telefonie i zostaną wysłane automatycznie, gdy sieć wróci.', syncOffline:'📶 Brak sieci – widoczny jest ostatni znany stan.',
   lagerHeading:'🏭 Lokalizacja magazynu', lagerHint:'Dzięki temu status kierowcy zmienia się sam: gdy kierowca (z otwartą aplikacją) dojedzie do magazynu, ma status „W magazynie“ – gdy odjedzie, „W trasie“. Promień ok. 250 m.', lagerNotSet:'Magazyn nie jest jeszcze wpisany.', lagerAdresseLabel:'Adres magazynu', lagerSaveBtn:'Zapisz adres magazynu', lagerGpsBtn:'📍 Jestem teraz w magazynie – użyj mojej lokalizacji', lagerNotFound:'Nie znaleziono adresu – podaj go z miejscowością, np. „Musterstraße 1, München“.', lagerMapLabel:'Magazyn', autoTag:'automatycznie', autoHint:'🔄 Zmienia się automatycznie, gdy dojeżdżasz do magazynu lub z niego odjeżdżasz.',
@@ -1385,6 +1404,7 @@ sk:{
   forgotPwLink:'Zabudol si heslo?', forgotPwText:'Žiadny problém: povedz to šéfovi. V aplikácii ti hneď nastaví nové (záložka Personál → „Vytvoriť nové heslo“). Potom si ho môžeš sám zmeniť: menu ☰ → „Zmeniť moje heslo“.', persNewPinBtn:'🔑 Vytvoriť nové heslo', persNewPinConfirm:'Vytvoriť nové heslo pre {name}? Staré potom prestane platiť.', persNewPinTitle:'Nové heslo pre {name}', persNewPinHint:'Odovzdaj ho osobne. Nikde sa neukladá a zobrazí sa iba teraz.', persNewPinDone:'Hotovo – odovzdané', myPwMenu:'🔑 Zmeniť moje heslo', myPwTitle:'Zmeniť moje heslo', myPwSub:'Aspoň 4 znaky, napr. 4-miestne číslo, ktoré si zapamätáš.', myPwNew:'Nové heslo', myPwRepeat:'Zopakuj nové heslo', myPwSave:'Uložiť', myPwCancel:'Zrušiť', myPwMismatch:'Oba zadania nie sú rovnaké.', myPwSaved:'Heslo je zmenené. Odteraz sa prihlasuj novým.', myPwSame:'To už je tvoje heslo – vyber iné.', myPwReauth:'Odhlás sa, znova sa prihlás a skús to ešte raz.', myPwFail:'Nepodarilo sa – skontroluj internet a skús znova.',
   warnLoginNet:'Prihlásenie teraz nie je možné – skontroluj sieť a skús znova.', loggingIn:'Prihlasovanie …', calLoginFirst:'Úpravy len pre prihlásených zamestnancov: najprv sa prihlás v aplikácii, potom tu „Upraviť“.', persChefPwHeading:'Heslo šéfa (dodatočné zabezpečenie roly šéfa)', persChefPwBtn:'Zmeniť', persChefPwSaved:'Heslo šéfa zmenené.', persWarnPwShort:'Heslo musí mať aspoň 4 znaky.', persFnMissing:'Správa zamestnancov ešte nie je nastavená na serveri (funkcia „manage-users“) – alebo nie je sieť.', persErr:'Nepodarilo sa: {msg}', persBusy:'Ukladá sa …', persNotChef:'Zamestnancov môže spravovať len šéf.', persPwSaved:'Nové heslo pre {name} uložené.', persRemoveConfirm:'Naozaj odstrániť {name}? Konto sa vymaže.', persSecurityNote:'Heslá sú v Supabase uložené len zašifrované – ani šéf ich nevidí, môže ich len nastaviť nanovo.', logoutPendingConfirm:'V telefóne sú ešte neodoslané zmeny (žiadna sieť). Napriek tomu odhlásiť? Potom sa stratia.',
   plaeneHeading:'Stavebné plány', plaeneEmpty:'Zatiaľ neboli nahrané žiadne plány.', planUploadBtn:'⬆️ Nahrať plán (PDF alebo foto)', planUploading:'Nahráva sa …', planHint:'Naraz môžeš vybrať viac súborov, max. {mb} MB na súbor. Plány k tejto stavbe môžu vidieť všetci.', planTooBig:'„{name}“ je príliš veľký (max. {mb} MB).', planNoBucket:'Úložisko súborov ešte nie je nastavené – treba ho raz vytvoriť v Supabase.', planUploadFail:'Nahrávanie nevyšlo – skontroluj sieť a skús znova.', planDelete:'Vymazať plán', planDeleteConfirm:'Naozaj vymazať „{name}“?',
+  loadGoBtn:'Naložiť a vyraziť', onlyLoadBtn:'Len naložiť', tourPickAria:'Vybrať do trasy', tourSelected:'Vybrané: {n}', tourLoadAll:'Naložiť všetky', tourGoAll:'Vyraziť so všetkými', stepTimeLoaded:'naložené {t}', stepTimeGo:'odchod {t}', stepTimeDone:'doručené {t}',
   wunschLabel:'Kedy je to potrebné?', wunschNormal:'Normálne', wunschDringend:'🔴 Súrne – hneď', wunschMorgen:'Zajtra ráno', wunschDatum:'📅 Želaný termín', badgeDringend:'🔴 SÚRNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebné dnes', badgeUeberfaellig:'⚠️ po termíne – bolo do {d}', gebrauchtLabel:'Potrebné', nUrgentT:'🔴 SÚRNE: Nová objednávka #{id}', pickHint:'Pri chystaní odškrtávaj. Čo chýba, príde automaticky ako doplnenie.', pickOkBtn:'Zabalené', pickMissBtn:'Chýba', pickMissQty:'Z toho chýba:', pickProgress:'{a} z {n} odškrtnuté', pickMissingCount:'{n} chýba', pickAllMissing:'Chýba všetko – objednávku nemožno nahlásiť ako pripravenú.', fehltHeading:'⚠️ Chýba – príde s doplnením #{id}:', nachVonBadge:'↩ Doplnenie k #{id}', nMissingT:'V objednávke #{id} chýbajú diely', nMissingB:'{n} položka(y) príde s doplnením #{neu}.', lsFehlt:'Chýba (príde s doplnením #{id})',
   syncPending:'📶 Žiadna sieť – tvoje zmeny sú uložené v telefóne a odošlú sa automaticky, keď bude sieť.', syncOffline:'📶 Žiadna sieť – zobrazuje sa posledný známy stav.',
   lagerHeading:'🏭 Poloha skladu', lagerHint:'Vďaka tomu sa stav vodiča mení sám: keď vodič (s otvorenou aplikáciou) príde do skladu, má stav „V sklade“ – keď odíde, „Na ceste“. Okruh cca 250 m.', lagerNotSet:'Sklad ešte nie je zadaný.', lagerAdresseLabel:'Adresa skladu', lagerSaveBtn:'Uložiť adresu skladu', lagerGpsBtn:'📍 Som práve v sklade – použiť moju polohu', lagerNotFound:'Adresa sa nenašla – zadaj ju aj s mestom, napr. „Musterstraße 1, München“.', lagerMapLabel:'Sklad', autoTag:'automaticky', autoHint:'🔄 Mení sa automaticky, keď prídeš do skladu alebo z neho odídeš.',
@@ -1579,6 +1599,7 @@ hr:{
   forgotPwLink:'Zaboravio si lozinku?', forgotPwText:'Nema problema: reci šefu. U aplikaciji će ti odmah dati novu (kartica Osoblje → „Napravi novu lozinku“). Zatim je možeš sam promijeniti: izbornik ☰ → „Promijeni moju lozinku“.', persNewPinBtn:'🔑 Napravi novu lozinku', persNewPinConfirm:'Napraviti novu lozinku za {name}? Stara više neće vrijediti.', persNewPinTitle:'Nova lozinka za {name}', persNewPinHint:'Predaj je osobno. Nigdje se ne sprema i prikazuje se samo sada.', persNewPinDone:'Gotovo – predano', myPwMenu:'🔑 Promijeni moju lozinku', myPwTitle:'Promijeni moju lozinku', myPwSub:'Najmanje 4 znaka, npr. 4-znamenkasti broj koji ćeš zapamtiti.', myPwNew:'Nova lozinka', myPwRepeat:'Ponovi novu lozinku', myPwSave:'Spremi', myPwCancel:'Odustani', myPwMismatch:'Dva unosa nisu ista.', myPwSaved:'Lozinka je promijenjena. Od sada se prijavljuj novom.', myPwSame:'To je već tvoja lozinka – odaberi drugu.', myPwReauth:'Odjavi se, ponovno se prijavi i pokušaj opet.', myPwFail:'Nije uspjelo – provjeri internet i pokušaj ponovno.',
   warnLoginNet:'Prijava trenutno nije moguća – provjeri mrežu i pokušaj ponovno.', loggingIn:'Prijava …', calLoginFirst:'Uređivanje samo za prijavljene zaposlenike: najprije se prijavi u aplikaciji, zatim ovdje „Uredi”.', persChefPwHeading:'Lozinka šefa (dodatna zaštita uloge šefa)', persChefPwBtn:'Promijeni', persChefPwSaved:'Lozinka šefa promijenjena.', persWarnPwShort:'Lozinka mora imati najmanje 4 znaka.', persFnMissing:'Upravljanje zaposlenicima još nije postavljeno na poslužitelju (funkcija „manage-users”) – ili nema mreže.', persErr:'Nije uspjelo: {msg}', persBusy:'Spremanje …', persNotChef:'Samo šef može upravljati zaposlenicima.', persPwSaved:'Nova lozinka za {name} spremljena.', persRemoveConfirm:'Stvarno ukloniti {name}? Račun će biti izbrisan.', persSecurityNote:'Lozinke su u Supabaseu spremljene samo šifrirano – ni šef ih ne vidi, može ih samo postaviti iznova.', logoutPendingConfirm:'Na mobitelu su još neposlane promjene (nema mreže). Ipak se odjaviti? Tada će se izgubiti.',
   plaeneHeading:'Građevinski planovi', plaeneEmpty:'Još nisu učitani planovi.', planUploadBtn:'⬆️ Učitaj plan (PDF ili fotografija)', planUploading:'Učitavanje …', planHint:'Može se odabrati više datoteka odjednom, maks. {mb} MB po datoteci. Svi mogu vidjeti planove ovog gradilišta.', planTooBig:'„{name}” je prevelika (maks. {mb} MB).', planNoBucket:'Spremište datoteka još nije postavljeno – treba ga jednom napraviti u Supabaseu.', planUploadFail:'Učitavanje nije uspjelo – provjeri mrežu i pokušaj ponovno.', planDelete:'Izbriši plan', planDeleteConfirm:'Stvarno izbrisati „{name}”?',
+  loadGoBtn:'Utovariti i krenuti', onlyLoadBtn:'Samo utovariti', tourPickAria:'Odaberi za turu', tourSelected:'Odabrano: {n}', tourLoadAll:'Utovari sve', tourGoAll:'Kreni sa svima', stepTimeLoaded:'utovareno {t}', stepTimeGo:'polazak {t}', stepTimeDone:'isporučeno {t}',
   wunschLabel:'Kada je potrebno?', wunschNormal:'Normalno', wunschDringend:'🔴 Hitno – odmah', wunschMorgen:'Sutra ujutro', wunschDatum:'📅 Željeni termin', badgeDringend:'🔴 HITNO', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebno danas', badgeUeberfaellig:'⚠️ kasni – bilo do {d}', gebrauchtLabel:'Potrebno', nUrgentT:'🔴 HITNO: Nova narudžba #{id}', pickHint:'Odkvačuj pri slaganju. Što nedostaje, stiže automatski kao dopuna.', pickOkBtn:'Spakirano', pickMissBtn:'Nedostaje', pickMissQty:'Od toga nedostaje:', pickProgress:'{a} od {n} odkvačeno', pickMissingCount:'{n} nedostaje', pickAllMissing:'Nedostaje sve – narudžba se ne može prijaviti kao spremna.', fehltHeading:'⚠️ Nedostaje – stiže s dopunom #{id}:', nachVonBadge:'↩ Dopuna za #{id}', nMissingT:'Nedostaju dijelovi u narudžbi #{id}', nMissingB:'{n} stavka(e) stiže s dopunom #{neu}.', lsFehlt:'Nedostaje (stiže s dopunom #{id})',
   syncPending:'📶 Nema mreže – tvoje promjene su spremljene na mobitelu i bit će poslane automatski kad se mreža vrati.', syncOffline:'📶 Nema mreže – prikazano je zadnje poznato stanje.',
   lagerHeading:'🏭 Lokacija skladišta', lagerHint:'Tako se status vozača mijenja sam: kad vozač (s otvorenom aplikacijom) stigne u skladište, ima status „U skladištu“ – kad ode, „Na putu“. Radijus oko 250 m.', lagerNotSet:'Skladište još nije upisano.', lagerAdresseLabel:'Adresa skladišta', lagerSaveBtn:'Spremi adresu skladišta', lagerGpsBtn:'📍 Upravo sam u skladištu – preuzmi moju lokaciju', lagerNotFound:'Adresa nije pronađena – upiši je s mjestom, npr. „Musterstraße 1, München“.', lagerMapLabel:'Skladište', autoTag:'automatski', autoHint:'🔄 Mijenja se automatski kad stigneš u skladište ili odeš iz njega.',
@@ -1773,6 +1794,7 @@ en:{
   forgotPwLink:'Forgot your password?', forgotPwText:'No problem: ask the boss. You can get a new one in the app right away (Staff tab → “Create new password”). You can then change it yourself: menu ☰ → “Change my password”.', persNewPinBtn:'🔑 Create new password', persNewPinConfirm:'Create a new password for {name}? The old one will stop working.', persNewPinTitle:'New password for {name}', persNewPinHint:'Please hand it over in person. It is not stored anywhere and is only shown now.', persNewPinDone:'Done – handed over', myPwMenu:'🔑 Change my password', myPwTitle:'Change my password', myPwSub:'At least 4 characters, e.g. a 4-digit number you can remember.', myPwNew:'New password', myPwRepeat:'Repeat new password', myPwSave:'Save', myPwCancel:'Cancel', myPwMismatch:'The two entries do not match.', myPwSaved:'Your password has been changed. Use the new one from now on.', myPwSame:'That is already your password – please choose another.', myPwReauth:'Please log out, log in again and then try once more.', myPwFail:'That did not work – please check the internet and try again.',
   warnLoginNet:'Login not possible right now – please check the network and try again.', loggingIn:'Logging in …', calLoginFirst:'Editing only for logged-in staff: log in to the app first, then tap “Edit” here.', persChefPwHeading:'Boss password (extra protection for the boss role)', persChefPwBtn:'Change', persChefPwSaved:'Boss password changed.', persWarnPwShort:'The password needs at least 4 characters.', persFnMissing:'Staff management is not set up on the server yet (function “manage-users”) – or no network.', persErr:'Did not work: {msg}', persBusy:'Saving …', persNotChef:'Only the boss can manage staff.', persPwSaved:'New password for {name} saved.', persRemoveConfirm:'Really remove {name}? The account will be deleted.', persSecurityNote:'Passwords are only stored encrypted at Supabase – even the boss cannot see them, only set new ones.', logoutPendingConfirm:'There are unsent changes on this phone (no network). Log out anyway? They will be lost.',
   plaeneHeading:'Building plans', plaeneEmpty:'No plans uploaded yet.', planUploadBtn:'⬆️ Upload plan (PDF or photo)', planUploading:'Uploading …', planHint:'You can pick several files at once, max. {mb} MB per file. Everyone can view the plans for this project.', planTooBig:'“{name}” is too large (max. {mb} MB).', planNoBucket:'The file storage is not set up yet – it needs to be created once in Supabase.', planUploadFail:'Upload failed – please check the network and try again.', planDelete:'Delete plan', planDeleteConfirm:'Really delete “{name}”?',
+  loadGoBtn:'Load & go', onlyLoadBtn:'Load only', tourPickAria:'Select for the tour', tourSelected:'{n} selected', tourLoadAll:'Load all', tourGoAll:'Set off with all', stepTimeLoaded:'loaded {t}', stepTimeGo:'left {t}', stepTimeDone:'delivered {t}',
   wunschLabel:'When is it needed?', wunschNormal:'Normal', wunschDringend:'🔴 Urgent – right away', wunschMorgen:'Tomorrow morning', wunschDatum:'📅 Preferred date', badgeDringend:'🔴 URGENT', badgeBis:'📅 by {d}', badgeHeute:'📅 needed today', badgeUeberfaellig:'⚠️ overdue – was due {d}', gebrauchtLabel:'Needed', nUrgentT:'🔴 URGENT: New order #{id}', pickHint:'Tick off while packing. Anything missing is sent automatically as a follow-up delivery.', pickOkBtn:'Packed', pickMissBtn:'Missing', pickMissQty:'Missing:', pickProgress:'{a} of {n} ticked', pickMissingCount:'{n} missing', pickAllMissing:'Everything is missing – the order cannot be marked as ready.', fehltHeading:'⚠️ Missing – comes with follow-up #{id}:', nachVonBadge:'↩ Follow-up for #{id}', nMissingT:'Parts missing in order #{id}', nMissingB:'{n} item(s) will come with follow-up #{neu}.', lsFehlt:'Missing (comes with follow-up #{id})',
   syncPending:'📶 No network – your changes are saved on the phone and will be sent automatically once the network is back.', syncOffline:'📶 No network – showing the last known data.',
   lagerHeading:'🏭 Warehouse location', lagerHint:'This makes the driver status update by itself: when a driver (app open) arrives at the warehouse, the status becomes “At the warehouse” – when they drive off, “On the road”. Radius approx. 250 m.', lagerNotSet:'No warehouse entered yet.', lagerAdresseLabel:'Warehouse address', lagerSaveBtn:'Save warehouse address', lagerGpsBtn:'📍 I am at the warehouse right now – use my location', lagerNotFound:'Address not found – please include the town, e.g. “Musterstraße 1, München”.', lagerMapLabel:'Warehouse', autoTag:'automatic', autoHint:'🔄 Updates automatically when you arrive at or leave the warehouse.',
@@ -2071,6 +2093,31 @@ const NEXT_STEP = {
   'Beladen': {label:'Losfahren', next:'Unterwegs', role:'fahrer'},
   'Unterwegs': {label:'Lieferung bestätigen', next:'Geliefert', role:'fahrer'},
 };
+function setOrderStatus(order, status){
+  order.status = status;
+  order.steps = {...(order.steps||{}), [status]: new Date().toISOString()};
+}
+function stepTime(iso){ try{ return new Date(iso).toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}); }catch(e){ return ''; } }
+function stepTimesText(o){
+  const st = o.steps; if(!st) return '';
+  const parts = [];
+  if(st['Beladen']) parts.push(t('stepTimeLoaded',{t:stepTime(st['Beladen'])}));
+  if(st['Unterwegs']) parts.push(t('stepTimeGo',{t:stepTime(st['Unterwegs'])}));
+  if(st['Geliefert']) parts.push(t('stepTimeDone',{t:stepTime(st['Geliefert'])}));
+  return parts.join(' · ');
+}
+function tourSelClean(){
+  state.tourSel = (state.tourSel||[]).filter(id=>{ const o = state.orders.find(x=>x.id===id); return o && (o.status==='Bereit zur Abholung' || o.status==='Beladen'); });
+  return state.tourSel;
+}
+function tourBarHTML(){
+  const sel = tourSelClean().map(id=>state.orders.find(o=>o.id===id));
+  if(!sel.length) return '';
+  const nLoad = sel.filter(o=>o.status==='Bereit zur Abholung').length, nGo = sel.filter(o=>o.status==='Beladen').length;
+  return `<div class="tour-bar" role="region"><span class="tour-n">${t('tourSelected',{n:sel.length})}</span>
+    <button class="advance-btn" data-action="tour-load" ${nLoad?'':'disabled'}>${t('tourLoadAll')}</button>
+    <button class="advance-btn" data-action="tour-go" ${nGo?'':'disabled'}>${t('tourGoAll')}</button></div>`;
+}
 function roleLabel(role){ return t('roleLabel'+role.charAt(0).toUpperCase()+role.slice(1)); }
 
 const state = {
@@ -2082,7 +2129,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
-  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, showDone:{}, pickups:[], pickupCounter:1, puDraft:null, puWarn:'', authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', newPin:null, forgotPw:false, myPwOpen:false, myPwWarn:'', myPwBusy:false, loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
+  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, showDone:{}, tourSel:[], pickups:[], pickupCounter:1, puDraft:null, puWarn:'', authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', newPin:null, forgotPw:false, myPwOpen:false, myPwWarn:'', myPwBusy:false, loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
@@ -3251,16 +3298,21 @@ function orderCardHTML(o, role, extra){
   const mapsUrl = o.coords
     ? `https://www.google.com/maps?q=${o.coords.lat},${o.coords.lon}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.baustelle)}`;
+  const tourable = role==='fahrer' && (o.status==='Bereit zur Abholung' || o.status==='Beladen');
+  const ticked = tourable && (state.tourSel||[]).includes(o.id);
   return `<div class="order-card ${statusClass}">
     <div class="order-head">
-      <div><div class="no">#${o.id}</div><div class="site">${o.baustelle}</div></div>
+      ${tourable? `<button class="tour-tick ${ticked?'on':''}" data-action="tour-toggle" data-order="${o.id}" role="checkbox" aria-checked="${ticked}" aria-label="${t('tourPickAria')}"><i></i></button>`:''}
+      <div class="order-head-main"><div class="no">#${o.id}</div><div class="site">${o.baustelle}</div></div>
       <div class="status-badge ${statusClass}">${statusLabel(o.status)}</div>
     </div>
     ${wunschBadgeHTML(o) || o.nachVon? `<div class="wunsch-row">${wunschBadgeHTML(o)}${o.nachVon? `<span class="wunsch-badge w-nach">${t('nachVonBadge',{id:o.nachVon})}</span>`:''}</div>`:''}
-    <div class="order-time order-meta">${t('bestelltVonInline')} ${o.person} · ${o.time}${wTxt? ' · ⚖️ '+wTxt : ''}</div>
+    <div class="order-time order-meta">${t('bestelltVonInline')} ${o.person} · ${o.time}${wTxt? ' · ⚖️ '+wTxt : ''}${stepTimesText(o)? ' · '+stepTimesText(o) : ''}</div>
     ${role==='lager' && o.status==='In Bearbeitung' ? pickListHTML(o) : itemsListHTML(o.items)}
     ${o.fehlt && o.fehlt.length? `<div class="fehlt-box"><b>${t('fehltHeading',{id:o.nachId})}</b>${itemsListHTML(o.fehlt)}</div>`:''}
-    ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
+    ${showBtn && role==='fahrer' && o.status==='Bereit zur Abholung'
+      ? `<div class="advance-row"><button class="advance-btn" data-action="load-go" data-order="${o.id}">${t('loadGoBtn')}</button><button class="advance-btn advance-alt" data-action="advance" data-order="${o.id}">${t('onlyLoadBtn')}</button></div>`
+      : showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
     <div class="btn-row-secondary">
       <a class="mini-btn" href="${mapsUrl}" target="_blank" rel="noopener">📍 ${t('mapsShort')}</a>
       <button class="mini-btn" data-action="print-order" data-order="${o.id}">🖨️ ${t('printShort')}</button>
@@ -3428,6 +3480,7 @@ function fahrerHTML(){
     {id:'kalender', key:'tabKalender', ico:'calendar-days'},
     {id:'geplant', key:'tabGeplant', ico:'calendar-clock'},
     {id:'bauvorhaben', key:'tabBauvorhaben', ico:'building-2'}])}
+  ${tab==='lieferungen' ? tourBarHTML() : ''}
   ${tab==='bauvorhaben' ? fahrerProjekteHTML() : tab==='geplant' ? fahrerGeplantHTML() : tab==='kalender' ? fahrerKalenderHTML() : fahrerLieferungenHTML()}`;
 }
 
@@ -4772,6 +4825,7 @@ function renderView(){
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
   document.body.classList.toggle('has-nav', ['lager','fahrer','chef'].includes(state.role));
+  document.body.classList.toggle('has-tour', !!document.querySelector('.tour-bar'));
   mountProjectMap();
   syncGeo();
 }
@@ -5019,7 +5073,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
         }
         delete order.pick;
       }
-      order.status = step.next;
+      setOrderStatus(order, step.next);
       await saveShared();
       const v = {id:order.id, ort:order.baustelle};
       if(nach) notify({names:[order.person]}, 'nMissingT', 'nMissingB', {id:order.id, n:nach.items.length, neu:nach.id});
@@ -5027,6 +5081,34 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       if(order.status==='Unterwegs') notify({names:[order.person]}, 'nOnWayT', 'nOnWayB', v);
       if(order.status==='Geliefert') notify({names:[order.person]}, 'nDeliveredT', 'nDeliveredB', v);
     }
+    render();
+  }
+  if(action==='tour-toggle'){
+    const id = parseInt(el.dataset.order,10), sel = state.tourSel||[];
+    state.tourSel = sel.includes(id) ? sel.filter(x=>x!==id) : [...sel, id];
+    render();
+  }
+  if(action==='load-go'){
+    const order = state.orders.find(o=>o.id===parseInt(el.dataset.order,10));
+    if(order && order.status==='Bereit zur Abholung'){
+      setOrderStatus(order, 'Beladen'); setOrderStatus(order, 'Unterwegs');
+      await saveShared();
+      notify({names:[order.person]}, 'nOnWayT', 'nOnWayB', {id:order.id, ort:order.baustelle});
+    }
+    render();
+  }
+  if(action==='tour-load'){
+    const list = tourSelClean().map(id=>state.orders.find(o=>o.id===id)).filter(o=>o.status==='Bereit zur Abholung');
+    if(list.length){ list.forEach(o=>setOrderStatus(o, 'Beladen')); await saveShared(); }
+    render();
+  }
+  if(action==='tour-go'){
+    const list = tourSelClean().map(id=>state.orders.find(o=>o.id===id)).filter(o=>o.status==='Beladen');
+    if(list.length){
+      list.forEach(o=>setOrderStatus(o, 'Unterwegs')); await saveShared();
+      list.forEach(o=>notify({names:[o.person]}, 'nOnWayT', 'nOnWayB', {id:o.id, ort:o.baustelle}));
+    }
+    state.tourSel = [];
     render();
   }
   if(action==='pu-open'){ openPickupEditor(null, el.dataset.projekt ? parseInt(el.dataset.projekt,10) : null); }
