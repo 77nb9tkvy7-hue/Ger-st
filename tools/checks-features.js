@@ -415,6 +415,47 @@ module.exports = ({ switchRole, shot }) => {
       if (!/1 \/ \d/.test(r) || !/Ludwig/.test(r)) p.push('Chef sieht Bestätigung nicht: ' + r.slice(0, 160));
       return errs(errors, p);
     },
+    // Task 10: Reihenfolge vorschlagen (OSRM ist im Test gesperrt -> Rückfall nächster Nachbar)
+    reihenfolge: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'fahrer');
+      const r = await ev(page, async () => {
+        const out = await orderStops({ lat: 48.0, lon: 11.0 }, [{ id: 'c', lat: 48.03, lon: 11.0 }, { id: 'a', lat: 48.01, lon: 11.0 }, { id: 'b', lat: 48.02, lon: 11.0 }]);
+        return out.map(x => x.id).join('');
+      });
+      if (r !== 'abc') p.push('Reihenfolge (Rückfall): ' + r + ' (erwartet abc)');
+      // Oberfläche: zwei Bestellungen in der Tour -> Knopf -> Nummern + Google-Maps-Link
+      const ui = await ev(page, async () => {
+        const ids = state.orders.filter(o => (o.status === 'Bereit zur Abholung' || o.status === 'Beladen') && o.projekt).map(o => o.id).slice(0, 2);
+        state.tourSel = ids; state.fahrerTab = 'lieferungen'; render();
+        const b = document.querySelector('[data-action="tour-order"]'); if (!b) return { btn: false };
+        b.click(); await new Promise(r => setTimeout(r, 1500));
+        return { btn: true, order: (state.tourOrder || []).length, badges: document.querySelectorAll('.stop-badge').length, maps: !!document.querySelector('a.tour-maps[href*="google.com/maps/dir"]') };
+      });
+      if (!ui.btn || ui.order < 2 || ui.badges < 2 || !ui.maps) p.push('Tour-Reihenfolge in der Oberfläche: ' + JSON.stringify(ui));
+      await shot(page, 'reihenfolge', 'fahrer', 390, false);
+      return errs(errors, p);
+    },
+    // Task 10: Fahrtenliste
+    fahrten: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      const r = await ev(page, async () => {
+        const pr = state.projects.find(x => x.aktiv && x.coords);
+        const now = new Date(), ts = now.toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        state.orders.push({ id: 9801, projekt: pr.id, person: 'Max', status: 'Geliefert', fahrer: 'Ludwig', items: [{ id: 'anker', name: 'Anker', unit: 'Stk', qty: 2 }], time: ts, steps: { Geliefert: now.toISOString() } });
+        state.orders.push({ id: 9802, projekt: pr.id, person: 'Max', status: 'Geliefert', fahrer: 'Kemal', items: [{ id: 'anker', name: 'Anker', unit: 'Stk', qty: 2 }], time: ts, steps: { Geliefert: now.toISOString() } });
+        const rows = await fahrtenData('month');
+        const mine = rows.filter(x => x.id === 9801 || x.id === 9802);
+        const btn = !!document.querySelector('[data-action="fahrten-open"]');
+        return { n: mine.length, km: mine.map(x => x.km), fahrer: mine.map(x => x.fahrer).sort().join(','), btn, csv: fahrtenCSV(rows).split('\n')[0] };
+      });
+      if (r.n !== 2 || !r.km.every(k => k > 0)) p.push('Fahrtenliste: ' + JSON.stringify(r));
+      if (r.fahrer !== 'Kemal,Ludwig') p.push('Fahrer fehlen: ' + r.fahrer);
+      if (!r.btn) p.push('kein Knopf „Fahrtenliste“ beim Chef');
+      if (!/^﻿?Datum;Fahrer;Bestellung;Bauvorhaben;km/.test(r.csv)) p.push('CSV-Kopf: ' + r.csv);
+      return errs(errors, p);
+    },
   };
 };
 
