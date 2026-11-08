@@ -15,24 +15,29 @@ const ROLE_VIEW = { baustelle: '.art-list', lager: '.order-card', fahrer: '.orde
 const args = process.argv.slice(2);
 const checkName = args.find(a => !a.startsWith('--')) || 'baseline';
 const opt = (n, d) => { const a = args.find(x => x.startsWith('--' + n + '=')); return a ? a.split('=')[1] : d; };
-const OPTS = { role: opt('role', null), width: parseInt(opt('width', '390'), 10), dark: args.includes('--dark'), lang: opt('lang', 'de') };
+const _w = parseInt(opt('width', '390'), 10);
+const OPTS = { role: opt('role', null), width: _w, height: parseInt(opt('height', _w >= 1280 ? '900' : '844'), 10), dark: args.includes('--dark'), lang: opt('lang', 'de') };
 
 // ---- Helfer (von allen Prüfungen gemeinsam genutzt) -------------------------
 async function launch(o = OPTS) {
   const browser = await chromium.launch();
   const context = await browser.newContext({
-    viewport: { width: o.width, height: 844 }, serviceWorkers: 'block',
+    viewport: { width: o.width, height: o.height }, serviceWorkers: 'block',
     colorScheme: o.dark ? 'dark' : 'light', locale: 'de-DE',
   });
   await context.addInitScript(l => { try { localStorage.setItem('geruest-lang', l); } catch (e) {} }, o.lang);
   await context.route(/tile|openstreetmap|nominatim|osrm|fonts\.g|cdnjs/i, r => r.abort());
   const page = await context.newPage();
   const errors = [];
+  const filtered = [];
   page.on('pageerror', e => errors.push(String(e && e.message || e)));
+  // console.error zählt als Fehler, außer erwartete Netz-Fehler der bewusst abgebrochenen Hosts (Karten, Schriften, cdnjs, Nominatim, OSRM)
+  page.on('console', m => { if (m.type() !== 'error') return; const u = (m.location() && m.location().url) || '';
+    if (/tile|openstreetmap|nominatim|osrm|fonts\.g|cdnjs/i.test(u) && /Failed to load resource|ERR_/i.test(m.text())) filtered.push(u); else errors.push('console.error: ' + m.text()); });
   await page.goto('file://' + path.join(ROOT, 'demo.html'));
   await page.waitForSelector('#demoBar');
   await page.waitForSelector('main', { timeout: 10000 });
-  return { browser, context, page, errors, opts: o };
+  return { browser, context, page, errors, filtered, opts: o };
 }
 
 async function switchRole(page, role) {
@@ -483,66 +488,88 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 10: Kontrast-Stichprobe je Rolle: --muted auf --card und jedes sichtbare Status-Abzeichen (WCAG, < 4,5 = FAIL).
+  // Task 10: Kontrast-Stichprobe (WCAG, < 4,5 = FAIL). Je Rolle werden ALLE sichtbaren Abzeichen (.status-badge, .pu-badge, .ev-kind,
+  // .wunsch-badge, .rn-badge) und --muted-Texte (.order-time, .view-sub, .ms-meta) gemessen; Hintergrund = über den nächsten deckenden
+  // Vorfahren zusammengesetzt, Vorfahren-opacity eingerechnet; je (Farbe, Hintergrund)-Paar einmal. Erledigt-Bereiche und der
+  // Fahrer-Kalender (Tage -7..+21) werden vorher geöffnet.
   async contrast(ctx) {
     const { page, errors, opts } = ctx;
     const problems = [];
     const roles = opts.role ? [opts.role] : ROLES;
+    await page.evaluate(() => {
+      const rgb = s => { const m = (s || '').match(/rgba?\(([^)]+)\)/); const v = m[1].split(/[ ,\/]+/).map(Number); return { r: v[0], g: v[1], b: v[2], a: v.length > 3 ? v[3] : 1 }; };
+      const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
+      const mix = (top, under) => ({ r: top.r * top.a + under.r * (1 - top.a), g: top.g * top.a + under.g * (1 - top.a), b: top.b * top.a + under.b * (1 - top.a), a: 1 });
+      window.__ct = { seen: {}, n: 0 };
+      window.__sample = (role) => {
+        const sel = '.status-badge,.pu-badge,.ev-kind,.wunsch-badge,.rn-badge,.order-time,.view-sub,.ms-meta';
+        for (const el of document.querySelectorAll(sel)) {
+          const r = el.getBoundingClientRect(); if (!r.width || !r.height || getComputedStyle(el).visibility === 'hidden') continue;
+          if (!(el.textContent || '').trim()) continue;
+          const layers = []; let opacity = 1; let opaque = false;
+          for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+            const st = getComputedStyle(n); opacity *= parseFloat(st.opacity);
+            if (!opaque) { const b = rgb(st.backgroundColor); if (b.a > 0) { layers.push(b); if (b.a >= 1) opaque = true; } }
+          }
+          let bg = opaque ? layers.pop() : rgb(getComputedStyle(document.body).backgroundColor);
+          if (bg.a < 1) bg = { r: 255, g: 255, b: 255, a: 1 };
+          while (layers.length) bg = mix(layers.pop(), bg);
+          const back = rgb(getComputedStyle(document.body).backgroundColor); const backO = back.a >= 1 ? back : { r: 255, g: 255, b: 255, a: 1 };
+          let fg = mix(rgb(getComputedStyle(el).color), bg);
+          if (opacity < 1) { fg = mix({ ...fg, a: opacity }, backO); bg = mix({ ...bg, a: opacity }, backO); }
+          const l1 = lum(fg), l2 = lum(bg); const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+          const cls = el.className.toString().split(/\s+/).filter(c => !/^(card|active)$/.test(c)).join('.') || el.tagName;
+          const key = `${[fg.r, fg.g, fg.b].map(Math.round)}|${[bg.r, bg.g, bg.b].map(Math.round)}|${opacity.toFixed(2)}`;
+          window.__ct.n++;
+          if (!window.__ct.seen[key]) window.__ct.seen[key] = { what: `${role}:${cls}`, ratio };
+        }
+      };
+    });
+    // Zusätzliche Abholungen (eine erledigt, eine mit Wunschtag heute) damit .pu-done / .ev-kind.abholung wirklich gemessen werden
+    const openAll = () => page.evaluate(() => {
+      const iso = new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+      const base = state.pickups[0] || { projekt: 102, baustelle: 'x', person: 'Max', items: [], abbau: false, notiz: '', time: new Date().toISOString() };
+      if (!state.pickups.some(p => p.id === 901)) state.pickups.push({ ...base, id: 901, status: 'Im Lager', fahrer: 'Ludwig' }, { ...base, id: 902, status: 'Unterwegs', fahrer: 'Ludwig', wunsch: 'datum', bis: iso });
+      document.querySelectorAll('.done-toggle').forEach(b => { state.showDone[b.dataset.key] = true; }); render(); });
+    // (Überschrift fehlt bewusst: openAll fügt Test-Abholungen nur im Speicher ein)
     for (const role of roles) {
       await switchRole(page, role);
-      const res = await page.evaluate(() => {
-        const rgb = s => { const m = (s || '').match(/rgba?\(([^)]+)\)/); if (m) { const v = m[1].split(/[ ,\/]+/).map(Number); return { r: v[0], g: v[1], b: v[2], a: v.length > 3 ? v[3] : 1 }; }
-          const c = document.createElement('canvas').getContext('2d'); c.fillStyle = s; const h = c.fillStyle; return { r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16), a: 1 }; };
-        const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
-        const ratio = (a, b) => { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); };
-        const cs = getComputedStyle(document.documentElement);
-        const muted = rgb(cs.getPropertyValue('--muted').trim()), card = rgb(cs.getPropertyValue('--card').trim());
-        const out = [{ what: '--muted auf --card', ratio: ratio(muted, card) }];
-        const seen = new Set();
-        for (const el of document.querySelectorAll('.status-badge')) {
-          const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
-          const key = el.className; if (seen.has(key)) continue; seen.add(key);
-          const st = getComputedStyle(el); const b0 = rgb(st.backgroundColor), fg = rgb(st.color);
-          const bg = { r: b0.r * b0.a + card.r * (1 - b0.a), g: b0.g * b0.a + card.g * (1 - b0.a), b: b0.b * b0.a + card.b * (1 - b0.a), a: 1 }; // halbtransparenter Hintergrund liegt auf der Karte
-          out.push({ what: key.replace('status-badge', '').trim() || 'badge', ratio: ratio(fg, bg) });
-        }
-        return out;
-      });
-      const worst = Math.min(...res.map(r => r.ratio));
-      console.log(`  [${role}] ${res.length} Stichproben, schwächster Wert ${worst.toFixed(2)} :1 · ` + res.map(r => `${r.what} ${r.ratio.toFixed(2)}`).join(', '));
-      for (const r of res) if (r.ratio < 4.5) problems.push(`${role}: ${r.what} nur ${r.ratio.toFixed(2)}:1`);
+      await openAll(); await openAll();
+      await page.evaluate(r => window.__sample(r), role);
+      if (role === 'fahrer') {
+        await page.evaluate(async () => {
+          state.fahrerTab = 'kalender'; const today = new Date(); const iso = d => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+          for (let i = -7; i <= 21; i++) { const d = new Date(today); d.setDate(d.getDate() + i); state.fahrerCalDay = iso(d); render(); window.__sample('fahrer-kal'); }
+          state.fahrerCalDay = null; state.fahrerTab = 'lieferungen'; render();
+        });
+      }
+      if (role === 'lager') { for (const tab of ['geplant', 'inventur', 'bestellungen']) { await page.evaluate(t => { state.lagerTab = t; render(); window.__sample('lager-' + t); }, tab); } }
+      if (role === 'chef') { for (const tab of ['uebersicht', 'lkws', 'bauvorhaben', 'planen']) { await page.evaluate(t => { state.chefTab = t; render(); window.__sample('chef-' + t); }, tab); } await page.evaluate(() => { state.chefTab = 'uebersicht'; render(); }); }
     }
+    const res = await page.evaluate(() => ({ n: window.__ct.n, items: Object.values(window.__ct.seen) }));
+    const worst = res.items.reduce((a, b) => (a.ratio < b.ratio ? a : b));
+    console.log(`  ${res.n} Texte gemessen, ${res.items.length} verschiedene Farbpaare, schwächster Wert ${worst.ratio.toFixed(2)}:1 (${worst.what})`);
+    console.log('  ' + res.items.sort((a, b) => a.ratio - b.ratio).slice(0, 6).map(r => `${r.what} ${r.ratio.toFixed(2)}`).join(', '));
+    for (const r of res.items) if (r.ratio < 4.5) problems.push(`${r.what} nur ${r.ratio.toFixed(2)}:1`);
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
-  // Task 10: Kontrast-Stichprobe je Rolle: --muted auf --card und jedes sichtbare Status-Abzeichen (WCAG, < 4,5 = FAIL).
-  async contrast(ctx) {
-    const { page, errors, opts } = ctx;
+  // R11: Reiter-Beschriftungen unten werden nie abgeschnitten (Umbruch auf 2 Zeilen), kein Überlauf; alle Rollen in der gewählten Sprache.
+  async nav(ctx) {
+    const { page, errors } = ctx;
     const problems = [];
-    const roles = opts.role ? [opts.role] : ROLES;
-    for (const role of roles) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    for (const role of ['lager', 'fahrer', 'chef']) {
       await switchRole(page, role);
-      const res = await page.evaluate(() => {
-        const rgb = s => { const m = (s || '').match(/rgba?\(([^)]+)\)/); if (m) { const v = m[1].split(/[ ,\/]+/).map(Number); return { r: v[0], g: v[1], b: v[2], a: v.length > 3 ? v[3] : 1 }; }
-          const c = document.createElement('canvas').getContext('2d'); c.fillStyle = s; const h = c.fillStyle; return { r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16), a: 1 }; };
-        const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
-        const ratio = (a, b) => { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); };
-        const cs = getComputedStyle(document.documentElement);
-        const muted = rgb(cs.getPropertyValue('--muted').trim()), card = rgb(cs.getPropertyValue('--card').trim());
-        const out = [{ what: '--muted auf --card', ratio: ratio(muted, card) }];
-        const seen = new Set();
-        for (const el of document.querySelectorAll('.status-badge')) {
-          const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
-          const key = el.className; if (seen.has(key)) continue; seen.add(key);
-          const st = getComputedStyle(el); const b0 = rgb(st.backgroundColor), fg = rgb(st.color);
-          const bg = { r: b0.r * b0.a + card.r * (1 - b0.a), g: b0.g * b0.a + card.g * (1 - b0.a), b: b0.b * b0.a + card.b * (1 - b0.a), a: 1 }; // halbtransparenter Hintergrund liegt auf der Karte
-          out.push({ what: key.replace('status-badge', '').trim() || 'badge', ratio: ratio(fg, bg) });
-        }
-        return out;
+      const r = await page.evaluate(() => {
+        const bs = [...document.querySelectorAll('.role-nav button')];
+        return { n: bs.length, sw: document.documentElement.scrollWidth, iw: innerWidth,
+          cut: bs.map(b => { const l = b.querySelector('.rn-lbl'); return { t: l.textContent.trim(), w: l.scrollWidth > l.clientWidth + 1, h: l.scrollHeight > l.clientHeight + 1, lines: Math.round(l.clientHeight / parseFloat(getComputedStyle(l).lineHeight)), out: b.getBoundingClientRect().right > innerWidth + 0.5 || b.getBoundingClientRect().left < -0.5 }; }) };
       });
-      const worst = Math.min(...res.map(r => r.ratio));
-      console.log(`  [${role}] ${res.length} Stichproben, schwächster Wert ${worst.toFixed(2)} :1 · ` + res.map(r => `${r.what} ${r.ratio.toFixed(2)}`).join(', '));
-      for (const r of res) if (r.ratio < 4.5) problems.push(`${role}: ${r.what} nur ${r.ratio.toFixed(2)}:1`);
+      console.log(`  [${role}] ` + r.cut.map(c => `${c.t}(${c.lines}Z)`).join(' '));
+      if (r.sw > r.iw) problems.push(`${role}: Überlauf ${r.sw}>${r.iw}`);
+      for (const c of r.cut) { if (c.w || c.h) problems.push(`${role}: "${c.t}" abgeschnitten`); if (c.out) problems.push(`${role}: "${c.t}" außerhalb`); }
+      await shot(page, 'nav', role, 390);
     }
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
@@ -553,7 +580,7 @@ const CHECKS = {
   if (checkName === 'all') {
     // Jede Prüfung in einem eigenen Prozess (eigener Browser, frischer Demo-Zustand); eine Zeile je Prüfung.
     const { spawnSync } = require('child_process');
-    const runs = [['baseline'], ['strip'], ['cards'], ['order-flow'], ['numpad'], ['plan'], ['fahrer'], ['lager'], ['chef'], ['contrast'],
+    const runs = [['baseline'], ['strip'], ['cards'], ['order-flow'], ['numpad'], ['plan'], ['fahrer'], ['lager'], ['chef'], ['contrast'], ['nav'], ['nav', '--lang=pl'],
       ['baseline', '--width=1280'], ['baseline', '--dark'], ['contrast', '--dark']];
     let bad = 0;
     for (const r of runs) {
@@ -574,6 +601,7 @@ const CHECKS = {
   if (!fn) { console.log(`FAIL ${checkName}: unbekannte Prüfung (vorhanden: ${Object.keys(CHECKS).join(', ')})`); process.exit(1); }
   let ctx, problems;
   try { ctx = await launch(); problems = await fn(ctx); } catch (e) { problems = ['Ausnahme: ' + (e && e.message || e)]; }
+  if (ctx && ctx.filtered && ctx.filtered.length) console.log(`  (gefiltert: ${ctx.filtered.length} erwartete Netz-Fehler der abgebrochenen Hosts)`);
   if (ctx) await ctx.browser.close();
   if (problems && problems.length) { console.log(`FAIL ${checkName}: ${problems.join('; ')}`); process.exit(1); }
   console.log(`PASS ${checkName}`);
