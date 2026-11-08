@@ -448,6 +448,41 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
+  // Task 9: Chef-Reiter "LKWs" (5 Reiter, Karte dort, Übersicht ohne Karte).
+  async chef(ctx) {
+    const { page, errors, opts } = ctx;
+    const problems = [];
+    await switchRole(page, 'chef');
+    await page.evaluate(() => { state.chefTab = 'uebersicht'; render(); });
+    const nav = await page.evaluate(() => {
+      const bs = [...document.querySelectorAll('.role-nav button')];
+      const vis = bs.filter(b => { const r = b.getBoundingClientRect(); return r.width > 0 && r.right <= innerWidth + 0.5 && r.left >= -0.5; });
+      return { n: bs.length, vis: vis.length, ids: bs.map(b => b.dataset.tab), sw: document.documentElement.scrollWidth, iw: innerWidth,
+        mapOnOverview: !!document.getElementById('bvMapSlot'),
+        firstCardTop: (() => { const c = document.querySelector('.order-card'); return c ? Math.round(c.getBoundingClientRect().top) : null; })() };
+    });
+    console.log('  ' + JSON.stringify(nav));
+    if (nav.n !== 5 || nav.vis !== 5) problems.push(`Reiter sichtbar ${nav.vis}/${nav.n}`);
+    if (nav.ids.join() !== 'uebersicht,lkws,bauvorhaben,planen,personal') problems.push('Reihenfolge ' + nav.ids);
+    if (nav.sw > nav.iw) problems.push(`Überlauf ${nav.sw}>${nav.iw}`);
+    if (nav.mapOnOverview) problems.push('Karte noch in Übersicht');
+    if (nav.firstCardTop === null || nav.firstCardTop >= 700) problems.push('erste Bestellkarte bei ' + nav.firstCardTop);
+    await shot(page, 'chef-uebersicht-' + opts.lang, 'chef', 390);
+    await page.click('.role-nav [data-tab="lkws"]');
+    await page.waitForTimeout(600);
+    const l = await page.evaluate(() => ({ slot: !!document.querySelector('#bvMapSlot'), inSlot: !!document.querySelector('#bvMapSlot .bv-map, #bvMapSlot .order-time'),
+      status: !!document.querySelector('.driver-status-list, .empty-state'), sw: document.documentElement.scrollWidth, iw: innerWidth, tab: state.chefTab }));
+    console.log('  ' + JSON.stringify(l));
+    if (!l.slot || !l.inSlot) problems.push('#bvMapSlot fehlt/leer im Reiter LKWs');
+    if (l.sw > l.iw) problems.push('Überlauf in LKWs');
+    await shot(page, 'chef-lkws-' + opts.lang, 'chef', 390);
+    // Kachel "Fahrer unterwegs" -> Reiter LKWs
+    await page.evaluate(() => { state.chefTab = 'uebersicht'; render(); });
+    const tgt = await page.evaluate(() => { const b = [...document.querySelectorAll('[data-action="widget-go"]')].find(x => x.dataset.go === 'sec-lkw'); if (!b) return null; b.click(); return state.chefTab; });
+    if (tgt !== 'lkws') problems.push('Fahrer-Kachel springt nach ' + tgt);
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
 };
 
 (async () => {
