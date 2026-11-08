@@ -278,6 +278,33 @@ module.exports = ({ switchRole, shot }) => {
       if (!a.img || !a.name) p.push('(a) Lieferschein ohne Unterschrift-Bild/Name');
       return errs(errors, p);
     },
+    // Task 7: geschützte Zeilen (Zeit/Unterweisung) – Server-Regeln im Demo-Client nachgebaut
+    schutz: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      const a = await ev(page, async () => {
+        const own = await appendProtected('zeit:2026-11', { id: 't1', person: 'Max', projekt: 101, in: '2026-11-08T07:00:00Z' });
+        const foreign = await appendProtected('zeit:2026-11', { id: 't2', person: 'Jochen', projekt: 101, in: '2026-11-08T07:00:00Z' });
+        const korr = await appendProtected('zeit:2026-11', { id: 't1', person: 'Max', projekt: 101, in: '2026-11-08T07:00:00Z', korr: { in: 'x' } });
+        const rows = await loadProtected('zeit:');
+        return { own, foreign, korr, persons: rows.flatMap(r => r.entries.map(e => e.person)) };
+      });
+      if (!a.own) p.push('eigener Eintrag nicht gespeichert');
+      if (a.foreign) p.push('Baustelle konnte fremden Eintrag schreiben');
+      if (a.korr) p.push('Baustelle konnte Korrektur setzen');
+      if (a.persons.some(n => n !== 'Max')) p.push('Baustelle liest fremde Einträge: ' + a.persons.join(','));
+      await switchRole(page, 'chef');
+      const b = await ev(page, async () => {
+        const w = await appendProtected('zeit:2026-11', { id: 't3', person: 'Ludwig', projekt: 101, in: '2026-11-08T06:00:00Z' });
+        const rows = await loadProtected('zeit:');
+        return { w, persons: [...new Set(rows.flatMap(r => r.entries.map(e => e.person)))].sort() };
+      });
+      if (!b.w) p.push('Chef kann nicht schreiben');
+      if (!b.persons.includes('Max') || !b.persons.includes('Ludwig')) p.push('Chef liest nicht alle: ' + b.persons.join(','));
+      const leak = await ev(page, () => JSON.stringify(stateToValue()).includes('"zeit:'));
+      if (leak) p.push('Zeit-Daten im großen Datensatz');
+      return errs(errors, p);
+    },
   };
 };
 

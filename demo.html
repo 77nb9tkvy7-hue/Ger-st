@@ -835,6 +835,26 @@ function createDemoClient(){
         return {data: e ? e.id : null, error:null};
       }
       if(fn==='public_info') return {data:{}, error:null};
+      // Geschützte Zeilen (zeit:…, unterweisung:…): Regeln wie supabase/neue-funktionen.sql
+      if(fn==='prot_read' || fn==='prot_upsert'){
+        const me = demoUserName(), emp = (cur().employees||[]).find(e=>e.name===me) || {};
+        const chef = (emp.roles||[]).includes('chef') && demoRoleNow()==='chef';
+        const mine = n => n===me || (emp.kolonne||[]).includes(n);
+        let rows = {}; try{ rows = JSON.parse(localStorage.getItem('demo-rows')||'{}'); }catch(e){}
+        if(fn==='prot_read'){
+          const pre = String((args||{}).p_prefix||'');
+          return {data: Object.keys(rows).filter(k=>k.startsWith(pre)).map(k=>({key:k, entries:(rows[k].entries||[]).filter(x=>chef || mine(x.person))})), error:null};
+        }
+        const key = String((args||{}).p_key||''), en = (args||{}).p_entry||{};
+        if(!/^(zeit|unterweisung):/.test(key) || !en.id || !en.person) return {data:false, error:{message:'ungültig'}};
+        if(!chef && (!mine(en.person) || en.korr)) return {data:false, error:{message:'nicht erlaubt'}};
+        const row = rows[key] || (rows[key] = {entries:[]});
+        const i = row.entries.findIndex(x=>x.id===en.id);
+        if(i>=0){ if(!chef && !mine(row.entries[i].person)) return {data:false, error:{message:'nicht erlaubt'}}; row.entries[i] = {...row.entries[i], ...en}; }
+        else row.entries.push(en);
+        try{ localStorage.setItem('demo-rows', JSON.stringify(rows)); }catch(e){}
+        return {data:true, error:null};
+      }
       return {data:null, error:{message:'demo'}};
     },
     functions:{ invoke: async ()=>({data:null, error:null}) },
@@ -868,6 +888,7 @@ function createDemoClient(){
 // Demo-Fotospeicher (IndexedDB, Rückfall: Speicher im Tab)
 const demoMemFotos = {};
 function demoUserName(){ try{ return state.name || ''; }catch(e){ return ''; } }
+function demoRoleNow(){ try{ return state.role || ''; }catch(e){ return ''; } }
 function demoIdb(op, key, val){
   return new Promise(res=>{
     const mem = ()=>{
@@ -3989,6 +4010,24 @@ async function uploadPlans(pid, files){
   refreshPlanUrls();
 }
 
+// ---- Geschützte Zeilen (Personen-Daten) ------------------------------------------
+// Einchecken/Stunden ('zeit:<JJJJ-MM>') und Unterweisungs-Bestätigungen
+// ('unterweisung:<id>') liegen NICHT im großen Datensatz, sondern in eigenen
+// Zeilen. Lesen/Schreiben nur über Server-Funktionen (prot_read/prot_upsert):
+// Chef alles, alle anderen nur eigene (+ Kolonne des Kolonnenführers), keine Korrekturen.
+async function loadProtected(prefix){
+  try{
+    const {data, error} = await supabaseClient.rpc('prot_read', {p_prefix: prefix});
+    if(error) throw error;
+    return (data||[]).map(r=>({key:r.key, entries:r.entries||[]}));
+  }catch(e){ console.warn('Geschützte Daten nicht ladbar', e); return []; }
+}
+async function appendProtected(key, entry){
+  try{
+    const {data, error} = await supabaseClient.rpc('prot_upsert', {p_key: key, p_entry: entry});
+    return !error && data!==false;
+  }catch(e){ return false; }
+}
 // ---- Beweis-Fotos -----------------------------------------------------------
 // Datei aus der Kamera -> verkleinert (≤ 1600 px), Stempel unten (Datum, Uhrzeit,
 // Name, BV, Anlass, GPS) -> Bucket 'fotos' -> Eintrag in state.fotos.
