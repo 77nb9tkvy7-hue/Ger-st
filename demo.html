@@ -693,7 +693,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // ---- DEMO -----------------------------------------------------------------
 // Diese Kopie der App läuft komplett ohne Server: Der Supabase-Client ist ein
 // Nachbau (createDemoClient), der Datensatz liegt in localStorage['demo-state'].
-const DEMO = true;
+window.DEMO_MODE = true; // Kern-Code fragt nur window.DEMO_MODE ab (fehlt im echten App-Code -> undefined)
 const DEMO_STORE_KEY = 'demo-state';
 const DEMO_VERSION = 2; // bei Änderungen an DEMO_DATA hochzählen: alter gespeicherter Stand wird verworfen
 const DEMO_DATA = (function(){
@@ -848,19 +848,22 @@ function employeeRoles(name){
 // Nutzerwunsch). Rausgeworfen wird man nur noch, wenn der Chef die
 // Person oder ihre Rolle entfernt (enforceSession).
 const SESSION_KEY = 'geruest-session';
+// Speicher-Schlüssel: in der Demo mit Vorsilbe 'demo-', damit echte
+// App-Daten im selben Browser nie gelesen oder überschrieben werden.
+function skey(k){ return window.DEMO_MODE===true ? 'demo-'+k : k; }
 function saveSession(){
-  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({name:state.name, role:state.role})); }catch(e){}
+  try{ localStorage.setItem(skey(SESSION_KEY), JSON.stringify({name:state.name, role:state.role})); }catch(e){}
 }
 function restoreSession(){
   try{
-    const s = JSON.parse(localStorage.getItem(SESSION_KEY));
+    const s = JSON.parse(localStorage.getItem(skey(SESSION_KEY)));
     if(s && s.name && s.role){
       state.name = s.name; state.authName = s.name; state.role = s.role; state.loggedIn = true;
     }
   }catch(e){}
 }
 function clearSession(){
-  try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+  try{ localStorage.removeItem(skey(SESSION_KEY)); }catch(e){}
 }
 // Nach jedem Laden prüfen, ob die gespeicherte Anmeldung noch gültig ist
 // (Chef könnte den Mitarbeiter entfernt oder ihm die Rolle entzogen haben).
@@ -891,10 +894,10 @@ const LANGS = [
 ];
 const LANG_KEY = 'geruest-lang';
 function loadLang(){
-  try{ const v = localStorage.getItem(LANG_KEY); if(LANGS.some(l=>l.code===v)) return v; }catch(e){}
+  try{ const v = localStorage.getItem(skey(LANG_KEY)); if(LANGS.some(l=>l.code===v)) return v; }catch(e){}
   return 'de';
 }
-function saveLang(code){ try{ localStorage.setItem(LANG_KEY, code); }catch(e){} }
+function saveLang(code){ try{ localStorage.setItem(skey(LANG_KEY), code); }catch(e){} }
 
 const WEEKDAYS = {
   de:['So','Mo','Di','Mi','Do','Fr','Sa'],
@@ -2679,8 +2682,8 @@ const PUSH_ENDPOINT_KEY = 'geruest-push-endpoint', PUSH_LATER_KEY = 'geruest-pus
 function pushSupported(){ return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
 function isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
 function isStandalone(){ return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone===true; }
-function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-function lsSet(k,v){ try{ v==null? localStorage.removeItem(k) : localStorage.setItem(k,v); }catch(e){} }
+function lsGet(k){ try{ return localStorage.getItem(skey(k)); }catch(e){ return null; } }
+function lsSet(k,v){ try{ v==null? localStorage.removeItem(skey(k)) : localStorage.setItem(skey(k),v); }catch(e){} }
 function pushActiveHere(){
   const ep = lsGet(PUSH_ENDPOINT_KEY);
   return !!ep && state.pushSubs.some(s=>s.endpoint===ep && s.name===state.name);
@@ -2697,7 +2700,7 @@ async function registerPushSub(sub){
   await saveShared();
 }
 async function enablePush(){
-  if(DEMO) return;
+  if(window.DEMO_MODE===true) return;
   try{
     const perm = await Notification.requestPermission();
     if(perm!=='granted'){ state.pushMsg = t('pushDenied'); render(); return; }
@@ -2712,7 +2715,7 @@ async function enablePush(){
 // Nach Anmeldung/Sprachwechsel: Handy hat schon erlaubt -> Abo still auf
 // aktuelle Person/Sprache umschreiben (kein erneutes Nachfragen).
 async function syncPushSub(){
-  if(DEMO) return;
+  if(window.DEMO_MODE===true) return;
   if(!pushSupported() || !state.loggedIn || Notification.permission!=='granted') return;
   try{
     const reg = await navigator.serviceWorker.ready;
@@ -2733,7 +2736,7 @@ async function unlinkPushSub(){
   if(state.pushSubs.length!==before) await saveShared();
 }
 function pushCardHTML(){
-  if(DEMO) return '';
+  if(window.DEMO_MODE===true) return '';
   if(!state.loggedIn || lsGet(PUSH_LATER_KEY)) return '';
   const btns = (enable)=>`<div class="push-actions">
     ${enable? `<button class="chip-btn primary" data-action="push-enable">${t('pushEnableBtn')}</button>`:''}
@@ -5716,7 +5719,7 @@ setInterval(async ()=>{
   render();
 }, 4000);
 
-if(!DEMO && 'serviceWorker' in navigator){
+if(window.DEMO_MODE!==true && 'serviceWorker' in navigator){
   window.addEventListener('load', ()=> navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 
@@ -5738,7 +5741,8 @@ function demoBarUpdate(){
     const b = e.target.closest('[data-action]'); if(!b) return;
     if(b.dataset.action==='demo-role') demoSwitchRole(b.dataset.role);
     if(b.dataset.action==='demo-reset'){
-      ['demo-state', CACHE_KEY, PENDING_KEY, SESSION_KEY].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+      // nur Demo-Schlüssel löschen (alle mit 'demo-'), echte App-Daten bleiben
+      try{ Object.keys(localStorage).filter(k=>k.startsWith('demo-')).forEach(k=>localStorage.removeItem(k)); }catch(e){}
       location.reload();
     }
   });

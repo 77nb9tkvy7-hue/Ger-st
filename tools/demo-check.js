@@ -25,7 +25,7 @@ async function launch(o = OPTS) {
     viewport: { width: o.width, height: o.height }, serviceWorkers: 'block',
     colorScheme: o.dark ? 'dark' : 'light', locale: 'de-DE',
   });
-  await context.addInitScript(l => { try { localStorage.setItem('geruest-lang', l); } catch (e) {} }, o.lang);
+  await context.addInitScript(l => { try { localStorage.setItem('demo-geruest-lang', l); } catch (e) {} }, o.lang);
   await context.route(/tile|openstreetmap|nominatim|osrm|fonts\.g|cdnjs/i, r => r.abort());
   const page = await context.newPage();
   const errors = [];
@@ -106,6 +106,21 @@ const CHECKS = {
       console.log(`  [${role}] ${fmt(m)}`);
       await shot(page, 'baseline', role, opts.width);
     }
+    // Speicher: die Demo liest/schreibt nie Schlüssel der echten App ('geruest-*'); Zurücksetzen löscht nur 'demo-*'
+    const SENT = { 'geruest-session': '{"name":"Echt","role":"chef"}', 'geruest-cache': '"ECHT"', 'geruest-bv': '999' };
+    const leaked = await page.evaluate(() => Object.keys(localStorage).filter(k => k.startsWith('geruest-')));
+    if (leaked.length) problems.push('Demo schreibt echte App-Schlüssel: ' + leaked.join(', '));
+    await page.evaluate(s => { for (const k in s) localStorage.setItem(k, s[k]); }, SENT);
+    await switchRole(page, 'chef');
+    await Promise.all([page.waitForEvent('load'), page.click('#demoBar [data-action="demo-reset"]')]);
+    await page.waitForSelector('main', { timeout: 10000 }); await page.waitForTimeout(500);
+    const ls = await page.evaluate(() => { const o = {}; Object.keys(localStorage).forEach(k => { o[k] = localStorage.getItem(k); }); return { o, name: state.name }; });
+    const keys = Object.keys(ls.o);
+    console.log('  localStorage nach Zurücksetzen: ' + keys.sort().join(', '));
+    for (const k in SENT) if (ls.o[k] !== SENT[k]) problems.push(`echter Schlüssel ${k} verändert/gelöscht`);
+    const extra = keys.filter(k => k.startsWith('geruest-') && !(k in SENT));
+    if (extra.length) problems.push('echte App-Schlüssel geschrieben: ' + extra.join(', '));
+    if (ls.name === 'Echt') problems.push('Demo hat echte Sitzung gelesen');
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
