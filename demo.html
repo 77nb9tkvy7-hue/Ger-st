@@ -2225,6 +2225,13 @@ function applyValue(v){
 function mergeRecord(b, l, r){
   const out = {...r};
   new Set([...Object.keys(b||{}), ...Object.keys(l||{})]).forEach(f=>{
+    if(f==='steps'){ // Status-Zeiten: je Status zusammenführen (zwei Geräte ergänzen verschiedene Zeiten)
+      const bs = (b||{}).steps||{}, ls = (l||{}).steps||{}, rs = (r||{}).steps||{};
+      if(same(ls, bs)) return;
+      const m = {...rs};
+      Object.keys(ls).forEach(k=>{ if(!same(ls[k], bs[k]) && !(m[k] && !same(m[k], bs[k]) && String(m[k])>String(ls[k]))) m[k] = ls[k]; });
+      out.steps = m; return;
+    }
     if(!same((l||{})[f], (b||{})[f])){ if(l[f]===undefined) delete out[f]; else out[f] = clone(l[f]); }
   });
   return out;

@@ -369,6 +369,15 @@ const CHECKS = {
     await page.waitForTimeout(300);
     const d1 = await st(1007);
     if (d1.status !== 'Geliefert') problems.push('(d) 1007: ' + d1.status);
+    // Merge: Gerät A ergänzt Beladen, Gerät B ergänzt Unterwegs -> alle drei Zeiten bleiben
+    const mg = await page.evaluate(() => {
+      const t0 = '2026-01-01T07:00:00.000Z', t1 = '2026-01-01T07:40:00.000Z', t2 = '2026-01-01T07:42:00.000Z', t3 = '2026-01-01T07:50:00.000Z';
+      const r = mergeRecord({id:1, steps:{Neu:t0}}, {id:1, steps:{Neu:t0, Unterwegs:t2}}, {id:1, steps:{Neu:t0, Beladen:t1}});
+      const c = mergeRecord({id:1, steps:{Neu:t0}}, {id:1, steps:{Neu:t0, Beladen:t1}}, {id:1, steps:{Neu:t0, Beladen:t3}});
+      return { keys: Object.keys(r.steps).sort().join(','), later: c.steps.Beladen === t3 };
+    });
+    if (mg.keys !== 'Beladen,Neu,Unterwegs') problems.push('merge steps: ' + mg.keys);
+    if (!mg.later) problems.push('merge steps: spätere Zeit gewinnt nicht');
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
