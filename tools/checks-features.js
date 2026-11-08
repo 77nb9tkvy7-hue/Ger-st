@@ -173,6 +173,66 @@ module.exports = ({ switchRole, shot }) => {
       if (!r.leaflet) p.push('Kartenbaustein (Leaflet) nicht geladen');
       return errs(errors, p);
     },
+    // Task 5: Beweis-Fotos
+    fotos: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      // Testbild als Datei erzeugen (im Browser) und über die echte Datei-Eingabe wählen
+      const pid = await ev(page, () => { const pr = state.projects.find(x => x.aktiv); state.chefTab = 'bauvorhaben'; state.chefProjekt = pr.id; render(); return pr.id; });
+      await page.click('[data-action="foto-open"]');
+      const inp = await page.$('input[type=file][data-anlass="uebergabe"]');
+      if (!inp) { p.push('keine Foto-Auswahl mit Anlass „Übergabe“'); return errs(errors, p); }
+      const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVR42mP8z8DwnwEIGBkYGBgYAAAeAQH/5o7nAAAAAElFTkSuQmCC', 'base64');
+      await inp.setInputFiles({ name: 'test.png', mimeType: 'image/png', buffer: png });
+      await page.waitForFunction(() => state.fotos && state.fotos.length > 0, null, { timeout: 8000 }).catch(() => {});
+      const a = await ev(page, () => { const f = state.fotos[state.fotos.length - 1]; return f ? { f, thumb: !!document.querySelector('.foto-thumb') } : null; });
+      if (!a) p.push('(a) Foto nicht gespeichert');
+      else {
+        if (a.f.anlass !== 'uebergabe' || a.f.by !== 'Chefin' || a.f.projekt !== pid || !a.f.ts || !a.f.path) p.push('(a) Foto-Eintrag unvollständig: ' + JSON.stringify(a.f));
+        if (!a.thumb) p.push('(a) kein Vorschaubild im BV');
+      }
+      // (b) großes Bild wird verkleinert
+      const b = await ev(page, async pid => {
+        const c = document.createElement('canvas'); c.width = 4000; c.height = 3000; const g = c.getContext('2d');
+        for (let i = 0; i < 400; i++) { g.fillStyle = `hsl(${i * 7},70%,50%)`; g.fillRect((i * 97) % 4000, (i * 53) % 3000, 300, 200); }
+        const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+        const f = await takePhotoFromFile(new File([blob], 'gross.png', { type: 'image/png' }), pid, 'schaden');
+        return f ? { w: f.w, h: f.h, size: f.size } : null;
+      }, pid);
+      if (!b || Math.max(b.w, b.h) > 1600 || b.size >= 1024 * 1024) p.push('(b) großes Bild nicht verkleinert: ' + JSON.stringify(b));
+      // (c) Löschen nur 5 Min. durch den Fotografen, danach nur Ausblenden durch den Chef
+      const c = await ev(page, async () => {
+        const fresh = state.fotos[state.fotos.length - 1];
+        const can1 = canDeleteFoto(fresh);
+        const del = await deleteFoto(fresh.id);
+        const old = state.fotos[state.fotos.length - 1];
+        await demoAgeFoto(old.path, 6 * 60 * 1000); old.ts = new Date(Date.now() - 6 * 60 * 1000).toISOString();
+        const can2 = canDeleteFoto(old);
+        const srv = await supabaseClient.storage.from('fotos').remove([old.path]);
+        const byId = () => state.fotos.find(f => f.id === old.id);
+        await toggleHideFoto(old.id); const hid = !!byId().hidden && byId().hidden.by === 'Chefin';
+        await toggleHideFoto(old.id); const unhid = !byId().hidden;
+        return { can1, del, gone: !state.fotos.some(f => f.id === fresh.id), can2, srvErr: !!srv.error, hid, unhid, oldId: old.id };
+      });
+      if (!c.can1 || !c.del || !c.gone) p.push('(c) frisches Foto nicht löschbar: ' + JSON.stringify(c));
+      if (c.can2 || !c.srvErr) p.push('(c) Foto nach 6 Min. noch löschbar: ' + JSON.stringify(c));
+      if (!c.hid || !c.unhid) p.push('(c) Ausblenden/Einblenden durch Chef geht nicht');
+      await switchRole(page, 'baustelle');
+      const noHide = await ev(page, id => { state.fotoView = id; render(); const r = !document.querySelector('[data-action="foto-hide"]'); state.fotoView = null; render(); return r; }, c.oldId);
+      if (!noHide) p.push('(c) Baustelle sieht Ausblenden-Knopf');
+      // (d) Upload-Fehler
+      const d = await ev(page, async pid => {
+        const n0 = state.fotos.length; const orig = supabaseClient.storage.from;
+        supabaseClient.storage.from = () => ({ upload: async () => ({ data: null, error: { message: 'kein Netz' } }) });
+        const c = document.createElement('canvas'); c.width = 20; c.height = 20; const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+        const f = await takePhotoFromFile(new File([blob], 'x.png', { type: 'image/png' }), pid, 'vorher');
+        supabaseClient.storage.from = orig;
+        return { f, same: state.fotos.length === n0, toast: (document.getElementById('toast') || {}).textContent || '' };
+      }, pid);
+      if (d.f || !d.same || !/nicht gespeichert/.test(d.toast)) p.push('(d) Upload-Fehler falsch behandelt: ' + JSON.stringify(d));
+      await shot(page, 'fotos', 'chef', 390, false);
+      return errs(errors, p);
+    },
   };
 };
 
