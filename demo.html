@@ -294,9 +294,12 @@
   .foto-meta{font-size:14px;margin:8px 2px;line-height:1.45;}
   .foto-hidden-note{color:var(--muted);font-weight:600;margin-top:4px;}
   .mini-btn.danger{color:var(--red);border-color:var(--red);}
-  .ci-card{margin-bottom:14px;}
-  .ci-card.ci-on{border-left:5px solid var(--green);}
-  .ci-line{font-size:15px;margin-bottom:6px;}
+  .ci-wrap{margin:0 0 10px 0;}
+  .ci-team{margin:0 0 8px 0;}
+  .ci-btn{min-height:var(--tap);font-size:15px;font-weight:700;}
+  .ci-in-btn{width:100%;}
+  .ci-bar{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;padding:6px 6px 6px 12px;border-radius:12px;background:var(--card);border-left:5px solid var(--green);box-shadow:var(--shadow);}
+  .ci-bar .ci-line{flex:1;min-width:0;font-size:14px;}
   .ci-hint-text{font-size:15px;line-height:1.5;margin:0 0 14px 0;white-space:pre-wrap;}
   .korr-tag{font-size:13px;color:var(--muted);font-weight:600;}
   .cal-hours{font-size:14px;border-left:5px solid var(--accent);}
@@ -4146,15 +4149,14 @@ function ciCardHTML(){
   const open = ciOpenEntries(), team = ciTeam(), sel = state.ciSel || team;
   if(open.length){
     const p = state.projects.find(x=>x.id===open[0].projekt);
-    return `<div class="order-card ci-card ci-on">
-      <div class="ci-line"><b>${t('ciCheckedIn', {bv: p ? 'BV '+p.id+' '+escapeHtml(p.name) : 'BV '+open[0].projekt, t: hhmm(open[0].in)})}</b></div>
-      ${open.length>1? `<div class="order-time">${open.map(e=>escapeHtml(e.person)).join(', ')}</div>`:''}
-      <button class="advance-btn" data-action="ci-out" ${state.ciBusy?'disabled':''}>${t('ciOut')}</button>
+    return `<div class="ci-bar ci-on">
+      <div class="ci-line"><b>${t('ciCheckedIn', {bv: p ? 'BV '+p.id : 'BV '+open[0].projekt, t: hhmm(open[0].in)})}</b>${open.length>1? `<div class="order-time">${open.map(e=>escapeHtml(e.person)).join(', ')}</div>`:''}</div>
+      <button class="mini-btn ci-btn" data-action="ci-out" ${state.ciBusy?'disabled':''}>${t('ciOut')}</button>
     </div>`;
   }
-  return `<div class="order-card ci-card">
-    ${team.length>1? `<div class="pick-hint">${t('ciTeamLabel')}</div><div class="ziel-chips">${team.map(n=>`<button class="ziel-chip ${sel.includes(n)?'active':''}" data-action="ci-sel" data-name="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('')}</div>`:''}
-    <button class="advance-btn" data-action="ci-in" ${state.ciBusy?'disabled':''}>${state.ciBusy? t('ciChecking') : t('ciIn')}</button>
+  return `<div class="ci-wrap">
+    ${team.length>1? `<div class="ziel-chips ci-team" aria-label="${t('ciTeamLabel')}">${team.map(n=>`<button class="ziel-chip ${sel.includes(n)?'active':''}" data-action="ci-sel" data-name="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('')}</div>`:''}
+    <button class="mini-btn ci-btn ci-in-btn" data-action="ci-in" ${state.ciBusy?'disabled':''}>⏱ ${state.ciBusy? t('ciChecking') : t('ciIn')}</button>
     ${state.ciMsg? `<div class="warn">${state.ciMsg}</div>`:''}
   </div>`;
 }
@@ -5513,6 +5515,7 @@ const SYM_ICONS = {
   'package-open':'<path d="M12 22v-9"/><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/>',
   'clipboard-list':'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
   'file-text':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  'clock':'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
   'camera':'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
   'trash-2':'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
   'house':'<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
@@ -5531,7 +5534,7 @@ const EMO = {
   '✏':'pencil', '🔄':'refresh-cw', '↻':'refresh-cw', '🖨':'printer', '👍':'circle-check', '🔁':'repeat',
   '⬆':'upload', '⭐':'star', '🏗':'building-2', '🏁':'flag', '🔔':'bell', '📐':'drafting-compass',
   '⚖':'weight', '🌐':'globe', '✓':'check', '✗':'x', '📦':'package', '📋':'clipboard-list', '📄':'file-text',
-  '🗑':'trash-2', '📷':'camera', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu',
+  '🗑':'trash-2', '📷':'camera', '⏱':'clock', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu',
 };
 const EMO_RE = new RegExp('(' + Object.keys(EMO).join('|') + ')\\uFE0F?', 'gu');
 function emoIcon(ch){ const v = EMO[ch]; return Array.isArray(v) ? ic(v[0], v[1]) : ic(v); }
