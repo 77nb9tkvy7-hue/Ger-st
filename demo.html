@@ -541,6 +541,27 @@
   .menu-btn{width:44px;height:44px;}
   .katalog-search,.pu-del,.nav-btn{min-height:var(--tap);}
   .pu-del,.nav-btn{display:flex;align-items:center;justify-content:center;}
+  /* Zahlen-Leiste (Handy) statt Kacheln – Task 3 */
+  .stat-strip{display:none;}
+  .gb-short,.st-short{display:none;}
+  @media (max-width: 899px){
+    .widget-grid{display:none;}
+    .stat-strip{display:flex;gap:8px;margin:8px 0 12px 0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;}
+    .stat-strip::-webkit-scrollbar{display:none;}
+    .stat-chip-btn{--wc:var(--muted);flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;min-height:var(--tap);padding:0 14px;border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;font-family:'Inter',sans-serif;font-size:var(--fs-small);font-weight:600;cursor:pointer;white-space:nowrap;}
+    .stat-chip-btn .sc-dot{width:10px;height:10px;border-radius:50%;background:var(--wc);flex:none;}
+    .stat-chip-btn b{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;}
+    .my-status{padding:10px 12px;}
+    .my-status .ms-label,.my-status .ms-meta{display:none;}
+    .my-status .st-full{display:none;} .my-status .st-short{display:inline;}
+    .my-status .seg-control{margin-top:0;}
+    .my-status .nav-btn{margin-top:10px;}
+    .geo-badge.geo-denied{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:6px 6px 6px 12px;}
+    .geo-badge.geo-denied .gb-full{display:none;} .geo-badge.geo-denied .gb-short{display:inline;flex:1;min-width:0;}
+    .geo-badge.geo-denied .geo-retry{margin-top:0;flex:none;padding:0 14px;}
+  }
+  button.stat-chip-btn{transition:transform 140ms var(--ease-out), filter 140ms var(--ease-out);touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+  button.stat-chip-btn:active{transform:scale(0.97);}
   /* Zweitknöpfe in einer Zeile (für Task 4) */
   .btn-row-secondary{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
   .btn-row-secondary > *{flex:1 1 auto;}
@@ -548,6 +569,7 @@
     :root :is(.submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
       .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.inv-actions button,
       .refresh-btn,.role-chip,.geo-retry,.print-btn,button.widget,.proj-row):active{transform:none;}
+    :root button.stat-chip-btn:active{transform:none;}
     .toast,.toast.show{transform:translateX(-50%);}
     .jump-flash{animation-name:jumpFlashSoft;}
   }
@@ -828,6 +850,7 @@ de:{
   wOffenDetail:'{neu} neu · {unterwegs} unterwegs',
   wFahrerUnterwegs:'Fahrer unterwegs',
   wBauvorhaben:'Aktive Bauvorhaben',
+  scNeu:'Neu', scInArbeit:'In Arbeit', scFehlt:'Fehlt', scOffen:'Offen', scFahrer:'Fahrer', scBV:'Baustellen', scUnterwegs:'Unterwegs', scImLager:'Im Lager', scGeliefert:'Geliefert', scZuLaden:'Zu laden', scAufLkw:'Auf LKW', scAbholen:'Abholen', scZuRaeumen:'Räumen', scGeplant:'Geplant', scNone:'–', driverStatusLagerShort:'Am Lager', geoDeniedShort:'📍 Standort aus', geoRetryShort:'Nochmal',
   driverZielLabel:'Wohin?',
   driverSentBy:'Vom Chef geschickt ({name})',
   driverNoZiel:'Ziel noch nicht gewählt',
@@ -1019,6 +1042,7 @@ pl:{
   wOffenDetail:'{neu} nowe · {unterwegs} w drodze',
   wFahrerUnterwegs:'Kierowcy w trasie',
   wBauvorhaben:'Aktywne budowy',
+  scNeu:'Nowe', scInArbeit:'W realizacji', scFehlt:'Brak', scOffen:'Otwarte', scFahrer:'Kierowcy', scBV:'Budowy', scUnterwegs:'W drodze', scImLager:'W magazynie', scGeliefert:'Dostarczone', scZuLaden:'Załadunek', scAufLkw:'Na aucie', scAbholen:'Odbiór', scZuRaeumen:'Sprzątanie', scGeplant:'Plan', scNone:'–', driverStatusLagerShort:'W magazynie', geoDeniedShort:'📍 Lokalizacja wył.', geoRetryShort:'Ponów',
   driverZielLabel:'Dokąd?',
   driverSentBy:'Wysłany przez szefa ({name})',
   driverNoZiel:'Cel jeszcze nie wybrany',
@@ -1210,6 +1234,7 @@ sk:{
   wOffenDetail:'{neu} nové · {unterwegs} na ceste',
   wFahrerUnterwegs:'Vodiči na ceste',
   wBauvorhaben:'Aktívne stavby',
+  scNeu:'Nové', scInArbeit:'V spracovaní', scFehlt:'Chýba', scOffen:'Otvorené', scFahrer:'Vodiči', scBV:'Stavby', scUnterwegs:'Na ceste', scImLager:'V sklade', scGeliefert:'Doručené', scZuLaden:'Na naloženie', scAufLkw:'Na aute', scAbholen:'Odvoz', scZuRaeumen:'Upratať', scGeplant:'Plán', scNone:'–', driverStatusLagerShort:'V sklade', geoDeniedShort:'📍 Poloha vypnutá', geoRetryShort:'Znova',
   driverZielLabel:'Kam?',
   driverSentBy:'Poslal šéf ({name})',
   driverNoZiel:'Cieľ ešte nie je zvolený',
@@ -1401,6 +1426,7 @@ hr:{
   wOffenDetail:'{neu} novo · {unterwegs} na putu',
   wFahrerUnterwegs:'Vozači na putu',
   wBauvorhaben:'Aktivna gradilišta',
+  scNeu:'Novo', scInArbeit:'U obradi', scFehlt:'Nedostaje', scOffen:'Otvoreno', scFahrer:'Vozači', scBV:'Gradilišta', scUnterwegs:'Na putu', scImLager:'U skladištu', scGeliefert:'Isporučeno', scZuLaden:'Za utovar', scAufLkw:'Na kamionu', scAbholen:'Preuzimanje', scZuRaeumen:'Raščistiti', scGeplant:'Plan', scNone:'–', driverStatusLagerShort:'U skladištu', geoDeniedShort:'📍 Lokacija isključena', geoRetryShort:'Ponovo',
   driverZielLabel:'Kamo?',
   driverSentBy:'Poslao šef ({name})',
   driverNoZiel:'Cilj još nije odabran',
@@ -1592,6 +1618,7 @@ en:{
   wOffenDetail:'{neu} new · {unterwegs} en route',
   wFahrerUnterwegs:'Drivers on the road',
   wBauvorhaben:'Active projects',
+  scNeu:'New', scInArbeit:'In progress', scFehlt:'Missing', scOffen:'Open', scFahrer:'Drivers', scBV:'Sites', scUnterwegs:'En route', scImLager:'In stock', scGeliefert:'Delivered', scZuLaden:'To load', scAufLkw:'On truck', scAbholen:'Pickup', scZuRaeumen:'To clear', scGeplant:'Planned', scNone:'–', driverStatusLagerShort:'At depot', geoDeniedShort:'📍 Location off', geoRetryShort:'Retry',
   driverZielLabel:'Where to?',
   driverSentBy:'Sent by the boss ({name})',
   driverNoZiel:'No destination chosen yet',
@@ -2682,7 +2709,7 @@ function catalogHTML(){
 
   return `<h2 class="view-title">${t('catalogTitle')}</h2>
   <p class="view-sub">${t('catalogSub')}</p>
-  ${widgetsHTML('baustelle')}
+  ${widgetsHTML('baustelle')}${statStripHTML('baustelle')}
   ${aktive.length? `<div class="field">
     <label>${t('projektLabel')}</label>
     <select id="projektSelect">
@@ -3106,7 +3133,7 @@ function lagerHTML(){
   const tab = state.lagerTab;
   const orders = sortOrdersForWork(state.orders);
   return `  <h2 class="view-title">${t('lagerTitle')}</h2>
-  ${widgetsHTML('lager')}
+  ${widgetsHTML('lager')}${statStripHTML('lager')}
   ${roleNavHTML('lager-tab', tab, [
     {id:'bestellungen', key:'tabBestellungen', ico:'package', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Abgeholt').length},
     {id:'geplant', key:'tabGeplant', ico:'calendar-clock'},
@@ -3174,12 +3201,13 @@ function myStatusWidgetHTML(){
   const cur = state.driverStatus[state.name];
   const aktive = state.projects.filter(p=>p.aktiv);
   const unterwegs = cur && cur.status==='unterwegs';
-  return `<div class="order-card" style="margin-bottom:16px;">
-    <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">${t('myStatusLabel')}</div>
+  return `<div class="order-card my-status" style="margin-bottom:16px;">
+    <div class="ms-label" style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">${t('myStatusLabel')}</div>
     <div class="seg-control" style="margin-bottom:0;">
       ${DRIVER_STATUSES.map(s=>{
         const m = driverStatusMeta(s);
-        return `<button class="${cur&&cur.status===s?'active':''}" data-action="set-driver-status" data-status="${s}">${t(m.key)}</button>`;
+        const lbl = s==='lager' ? `<span class="st-full">${t(m.key)}</span><span class="st-short">${t('driverStatusLagerShort')}</span>` : t(m.key);
+        return `<button class="${cur&&cur.status===s?'active':''}" data-action="set-driver-status" data-status="${s}">${lbl}</button>`;
       }).join('')}
     </div>
     ${unterwegs && cur.by? `<div class="sent-note">${t('driverSentBy',{name:cur.by})}</div>`:''}
@@ -3189,8 +3217,8 @@ function myStatusWidgetHTML(){
         return `<button class="ziel-chip ${cur.ziel===p.id?'active':''}" data-action="set-driver-ziel" data-id="${p.id}"><i style="${hex?`background:${hex};`:''}"></i>BV ${p.id} – ${p.name}</button>`;
       }).join('')}</div>` : `<div class="order-time" style="margin-top:6px;">${t('pvEmptyActive')}</div>`}`:''}
     ${unterwegs && cur.ziel ? navButtonHTML(cur.ziel) : ''}
-    ${cur? `<div class="order-time" style="margin-top:10px;">${t('statusUpdatedPrefix')} ${cur.time}${cur.auto? ' · 🔄 '+t('autoTag'):''}</div>`:''}
-    ${state.lager && state.lager.coords && state.geoStatus==='on'? `<div class="order-time" style="margin-top:4px;">${t('autoHint')}</div>`:''}
+    ${cur? `<div class="order-time ms-meta" style="margin-top:10px;">${t('statusUpdatedPrefix')} ${cur.time}${cur.auto? ' · 🔄 '+t('autoTag'):''}</div>`:''}
+    ${state.lager && state.lager.coords && state.geoStatus==='on'? `<div class="order-time ms-meta" style="margin-top:4px;">${t('autoHint')}</div>`:''}
   </div>`;
 }
 // Startet Google Maps mit Navigation zum Ziel-Bauvorhaben (Start = eigener
@@ -3224,7 +3252,7 @@ function fahrerHTML(){
   const tab = state.fahrerTab;
   return `  <h2 class="view-title">${t('fahrerTitle')}</h2>
   <div id="geoBadge">${geoBadgeHTML()}</div>
-  ${widgetsHTML('fahrer')}
+  ${widgetsHTML('fahrer')}${statStripHTML('fahrer')}
   ${myStatusWidgetHTML()}
   ${roleNavHTML('fahrer-tab', tab, [
     {id:'lieferungen', key:'tabLieferungen', ico:'truck', badge: state.orders.filter(o=>['Bereit zur Abholung','Beladen','Unterwegs'].includes(o.status)).length + openPickups().length},
@@ -3377,27 +3405,30 @@ function widgetTile(o){
   return `<${tag} class="widget w-${o.tone||'grey'}" ${attrs}>
     <div class="w-top">${o.icon? `<span class="w-ico">${ic(o.icon)}</span>` : '<span class="w-dot"></span>'}${o.label}</div>
     <div class="w-value ${o.small?'small':''}">${o.value}</div>
-    ${o.detail? `<div class="w-detail">${o.detail}</div>`:''}
+    ${o.detail? `<div class="w-detail">${o.detail}</div>`:''}${o.dots||''}
   </${tag}>`;
 }
-function widgetsHTML(role){
+// Kachel-Daten je Rolle: Grundlage für die Kacheln (PC) UND die Zahlen-Leiste (Handy).
+// chip = kurzes Etikett für die Leiste, chipValue = Wert dort (falls anders als in der Kachel).
+function widgetData(role){
   const orders = state.orders;
   const by = s=>orders.filter(o=>s.includes(o.status));
   const firstLine = list=>list.length? `#${list[0].id} · ${list[0].baustelle}` : '';
   const np = nextPlanned();
-  const planTile = tab=>widgetTile({tone:'grey', icon:'calendar-clock', label:t('wNaechsteGeplant'), small:true,
+  const planTile = tab=>({tone:'grey', icon:'calendar-clock', label:t('wNaechsteGeplant'), small:true, chip:t('scGeplant'),
+    chipValue: np? formatDateDE(np.date) : t('scNone'),
     value: np? formatDateDE(np.date) : t('wNichtsGeplant'), detail: np? projektLabel(np.projekt) : '', tab, go:'sec-geplant'});
-  let tiles = [];
+  let d = [];
   if(role==='baustelle'){
     const mine = orders.filter(o=>o.person===state.name).sort((a,b)=>b.id-a.id);
-    if(!mine.length) return '';
+    if(!mine.length) return [];
     const unterwegs = mine.filter(o=>['Beladen','Unterwegs'].includes(o.status));
     const lager = mine.filter(o=>['Neu','In Bearbeitung','Bereit zur Abholung'].includes(o.status));
     const geliefert = mine.filter(o=>o.status==='Geliefert');
-    tiles = [
-      widgetTile({tone:'blue', icon:'truck', label:t('wUnterwegsZuDir'), value:unterwegs.length, detail:firstLine(unterwegs), go:'sec-mine'}),
-      widgetTile({tone:'amber', icon:'warehouse', label:t('wImLager'), value:lager.length, detail: lager.length? `#${lager[0].id} · ${statusLabel(lager[0].status)}` : '', go:'sec-mine'}),
-      widgetTile({tone:'green', icon:'circle-check', label:t('wGeliefert'), value:geliefert.length, detail:firstLine(geliefert), go: geliefert.length? 'done-baustelle' : 'sec-mine', done: geliefert.length? 'baustelle' : ''}),
+    d = [
+      {tone:'blue', icon:'truck', label:t('wUnterwegsZuDir'), chip:t('scUnterwegs'), value:unterwegs.length, detail:firstLine(unterwegs), go:'sec-mine'},
+      {tone:'amber', icon:'warehouse', label:t('wImLager'), chip:t('scImLager'), value:lager.length, detail: lager.length? `#${lager[0].id} · ${statusLabel(lager[0].status)}` : '', go:'sec-mine'},
+      {tone:'green', icon:'circle-check', label:t('wGeliefert'), chip:t('scGeliefert'), value:geliefert.length, detail:firstLine(geliefert), go: geliefert.length? 'done-baustelle' : 'sec-mine', done: geliefert.length? 'baustelle' : ''},
     ];
   }
   if(role==='fahrer'){
@@ -3405,22 +3436,22 @@ function widgetsHTML(role){
     const lkw = by(['Beladen','Unterwegs']);
     const raeumen = state.projects.filter(p=>p.aktiv && p.farbe==='hellblau');
     const pus = openPickups();
-    tiles = [
-      widgetTile({tone:'accent', icon:'package', label:t('wZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'}),
-      widgetTile({tone:'blue', icon:'truck', label:t('wAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'}),
+    d = [
+      {tone:'accent', icon:'package', label:t('wZuLaden'), chip:t('scZuLaden'), value:laden.length, detail:[weightText(laden.flatMap(o=>o.items)), firstLine(laden)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'},
+      {tone:'blue', icon:'truck', label:t('wAufLkw'), chip:t('scAufLkw'), value:lkw.length, detail:[weightText(lkw.flatMap(o=>o.items)), firstLine(lkw)].filter(Boolean).join(' · '), tab:'lieferungen', go:'sec-fahrer-offen'},
       pus.length
-        ? widgetTile({tone:'sky', icon:'undo-2', label:t('wAbholen'), value:pus.length, detail:sortPickups(pus).map(p=>p.projekt? projektLabel(p.projekt) : p.baustelle).join(', '), tab:'lieferungen', go:'sec-fahrer-pu'})
-        : widgetTile({tone:'sky', icon:'building-2', label:t('wZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'}),
+        ? {tone:'sky', icon:'undo-2', label:t('wAbholen'), chip:t('scAbholen'), value:pus.length, detail:sortPickups(pus).map(p=>p.projekt? projektLabel(p.projekt) : p.baustelle).join(', '), tab:'lieferungen', go:'sec-fahrer-pu'}
+        : {tone:'sky', icon:'building-2', label:t('wZuRaeumen'), chip:t('scZuRaeumen'), value:raeumen.length, detail:raeumen.map(p=>p.name).join(', '), tab:'bauvorhaben'},
       planTile('kalender'),
     ];
   }
   if(role==='lager'){
     const neu = by(['Neu']), arbeit = by(['In Bearbeitung']);
     const fehlt = CATALOG.filter(it=>(state.inventory[it.id]??0)<0);
-    tiles = [
-      widgetTile({tone:'grey', icon:'package', label:t('wNeu'), value:neu.length, detail:firstLine(neu), tab:'bestellungen', go:'sec-offen'}),
-      widgetTile({tone:'amber', icon:'package-open', label:t('wInArbeit'), value:arbeit.length, detail:firstLine(arbeit), tab:'bestellungen', go:'sec-offen'}),
-      widgetTile({tone: fehlt.length?'red':'green', icon:'triangle-alert', label:t('wFehlt'), value:fehlt.length, detail:fehlt.map(itemName).join(', '), tab:'inventur'}),
+    d = [
+      {tone:'grey', icon:'package', label:t('wNeu'), chip:t('scNeu'), value:neu.length, detail:firstLine(neu), tab:'bestellungen', go:'sec-offen'},
+      {tone:'amber', icon:'package-open', label:t('wInArbeit'), chip:t('scInArbeit'), value:arbeit.length, detail:firstLine(arbeit), tab:'bestellungen', go:'sec-offen'},
+      {tone: fehlt.length?'red':'green', icon:'triangle-alert', label:t('wFehlt'), chip:t('scFehlt'), value:fehlt.length, detail:fehlt.map(itemName).join(', '), tab:'inventur'},
       planTile('geplant'),
     ];
   }
@@ -3431,18 +3462,29 @@ function widgetsHTML(role){
     const aktive = state.projects.filter(p=>p.aktiv);
     const cnt = c=>aktive.filter(p=>p.farbe===c).length;
     const dots = `<div class="w-dots">${PROJECT_COLORS.map(c=>`<span><i style="background:${projektColorMeta(c).hex}"></i>${cnt(c)}</span>`).join('')}</div>`;
-    tiles = [
-      widgetTile({tone:'amber', icon:'package', label:t('wOffen'), value:offen.length,
-        detail:t('wOffenDetail',{neu:by(['Neu']).length, unterwegs:by(['Beladen','Unterwegs']).length}), tab:'uebersicht', go:'sec-offen'}),
-      widgetTile({tone:'blue', icon:'truck', label:t('wFahrerUnterwegs'), value:`${unterwegs.length}/${drivers.length}`,
-        detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', '), tab:'uebersicht', go:'sec-lkw'}),
-      `<button class="widget w-green" data-action="widget-go" data-tab="bauvorhaben">
-        <div class="w-top"><span class="w-ico">${ic('building-2')}</span>${t('wBauvorhaben')}</div>
-        <div class="w-value">${aktive.length}</div>${dots}</button>`,
+    d = [
+      {tone:'amber', icon:'package', label:t('wOffen'), chip:t('scOffen'), value:offen.length,
+        detail:t('wOffenDetail',{neu:by(['Neu']).length, unterwegs:by(['Beladen','Unterwegs']).length}), tab:'uebersicht', go:'sec-offen'},
+      {tone:'blue', icon:'truck', label:t('wFahrerUnterwegs'), chip:t('scFahrer'), value:`${unterwegs.length}/${drivers.length}`,
+        detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', '), tab:'uebersicht', go:'sec-lkw'},
+      {tone:'green', icon:'building-2', label:t('wBauvorhaben'), chip:t('scBV'), value:aktive.length, dots, tab:'bauvorhaben'},
       planTile('planen'),
     ];
   }
+  return d;
+}
+function widgetsHTML(role){
+  const tiles = widgetData(role).map(widgetTile);
   return tiles.length? `<div class="widget-grid ${tiles.length===3?'three':''}">${tiles.join('')}</div>` : '';
+}
+// Handy (< 900 px): statt Kacheln eine schmale Zeile antippbarer Zahlen (gleiche Sprungziele).
+function statStripHTML(role){
+  const d = widgetData(role);
+  if(!d.length) return '';
+  return `<nav class="stat-strip">${d.map(o=>{
+    const attrs = `data-action="widget-go"${o.tab? ` data-tab="${o.tab}"`:''}${o.go? ` data-go="${o.go}"`:''}${o.done? ` data-done="${o.done}"`:''}`;
+    return `<button class="stat-chip-btn w-${o.tone||'grey'}" ${attrs}><span class="sc-dot"></span><span class="sc-lbl">${o.chip||o.label}</span><b>${o.chipValue!=null? o.chipValue : o.value}</b></button>`;
+  }).join('')}</nav>`;
 }
 
 // ---- Baupläne pro Bauvorhaben ---------------------------------------
@@ -4078,7 +4120,8 @@ function geoBadgeHTML(){
   const s = state.geoStatus;
   if(!s) return '';
   const key = {on:'geoOnShort', wait:'geoWait', denied:'geoDenied', unavailable:'geoUnavail'}[s];
-  return `<div class="geo-badge geo-${s}">${t(key)}${s==='denied'? ` <button class="geo-retry" data-action="geo-retry">${t('geoRetry')}</button>`:''}</div>`;
+  if(s==='denied') return `<div class="geo-badge geo-denied"><span class="gb-full">${t(key)}</span><span class="gb-short">${t('geoDeniedShort')}</span> <button class="geo-retry" data-action="geo-retry"><span class="gb-full">${t('geoRetry')}</span><span class="gb-short">${t('geoRetryShort')}</span></button></div>`;
+  return `<div class="geo-badge geo-${s}">${t(key)}</div>`;
 }
 function updateGeoBadge(){
   const el = document.getElementById('geoBadge');
@@ -4242,7 +4285,7 @@ function chefHTML(){
     {id:'planen', key:'tabPlanen', ico:'calendar-clock'},
     {id:'personal', key:'tabPersonal', ico:'users'}])}
   ${tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
-  ${widgetsHTML('chef')}
+  ${widgetsHTML('chef')}${statStripHTML('chef')}
   ${driverStatusSectionHTML()}
   ${chefPositionsHTML()}
   ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}

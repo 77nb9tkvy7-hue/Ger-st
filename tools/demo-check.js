@@ -95,6 +95,43 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
+  // Task 3: Zahlen-Leiste am Handy (< 900 px), Kacheln am PC; Chips springen ohne Fehler.
+  async strip(ctx) {
+    const { page, errors } = ctx;
+    const problems = [];
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 844 });
+      for (const role of ROLES) {
+        await switchRole(page, role);
+        const r = await page.evaluate(() => {
+          const vis = el => { const b = el.getBoundingClientRect(); return b.width > 0 && b.height > 0 && getComputedStyle(el).display !== 'none'; };
+          const tiles = [...document.querySelectorAll('.widget')].filter(vis).length;
+          const strip = document.querySelector('.stat-strip');
+          const chips = strip ? [...strip.querySelectorAll('.stat-chip-btn')].filter(vis) : [];
+          return { tiles, stripVis: !!(strip && vis(strip)), chips: chips.length, minH: chips.length ? Math.min(...chips.map(c => c.getBoundingClientRect().height)) : 0,
+                   overflowX: document.documentElement.scrollWidth > window.innerWidth };
+        });
+        const tag = `${role}@${width}`;
+        if (width < 900) {
+          if (r.tiles) problems.push(`${tag}: Kacheln sichtbar`);
+          if (!r.stripVis || !r.chips) problems.push(`${tag}: Leiste fehlt`);
+          if (r.minH < 44) problems.push(`${tag}: Chip nur ${r.minH}px hoch`);
+          if (r.overflowX) problems.push(`${tag}: horizontaler Überlauf`);
+          if (r.chips) {
+            await page.click('.stat-chip-btn');
+            await page.waitForTimeout(600);
+            if (!(await page.$('.stat-strip'))) problems.push(`${tag}: Leiste nach Tipp weg`);
+          }
+          await shot(page, 'strip', role, width);
+        } else {
+          if (!r.tiles) problems.push(`${tag}: Kacheln fehlen`);
+          if (r.stripVis) problems.push(`${tag}: Leiste sichtbar`);
+        }
+      }
+    }
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
 };
 
 (async () => {
