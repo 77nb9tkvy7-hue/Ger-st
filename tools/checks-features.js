@@ -158,6 +158,21 @@ module.exports = ({ switchRole, shot }) => {
       if (rpcInfo !== '{}') p.push('public_info liefert noch Daten: ' + rpcInfo.slice(0, 80));
       return errs(errors, p);
     },
+    // Task 4: Schriften und Bausteine selbst mitgeliefert
+    vendor: async ({ page, errors }) => {
+      const p = [];
+      const ext = [];
+      page.on('request', r => { const u = r.url(); if (/fonts\.googleapis|fonts\.gstatic|cdnjs\.cloudflare|cdn\.jsdelivr|unpkg\.com/i.test(u)) ext.push(u); });
+      await page.reload(); await page.waitForSelector('main');
+      for (const role of ['baustelle', 'lager', 'fahrer', 'chef']) await switchRole(page, role);
+      await ev(page, () => { state.chefTab = 'lkws'; render(); });
+      await page.waitForTimeout(1500);
+      const r = await ev(page, async () => { await document.fonts.ready; return { inter: document.fonts.check('600 16px Inter'), sg: document.fonts.check('700 16px "Space Grotesk"'), leaflet: typeof L !== 'undefined' && !!L.map }; });
+      if (ext.length) p.push(`${ext.length} Anfrage(n) an fremde Server: ${ext.slice(0, 2).join(', ')}`);
+      if (!r.inter || !r.sg) p.push('Schriften nicht geladen: ' + JSON.stringify(r));
+      if (!r.leaflet) p.push('Kartenbaustein (Leaflet) nicht geladen');
+      return errs(errors, p);
+    },
   };
 };
 

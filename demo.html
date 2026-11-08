@@ -12,8 +12,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Gerüst-Bestellung">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
 <style>
   :root{
     /* Bewegungs-Kurven (Feinschliff): kräftiges ease-out für Rückmeldungen,
@@ -4278,10 +4277,10 @@ function loadLeaflet(){
   if(leafletLoading) return leafletLoading;
   leafletLoading = new Promise((resolve, reject)=>{
     const css = document.createElement('link');
-    css.rel = 'stylesheet'; css.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css';
+    css.rel = 'stylesheet'; css.href = 'vendor/leaflet/leaflet.css';
     document.head.appendChild(css);
     const js = document.createElement('script');
-    js.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js';
+    js.src = 'vendor/leaflet/leaflet.js';
     js.onload = resolve; js.onerror = ()=>{ leafletLoading = null; reject(); };
     document.head.appendChild(js);
   });
