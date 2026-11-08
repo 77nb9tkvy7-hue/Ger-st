@@ -115,6 +115,49 @@ module.exports = ({ switchRole, shot }) => {
       if (!r.btn) p.push('kein Export-Knopf in der Chef-Übersicht');
       return errs(errors, p);
     },
+    // Task 3: Anmeldung ohne Namensliste
+    login: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      await ev(page, () => { document.querySelector('[data-action="logout"]').click(); });
+      await page.waitForSelector('#loginPw');
+      const sel = await page.$('select#loginName');
+      if (sel) p.push('Anmeldeseite hat noch eine Namensliste (select)');
+      const pageNames = await ev(page, () => /Jochen|Ludwig|Kemal|Chefin/.test(document.getElementById('app').innerHTML));
+      if (pageNames) p.push('Mitarbeiternamen auf der Anmeldeseite sichtbar');
+      // falscher Name
+      await page.fill('#loginName', 'Mox'); await page.fill('#loginPw', '1234');
+      await page.click('[data-action="login"]'); await page.waitForTimeout(500);
+      const w1 = await ev(page, () => (document.querySelector('.warn') || {}).textContent || '');
+      if (!/Name oder Passwort falsch/.test(w1)) p.push('falscher Name → Meldung: ' + w1);
+      // richtiger Name, andere Schreibweise
+      await page.fill('#loginName', '  max '); await page.fill('#loginPw', '1234');
+      await page.click('[data-action="login"]'); await page.waitForTimeout(900);
+      const who = await ev(page, () => ({ name: state.name, logged: state.loggedIn }));
+      if (who.name !== 'Max' || !who.logged) p.push('Anmeldung „  max “ fehlgeschlagen: ' + JSON.stringify(who));
+      // nach Abmelden vorausgefüllt
+      await ev(page, () => { document.querySelector('[data-action="logout"]').click(); });
+      await page.waitForSelector('#loginPw');
+      const pre = await page.inputValue('#loginName');
+      if (pre !== 'Max') p.push('Name nach Abmelden nicht vorausgefüllt: ' + pre);
+      await shot(page, 'login', 'abgemeldet', 390, false);
+      return errs(errors, p);
+    },
+    // Task 3: Kalender nur nach Anmeldung
+    'calendar-lock': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      await ev(page, () => { document.querySelector('[data-action="logout"]').click(); });
+      await page.waitForSelector('#loginPw');
+      for (const view of ['calendar', 'lkwkalender']) {
+        const r = await ev(page, v => { state.view = v; render(); const t = document.body.innerText; return { lock: /nur nach der Anmeldung/.test(t), btn: !!document.querySelector('[data-action="go-app"]'), leak: /BV 1\d\d|Leopold|Schulhaus|Giesing/.test(document.getElementById('app').innerHTML), authed: state.authed }; }, view);
+        if (!r.lock || !r.btn) p.push(`${view}: kein Hinweis/Anmelde-Knopf ${JSON.stringify(r)}`);
+        if (r.leak) p.push(`${view}: Termine/Adressen ohne Anmeldung sichtbar`);
+      }
+      const rpcInfo = await ev(page, async () => { const { data } = await supabaseClient.rpc('public_info'); return JSON.stringify(data || {}); });
+      if (rpcInfo !== '{}') p.push('public_info liefert noch Daten: ' + rpcInfo.slice(0, 80));
+      return errs(errors, p);
+    },
   };
 };
 
