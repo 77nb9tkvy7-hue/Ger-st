@@ -10,7 +10,7 @@ const fs = require('fs');
 const ROOT = path.resolve(__dirname, '..');
 const SHOTS = path.join(__dirname, 'shots');
 const ROLES = ['baustelle', 'lager', 'fahrer', 'chef'];
-const ROLE_VIEW = { baustelle: '.order-table', lager: '.order-card', fahrer: '.order-card', chef: '.order-card' };
+const ROLE_VIEW = { baustelle: '.art-list', lager: '.order-card', fahrer: '.order-card', chef: '.order-card' };
 
 const args = process.argv.slice(2);
 const checkName = args.find(a => !a.startsWith('--')) || 'baseline';
@@ -176,6 +176,89 @@ const CHECKS = {
       r.bad.forEach(b => problems.push(`${role}: ${b}`));
       await shot(page, 'cards', role, 390);
     }
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
+  // Task 5: Baustelle bestellt über Suchfeld oben -> Teile-Art -> Variante -> Bestellschein.
+  // Tipps werden gezählt und gedruckt; die "<= 4 Tipps"-Grenze prüft erst Task 6 (Schnellwahl).
+  async 'order-flow'(ctx) {
+    const { page, errors, opts } = ctx;
+    const problems = [];
+    await page.setViewportSize({ width: 390, height: 844 });
+    await switchRole(page, 'baustelle');
+    await page.evaluate(() => { state.cart = {}; state.openArt = null; state.catalogSearch = ''; render(); window.scrollTo(0, 0); });
+    const top = await page.evaluate(() => { const s = document.getElementById('catalogSearch'); return s ? Math.round(s.getBoundingClientRect().top + window.scrollY) : null; });
+    const sh = await page.evaluate(() => { const s = document.getElementById('catalogSearch'); return s ? Math.round(s.getBoundingClientRect().height) : 0; });
+    console.log(`  Suchfeld top=${top} hoehe=${sh}`);
+    if (top == null || top >= 300) problems.push(`Suchfeld-Oberkante ${top} (soll < 300)`);
+    if (sh < 52) problems.push(`Suchfeld nur ${sh}px hoch`);
+    const artH = await page.evaluate(() => Math.min(...[...document.querySelectorAll('.art-row')].map(r => r.getBoundingClientRect().height)));
+    if (artH < 52) problems.push(`Teile-Art-Zeile nur ${artH}px`);
+    let taps = 0;
+    const konsole = await page.evaluate(() => t('group_konsole'));
+    const art = page.locator('.art-row', { hasText: konsole }).first();
+    if (!(await art.count())) { problems.push('Zeile "Konsole" fehlt'); return problems; }
+    await art.click(); taps++;
+    await page.waitForTimeout(150);
+    const vars = await page.evaluate(() => [...document.querySelectorAll('.art.open .var-row')].map(r => ({ label: r.querySelector('.var-label').textContent.trim(), qty: !!r.querySelector('.qty-ctl [data-qty]') })));
+    console.log(`  Varianten: ${vars.map(v => v.label).join(' | ')}`);
+    for (const n of ['30', '70', '100']) {
+      const v = vars.find(x => new RegExp('\\b' + n + '\\b').test(x.label));
+      if (!v) problems.push(`Variante ${n} fehlt`); else if (!v.qty) problems.push(`Variante ${n} ohne Mengen-Steuerung`);
+    }
+    // Menge 20 bei Konsole 70 (Schnellwahl kommt in Task 6 – hier über das Zahlenfeld)
+    const row70 = page.locator('.art.open .var-row', { has: page.locator('[data-qty="konsole70M"]') });
+    const quick = row70.locator('[data-action="qty-quick"][data-n="20"]');
+    if (await quick.count()) { await quick.click(); taps++; }
+    else {
+      console.log('  (Schnellwahl "20" fehlt noch – Zahlenfeld benutzt, Task 6)');
+      await row70.locator('[data-qty]').click(); taps++;
+      await row70.locator('[data-qty]').fill('20');
+      await row70.locator('[data-qty]').press('Enter');
+    }
+    await page.waitForTimeout(150);
+    const cart = await page.evaluate(() => Object.entries(state.cart).filter(([, q]) => q > 0));
+    const footer = await page.evaluate(() => (document.querySelector('.order-footer span') || {}).textContent || '');
+    console.log(`  Warenkorb ${JSON.stringify(cart)} · Fußleiste "${footer}"`);
+    if (cart.length !== 1 || cart[0][0] !== 'konsole70M' || cart[0][1] !== 20) problems.push(`Warenkorb falsch: ${JSON.stringify(cart)}`);
+    if (!/\b20\b/.test(footer)) problems.push('Fußleiste zeigt nicht 20');
+    const meta = await page.evaluate(() => (document.querySelector('.art.open .art-meta') || {}).textContent || '');
+    if (!/20/.test(meta)) problems.push(`Art-Zeile zeigt kein "20 im Auftrag" (${meta})`);
+    await shot(page, 'order-flow', 'baustelle', 390);
+    await page.click('.order-footer [data-action="open-order-review"]'); taps++;
+    await page.waitForSelector('.review-table', { timeout: 3000 }).catch(() => {});
+    const rows = await page.evaluate(() => [...document.querySelectorAll('.review-table tbody tr')].map(r => [...r.cells].map(c => c.textContent.trim()).join(' × ')));
+    console.log(`  Bestellschein: ${rows.join(' | ')}`);
+    const k70 = await page.evaluate(() => t('part_konsole70'));
+    if (!(rows.length === 1 && rows[0].includes(k70) && /\b20\b/.test(rows[0]))) problems.push(`Bestellschein falsch: ${rows.join(' | ')}`);
+    console.log(`  Tipps gezählt: ${taps} (Grenze <= 4 wird in Task 6 geprüft)`);
+    await shot(page, 'order-flow-review', 'baustelle', 390);
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
+  // Task 5: Chef "Planen" nutzt dieselbe Teile-Art-Liste – Teil wählen und Lieferung einplanen.
+  async plan(ctx) {
+    const { page, errors } = ctx;
+    const problems = [];
+    await switchRole(page, 'chef');
+    await page.evaluate(() => { state.cart = {}; state.openArt = null; state.catalogSearch = ''; state.chefTab = 'planen'; render(); });
+    const before = await page.evaluate(() => state.plannedDeliveries.length);
+    const pid = await page.evaluate(() => { const o = document.querySelector('#planProjektSelect option[value]:not([value=""])'); return o ? o.value : null; });
+    if (!pid) { problems.push('kein Bauvorhaben im Planungs-Formular'); return problems; }
+    await page.selectOption('#planProjektSelect', pid);
+    await page.fill('#planDateInput', '2026-12-01');
+    await page.locator('.art-row', { hasText: await page.evaluate(() => t('group_konsole')) }).first().click();
+    await page.locator('.art.open [data-qty="konsole30M"]').fill('5');
+    await page.locator('.art.open [data-qty="konsole30M"]').press('Enter');
+    await page.locator('.art.open [data-action="qty"][data-id="konsole30M"][data-delta="1"]').click();
+    await page.waitForTimeout(150);
+    await page.click('[data-action="add-planned-delivery"]');
+    await page.waitForTimeout(300);
+    const r = await page.evaluate(() => ({ n: state.plannedDeliveries.length, last: state.plannedDeliveries[state.plannedDeliveries.length - 1], warn: state.planWarn }));
+    console.log(`  geplant vorher ${before}, nachher ${r.n}; letzte: ${JSON.stringify(r.last && r.last.items)} ${r.warn || ''}`);
+    if (r.n !== before + 1) problems.push('Lieferung nicht eingeplant');
+    else if (!r.last.items.some(i => i.id === 'konsole30M' && i.qty === 6)) problems.push('Position Konsole 30 × 6 fehlt');
+    await shot(page, 'plan', 'chef', 390);
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
