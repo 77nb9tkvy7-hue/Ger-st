@@ -542,7 +542,7 @@ const CHECKS = {
       const mix = (top, under) => ({ r: top.r * top.a + under.r * (1 - top.a), g: top.g * top.a + under.g * (1 - top.a), b: top.b * top.a + under.b * (1 - top.a), a: 1 });
       window.__ct = { seen: {}, n: 0 };
       window.__sample = (role) => {
-        const sel = '.status-badge,.pu-badge,.ev-kind,.wunsch-badge,.rn-badge,.order-time,.view-sub,.ms-meta';
+        const sel = '.status-badge,.pu-badge,.ev-kind,.wunsch-badge,.rn-badge,.order-time,.view-sub,.ms-meta,.pick-btn.miss,.pick-miss';
         for (const el of document.querySelectorAll(sel)) {
           const r = el.getBoundingClientRect(); if (!r.width || !r.height || getComputedStyle(el).visibility === 'hidden') continue;
           if (!(el.textContent || '').trim()) continue;
@@ -585,6 +585,23 @@ const CHECKS = {
       }
       if (role === 'lager') { for (const tab of ['geplant', 'inventur', 'bestellungen']) { await page.evaluate(t => { state.lagerTab = t; render(); window.__sample('lager-' + t); }, tab); } }
       if (role === 'chef') { for (const tab of ['uebersicht', 'lkws', 'bauvorhaben', 'planen']) { await page.evaluate(t => { state.chefTab = t; render(); window.__sample('chef-' + t); }, tab); } await page.evaluate(() => { state.chefTab = 'uebersicht'; render(); }); }
+    }
+    // Nicht-Text (WCAG 1.4.11, >= 3:1): Rand des leeren Packlisten-Kreises und des Tour-Häkchens gegen die Karte
+    if (roles.includes('lager') || roles.includes('fahrer')) {
+      const nt = await page.evaluate(async () => {
+        const rgb = s => { const v = s.match(/rgba?\(([^)]+)\)/)[1].split(/[ ,\/]+/).map(Number); return v; };
+        const lum = v => { const f = x => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }; return 0.2126 * f(v[0]) + 0.7152 * f(v[1]) + 0.0722 * f(v[2]); };
+        const ratio = (a, b) => { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); };
+        const card = rgb(getComputedStyle(document.documentElement).getPropertyValue('--card').trim() ? (() => { const d = document.createElement('div'); d.style.color = 'var(--card)'; document.body.appendChild(d); const c = getComputedStyle(d).color; d.remove(); return c; })() : 'rgb(255,255,255)');
+        const out = {};
+        const probe = (cls, inner) => { const w = document.createElement('div'); w.innerHTML = inner; document.body.appendChild(w); const el = w.querySelector(cls); const r = ratio(rgb(getComputedStyle(el).borderTopColor), card); w.remove(); return r; };
+        out.pickBox = probe('.pick-box', '<div class="pick-row"><span class="pick-box"></span></div>');
+        out.tourTick = probe('.tour-tick i', '<button class="tour-tick"><i></i></button>');
+        return out;
+      });
+      console.log(`  Rand leerer Kreis ${nt.pickBox.toFixed(2)}:1, Tour-Häkchen ${nt.tourTick.toFixed(2)}:1`);
+      if (nt.pickBox < 3) problems.push(`.pick-box Rand nur ${nt.pickBox.toFixed(2)}:1`);
+      if (nt.tourTick < 3) problems.push(`.tour-tick Rand nur ${nt.tourTick.toFixed(2)}:1`);
     }
     const res = await page.evaluate(() => ({ n: window.__ct.n, items: Object.values(window.__ct.seen) }));
     const worst = res.items.reduce((a, b) => (a.ratio < b.ratio ? a : b));

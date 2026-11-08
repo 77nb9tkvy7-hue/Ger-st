@@ -476,16 +476,16 @@
   .pick-row.pk-ok{border-color:#1E9E5A;background:rgba(30,158,90,0.08);}
   .pick-row.pk-fehlt{border-color:#DC2626;background:rgba(220,38,38,0.07);}
   .pick-tap{flex:1;min-width:0;min-height:56px;display:flex;align-items:center;gap:12px;border:0;background:transparent;color:var(--ink);padding:8px 4px 8px 12px;text-align:left;cursor:pointer;font-family:'Inter',sans-serif;}
-  .pick-box{flex:none;width:32px;height:32px;border-radius:50%;border:2px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:#fff;}
+  .pick-box{flex:none;width:32px;height:32px;border-radius:50%;border:2px solid var(--muted);display:flex;align-items:center;justify-content:center;color:#fff;}
   .pick-box svg{width:20px;height:20px;opacity:0;}
   .pick-row.pk-ok .pick-box{background:#1E9E5A;border-color:#1E9E5A;}
   .pick-row.pk-ok .pick-box svg{opacity:1;}
   .pick-row.pk-fehlt .pick-box{border-color:#DC2626;}
   .pick-name{font-size:15px;font-weight:600;min-width:0;}
   .pick-row.pk-ok .pick-name{text-decoration:line-through;opacity:0.7;}
-  .pick-miss{flex-basis:100%;display:block;font-size:13px;margin:0;padding:0 12px 10px 12px;color:#DC2626;font-weight:600;}
-  .pick-miss input{width:64px;padding:5px 6px;border:1.5px solid #DC2626;border-radius:8px;font-size:14px;background:var(--card);color:var(--ink);}
-  .pick-btn{flex:none;align-self:center;min-width:76px;min-height:48px;margin:4px 6px 4px 0;border:1.5px solid #DC2626;background:var(--card);color:#DC2626;border-radius:12px;padding:6px 10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;}
+  .pick-miss{flex-basis:100%;display:block;font-size:13px;margin:0;padding:0 12px 10px 12px;color:var(--red);font-weight:600;}
+  .pick-miss input{width:64px;padding:5px 6px;border:1.5px solid var(--red);border-radius:8px;font-size:14px;background:var(--card);color:var(--ink);}
+  .pick-btn{flex:none;align-self:center;min-width:76px;min-height:48px;margin:4px 6px 4px 0;border:1.5px solid var(--red);background:var(--card);color:var(--red);border-radius:12px;padding:6px 10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;}
   .pick-btn.miss.on{background:#DC2626;border-color:#DC2626;color:#fff;}
   .pick-open{font-size:14px;font-weight:700;color:var(--muted);margin:10px 0 2px 0;}
   .pick-ready{margin-top:10px;}
@@ -641,7 +641,7 @@
   .advance-row .advance-btn:first-child{flex:1 1 0;}
   .advance-row .advance-alt{flex:0 0 34%;background:var(--card);color:var(--ink);border:1.5px solid var(--line-strong);}
   .tour-tick{flex:0 0 48px;width:48px;height:48px;margin:-6px 4px -6px -8px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
-  .tour-tick i{width:26px;height:26px;border-radius:8px;border:2px solid var(--line-strong);background:var(--card);display:block;position:relative;transition:transform 140ms var(--ease-out), background-color 140ms var(--ease-out);}
+  .tour-tick i{width:26px;height:26px;border-radius:8px;border:2px solid var(--muted);background:var(--card);display:block;position:relative;transition:transform 140ms var(--ease-out), background-color 140ms var(--ease-out);}
   .tour-tick.on i{background:var(--accent-solid);border-color:var(--accent-solid);}
   .tour-tick.on i::after{content:"";position:absolute;left:8px;top:3px;width:6px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg);}
   .tour-tick:active i{transform:scale(0.9);}
