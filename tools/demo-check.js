@@ -664,6 +664,8 @@ const CHECKS = {
   },
 };
 
+Object.assign(CHECKS, require('./checks-features')({ switchRole, measure, shot }));
+
 (async () => {
   if (checkName === 'all') {
     // Jede Prüfung in einem eigenen Prozess (eigener Browser, frischer Demo-Zustand); eine Zeile je Prüfung.

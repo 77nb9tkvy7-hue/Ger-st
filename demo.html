@@ -279,6 +279,11 @@
   .inv-qty{font-size:13px;color:var(--muted);margin-top:2px;}
   .inv-qty.stock-low{color:#B45309;font-weight:700;}
   .inv-qty.stock-missing{color:var(--red);font-weight:700;}
+  .inv-extra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;}
+  .inv-def{font-weight:700;font-size:13px;}
+  .inv-min{font-size:13px;color:var(--muted);}
+  .pu-def{margin-top:6px;}
+  .np-mode{text-align:center;font-size:14px;font-weight:700;color:var(--accent-dark);margin-top:2px;}
   .inv-qty .tag{margin-left:6px;background:var(--surface-2);border-radius:999px;padding:2px 8px;font-size:13px;}
   .inv-actions{display:flex;gap:5px;flex:none;}
   .inv-actions button{background:var(--surface-2);color:var(--ink);border:none;border-radius:9px;width:32px;height:32px;font-size:15px;font-weight:700;cursor:pointer;}
@@ -978,6 +983,7 @@ de:{
   bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
   mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
   stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  invDefekt:'Defekt: {n}', defectRepair:'Repariert', defectScrap:'Verschrottet', invMin:'Min: {n}', invMinSet:'Min festlegen', stockKnapp:'Knapp (Min {n})', wKnapp:'Knapp im Lager', scKnapp:'Knapp', puDefekt:'davon defekt', npMin:'Mindestbestand', npRepair:'Repariert – Stück', npScrap:'Verschrottet – Stück', npDefekt:'Davon defekt – Stück',
   lagerTitle:'Lager', tabBestellungen:'Bestellungen', tabInventur:'Inventur',
   lagerBestellSub:'Eingehende Bestellungen bearbeiten und für den Fahrer bereitstellen.',
   lagerEmptyOrders:'Noch keine Bestellungen eingegangen.',
@@ -1173,6 +1179,7 @@ pl:{
   bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
   mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
   stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  invDefekt:'Uszkodzone: {n}', defectRepair:'Naprawione', defectScrap:'Złomowane', invMin:'Min: {n}', invMinSet:'Ustaw minimum', stockKnapp:'Mało (min {n})', wKnapp:'Mało w magazynie', scKnapp:'Mało', puDefekt:'w tym uszkodzone', npMin:'Stan minimalny', npRepair:'Naprawione – szt.', npScrap:'Złomowane – szt.', npDefekt:'W tym uszkodzone – szt.',
   lagerTitle:'Magazyn', tabBestellungen:'Zamówienia', tabInventur:'Inwentarz',
   lagerBestellSub:'Obsłuż napływające zamówienia i przygotuj dla kierowcy.',
   lagerEmptyOrders:'Nie wpłynęły jeszcze żadne zamówienia.',
@@ -1368,6 +1375,7 @@ sk:{
   bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
   mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
   stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  invDefekt:'Poškodené: {n}', defectRepair:'Opravené', defectScrap:'Vyradené', invMin:'Min: {n}', invMinSet:'Nastaviť minimum', stockKnapp:'Málo (min {n})', wKnapp:'Málo v sklade', scKnapp:'Málo', puDefekt:'z toho poškodené', npMin:'Minimálny stav', npRepair:'Opravené – ks', npScrap:'Vyradené – ks', npDefekt:'Z toho poškodené – ks',
   lagerTitle:'Sklad', tabBestellungen:'Objednávky', tabInventur:'Inventúra',
   lagerBestellSub:'Spracujte prichádzajúce objednávky a pripravte ich pre vodiča.',
   lagerEmptyOrders:'Zatiaľ neprišli žiadne objednávky.',
@@ -1563,6 +1571,7 @@ hr:{
   bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
   mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
   stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  invDefekt:'Oštećeno: {n}', defectRepair:'Popravljeno', defectScrap:'Otpisano', invMin:'Min: {n}', invMinSet:'Postavi minimum', stockKnapp:'Malo (min {n})', wKnapp:'Malo na skladištu', scKnapp:'Malo', puDefekt:'od toga oštećeno', npMin:'Minimalna zaliha', npRepair:'Popravljeno – kom', npScrap:'Otpisano – kom', npDefekt:'Od toga oštećeno – kom',
   lagerTitle:'Skladište', tabBestellungen:'Narudžbe', tabInventur:'Inventura',
   lagerBestellSub:'Obradite pristigle narudžbe i pripremite ih za vozača.',
   lagerEmptyOrders:'Još nije stigla nijedna narudžba.',
@@ -1758,6 +1767,7 @@ en:{
   bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
   mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
   stockMissingLabel:'Missing:', stockLow:'Stock low',
+  invDefekt:'Damaged: {n}', defectRepair:'Repaired', defectScrap:'Scrapped', invMin:'Min: {n}', invMinSet:'Set minimum', stockKnapp:'Low (min {n})', wKnapp:'Low in stock', scKnapp:'Low', puDefekt:'of which damaged', npMin:'Minimum stock', npRepair:'Repaired – pcs', npScrap:'Scrapped – pcs', npDefekt:'Of which damaged – pcs',
   lagerTitle:'Warehouse', tabBestellungen:'Orders', tabInventur:'Stock',
   lagerBestellSub:'Process incoming orders and prepare them for the driver.',
   lagerEmptyOrders:'No orders received yet.',
@@ -2128,7 +2138,7 @@ function roleLabel(role){ return t('roleLabel'+role.charAt(0).toUpperCase()+role
 
 const state = {
   loggedIn:false, name:'', role:null,
-  cart:{}, orders:[], orderCounter:1001, inventory:{...DEFAULT_INVENTORY},
+  cart:{}, orders:[], orderCounter:1001, inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
   employees:[], empCounter:1, authName:null, pushSubs:[], pushMsg:'', persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
@@ -2194,6 +2204,7 @@ function same(a, b){ return stableStr(a)===stableStr(b); }
 
 function stateToValue(){
   return clone({orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
+    minStock:state.minStock, defect:state.defect,
     projects:state.projects, projektCounter:state.projektCounter,
     calendarEntries:state.calendarEntries, calCounter:state.calCounter,
     driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager, chefPw:state.chefPw,
@@ -2208,6 +2219,8 @@ function applyValue(v){
   state.orders = v.orders || [];
   state.orderCounter = v.counter || 1001;
   state.inventory = v.inventory || {...DEFAULT_INVENTORY};
+  state.minStock = v.minStock || {};
+  state.defect = v.defect || {};
   state.projects = v.projects || [];
   state.projektCounter = v.projektCounter || 101;
   state.calendarEntries = v.calendarEntries || [];
@@ -2327,7 +2340,7 @@ function merge3(base, local, remote){
     const lc = Number(local[ck])||0, rc = Number(remote[ck])||0;
     out[ck] = Math.max(lc, rc, maxId+1);
   });
-  [['inventory', true], ['driverStatus', false], ['driverPos', false]].forEach(([k, num])=>{
+  [['inventory', true], ['defect', true], ['minStock', false], ['driverStatus', false], ['driverPos', false]].forEach(([k, num])=>{
     handled.add(k);
     const m = mergeMap(base[k], local[k], remote[k], num);
     out[k] = m.out; changes += m.changes;
@@ -2979,11 +2992,12 @@ function numpadHTML(){
   const np = state.numpad;
   const it = np && CATALOG.find(c=>c.id===np.id);
   if(!it) return '';
-  const cur = state.cart[it.id]||0;
+  const cur = numpadCurrent(np);
   const keys = ['1','2','3','4','5','6','7','8','9'].map(k=>`<button type="button" class="np-key" data-action="numpad-key" data-k="${k}">${k}</button>`).join('');
   return `<div class="overlay" data-action="numpad-cancel">
     <div class="drawer numpad" role="dialog" aria-modal="true" aria-label="${t('numpadAria',{name:itemName(it)})}">
       <div class="np-name">${itemName(it)}</div>
+      ${np.mode? `<div class="np-mode">${t(NUMPAD_MODES[np.mode])}</div>`:''}
       <div class="np-unit">${unitLabel(it.unit)}${cur? ' · '+t('numpadCurrent',{n:cur}):''}</div>
       <div class="np-display${np.val===''?' empty':''}" id="npDisplay" aria-live="polite">${np.val===''? cur : np.val}</div>
       <div class="np-grid">${keys}
@@ -3000,12 +3014,25 @@ function numpadKey(k){
   else if(np.val.length < 4) np.val = (np.val==='0' ? '' : np.val) + k;
   render();
 }
+// Ziffernblock-Modi: ohne mode = Menge im Auftrag; sonst Mindestbestand,
+// Repariert/Verschrottet (Defekt-Bestand) oder "davon defekt" im Abhol-Editor.
+const NUMPAD_MODES = {min:'npMin', repair:'npRepair', scrap:'npScrap', pdef:'npDefekt'};
+function numpadCurrent(np){
+  if(np.mode==='min') return (state.minStock||{})[np.id]||0;
+  if(np.mode==='repair' || np.mode==='scrap') return (state.defect||{})[np.id]||0;
+  if(np.mode==='pdef') return (state.puDraft && state.puDraft.defekt && state.puDraft.defekt[np.id])||0;
+  return state.cart[np.id]||0;
+}
 function numpadOk(){
   const np = state.numpad; if(!np) return;
   state.numpad = null;
-  if(np.val!==''){
-    const n = Math.max(0, Math.min(9999, parseInt(np.val,10)||0));
-    if(n) state.cart[np.id] = n; else delete state.cart[np.id];
+  if(np.val!=='' || np.mode==='repair' || np.mode==='scrap'){
+    const n = Math.max(0, Math.min(9999, np.val===''? numpadCurrent(np) : (parseInt(np.val,10)||0)));
+    if(np.mode==='min'){ if(n) state.minStock[np.id] = n; else delete state.minStock[np.id]; saveShared(); }
+    else if(np.mode==='repair'){ repairDefect(np.id, n); saveShared(); }
+    else if(np.mode==='scrap'){ scrapDefect(np.id, n); saveShared(); }
+    else if(np.mode==='pdef'){ if(state.puDraft){ const max = state.puDraft.items[np.id]||0; state.puDraft.defekt[np.id] = Math.min(n, max); } }
+    else { if(n) state.cart[np.id] = n; else delete state.cart[np.id]; }
   }
   render();
 }
@@ -3163,6 +3190,7 @@ function openPickupEditor(pu, presetProjekt){
   else if(aktive.length) projekt = String(aktive[0].id);
   state.puDraft = {id: pu? pu.id : null, projekt, ort: pu && !pu.projekt ? pu.baustelle : '',
     items: pu ? Object.fromEntries((pu.items||[]).map(i=>[i.id, i.qty])) : {},
+    defekt: pu ? Object.fromEntries((pu.items||[]).filter(i=>i.defekt).map(i=>[i.id, i.defekt])) : {},
     abbau: !!(pu && pu.abbau), notiz: pu ? (pu.notiz||'') : '', wunsch: pu && pu.wunsch ? pu.wunsch : 'normal', bis: pu && pu.bis ? pu.bis : '', search:''};
   state.puWarn = '';
   render();
@@ -3175,7 +3203,7 @@ function puQtyHTML(id, q){
   </div>`;
 }
 function puItemsFromDraft(d){
-  return Object.entries(d.items).filter(([,q])=>q>0).map(([id,q])=>{ const it = CATALOG.find(c=>c.id===id); return it ? {id, name:it.name, unit:it.unit, qty:q, kg:it.kg} : null; }).filter(Boolean);
+  return Object.entries(d.items).filter(([,q])=>q>0).map(([id,q])=>{ const it = CATALOG.find(c=>c.id===id); if(!it) return null; const r = {id, name:it.name, unit:it.unit, qty:q, kg:it.kg}; const df = Math.min(q, (d.defekt||{})[id]||0); if(df) r.defekt = df; return r; }).filter(Boolean);
 }
 function puSumText(d){
   const items = puItemsFromDraft(d);
@@ -3189,7 +3217,7 @@ function pickupEditorHTML(){
   const vor = pid ? deliveredAt(pid) : {};
   const ids = [...new Set([...Object.keys(vor), ...Object.keys(d.items)])].filter(id=>CATALOG.some(c=>c.id===id));
   const row = id => { const it = CATALOG.find(c=>c.id===id); return `<tr>
-      <td class="t-name">${itemName(it)}${vor[id]? `<div class="pu-vor">${t('puVorOrt',{n:vor[id]})}</div>`:''}</td>
+      <td class="t-name">${itemName(it)}${vor[id]? `<div class="pu-vor">${t('puVorOrt',{n:vor[id]})}</div>`:''}${state.role!=='baustelle' && d.items[id]>0? `<button type="button" class="mini-btn pu-def" data-action="pdef-open" data-id="${id}">${t('puDefekt')}: ${(d.defekt||{})[id]||0}</button>`:''}</td>
       <td style="text-align:right;">${puQtyHTML(id, d.items[id]||0)}</td></tr>`; };
   const found = d.search.trim() ? CATALOG.filter(it=>!ids.includes(it.id) && matchSearch(it, d.search)).slice(0,12) : [];
   return `<div class="overlay" data-action="pu-cancel-bg">
@@ -3361,16 +3389,46 @@ function orderCardHTML(o, role, extra){
   </div>`;
 }
 
+// Bestand: knapp = unter dem Mindestbestand (state.minStock), fehlt = negativ
+function stockStatus(id){
+  const q = state.inventory[id] ?? 0, m = (state.minStock||{})[id];
+  if(q < 0) return 'fehlt';
+  if(m != null && q < m) return 'knapp';
+  return 'ok';
+}
+// Abholung "Im Lager": Gutes in den Bestand, Defektes in den Defekt-Bestand
+function bookPickupIntoStock(pu){
+  (pu.items||[]).forEach(i=>{
+    const d = Math.min(i.qty, Math.max(0, i.defekt||0));
+    state.inventory[i.id] = (state.inventory[i.id] ?? 0) + i.qty - d;
+    if(d) state.defect[i.id] = (state.defect[i.id]||0) + d;
+  });
+}
+function repairDefect(id, n){
+  n = Math.min(n, state.defect[id]||0); if(n <= 0) return;
+  state.defect[id] -= n; state.inventory[id] = (state.inventory[id] ?? 0) + n;
+}
+function scrapDefect(id, n){
+  n = Math.min(n, state.defect[id]||0); if(n <= 0) return;
+  state.defect[id] -= n;
+}
 function inventoryRowHTML(it, editable){
   const qty = state.inventory[it.id] ?? 0;
+  const min = (state.minStock||{})[it.id], def = (state.defect||{})[it.id]||0;
   let qtyClass='', tag='';
   if(qty<0){ qtyClass='stock-missing'; tag=`${t('stockMissingLabel')} ${-qty} ${unitLabel(it.unit)}`; }
-  else if(qty>0 && qty<10){ qtyClass='stock-low'; tag=t('stockLow'); }
+  else if(stockStatus(it.id)==='knapp'){ qtyClass='stock-low'; tag=t('stockKnapp',{n:min}); }
+  else if(min==null && qty>0 && qty<10){ qtyClass='stock-low'; tag=t('stockLow'); }
+  const extra = (editable || min!=null || def) ? `<div class="inv-extra">
+      ${editable? `<button class="mini-btn" data-action="min-open" data-id="${it.id}">${min!=null? t('invMin',{n:min}) : t('invMinSet')}</button>` : (min!=null? `<span class="inv-min">${t('invMin',{n:min})}</span>`:'')}
+      ${def? `<span class="inv-def">${t('invDefekt',{n:def})}</span>${editable? `<button class="mini-btn" data-action="defect-repair" data-id="${it.id}">${t('defectRepair')}</button><button class="mini-btn" data-action="defect-scrap" data-id="${it.id}">${t('defectScrap')}</button>`:''}`:''}
+    </div>` : '';
   return `<div class="inv-row">
     <div class="inv-icon">${ICONS[it.icon]}</div>
     <div class="inv-main">
       <div class="inv-name">${itemName(it)}</div>
       <div class="inv-qty ${qtyClass}">${qty} ${unitLabel(it.unit)} ${tag? `<span class="tag">${tag}</span>`:''}</div>
+      ${extra}
     </div>
     ${editable? `<div class="inv-actions">
       <button data-action="inv" data-id="${it.id}" data-delta="-1">−</button>
@@ -3709,10 +3767,12 @@ function widgetData(role){
   if(role==='lager'){
     const neu = by(['Neu']), arbeit = by(['In Bearbeitung']);
     const fehlt = CATALOG.filter(it=>(state.inventory[it.id]??0)<0);
+    const knapp = CATALOG.filter(it=>stockStatus(it.id)==='knapp');
     d = [
       {tone:'grey', icon:'package', label:t('wNeu'), chip:t('scNeu'), value:neu.length, detail:firstLine(neu), tab:'bestellungen', go:'sec-offen'},
       {tone:'amber', icon:'package-open', label:t('wInArbeit'), chip:t('scInArbeit'), value:arbeit.length, detail:firstLine(arbeit), tab:'bestellungen', go:'sec-offen'},
       {tone: fehlt.length?'red':'green', icon:'triangle-alert', label:t('wFehlt'), chip:t('scFehlt'), value:fehlt.length, detail:fehlt.map(itemName).join(', '), tab:'inventur'},
+      {tone: knapp.length?'amber':'green', icon:'package', label:t('wKnapp'), chip:t('scKnapp'), value:knapp.length, detail:knapp.map(itemName).join(', '), tab:'inventur'},
       planTile('geplant'),
     ];
   }
@@ -5087,6 +5147,10 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     numpadReturn = {id:el.dataset.id, i:[...document.querySelectorAll('.qty-num')].filter(x=>x.dataset.numfor===el.dataset.id).indexOf(el)};
     state.numpad = {id:el.dataset.id, val:''}; render();
   }
+  if(action==='min-open'){ state.numpad = {id:el.dataset.id, val:'', mode:'min'}; render(); }
+  if(action==='defect-repair'){ state.numpad = {id:el.dataset.id, val:'', mode:'repair'}; render(); }
+  if(action==='defect-scrap'){ state.numpad = {id:el.dataset.id, val:'', mode:'scrap'}; render(); }
+  if(action==='pdef-open' && state.puDraft){ state.numpad = {id:el.dataset.id, val:'', mode:'pdef'}; render(); }
   if(action==='numpad-key'){ numpadKey(el.dataset.k); }
   if(action==='numpad-ok'){ numpadOk(); }
   if(action==='numpad-cancel' && e.target===el){ state.numpad=null; render(); }
@@ -5205,7 +5269,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     pu.status = step.next;
     if(step.next==='Unterwegs') pu.fahrer = state.name;
     if(step.next==='Im Lager'){
-      (pu.items||[]).forEach(i=>{ state.inventory[i.id] = (state.inventory[i.id] ?? 0) + i.qty; });
+      bookPickupIntoStock(pu);
       pu.imLagerAm = nowStr();
     }
     render();
