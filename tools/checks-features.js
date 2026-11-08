@@ -263,6 +263,7 @@ module.exports = ({ switchRole, shot }) => {
       const btn = await page.$(`[data-action="sig-open"][data-order="${oid}"]`);
       if (!btn) { p.push('kein Knopf „Unterschrift“ auf der Karte „Unterwegs“'); return errs(errors, p); }
       await btn.click(); await page.waitForSelector('#sigCanvas');
+      await page.waitForFunction(() => !document.getAnimations().length, null, { timeout: 3000 }).catch(() => {});  // Einblenden (280 ms) abwarten, sonst stimmen die Koordinaten nicht
       const box = await (await page.$('#sigCanvas')).boundingBox();
       await page.mouse.move(box.x + 30, box.y + 60); await page.mouse.down();
       for (let i = 1; i <= 12; i++) await page.mouse.move(box.x + 30 + i * 20, box.y + 60 + (i % 2 ? 50 : 0));
