@@ -2736,7 +2736,7 @@ function qtyChipsHTML(it){
 const PART_GROUPS = { konsole: ['konsole30','konsole70','konsole100'] };
 const PART_GROUP_OF = Object.fromEntries(Object.entries(PART_GROUPS).flatMap(([g, keys])=>keys.map(k=>[k, g])));
 
-function variantRowHTML(it, full, icon){
+function variantRowHTML(it, full, icon, noChips){
   const label = (!full && it.v!=null) ? variantLabel(it.v, state.lang) : itemName(it);
   const kg = it.kg!=null ? `${it.kg.toLocaleString(LOCALES[state.lang]||'de-DE')} kg` : '';
   const on = (state.cart[it.id]||0) > 0;
@@ -2747,7 +2747,7 @@ function variantRowHTML(it, full, icon){
       <span class="var-sub">${unitLabel(it.unit)}${kg? ' · '+kg : ''}</span>
     </div>
     ${qtyControlHTML(it)}
-    ${qtyChipsHTML(it)}
+    ${noChips? '' : qtyChipsHTML(it)}
   </div>`;
 }
 
@@ -2774,7 +2774,7 @@ function artRowHTML(a){
   const items = a.parts.flatMap(p=>p.items);
   if(items.length===1){
     const only = items[0], on = (state.cart[only.id]||0)>0;
-    return `<div class="art single${on?' has-cart':''}">${variantRowHTML(only, true, ICONS[a.icon]||'')}</div>`;
+    return `<div class="art single${on?' has-cart':''}">${variantRowHTML(only, true, ICONS[a.icon]||'', true)}</div>`;
   }
   const inCart = items.reduce((s,it)=>s+(state.cart[it.id]||0), 0);
   const open = state.openArt===a.key;
@@ -4473,12 +4473,11 @@ function scrollBehavior(){ return REDUCE_MOTION.matches ? 'auto' : 'smooth'; }
 // bei jeder Änderung darin (+/−, Chips) neu baut – dann würde es jedes Mal
 // neu hereingleiten. Gemerkt wird, welches Fenster offen war (data-action
 // des Hintergrunds); nur bei einem Wechsel wird animiert. Schließen: sofort.
-let overlayOpenKey = null;
+let overlayOpenKeys = [];
 function animateOverlayOnOpen(){
-  const ovs = document.querySelectorAll('#app > .overlay');
-  const ov = ovs.length ? ovs[ovs.length-1] : null;
-  const key = ov ? ov.dataset.action : null;
-  if(ov && key !== overlayOpenKey && ov.animate){
+  const ovs = [...document.querySelectorAll('#app > .overlay')];
+  ovs.forEach(ov=>{
+    if(overlayOpenKeys.includes(ov.dataset.action) || !ov.animate) return;
     const reduce = REDUCE_MOTION.matches;
     ov.animate([{opacity:0},{opacity:1}], {duration:200, easing:'ease-out'});
     const pop = ov.querySelector('.item-popup');
@@ -4490,8 +4489,8 @@ function animateOverlayOnOpen(){
       sheet.animate(frames, pop ? {duration:180, easing:'cubic-bezier(0.23,1,0.32,1)'}
                                 : {duration:280, easing:'cubic-bezier(0.32,0.72,0,1)'});
     }
-  }
-  overlayOpenKey = key;
+  });
+  overlayOpenKeys = ovs.map(ov=>ov.dataset.action);
 }
 
 // Reiter einer Rolle: am PC wie bisher oben, am Handy als feste Leiste unten
@@ -5579,6 +5578,7 @@ document.getElementById('app').addEventListener('contextmenu', (e)=>{
 // Ziffernblock auch mit der Tastatur (PC): Ziffern, Rücktaste, Enter, Esc
 document.addEventListener('keydown', (e)=>{
   if(!state.numpad || e.ctrlKey || e.metaKey || e.altKey) return;
+  if(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) && !e.target.closest('.numpad')) return;
   if(/^[0-9]$/.test(e.key)) numpadKey(e.key);
   else if(e.key==='Backspace') numpadKey('del');
   else if(e.key==='Enter') numpadOk();

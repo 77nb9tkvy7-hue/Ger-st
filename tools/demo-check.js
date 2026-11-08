@@ -275,6 +275,15 @@ const CHECKS = {
     await page.click('[data-action="numpad-open"][data-id="konsole70M"]');
     await page.keyboard.press('9'); await page.keyboard.press('Escape');
     if (await page.evaluate(() => state.numpad || state.cart.konsole70M)) problems.push('Esc hat nicht abgebrochen');
+    // Kein Neu-Abspielen: Popup -> Ziffernblock -> OK darf das Popup nicht erneut animieren
+    await page.evaluate(() => { state.itemPopup = 'konsole70M'; render(); });
+    await page.waitForTimeout(400);
+    await page.click('.item-popup [data-action="numpad-open"]');
+    await page.waitForTimeout(500);
+    await page.click('.np-key.np-ok');
+    const anims = await page.evaluate(() => document.getAnimations().length);
+    if (anims !== 0) problems.push(`${anims} Animation(en) nach Schließen des Ziffernblocks (Popup spielt neu)`);
+    await page.evaluate(() => { state.itemPopup = null; render(); });
     // R6: Chip setzt Menge, "Häufig bestellt"-Dopplung + Art-Zeile ziehen mit
     await page.click('[data-action="qty-quick"][data-id="konsole70M"][data-q="10"]');
     const synced = await page.evaluate(() => {
