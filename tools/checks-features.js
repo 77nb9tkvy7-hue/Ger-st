@@ -305,6 +305,65 @@ module.exports = ({ switchRole, shot }) => {
       if (leak) p.push('Zeit-Daten im großen Datensatz');
       return errs(errors, p);
     },
+    // Task 8: Einchecken, Stunden, Regiebericht
+    zeit: async ({ page, context, errors }) => {
+      const p = [];
+      await context.grantPermissions(['geolocation']);
+      await switchRole(page, 'baustelle');
+      const bv = await ev(page, () => { const x = state.projects.find(q => q.aktiv && q.coords); return { id: x.id, lat: x.coords.lat, lon: x.coords.lon }; });
+      const tryIn = async (dLat, acc) => {
+        await context.setGeolocation({ latitude: bv.lat + dLat, longitude: bv.lon, accuracy: acc });
+        await page.click('[data-action="ci-in"]');
+        const hint = await page.$('[data-action="ci-hint-ok"]');
+        if (hint) { await hint.click(); }
+        await page.waitForTimeout(900);
+        return ev(page, () => ({ msg: state.ciMsg || '', open: (state.zeit || []).filter(e => e.person === 'Max' && !e.out).length, hintSeen: true }));
+      };
+      const far = await tryIn(0.0036, 20);
+      if (!/zu weit/i.test(far.msg) || far.open) p.push('(a) 400 m: ' + JSON.stringify(far));
+      const bad = await tryIn(0.00072, 250);
+      if (!/ungenau/i.test(bad.msg) || bad.open) p.push('(a) ±250 m: ' + JSON.stringify(bad));
+      const ok = await tryIn(0.00072, 20);
+      if (ok.open !== 1) p.push('(a) 80 m nicht eingecheckt: ' + JSON.stringify(ok));
+      await page.click('[data-action="ci-out"]'); await page.waitForTimeout(700);
+      const out1 = await ev(page, () => (state.zeit || []).filter(e => e.person === 'Max' && !e.out).length);
+      if (out1 !== 0) p.push('(a) Auschecken ging nicht');
+      // (b) Kolonne: Chef legt Team an, Max checkt 3 Personen ein und aus
+      await switchRole(page, 'chef');
+      const kset = await ev(page, () => setKolonne('Max', ['Kemal', 'Jochen']));
+      if (!kset) p.push('(b) Kolonne nicht gespeichert');
+      await switchRole(page, 'baustelle');
+      await page.waitForTimeout(400);
+      await page.click('[data-action="ci-in"]'); await page.waitForTimeout(900);
+      const team = await ev(page, () => (state.zeit || []).filter(e => !e.out).map(e => e.person).sort().join(','));
+      if (team !== 'Jochen,Kemal,Max') p.push('(b) Kolonne eingecheckt: ' + team);
+      await page.click('[data-action="ci-out"]'); await page.waitForTimeout(900);
+      const team2 = await ev(page, () => (state.zeit || []).filter(e => !e.out).length);
+      if (team2 !== 0) p.push('(b) Kolonne nicht ausgecheckt: ' + team2);
+      // (c) Stunden + Korrektur, Kalender-Spalte nur Chef
+      const h = await ev(page, () => hoursOf({ in: '2026-11-08T06:00:00Z', out: '2026-11-08T14:30:00Z' }));
+      if (h !== 8.5) p.push('(c) hoursOf 06:00–14:30 = ' + h);
+      await switchRole(page, 'chef');
+      const c = await ev(page, async pid => {
+        await appendProtected('zeit:2026-11', { id: 'k1', person: 'Max', projekt: pid, in: '2026-11-03T06:00:00Z', out: '2026-11-03T14:30:00Z', by: 'Max' });
+        await loadZeit();
+        const e = state.zeit.find(x => x.id === 'k1');
+        await korrigiereZeit(e, { in: '2026-11-03T06:30:00Z', out: '2026-11-03T14:30:00Z', grund: 'Pause' });
+        await loadZeit();
+        state.view = 'calendar'; render();
+        const el = [...document.querySelectorAll('.cal-hours')].map(x => x.textContent).join(' | ');
+        return { h: hoursOf(state.zeit.find(x => x.id === 'k1')), el };
+      }, bv.id);
+      if (c.h !== 8) p.push('(c) korrigiert ≠ 8,0: ' + c.h);
+      if (!/8,0/.test(c.el) || !/korrigiert/.test(c.el)) p.push('(c) Kalender zeigt Stunden nicht: ' + c.el.slice(0, 120));
+      await shot(page, 'zeit', 'chef-kalender', 390, false);
+      const rb = await ev(page, pid => { state.view = 'app'; state.chefTab = 'bauvorhaben'; state.chefProjekt = pid; render(); const h = document.getElementById('sec-regie'); return !!h && /8,0/.test(h.parentElement.textContent); }, bv.id);
+      if (!rb) p.push('(c) Regiebericht im BV fehlt/ohne Stunden');
+      await switchRole(page, 'baustelle');
+      const d = await ev(page, () => { state.view = 'calendar'; render(); const r = { cls: document.querySelectorAll('.cal-hours').length, txt: /Stunden/.test(document.getElementById('app').innerText) }; state.view = 'app'; render(); return r; });
+      if (d.cls || d.txt) p.push('(d) Nicht-Chef sieht Stunden im Kalender');
+      return errs(errors, p);
+    },
   };
 };
 

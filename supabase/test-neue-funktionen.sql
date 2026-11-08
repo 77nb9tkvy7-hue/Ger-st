@@ -8,10 +8,15 @@ create table public.app_state(key text primary key, value jsonb);
 create function public.jwt_name() returns text language sql stable as $$ select current_setting('t.name', true) $$;
 create function public.jwt_is_chef() returns boolean language sql stable as $$ select current_setting('t.chef', true) = '1' $$;
 create function public.jwt_has_role() returns boolean language sql stable as $$ select coalesce(current_setting('t.name', true),'') <> '' $$;
-insert into public.app_state values ('shopfloor-data-v2', '{"employees":[{"id":1,"name":"Max","roles":["baustelle"],"kolonne":["Kemal"]},{"id":2,"name":"Jochen","roles":["lager"]},{"id":3,"name":"Kemal","roles":["baustelle"]},{"id":4,"name":"Chefin","roles":["chef"]}],"projects":[{"id":101,"abgerechnetAm":"2024-01-01"},{"id":102}]}');
+insert into public.app_state values ('shopfloor-data-v2', '{"employees":[{"id":1,"name":"Max","roles":["baustelle"]},{"id":2,"name":"Jochen","roles":["lager"]},{"id":3,"name":"Kemal","roles":["baustelle"]},{"id":4,"name":"Chefin","roles":["chef"]}],"projects":[{"id":101,"abgerechnetAm":"2024-01-01"},{"id":102}]}');
 \i neue-funktionen-ohne-storage.sql
 -- login_lookup
 select 'lookup', public.login_lookup('  max '), public.login_lookup('Mox'), public.public_info();
+-- Kolonnen: nur Chef setzt
+select set_config('t.name','Max',false), set_config('t.chef','0',false);
+select 'max kolonne_set', public.kolonne_set('Max', '["Kemal"]');
+select set_config('t.name','Chefin',false), set_config('t.chef','1',false);
+select 'chef kolonne_set', public.kolonne_set('Max', '["Kemal"]');
 -- als Max
 select set_config('t.name','Max',false), set_config('t.chef','0',false);
 select 'max own', public.prot_upsert('zeit:2026-11', '{"id":"a","person":"Max","projekt":102,"in":"1999-01-01T00:00:00Z"}');
@@ -33,4 +38,5 @@ select 'cleanup', public.zeit_cleanup();
 select 'after cleanup', key, jsonb_array_length(value->'entries') from public.app_state where key like 'zeit:%' order by key;
 -- als Max: liest eigene + Kolonne
 select set_config('t.name','Max',false), set_config('t.chef','0',false);
+select 'max kolonne_get', public.kolonne_get();
 select 'max read persons', (select string_agg(x->>'person', ',' order by x->>'person') from jsonb_array_elements(public.prot_read('zeit:2026')->0->'entries') x);

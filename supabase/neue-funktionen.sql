@@ -50,12 +50,37 @@ create policy "fotos loeschen 5 min" on storage.objects for delete to authentica
 --   Chef: alles. Alle anderen: nur eigene Einträge + die ihrer Kolonne
 --   (employees[].kolonne = Namen), keine Korrekturen ('korr'), und Ein-/Auscheck-
 --   Zeiten setzt der Server (now()), nicht das Handy.
+-- Kolonnen liegen in der eigenen Zeile 'kolonnen' = {"<Kolonnenführer>": ["Name", …]}
+-- (NICHT im großen Datensatz – den dürfen alle mit Rolle ändern, sonst könnte sich
+-- jemand selbst zum Kolonnenführer machen und fremde Stunden lesen). Ändern nur Chef.
 create or replace function public.prot_team(me text) returns jsonb
 language sql stable security definer set search_path = public as $$
-  select coalesce((select e -> 'kolonne' from public.app_state s, jsonb_array_elements(coalesce(s.value -> 'employees', '[]'::jsonb)) e
-                   where s.key = 'shopfloor-data-v2' and e ->> 'name' = me limit 1), '[]'::jsonb)
+  select coalesce((select value -> me from public.app_state where key = 'kolonnen'), '[]'::jsonb)
 $$;
 revoke all on function public.prot_team(text) from public;
+
+create or replace function public.kolonne_get() returns jsonb
+language sql stable security definer set search_path = public as $$
+  select case when not public.jwt_has_role() then '{}'::jsonb
+              when public.jwt_is_chef() then coalesce((select value from public.app_state where key = 'kolonnen'), '{}'::jsonb)
+              else coalesce((select jsonb_build_object(public.jwt_name(), value -> public.jwt_name()) from public.app_state
+                             where key = 'kolonnen' and value ? public.jwt_name()), '{}'::jsonb) end
+$$;
+revoke all on function public.kolonne_get() from public;
+grant execute on function public.kolonne_get() to authenticated;
+
+create or replace function public.kolonne_set(p_name text, p_members jsonb) returns boolean
+language plpgsql security definer set search_path = public as $$
+begin
+  if not public.jwt_is_chef() or coalesce(p_name, '') = '' or jsonb_typeof(p_members) <> 'array' then return false; end if;
+  insert into public.app_state(key, value) values ('kolonnen', '{}'::jsonb) on conflict (key) do nothing;
+  update public.app_state set value = case when jsonb_array_length(p_members) = 0 then value - p_name
+                                           else jsonb_set(value, array[p_name], p_members) end
+   where key = 'kolonnen';
+  return true;
+end $$;
+revoke all on function public.kolonne_set(text, jsonb) from public;
+grant execute on function public.kolonne_set(text, jsonb) to authenticated;
 
 create or replace function public.prot_read(p_prefix text) returns jsonb
 language plpgsql stable security definer set search_path = public as $$
