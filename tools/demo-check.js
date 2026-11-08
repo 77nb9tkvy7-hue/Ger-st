@@ -59,7 +59,8 @@ async function measure(page) {
       seen.add(el);
       if (parseFloat(getComputedStyle(el).fontSize) < 13) textUnder13++;
     }
-    const prim = [...document.querySelectorAll('.advance-btn')].find(vis) ||
+    // Lager: der Hauptknopf erscheint erst, wenn alles abgehakt ist -> erste Packlisten-Zeile (.pick-tap) gilt als erste Aktion
+    const prim = [...document.querySelectorAll('.advance-btn, .pick-tap')].find(vis) ||
                  [...document.querySelectorAll('.submit-btn')].find(vis);
     const firstPrimaryY = prim ? Math.round(prim.getBoundingClientRect().top + window.scrollY) : null;
     return { under44: small.length, textUnder13, firstPrimaryY,
@@ -378,6 +379,72 @@ const CHECKS = {
     });
     if (mg.keys !== 'Beladen,Neu,Unterwegs') problems.push('merge steps: ' + mg.keys);
     if (!mg.later) problems.push('merge steps: spätere Zeit gewinnt nicht');
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
+  // Task 8: Packliste – Zeile antippen = eingepackt; erster Haken startet die Bearbeitung.
+  async lager(ctx) {
+    ctx.page.on('dialog', d => d.accept());
+    const { page, errors } = ctx;
+    const problems = [];
+    await page.setViewportSize({ width: 390, height: 844 });
+    const st = id => page.evaluate(i => { const o = state.orders.find(x => x.id === i); return o && { status: o.status, pick: JSON.stringify(o.pick || {}), steps: o.steps || null, items: o.items.map(x => x.id + ':' + x.qty) }; }, id);
+    await switchRole(page, 'lager');
+    await page.evaluate(() => { state.lagerTab = 'bestellungen'; render(); });
+    // Pick-Liste schon bei "Neu", kein "Bearbeitung starten"
+    const b0 = await page.evaluate(() => { const c = [...document.querySelectorAll('.order-card')].find(x => x.querySelector('.no').textContent.includes('1002')); return { pick: !!c.querySelector('.pick-tap'), adv: !!c.querySelector('.advance-btn'), open: (c.querySelector('.pick-open') || {}).textContent, rowH: Math.min(...[...c.querySelectorAll('.pick-tap')].map(r => r.getBoundingClientRect().height)), missH: Math.min(...[...c.querySelectorAll('.pick-btn')].map(r => r.getBoundingClientRect().height)) }; });
+    console.log('  1002 Neu: ' + JSON.stringify(b0));
+    if (!b0.pick) problems.push('Packliste bei "Neu" fehlt');
+    if (b0.adv) problems.push('Hauptknopf bei Neu noch da');
+    if (!/2/.test(b0.open || '')) problems.push('Hinweis "Noch N offen" fehlt: ' + b0.open);
+    if (b0.rowH < 56) problems.push('Zeile nur ' + b0.rowH + 'px'); if (b0.missH < 48) problems.push('Fehlt-Knopf nur ' + b0.missH + 'px');
+    // (a)
+    await page.click('[data-action="pick-row"][data-order="1002"][data-idx="0"]');
+    await page.waitForTimeout(200);
+    let o = await st(1002);
+    if (o.status !== 'In Bearbeitung' || !o.steps || !o.steps['In Bearbeitung']) problems.push('(a) ' + JSON.stringify(o));
+    // Polling übersteht
+    await page.waitForTimeout(5200);
+    o = await st(1002);
+    if (!o.pick.includes('"s":"ok"')) problems.push('Haken nach Polling weg: ' + o.pick);
+    await shot(page, 'lager', 'lager', 390);
+    // (b)
+    await page.click('[data-action="pick-row"][data-order="1002"][data-idx="0"]');
+    await page.waitForTimeout(200);
+    o = await st(1002);
+    if (o.pick !== '{}' || o.status !== 'In Bearbeitung') problems.push('(b) ' + JSON.stringify(o));
+    // (c) zweites Gerät: Bestellung schon weiter
+    // Karte (Stand "Neu") ist sichtbar; das zweite Gerät hat den Status inzwischen weitergesetzt, ohne dass diese Ansicht neu zeichnet
+    await page.evaluate(() => { render(); state.orders.find(q => q.id === 1008).status = 'Bereit zur Abholung'; });
+    await page.evaluate(() => document.querySelector('[data-action="pick-row"][data-order="1008"][data-idx="0"]').click());
+    await page.waitForTimeout(200);
+    const c1 = await st(1008);
+    if (c1.status !== 'Bereit zur Abholung') problems.push('(c) Status rückwärts: ' + c1.status);
+    // (d) 1002: Zeile 0 fehlt 2, Zeile 1 ok -> Bereit melden
+    await page.evaluate(() => { state.inventory.rahmenSL70_200 = 10; state.inventory.diagonaleM_250 = 50; return saveShared(); });
+    await page.click('[data-action="pick"][data-order="1002"][data-idx="0"][data-s="fehlt"]');
+    await page.fill('#pickMiss-1002-0', '2'); await page.dispatchEvent('#pickMiss-1002-0', 'change');
+    await page.waitForTimeout(150);
+    const mid = await page.evaluate(() => !!document.querySelector('[data-action="advance"][data-order="1002"]'));
+    if (mid) problems.push('Bereit melden schon vor letzter Zeile da');
+    await page.click('[data-action="pick-row"][data-order="1002"][data-idx="1"]');
+    await page.waitForTimeout(250);
+    const adv = page.locator('.advance-btn[data-action="advance"][data-order="1002"]');
+    if (!(await adv.count())) { problems.push('Bereit melden fehlt nach letzter Zeile'); return problems; }
+    const ab = await adv.boundingBox();
+    console.log('  Bereit melden Höhe ' + Math.round(ab.height));
+    await shot(page, 'lager-done', 'lager', 390);
+    await adv.click();
+    await page.waitForTimeout(300);
+    const d = await page.evaluate(() => ({ st: state.orders.find(x => x.id === 1002), inv: [state.inventory.rahmenSL70_200, state.inventory.diagonaleM_250], nach: state.orders.find(x => x.nachVon === 1002) }));
+    if (d.st.status !== 'Bereit zur Abholung') problems.push('(d) Status ' + d.st.status);
+    if (d.inv[0] !== 10 - 14 || d.inv[1] !== 50 - 12) problems.push('(d) Bestand ' + d.inv);
+    if (!d.nach || d.nach.items[0].qty !== 2) problems.push('(d) Nachlieferung fehlt');
+    await page.evaluate(() => { state.lagerTab = 'inventur'; state.systemSel = 'system'; render(); });
+    const txt = await page.evaluate(() => document.body.innerText);
+    const need = await page.evaluate(() => t('stockMissingLabel') + ' 4');
+    if (!txt.includes(need)) problems.push('Inventur zeigt "' + need + '" nicht');
+    await shot(page, 'lager-inventur', 'lager', 390);
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
