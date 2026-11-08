@@ -3958,13 +3958,13 @@ function fahrerLieferungenHTML(){
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
   const pus = openPickups();
   return `<p class="view-sub hide-phone">${t('fahrerSub')}</p>
-  <div class="export-row"><button class="mini-btn" data-action="fahrten-open">${t('fahrtenBtn')}</button></div>
   <div id="sec-fahrer-offen"></div>
   ${(()=>{ const open = ready.filter(o=>o.status!=='Geliefert'), done = ready.filter(o=>o.status==='Geliefert');
     return `${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'fahrer')).join('')}</div>` : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}
     ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
     ${pus.length? `<h3 id="sec-fahrer-pu" style="font-size:15px;margin:22px 0 8px 0;">${t('puFahrerHeading')} (${pus.length})</h3>${pickupListHTML(pus, 'fahrer')}`:''}
-    ${doneSectionHTML('fahrer', done, o=>orderCardHTML(o,'fahrer'))}`; })()}`;
+    ${doneSectionHTML('fahrer', done, o=>orderCardHTML(o,'fahrer'))}`; })()}
+  <div class="export-row" style="margin-top:18px;"><button class="mini-btn" data-action="fahrten-open">${t('fahrtenBtn')}</button></div>`;
 }
 
 function fahrerGeplantHTML(){
