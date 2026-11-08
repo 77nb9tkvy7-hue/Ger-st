@@ -551,17 +551,17 @@
     .stat-chip-btn{--wc:var(--muted);flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;min-height:var(--tap);padding:0 14px;border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;font-family:'Inter',sans-serif;font-size:var(--fs-small);font-weight:600;cursor:pointer;white-space:nowrap;}
     .stat-chip-btn .sc-dot{width:10px;height:10px;border-radius:50%;background:var(--wc);flex:none;}
     .stat-chip-btn b{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;}
-    .my-status{padding:10px 12px;}
+    .my-status{padding:8px 12px;}
     .my-status .ms-label,.my-status .ms-hint{display:none;}
     .my-status .st-full{display:none;} .my-status .st-short{display:inline;}
     .my-status .seg-control{margin-top:0;}
     .my-status{margin-bottom:10px !important;}
-    .my-status .nav-btn{margin-top:6px;}
-    .my-status .ziel-chips{flex-wrap:nowrap;overflow-x:auto;margin-top:6px;padding-bottom:2px;}
+    .my-status .nav-btn{margin-top:4px;}
+    .my-status .ziel-chips{flex-wrap:nowrap;overflow-x:auto;margin-top:4px;padding-bottom:0;}
     .my-status .ziel-chip{flex:0 0 auto;white-space:nowrap;}
-    .my-status .ms-meta{margin-top:4px !important;}
+    .my-status .ms-meta{margin-top:2px !important;}
     .my-status .ziel-label{display:none;}
-    main .view-title{display:none;}
+    main .view-title.role-title{display:none;}
     .hide-phone{display:none;}
     .geo-badge.geo-denied{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:6px 6px 6px 12px;}
     .geo-badge.geo-denied .gb-full{display:none;} .geo-badge.geo-denied .gb-short{display:inline;flex:1;min-width:0;}
@@ -671,11 +671,12 @@ const DEMO_DATA = (function(){
   };
 })();
 function demoLoad(){
-  try{ const s = localStorage.getItem(DEMO_STORE_KEY); if(s){ const v = JSON.parse(s); if(v && v.demoVersion===DEMO_VERSION) return v; } }catch(e){}
-  return Object.assign(JSON.parse(JSON.stringify(DEMO_DATA)), {rev:1, demoVersion:DEMO_VERSION});
+  // Version steht in EIGENEM Schlüssel, nicht im Datensatz (sonst weicht syncBase von stateToValue() ab -> "Kein Netz"-Leiste)
+  try{ const s = localStorage.getItem(DEMO_STORE_KEY); if(s && localStorage.getItem(DEMO_STORE_KEY+'-version')===String(DEMO_VERSION)){ const v = JSON.parse(s); if(v && v.demoVersion===undefined) return v; } }catch(e){}
+  return Object.assign(JSON.parse(JSON.stringify(DEMO_DATA)), {rev:1});
 }
 let demoMem = null;
-function demoSave(v){ v = Object.assign({}, v, {demoVersion:DEMO_VERSION}); demoMem = v; try{ localStorage.setItem(DEMO_STORE_KEY, JSON.stringify(v)); }catch(e){} }
+function demoSave(v){ v = Object.assign({}, v); delete v.demoVersion; demoMem = v; try{ localStorage.setItem(DEMO_STORE_KEY, JSON.stringify(v)); localStorage.setItem(DEMO_STORE_KEY+'-version', String(DEMO_VERSION)); }catch(e){} }
 // Nachbau der Supabase-Ketten: sammelt Methode + Argumente, antwortet beim `await`.
 function createDemoClient(){
   const cur = ()=> demoMem || (demoMem = demoLoad());
@@ -2718,7 +2719,7 @@ function catalogHTML(){
     });
   }
 
-  return `<h2 class="view-title">${t('catalogTitle')}</h2>
+  return `<h2 class="view-title role-title">${t('catalogTitle')}</h2>
   <p class="view-sub">${t('catalogSub')}</p>
   ${widgetsHTML('baustelle')}${statStripHTML('baustelle')}
   ${aktive.length? `<div class="field">
@@ -3145,7 +3146,7 @@ function inventoryTableHTML(editable){
 function lagerHTML(){
   const tab = state.lagerTab;
   const orders = sortOrdersForWork(state.orders);
-  return `  <h2 class="view-title">${t('lagerTitle')}</h2>
+  return `  <h2 class="view-title role-title">${t('lagerTitle')}</h2>
   ${widgetsHTML('lager')}${statStripHTML('lager')}
   ${roleNavHTML('lager-tab', tab, [
     {id:'bestellungen', key:'tabBestellungen', ico:'package', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Abgeholt').length},
@@ -3264,7 +3265,7 @@ function driverStatusListHTML(){
 
 function fahrerHTML(){
   const tab = state.fahrerTab;
-  return `  <h2 class="view-title">${t('fahrerTitle')}</h2>
+  return `  <h2 class="view-title role-title">${t('fahrerTitle')}</h2>
   <div id="geoBadge">${geoBadgeHTML()}</div>
   ${widgetsHTML('fahrer')}${statStripHTML('fahrer')}
   ${myStatusWidgetHTML()}
@@ -4292,7 +4293,7 @@ function chefHTML(){
   const orders = sortOrdersForWork(state.orders);
   const counts = {};
   STATUS_FLOW.forEach(s=> counts[s] = orders.filter(o=>o.status===s).length);
-  return `  <h2 class="view-title">${t('chefViewTitle')}</h2>
+  return `  <h2 class="view-title role-title">${t('chefViewTitle')}</h2>
   ${roleNavHTML('chef-tab', tab, [
     {id:'uebersicht', key:'tabUebersicht', ico:'house', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Gemeldet').length},
     {id:'bauvorhaben', key:'tabBauvorhaben', ico:'building-2'},

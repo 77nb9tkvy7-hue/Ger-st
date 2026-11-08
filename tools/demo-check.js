@@ -84,6 +84,14 @@ const CHECKS = {
     const { page, errors, opts } = ctx;
     const roles = opts.role ? [opts.role] : ROLES;
     const problems = [];
+    // Kein "Kein Netz"-Banner und keine scheinbaren lokalen Änderungen während 15 s Polling
+    let banner = 0, pend = 0;
+    for (let i = 0; i < 15; i++) {
+      await page.waitForTimeout(1000);
+      const r = await page.evaluate(() => ({ b: !!document.querySelector('.sync-banner'), h: hasLocalChanges(), p: !!state.syncPending }));
+      if (r.b) banner++; if (r.h || r.p) pend++;
+    }
+    if (banner || pend) problems.push(`Sync-Leiste/Pending in ${banner}/${pend} von 15 s (hasLocalChanges soll false bleiben)`);
     for (const role of roles) {
       await switchRole(page, role);
       const found = await page.$(ROLE_VIEW[role]);
@@ -146,9 +154,6 @@ const CHECKS = {
     await page.setViewportSize({ width: 390, height: 844 });
     for (const role of ['lager', 'fahrer']) {
       await switchRole(page, role);
-      // Die Demo zeigt kurz nach dem Start die Leiste "Kein Netz" (Abgleich läuft noch) - abwarten
-      try { await page.waitForSelector('.sync-banner', { state: 'detached', timeout: 12000 }); } catch (e) {}
-      await page.waitForTimeout(300);
       const m = await measure(page);
       console.log(`  [${role}] ${fmt(m)}`);
       if (m.firstPrimaryY == null || m.firstPrimaryY >= 700) problems.push(`${role}: firstPrimaryY=${m.firstPrimaryY} (soll < 700)`);
