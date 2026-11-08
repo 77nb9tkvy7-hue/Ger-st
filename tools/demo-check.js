@@ -106,6 +106,14 @@ const CHECKS = {
       console.log(`  [${role}] ${fmt(m)}`);
       await shot(page, 'baseline', role, opts.width);
     }
+    // Rollenwechsel/Abmelden verwirft vorübergehende Bedien-Zustände (Tour-Auswahl, Wohin?, Ziffernblock, Teile-Art, Demo: Bestellliste)
+    const dirty = () => page.evaluate(() => { state.tourSel = [1005]; state.zielOpen = true; state.numpad = { id: 'x', val: '' }; state.openArt = 'konsole'; state.cart = { konsole70M: 3 }; });
+    const left = () => page.evaluate(() => [state.tourSel.length && 'tourSel', state.zielOpen && 'zielOpen', state.numpad && 'numpad', state.openArt && 'openArt', Object.keys(state.cart).length && 'cart'].filter(Boolean));
+    await dirty(); await switchRole(page, 'fahrer');
+    let rest = await left(); if (rest.length) problems.push('Demo-Rollenwechsel lässt stehen: ' + rest.join(','));
+    await dirty(); await page.evaluate(async () => { await signOutAll(); });
+    rest = (await left()).filter(x => x !== 'cart'); if (rest.length) problems.push('Abmelden lässt stehen: ' + rest.join(','));
+    await page.evaluate(() => { state.cart = {}; });
     // Speicher: die Demo liest/schreibt nie Schlüssel der echten App ('geruest-*'); Zurücksetzen löscht nur 'demo-*'
     const SENT = { 'geruest-session': '{"name":"Echt","role":"chef"}', 'geruest-cache': '"ECHT"', 'geruest-bv': '999' };
     const leaked = await page.evaluate(() => Object.keys(localStorage).filter(k => k.startsWith('geruest-')));
