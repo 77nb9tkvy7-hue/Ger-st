@@ -483,9 +483,93 @@ const CHECKS = {
     if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
     return problems;
   },
+  // Task 10: Kontrast-Stichprobe je Rolle: --muted auf --card und jedes sichtbare Status-Abzeichen (WCAG, < 4,5 = FAIL).
+  async contrast(ctx) {
+    const { page, errors, opts } = ctx;
+    const problems = [];
+    const roles = opts.role ? [opts.role] : ROLES;
+    for (const role of roles) {
+      await switchRole(page, role);
+      const res = await page.evaluate(() => {
+        const rgb = s => { const m = (s || '').match(/rgba?\(([^)]+)\)/); if (m) { const v = m[1].split(/[ ,\/]+/).map(Number); return { r: v[0], g: v[1], b: v[2], a: v.length > 3 ? v[3] : 1 }; }
+          const c = document.createElement('canvas').getContext('2d'); c.fillStyle = s; const h = c.fillStyle; return { r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16), a: 1 }; };
+        const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
+        const ratio = (a, b) => { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); };
+        const cs = getComputedStyle(document.documentElement);
+        const muted = rgb(cs.getPropertyValue('--muted').trim()), card = rgb(cs.getPropertyValue('--card').trim());
+        const out = [{ what: '--muted auf --card', ratio: ratio(muted, card) }];
+        const seen = new Set();
+        for (const el of document.querySelectorAll('.status-badge')) {
+          const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
+          const key = el.className; if (seen.has(key)) continue; seen.add(key);
+          const st = getComputedStyle(el); const b0 = rgb(st.backgroundColor), fg = rgb(st.color);
+          const bg = { r: b0.r * b0.a + card.r * (1 - b0.a), g: b0.g * b0.a + card.g * (1 - b0.a), b: b0.b * b0.a + card.b * (1 - b0.a), a: 1 }; // halbtransparenter Hintergrund liegt auf der Karte
+          out.push({ what: key.replace('status-badge', '').trim() || 'badge', ratio: ratio(fg, bg) });
+        }
+        return out;
+      });
+      const worst = Math.min(...res.map(r => r.ratio));
+      console.log(`  [${role}] ${res.length} Stichproben, schwächster Wert ${worst.toFixed(2)} :1 · ` + res.map(r => `${r.what} ${r.ratio.toFixed(2)}`).join(', '));
+      for (const r of res) if (r.ratio < 4.5) problems.push(`${role}: ${r.what} nur ${r.ratio.toFixed(2)}:1`);
+    }
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
+  // Task 10: Kontrast-Stichprobe je Rolle: --muted auf --card und jedes sichtbare Status-Abzeichen (WCAG, < 4,5 = FAIL).
+  async contrast(ctx) {
+    const { page, errors, opts } = ctx;
+    const problems = [];
+    const roles = opts.role ? [opts.role] : ROLES;
+    for (const role of roles) {
+      await switchRole(page, role);
+      const res = await page.evaluate(() => {
+        const rgb = s => { const m = (s || '').match(/rgba?\(([^)]+)\)/); if (m) { const v = m[1].split(/[ ,\/]+/).map(Number); return { r: v[0], g: v[1], b: v[2], a: v.length > 3 ? v[3] : 1 }; }
+          const c = document.createElement('canvas').getContext('2d'); c.fillStyle = s; const h = c.fillStyle; return { r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16), a: 1 }; };
+        const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
+        const ratio = (a, b) => { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); };
+        const cs = getComputedStyle(document.documentElement);
+        const muted = rgb(cs.getPropertyValue('--muted').trim()), card = rgb(cs.getPropertyValue('--card').trim());
+        const out = [{ what: '--muted auf --card', ratio: ratio(muted, card) }];
+        const seen = new Set();
+        for (const el of document.querySelectorAll('.status-badge')) {
+          const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
+          const key = el.className; if (seen.has(key)) continue; seen.add(key);
+          const st = getComputedStyle(el); const b0 = rgb(st.backgroundColor), fg = rgb(st.color);
+          const bg = { r: b0.r * b0.a + card.r * (1 - b0.a), g: b0.g * b0.a + card.g * (1 - b0.a), b: b0.b * b0.a + card.b * (1 - b0.a), a: 1 }; // halbtransparenter Hintergrund liegt auf der Karte
+          out.push({ what: key.replace('status-badge', '').trim() || 'badge', ratio: ratio(fg, bg) });
+        }
+        return out;
+      });
+      const worst = Math.min(...res.map(r => r.ratio));
+      console.log(`  [${role}] ${res.length} Stichproben, schwächster Wert ${worst.toFixed(2)} :1 · ` + res.map(r => `${r.what} ${r.ratio.toFixed(2)}`).join(', '));
+      for (const r of res) if (r.ratio < 4.5) problems.push(`${role}: ${r.what} nur ${r.ratio.toFixed(2)}:1`);
+    }
+    if (errors.length) problems.push(`${errors.length} Seitenfehler: ${errors.slice(0, 3).join(' | ')}`);
+    return problems;
+  },
 };
 
 (async () => {
+  if (checkName === 'all') {
+    // Jede Prüfung in einem eigenen Prozess (eigener Browser, frischer Demo-Zustand); eine Zeile je Prüfung.
+    const { spawnSync } = require('child_process');
+    const runs = [['baseline'], ['strip'], ['cards'], ['order-flow'], ['numpad'], ['plan'], ['fahrer'], ['lager'], ['chef'], ['contrast'],
+      ['baseline', '--width=1280'], ['baseline', '--dark'], ['contrast', '--dark']];
+    let bad = 0;
+    for (const r of runs) {
+      const res = spawnSync('node', [__filename, ...r], { encoding: 'utf8' });
+      const lines = (res.stdout || '').trim().split('\n');
+      const last = lines[lines.length - 1];
+      const ok = res.status === 0 && /^PASS/.test(last);
+      if (!ok) bad++;
+      console.log(`${ok ? 'PASS' : 'FAIL'} ${r.join(' ')}${ok ? '' : ' -> ' + last + (res.stderr ? ' | ' + res.stderr.trim().split('\n')[0] : '')}`);
+    }
+    const g = spawnSync('git', ['diff', '--quiet', '82ee6a1', '--', 'geruest-bestell-app.html'], { cwd: ROOT });
+    console.log(`${g.status === 0 ? 'PASS' : 'FAIL'} Original unverändert (geruest-bestell-app.html)`);
+    if (g.status !== 0) bad++;
+    console.log(bad ? `FAIL all: ${bad} Prüfung(en) fehlgeschlagen` : 'PASS all');
+    process.exit(bad ? 1 : 0);
+  }
   const fn = CHECKS[checkName];
   if (!fn) { console.log(`FAIL ${checkName}: unbekannte Prüfung (vorhanden: ${Object.keys(CHECKS).join(', ')})`); process.exit(1); }
   let ctx, problems;
