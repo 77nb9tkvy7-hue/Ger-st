@@ -364,6 +364,57 @@ module.exports = ({ switchRole, shot }) => {
       if (d.cls || d.txt) p.push('(d) Nicht-Chef sieht Stunden im Kalender');
       return errs(errors, p);
     },
+    // Task 9: Prüfprotokoll + QR-Freigabe
+    pruefung: async ({ page, context, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      const btn = await page.$('[data-action="pruef-open"]');
+      if (!btn) { p.push('kein Knopf für das Prüfprotokoll bei der Baustelle'); return errs(errors, p); }
+      await btn.click();
+      const pid = await ev(page, () => state.pruefDraft.projekt);
+      const ks = await ev(page, () => [...document.querySelectorAll('[data-action="pp-toggle"]')].map(b => b.dataset.k));
+      for (const k of ks) await page.click('[data-action="pp-toggle"][data-k="' + k + '"]');
+      await page.click('[data-action="pruef-save"][data-erg="frei"]'); await page.waitForTimeout(300);
+      const noFoto = await ev(page, pid => ({ warn: (state.pruefDraft || {}).warn || '', n: (state.projects.find(x => x.id === pid).pruefungen || []).length }), pid);
+      if (!/Foto/.test(noFoto.warn) || noFoto.n) p.push('ohne Foto nicht gesperrt: ' + JSON.stringify(noFoto));
+      const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVR42mP8z8DwnwEIGBkYGBgYAAAeAQH/5o7nAAAAAElFTkSuQmCC', 'base64');
+      await (await page.$('input[type=file][data-pruef="1"]')).setInputFiles({ name: 'g.png', mimeType: 'image/png', buffer: png });
+      await page.waitForFunction(() => state.pruefDraft && state.pruefDraft.fotoIds.length > 0, null, { timeout: 8000 }).catch(() => {});
+      await page.click('[data-action="pruef-save"][data-erg="frei"]'); await page.waitForTimeout(600);
+      const r = await ev(page, async pid => {
+        const pr = state.projects.find(x => x.id === pid), last = (pr.pruefungen || []).slice(-1)[0];
+        printAushang(pid);
+        const img = document.querySelector('#printArea img.qr');
+        return { erg: last && last.ergebnis, fotos: last && last.fotoIds.length, token: pr.freigabeToken, qr: !!img && /^data:image/.test(img.src) };
+      }, pid);
+      if (r.erg !== 'frei' || !r.fotos || !r.token) p.push('Protokoll nicht gespeichert: ' + JSON.stringify(r));
+      if (!r.qr) p.push('Aushang ohne QR-Bild');
+      const pub = await context.newPage();
+      await pub.goto('file://' + require('path').resolve(__dirname, '..', 'freigabe.html') + '?t=' + r.token);
+      await pub.waitForTimeout(600);
+      const txt = await pub.evaluate(() => document.body.innerText);
+      if (!/freigegeben/i.test(txt) || !new RegExp('BV ' + pid).test(txt)) p.push('Freigabe-Seite zeigt Status nicht: ' + txt.slice(0, 100));
+      if (/Max|Jochen|Ludwig|Chefin/.test(txt)) p.push('Freigabe-Seite zeigt Namen');
+      await shot(page, 'pruefung', 'baustelle', 390, false);
+      return errs(errors, p);
+    },
+    // Task 9: Unterweisungen
+    unterweisung: async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      const id = await ev(page, () => createUnterweisung('Leitergang sichern', 'Immer Luke schließen.'));
+      if (!id) { p.push('Unterweisung nicht angelegt'); return errs(errors, p); }
+      await switchRole(page, 'fahrer');
+      const card = await page.$('.uw-card [data-action="uw-ok"]');
+      if (!card) { p.push('Fahrer sieht keine Unterweisung'); return errs(errors, p); }
+      await card.click(); await page.waitForTimeout(600);
+      const gone = await ev(page, () => !document.querySelector('.uw-card'));
+      if (!gone) p.push('Karte nach Bestätigen noch sichtbar');
+      await switchRole(page, 'chef');
+      const r = await ev(page, () => { state.chefTab = 'personal'; render(); const el = document.getElementById('sec-uw'); return el ? el.parentElement.textContent : ''; });
+      if (!/1 \/ \d/.test(r) || !/Ludwig/.test(r)) p.push('Chef sieht Bestätigung nicht: ' + r.slice(0, 160));
+      return errs(errors, p);
+    },
   };
 };
 

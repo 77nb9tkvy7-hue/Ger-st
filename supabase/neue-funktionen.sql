@@ -143,3 +143,17 @@ begin
   return n;
 end $$;
 revoke all on function public.zeit_cleanup() from public;
+
+-- 6) Öffentliche Gerüst-Freigabe (QR-Aushang, freigabe.html?t=<token>) ---------
+-- Liefert zu einem Token NUR BV-Nummer, Ergebnis der letzten Prüfung und Datum.
+-- Keine Namen, keine Adresse. Unbekannter Token -> null.
+create or replace function public.freigabe_info(p_token text) returns jsonb
+language sql stable security definer set search_path = public as $$
+  select jsonb_build_object('bv', p -> 'id', 'ergebnis', p -> 'pruefungen' -> -1 ->> 'ergebnis', 'datum', p -> 'pruefungen' -> -1 ->> 'datum')
+  from public.app_state s, jsonb_array_elements(coalesce(s.value -> 'projects', '[]'::jsonb)) p
+  where s.key = 'shopfloor-data-v2' and coalesce(p_token, '') <> '' and p ->> 'freigabeToken' = p_token
+    and jsonb_array_length(coalesce(p -> 'pruefungen', '[]'::jsonb)) > 0
+  limit 1
+$$;
+revoke all on function public.freigabe_info(text) from public;
+grant execute on function public.freigabe_info(text) to anon, authenticated;

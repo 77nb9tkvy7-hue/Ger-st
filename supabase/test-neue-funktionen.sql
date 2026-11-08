@@ -8,7 +8,7 @@ create table public.app_state(key text primary key, value jsonb);
 create function public.jwt_name() returns text language sql stable as $$ select current_setting('t.name', true) $$;
 create function public.jwt_is_chef() returns boolean language sql stable as $$ select current_setting('t.chef', true) = '1' $$;
 create function public.jwt_has_role() returns boolean language sql stable as $$ select coalesce(current_setting('t.name', true),'') <> '' $$;
-insert into public.app_state values ('shopfloor-data-v2', '{"employees":[{"id":1,"name":"Max","roles":["baustelle"]},{"id":2,"name":"Jochen","roles":["lager"]},{"id":3,"name":"Kemal","roles":["baustelle"]},{"id":4,"name":"Chefin","roles":["chef"]}],"projects":[{"id":101,"abgerechnetAm":"2024-01-01"},{"id":102}]}');
+insert into public.app_state values ('shopfloor-data-v2', '{"employees":[{"id":1,"name":"Max","roles":["baustelle"]},{"id":2,"name":"Jochen","roles":["lager"]},{"id":3,"name":"Kemal","roles":["baustelle"]},{"id":4,"name":"Chefin","roles":["chef"]}],"projects":[{"id":101,"abgerechnetAm":"2024-01-01"},{"id":102,"name":"Geheim","freigabeToken":"abc123","pruefungen":[{"ergebnis":"gesperrt","datum":"2026-11-01","by":"Max"},{"ergebnis":"frei","datum":"2026-11-08","by":"Max"}]}]}');
 \i neue-funktionen-ohne-storage.sql
 -- login_lookup
 select 'lookup', public.login_lookup('  max '), public.login_lookup('Mox'), public.public_info();
@@ -40,3 +40,6 @@ select 'after cleanup', key, jsonb_array_length(value->'entries') from public.ap
 select set_config('t.name','Max',false), set_config('t.chef','0',false);
 select 'max kolonne_get', public.kolonne_get();
 select 'max read persons', (select string_agg(x->>'person', ',' order by x->>'person') from jsonb_array_elements(public.prot_read('zeit:2026')->0->'entries') x);
+
+-- Freigabe öffentlich: nur bv/ergebnis/datum
+select 'freigabe', public.freigabe_info('abc123'), public.freigabe_info('falsch'), public.freigabe_info('');
