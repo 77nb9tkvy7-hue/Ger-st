@@ -614,7 +614,7 @@ module.exports = ({ switchRole, shot }) => {
       if (!f) p.push('Fahrer sieht Nummern-Feld');
       return errs(errors, p);
     },
-    // BV löschen: nur im Archiv, nur Chef, zwei Rückfragen; Abbrechen bei der 2. löscht nichts
+    // BV löschen: nur Chef (aktiv + Archiv), zwei Rückfragen; Abbrechen bei der 2. löscht nichts
     'bv-loeschen': async ({ page, errors }) => {
       const p = [];
       await switchRole(page, 'chef');
@@ -638,11 +638,45 @@ module.exports = ({ switchRole, shot }) => {
       });
       if (a.noBtn) p.push('kein Löschen-Knopf im Archiv-BV');
       else {
-        if (a.activeBtn) p.push('Löschen-Knopf bei aktivem BV');
+        if (!a.activeBtn) p.push('kein Löschen-Knopf bei aktivem BV');
         if (a.afterCancel.n !== a.n0 || a.afterCancel.asked !== 2) p.push('Abbrechen bei 2. Rückfrage hat trotzdem gelöscht: ' + JSON.stringify(a));
         if (a.asked !== 2 || !a.gone || a.n1 !== a.n0 - 1 || a.detail) p.push('nicht gelöscht/zweimal gefragt: ' + JSON.stringify(a));
         if (!a.ordersKept) p.push('Bestellungen verschwunden');
       }
+      return errs(errors, p);
+    },
+    // Bestellung löschen: Chef immer, Baustelle nur eigene „Neu“, zwei Rückfragen
+    'bestellung-loeschen': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      const c = await ev(page, async () => {
+        state.chefTab = 'uebersicht'; state.showDone = {}; render();
+        const btn = document.querySelector('[data-action="order-delete"]');
+        if (!btn) return { noBtn: true };
+        const id = +btn.dataset.order, n0 = state.orders.length;
+        let asked = 0; const real = window.confirm;
+        window.confirm = () => { asked++; return asked < 2; };
+        btn.click(); await new Promise(r => setTimeout(r, 300));
+        const cancelN = state.orders.length;
+        asked = 0; window.confirm = () => { asked++; return true; };
+        document.querySelector(`[data-action="order-delete"][data-order="${id}"]`).click(); await new Promise(r => setTimeout(r, 500));
+        window.confirm = real;
+        return { n0, cancelN, asked, n1: state.orders.length, gone: !state.orders.some(o => o.id === id) };
+      });
+      if (c.noBtn) p.push('Chef: kein Löschen-Knopf an Bestellungen');
+      else if (c.cancelN !== c.n0 || c.asked !== 2 || !c.gone || c.n1 !== c.n0 - 1) p.push('Chef-Löschen falsch: ' + JSON.stringify(c));
+      await switchRole(page, 'baustelle');
+      const b = await ev(page, () => {
+        const mk = (status, person) => ({ id: 9000 + Math.floor(Math.random() * 999), baustelle: 'Test', person, status, items: [], time: '' });
+        const own = state.orders.filter(o => o.person === state.name);
+        const neu = own.find(o => o.status === 'Neu'), alt = own.find(o => o.status !== 'Neu');
+        return { neuOk: neu ? canDeleteOrder(neu) : null, altOk: alt ? canDeleteOrder(alt) : null,
+          fremd: canDeleteOrder(mk('Neu', 'Jemand anders')), eigenNeu: canDeleteOrder(mk('Neu', state.name)), eigenBereit: canDeleteOrder(mk('Bereit zur Abholung', state.name)) };
+      });
+      if (!b.eigenNeu || b.fremd || b.eigenBereit || b.altOk === true) p.push('Baustelle-Rechte falsch: ' + JSON.stringify(b));
+      await switchRole(page, 'lager');
+      const l = await ev(page, () => !document.querySelector('[data-action="order-delete"]'));
+      if (!l) p.push('Lager sieht Löschen-Knopf');
       return errs(errors, p);
     },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
