@@ -5509,7 +5509,9 @@ function kolRows(wk){
     .concat(Object.keys(DP_EXTRA).map(k=>({key:k, label:t(DP_EXTRA[k]), cls:'dp-extra'})));
 }
 function fahrerRows(){
-  const names = state.role==='chef' ? driverNames() : [state.name];
+  // Chef und Fahrer sehen alle Fahrer (Nutzerwunsch); beim Fahrer steht die eigene Zeile oben
+  const all = driverNames();
+  const names = state.role==='fahrer' ? [state.name, ...all.filter(n=>n!==state.name)] : all;
   return names.map(n=>({key:n, label:n}));
 }
 function dpLines(grid, row, iso){
@@ -5586,7 +5588,7 @@ function fahrerDispoHTML(){
   if(!state.authed || !state.loggedIn || !['chef','fahrer'].includes(state.role)) return '';
   const wk = dpWeek();
   const rows = fahrerRows();
-  return `<h3 style="font-size:17px;margin:4px 0 4px 0;">${state.role==='chef'? t('dpFahrerTitle') : t('dpFahrerOwn')}</h3>
+  return `<h3 style="font-size:17px;margin:4px 0 4px 0;">${t('dpFahrerTitle')}</h3>
     <p class="view-sub" style="margin-top:0;">${t('dpFahrerSub')}</p>
     ${dpNavHTML(wk)}
     ${rows.length? dpGridHTML('fahr', rows, wk) : `<div class="empty-state">${t('dpNoDrivers')}</div>`}`;

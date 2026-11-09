@@ -130,8 +130,9 @@ Kolonnen als Zeilen, farbige Zellen, unten Baustelle räumen/Urlaub/Krank).
   fill, ink}`). (Der Weg ohne Anmeldung über `public_info().kolonnen` aus
   `supabase/security.sql` ist seit `neue-funktionen.sql` abgeschaltet.)
 - **LKW-Kalender**: oben `fahrerDispoHTML()` – gleiche Tabelle, Zeilen =
-  Fahrer (`driverNames()`; Chef sieht alle, ein Fahrer nur sich, NICHT
-  öffentlich wegen DSGVO). Daten `state.fahrten` (`{id, date, fahrer, kind,
+  Fahrer (`driverNames()`; Chef und alle Fahrer sehen alle Fahrer –
+  Nutzerwunsch, eigene Zeile oben –, NICHT öffentlich wegen DSGVO; Einträge nur
+  über Antippen in der App, NICHT aus GPS – Nutzerentscheidung). Daten `state.fahrten` (`{id, date, fahrer, kind,
   ref, text, notiz, fill, ink, auto}`, `fahrtCounter`). Automatisch per
   `logFahrt()` (einmal je Tag + `ref`): Fahrer-Schritte bei Bestellungen
   (`lieferung`, ref `o<ID>`), Abholungen (`abholung`, `p<ID>`), Ziel-BV
