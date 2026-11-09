@@ -50,7 +50,7 @@ function fromDemo(){
     const v = JSON.parse(localStorage.getItem('demo-state') || 'null'); if(!v) return null;
     const p = (v.projects||[]).find(x=>x.freigabeToken===token); if(!p) return null;
     const lp = (p.pruefungen||[]).slice(-1)[0]; if(!lp) return null;
-    return {bv: p.id, ergebnis: lp.ergebnis, datum: lp.datum};
+    return {bv: p.nr || p.id, ergebnis: lp.ergebnis, datum: lp.datum};
   }catch(e){ return null; }
 }
 (async ()=>{

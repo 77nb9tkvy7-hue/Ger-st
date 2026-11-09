@@ -586,6 +586,34 @@ module.exports = ({ switchRole, shot }) => {
       if (!g.offen || !g.plan || !g.ist || g.offenIst) p.push('Geplant/Gefahren falsch: ' + JSON.stringify(g));
       return errs(errors, p);
     },
+    // BV-Nummer änderbar (nur Anzeige, interne id bleibt), doppelte Nummer abgelehnt
+    'bv-nummer': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      const a = await ev(page, async () => {
+        const pr = state.projects[0], other = state.projects[1];
+        state.chefTab = 'bauvorhaben'; state.chefProjekt = pr.id; render();
+        const inp = document.getElementById('bvNr-' + pr.id);
+        if (!inp) return { noInput: true };
+        inp.value = 'BV 2026-17'; inp.dispatchEvent(new Event('change', { bubbles: true }));
+        await new Promise(r => setTimeout(r, 300));
+        const after = { nr: pr.nr, id: pr.id, label: projektLabel(pr.id), orders: state.orders.filter(o => o.projekt === pr.id).length };
+        const inp2 = document.getElementById('bvNr-' + pr.id);
+        inp2.value = String(bvNr(other)); inp2.dispatchEvent(new Event('change', { bubbles: true }));
+        await new Promise(r => setTimeout(r, 300));
+        return { ...after, dup: pr.nr, text: document.getElementById('app').textContent.includes('BV 2026-17') };
+      });
+      if (a.noInput) p.push('kein Nummern-Feld im BV-Detail');
+      else {
+        if (a.nr !== '2026-17' || !/BV 2026-17/.test(a.label) || !a.text) p.push('Nummer nicht übernommen: ' + JSON.stringify(a));
+        if (a.dup !== '2026-17') p.push('doppelte Nummer angenommen: ' + a.dup);
+        if (!a.orders) p.push('Bestellungen hängen nicht mehr am BV');
+      }
+      await switchRole(page, 'fahrer');
+      const f = await ev(page, () => !document.querySelector('[id^="bvNr-"]'));
+      if (!f) p.push('Fahrer sieht Nummern-Feld');
+      return errs(errors, p);
+    },
   };
 };
 

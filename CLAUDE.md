@@ -418,6 +418,12 @@ qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
    „Bauvorhaben": zuerst eine Liste aller Bauvorhaben mit Status-Farben
    (`projektRowHTML()`, Farb-Legende oben, darunter „Neues Bauvorhaben"
    anlegen: Name + Adresse, automatische Nummer „BV 101" aufwärts).
+   **BV-Nummer änderbar** (Nutzerwunsch): angezeigte Nummer `p.nr` (Chef im
+   BV-Detail, Feld `bvNr-<id>`, oder beim Anlegen `#pvNr`; leer = automatisch,
+   doppelte abgelehnt, „BV “ davor wird abgeschnitten). Überall `bvNr(p|id)` statt
+   `p.id` ANZEIGEN – `p.id` bleibt der feste Schlüssel (Bestellungen, Fotos, Stunden,
+   Pläne `bv<id>/…`, Fahrten). `freigabe_info()` liefert `nr` (SQL neu ausführen).
+   Prüfung `bv-nummer`.
    Antippen öffnet die Detail-Ansicht (`state.chefProjekt`,
    `projektDetailHTML()`): Karte mit Status-Farbe, was „vor Ort" bzw.
    bestellt/unterwegs ist, als fertig markieren/reaktivieren und
