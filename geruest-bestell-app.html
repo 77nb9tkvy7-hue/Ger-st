@@ -41,6 +41,7 @@
       --surface-2:#18262F; --icon-tile:rgba(255,238,0,0.12); --zebra:#0F1D29;
       --disabled-bg:#233242; --disabled-fg:#5B6B79;
       --red:#F87171; --green:#4ADE80;
+      --dp-gruen:#BFDDB0; --dp-blau:#AECBE6; --dp-rosa:#E9BFE3; --dp-gelb:#F0E1A0; --dp-grau:#C3C9D0; --dp-rot:#B71C1C; --dp-dblau:#174C8C; --dp-extra:#C3C9D0;
       --shadow:0 1px 2px rgba(0,0,0,0.35),0 10px 26px rgba(0,0,0,0.35);
     }
   }
@@ -246,6 +247,44 @@
   /* Symbole (ic()) – laufen in der Textfarbe mit */
   .ic{width:1.15em;height:1.15em;vertical-align:-0.2em;flex:none;display:inline-block;}
   .ic-red{color:var(--red);}
+  /* Dispo-Tabelle (Kalender / LKW-Fahrer) – Farben wie in der Excel-Dispo */
+  :root{--dp-gruen:#D7EBCB; --dp-blau:#C7DDF0; --dp-rosa:#F6D6F1; --dp-gelb:#FFF2BF; --dp-grau:#D9DDE2; --dp-rot:#D32F2F; --dp-dblau:#1F5FA8; --dp-extra:#E4E7EB; --dp-on:#1A2430;}
+  .dp-lockbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .dp-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 10px 0;}
+  .dp-nav-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:22px;font-weight:700;cursor:pointer;line-height:1;}
+  .dp-kw{display:flex;flex-direction:column;line-height:1.2;min-width:120px;}
+  .dp-kw b{font-family:'Space Grotesk',sans-serif;font-size:18px;}
+  .dp-kw span{font-size:12.5px;color:var(--muted);}
+  #dpPick{width:auto;max-width:160px;padding:8px 10px;}
+  .dp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;border:1px solid var(--line);background:var(--card);}
+  .dp-grid{border-collapse:separate;border-spacing:0;width:100%;min-width:800px;table-layout:fixed;font-size:12.5px;}
+  .dp-grid th,.dp-grid td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;padding:0;}
+  .dp-grid thead th{background:var(--surface-2);font-family:'Space Grotesk',sans-serif;font-size:14px;padding:6px 4px;text-align:center;}
+  .dp-grid thead th small{display:block;font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);font-weight:600;}
+  .dp-grid thead th.today{background:var(--accent-solid);color:#fff;}
+  .dp-grid thead th.today small{color:inherit;opacity:.85;}
+  .dp-grid td.today{background:var(--surface-2);}
+  .dp-rowhead{position:sticky;left:0;z-index:1;background:var(--surface-2);width:104px;text-align:left !important;padding:8px !important;font-family:'Space Grotesk',sans-serif;font-size:14px;word-break:break-word;}
+  .dp-grid td{min-height:48px;height:48px;}
+  .dp-grid td.dp-edit{cursor:pointer;}
+  .dp-grid td.dp-edit:hover{background:var(--surface-2);}
+  .dp-extra .dp-rowhead{background:var(--dp-extra);color:var(--dp-on);font-size:12.5px;}
+  .dp-line{padding:4px 6px;line-height:1.3;border-bottom:1px solid var(--line);overflow-wrap:break-word;hyphens:auto;}
+  .dp-line:last-child{border-bottom:none;}
+  .dp-line small{display:block;font-size:11px;opacity:.75;}
+  .dp-line .ic{width:13px;height:13px;}
+  .dp-chip{border:1.5px solid var(--line);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;background:var(--card);color:var(--ink);}
+  .dp-f-gruen{background:var(--dp-gruen);color:var(--dp-on);} .dp-f-blau{background:var(--dp-blau);color:var(--dp-on);} .dp-f-rosa{background:var(--dp-rosa);color:var(--dp-on);}
+  .dp-f-gelb{background:var(--dp-gelb);color:var(--dp-on);} .dp-f-grau{background:var(--dp-grau);color:var(--dp-on);}
+  .dp-i-rot{color:var(--dp-rot) !important;} .dp-i-dblau{color:var(--dp-dblau) !important;}
+  .dp-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .dp-chip.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent);}
+  .dp-cell-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+  .dp-cell-item{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;overflow:hidden;padding-right:6px;}
+  .dp-cell-item.editing{border-color:var(--accent);}
+  .dp-cell-item .dp-line{border:none;}
+  .dp-row-item{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line);}
+  .dp-row-item span{flex:1;font-weight:600;}
   .forgot-link{background:none;border:none;color:var(--accent);font:inherit;font-size:14px;font-weight:600;margin:12px auto 0 auto;display:block;cursor:pointer;padding:6px;}
   .forgot-box{background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.45;margin-top:6px;color:var(--ink);}
   .new-pin-btn{margin-bottom:8px;}
@@ -719,6 +758,7 @@ de:{
   puTitle:'Abholung', puBtnMelden:'↩ Material zurückgeben / Abholung melden', puEditorTitle:'Was geht zurück?', puEditorSub:'Übriges Material oder ganzes Gerüst – die Mengen kannst du bis zum Abladen im Lager jederzeit ändern.', puVorOrt:'vor Ort: {n}', puAllBtn:'Alles, was vor Ort ist', puZeroBtn:'Alle auf 0', puNothingVor:'Für dieses Bauvorhaben ist noch nichts als geliefert erfasst – Teile über die Suche hinzufügen.', puSearchPh:'Weiteres Teil suchen …', puAbbauLabel:'Komplettes Gerüst abbauen / alles abholen', puNotizLabel:'Hinweis für den Fahrer', puNotizPh:'z. B. liegt hinter dem Haus, ca. 1 LKW', puWannLabel:'Wann kann abgeholt werden?', puSaveNew:'Abholung melden', puSaveEdit:'Änderungen speichern', puCancel:'Abbrechen', puWarnOrt:'Bitte Bauvorhaben wählen oder Adresse eingeben.', puWarnEmpty:'Bitte Mengen eintragen oder „Komplettes Gerüst“ ankreuzen.', puGemeldet:'Gemeldet', puUnterwegs:'Fahrer kommt', puAbgeholt:'Auf dem LKW', puImLager:'Im Lager', puBtnHin:'🚚 Ich hole es ab', puBtnGeladen:'✓ Aufgeladen', puBtnLager:'🏭 Im Lager abgeladen', puEditBtn:'✏️ Mengen ändern', puDeleteBtn:'Abholung löschen', puDeleteConfirm:'Abholung #{id} wirklich löschen?', puGemeldetAm:'Gemeldet', puMine:'Meine Abholungen', puFahrerHeading:'↩ Abholen', puLagerHeading:'↩ Kommt zurück ins Lager', puChefHeading:'↩ Abholungen', puBvHeading:'↩ Abholungen hier', puBvAdd:'↩ Abholung anlegen', puSaved:'Abholung #{id} gemeldet – Fahrer und Lager wissen Bescheid.', puUpdated:'Abholung #{id} geändert.', wAbholen:'Abholen', fkAbholung:'↩ Abholung', nPuNewT:'↩ Abholung #{id}: {ort}', nPuNewB:'{person} meldet Material zum Abholen.', nPuOnWayT:'Abholung #{id}: {fahrer} kommt', nPuOnWayB:'{ort}',
   qtyInputAria:'Menge eintippen', reorderBtn:'🔁 Nochmal bestellen', reorderToast:'Teile von #{id} sind in der Bestellliste – Mengen prüfen und abschicken.', reorderNone:'Diese Teile gibt es im Katalog nicht mehr.', pickAllBtn:'✓ Alles eingepackt',
   forgotPwLink:'Passwort vergessen?', forgotPwText:'Kein Problem: Melde dich beim Chef. Dort bekommst du in der App sofort ein neues (Reiter Personal → „Neues Passwort erzeugen“). Danach kannst du es selbst ändern: Menü ☰ → „Mein Passwort ändern“.', persNewPinBtn:'🔑 Neues Passwort erzeugen', persNewPinConfirm:'Neues Passwort für {name} erzeugen? Das alte gilt dann nicht mehr.', persNewPinTitle:'Neues Passwort für {name}', persNewPinHint:'Bitte persönlich weitergeben. Es wird nirgends gespeichert und nur jetzt angezeigt.', persNewPinDone:'Erledigt – weitergegeben', myPwMenu:'🔑 Mein Passwort ändern', myPwTitle:'Mein Passwort ändern', myPwSub:'Mindestens 4 Zeichen, z. B. eine 4-stellige Zahl, die du dir merken kannst.', myPwNew:'Neues Passwort', myPwRepeat:'Neues Passwort wiederholen', myPwSave:'Speichern', myPwCancel:'Abbrechen', myPwMismatch:'Die beiden Eingaben sind nicht gleich.', myPwSaved:'Dein Passwort ist geändert. Ab jetzt mit dem neuen anmelden.', myPwSame:'Das ist schon dein Passwort – bitte ein anderes wählen.', myPwReauth:'Bitte einmal abmelden, neu anmelden und dann nochmal versuchen.', myPwFail:'Hat nicht geklappt – bitte Internet prüfen und nochmal versuchen.',
+  dpKw:'KW {n}', dpToday:'Diese Woche', dpPrev:'Woche zurück', dpNext:'Woche vor', dpPickDate:'Woche wählen', dpRowHead:'Kolonne', dpDriverHead:'Fahrer', dpRaeumen:'Baustelle räumen', dpUrlaub:'Urlaub', dpKrank:'Krank', dpTapHint:'Zum Eintragen ein Feld antippen.', dpText:'Was / Wo', dpTextPh:'z. B. Ginsterweg 9 + 11', dpNotiz:'Zusatz (optional)', dpNotizPh:'z. B. Winde, Lastverteilerplatten', dpFill:'Hintergrund', dpInk:'Schrift', dpAlsoDays:'An diesen Tagen eintragen', dpAdd:'Eintragen', dpSave:'Änderung speichern', dpClose:'Fertig', dpWarnText:'Bitte eintragen, was/wo.', dpDelConfirm:'Eintrag „{text}“ löschen?', dpRows:'Kolonnen (Zeilen der Tabelle)', dpRowAdd:'Hinzufügen', dpRowPh:'z. B. Maik / Knut', dpRowTemplate:'Eure Kolonnen übernehmen ({list})', dpRowDelConfirm:'Kolonne „{name}“ aus der Tabelle nehmen? Alte Einträge bleiben erhalten.', dpFahrerTitle:'Wo waren die Fahrer?', dpFahrerSub:'Lieferungen, Abholungen und Fahrten trägt die App selbst ein. Mit Chef-Passwort kann man von Hand planen und ändern. Mit ‹ › geht es beliebig weit zurück.', dpFahrerOwn:'Wo war ich?', dpNoDrivers:'Noch keine Fahrer angelegt.', dpKind_lieferung:'Lieferung', dpKind_abholung:'Abholung', dpKind_fahrt:'Fahrt', dpCol_none:'Kein', dpCol_gruen:'Grün', dpCol_blau:'Blau', dpCol_rosa:'Rosa', dpCol_gelb:'Gelb', dpCol_grau:'Grau', dpCol_std:'Normal', dpCol_rot:'Rot', dpCol_dblau:'Blau',
   warnLoginNet:'Anmeldung gerade nicht möglich – bitte Netz prüfen und nochmal versuchen.', loggingIn:'Anmelden …', calLoginFirst:'Bearbeiten nur für angemeldete Mitarbeiter: erst in der App anmelden, dann hier „Bearbeiten“.', persChefPwHeading:'Chef-Passwort (zusätzliche Sicherung für die Chef-Rolle)', persChefPwBtn:'Ändern', persChefPwSaved:'Chef-Passwort geändert.', persWarnPwShort:'Das Passwort braucht mindestens 4 Zeichen.', persFnMissing:'Die Mitarbeiter-Verwaltung ist auf dem Server noch nicht eingerichtet (Funktion „manage-users“) – oder kein Netz.', persErr:'Hat nicht geklappt: {msg}', persBusy:'Wird gespeichert …', persNotChef:'Nur der Chef darf Mitarbeiter verwalten.', persPwSaved:'Neues Passwort für {name} gespeichert.', persRemoveConfirm:'{name} wirklich entfernen? Das Konto wird gelöscht.', persSecurityNote:'Passwörter liegen nur verschlüsselt bei Supabase – auch der Chef kann sie nicht sehen, nur neu setzen.', logoutPendingConfirm:'Es sind noch nicht gesendete Änderungen auf dem Handy (kein Netz). Trotzdem abmelden? Dann gehen sie verloren.',
   plaeneHeading:'Baupläne', plaeneEmpty:'Noch keine Pläne hochgeladen.', planUploadBtn:'⬆️ Plan hochladen (PDF oder Foto)', planUploading:'Wird hochgeladen …', planHint:'Mehrere Dateien auf einmal möglich, max. {mb} MB je Datei. Alle können die Pläne zu diesem Bauvorhaben ansehen.', planTooBig:'„{name}“ ist zu groß (max. {mb} MB).', planNoBucket:'Der Datei-Speicher ist noch nicht eingerichtet – bitte einmal in Supabase anlegen.', planUploadFail:'Hochladen hat nicht geklappt – bitte Netz prüfen und nochmal versuchen.', planDelete:'Plan löschen', planDeleteConfirm:'„{name}“ wirklich löschen?',
   wunschLabel:'Wann wird es gebraucht?', wunschNormal:'Normal', wunschDringend:'🔴 Dringend – sofort', wunschMorgen:'Morgen früh', wunschDatum:'📅 Wunschtermin', badgeDringend:'🔴 DRINGEND', badgeBis:'📅 bis {d}', badgeHeute:'📅 heute gebraucht', badgeUeberfaellig:'⚠️ überfällig – war bis {d}', gebrauchtLabel:'Gebraucht', nUrgentT:'🔴 DRINGEND: Neue Bestellung #{id}', pickHint:'Beim Zusammenstellen abhaken. Was fehlt, kommt automatisch als Nachlieferung.', pickOkBtn:'Eingepackt', pickMissBtn:'Fehlt', pickMissQty:'Davon fehlen:', pickProgress:'{a} von {n} abgehakt', pickMissingCount:'{n} fehlt', pickAllMissing:'Es fehlt alles – so kann die Bestellung nicht bereit gemeldet werden.', fehltHeading:'⚠️ Fehlt – kommt mit Nachlieferung #{id}:', nachVonBadge:'↩ Nachlieferung zu #{id}', nMissingT:'Teile fehlen bei Bestellung #{id}', nMissingB:'{n} Position(en) kommen mit Nachlieferung #{neu}.', lsFehlt:'Fehlt (kommt mit Nachlieferung #{id})',
@@ -910,6 +950,7 @@ pl:{
   puTitle:'Odbiór', puBtnMelden:'↩ Zwróć materiał / zgłoś odbiór', puEditorTitle:'Co wraca?', puEditorSub:'Nadwyżka materiału albo całe rusztowanie – ilości możesz zmieniać aż do rozładunku w magazynie.', puVorOrt:'na miejscu: {n}', puAllBtn:'Wszystko, co jest na miejscu', puZeroBtn:'Wszystko na 0', puNothingVor:'Dla tej budowy nic nie zostało jeszcze zapisane jako dostarczone – dodaj części przez wyszukiwanie.', puSearchPh:'Szukaj innej części …', puAbbauLabel:'Demontaż całego rusztowania / odebrać wszystko', puNotizLabel:'Uwaga dla kierowcy', puNotizPh:'np. leży za domem, ok. 1 ciężarówka', puWannLabel:'Kiedy można odebrać?', puSaveNew:'Zgłoś odbiór', puSaveEdit:'Zapisz zmiany', puCancel:'Anuluj', puWarnOrt:'Wybierz budowę albo wpisz adres.', puWarnEmpty:'Wpisz ilości albo zaznacz „Całe rusztowanie”.', puGemeldet:'Zgłoszone', puUnterwegs:'Kierowca jedzie', puAbgeholt:'Na ciężarówce', puImLager:'W magazynie', puBtnHin:'🚚 Odbieram', puBtnGeladen:'✓ Załadowane', puBtnLager:'🏭 Rozładowane w magazynie', puEditBtn:'✏️ Zmień ilości', puDeleteBtn:'Usuń odbiór', puDeleteConfirm:'Na pewno usunąć odbiór #{id}?', puGemeldetAm:'Zgłoszone', puMine:'Moje odbiory', puFahrerHeading:'↩ Do odebrania', puLagerHeading:'↩ Wraca do magazynu', puChefHeading:'↩ Odbiory', puBvHeading:'↩ Odbiory tutaj', puBvAdd:'↩ Dodaj odbiór', puSaved:'Odbiór #{id} zgłoszony – kierowca i magazyn wiedzą.', puUpdated:'Odbiór #{id} zmieniony.', wAbholen:'Do odebrania', fkAbholung:'↩ Odbiór', nPuNewT:'↩ Odbiór #{id}: {ort}', nPuNewB:'{person} zgłasza materiał do odbioru.', nPuOnWayT:'Odbiór #{id}: {fahrer} jedzie', nPuOnWayB:'{ort}',
   qtyInputAria:'Wpisz ilość', reorderBtn:'🔁 Zamów ponownie', reorderToast:'Części z #{id} są na liście zamówienia – sprawdź ilości i wyślij.', reorderNone:'Tych części nie ma już w katalogu.', pickAllBtn:'✓ Wszystko spakowane',
   forgotPwLink:'Nie pamiętasz hasła?', forgotPwText:'Nie ma problemu: powiedz szefowi. Od razu nada ci nowe w aplikacji (zakładka Personel → „Utwórz nowe hasło“). Potem możesz je sam zmienić: menu ☰ → „Zmień moje hasło“.', persNewPinBtn:'🔑 Utwórz nowe hasło', persNewPinConfirm:'Utworzyć nowe hasło dla {name}? Stare przestanie działać.', persNewPinTitle:'Nowe hasło dla {name}', persNewPinHint:'Przekaż je osobiście. Nie jest nigdzie zapisywane i jest pokazane tylko teraz.', persNewPinDone:'Gotowe – przekazane', myPwMenu:'🔑 Zmień moje hasło', myPwTitle:'Zmień moje hasło', myPwSub:'Co najmniej 4 znaki, np. 4-cyfrowa liczba, którą zapamiętasz.', myPwNew:'Nowe hasło', myPwRepeat:'Powtórz nowe hasło', myPwSave:'Zapisz', myPwCancel:'Anuluj', myPwMismatch:'Oba wpisy nie są takie same.', myPwSaved:'Hasło zostało zmienione. Od teraz loguj się nowym.', myPwSame:'To już jest twoje hasło – wybierz inne.', myPwReauth:'Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.', myPwFail:'Nie udało się – sprawdź internet i spróbuj ponownie.',
+  dpKw:'Tydz. {n}', dpToday:'Ten tydzień', dpPrev:'Tydzień wstecz', dpNext:'Tydzień dalej', dpPickDate:'Wybierz tydzień', dpRowHead:'Brygada', dpDriverHead:'Kierowca', dpRaeumen:'Sprzątanie budowy', dpUrlaub:'Urlop', dpKrank:'Chory', dpTapHint:'Aby wpisać, stuknij pole.', dpText:'Co / Gdzie', dpTextPh:'np. Ginsterweg 9 + 11', dpNotiz:'Dodatek (opcjonalnie)', dpNotizPh:'np. wciągarka, płyty rozkładające', dpFill:'Tło', dpInk:'Tekst', dpAlsoDays:'Wpisz w te dni', dpAdd:'Wpisz', dpSave:'Zapisz zmianę', dpClose:'Gotowe', dpWarnText:'Wpisz, co/gdzie.', dpDelConfirm:'Usunąć wpis „{text}“?', dpRows:'Brygady (wiersze tabeli)', dpRowAdd:'Dodaj', dpRowPh:'np. Maik / Knut', dpRowTemplate:'Przejmij wasze brygady ({list})', dpRowDelConfirm:'Usunąć brygadę „{name}“ z tabeli? Stare wpisy zostaną.', dpFahrerTitle:'Gdzie byli kierowcy?', dpFahrerSub:'Dostawy, odbiory i przejazdy aplikacja wpisuje sama. Z hasłem szefa można planować i zmieniać ręcznie. Strzałkami ‹ › można cofać się dowolnie daleko.', dpFahrerOwn:'Gdzie byłem?', dpNoDrivers:'Brak kierowców.', dpKind_lieferung:'Dostawa', dpKind_abholung:'Odbiór', dpKind_fahrt:'Przejazd', dpCol_none:'Brak', dpCol_gruen:'Zielony', dpCol_blau:'Niebieski', dpCol_rosa:'Różowy', dpCol_gelb:'Żółty', dpCol_grau:'Szary', dpCol_std:'Normalny', dpCol_rot:'Czerwony', dpCol_dblau:'Niebieski',
   warnLoginNet:'Logowanie teraz niemożliwe – sprawdź sieć i spróbuj ponownie.', loggingIn:'Logowanie …', calLoginFirst:'Edycja tylko dla zalogowanych pracowników: najpierw zaloguj się w aplikacji, potem tutaj „Edytuj”.', persChefPwHeading:'Hasło szefa (dodatkowe zabezpieczenie roli szefa)', persChefPwBtn:'Zmień', persChefPwSaved:'Hasło szefa zmienione.', persWarnPwShort:'Hasło musi mieć co najmniej 4 znaki.', persFnMissing:'Zarządzanie pracownikami nie jest jeszcze skonfigurowane na serwerze (funkcja „manage-users”) – albo brak sieci.', persErr:'Nie udało się: {msg}', persBusy:'Zapisywanie …', persNotChef:'Tylko szef może zarządzać pracownikami.', persPwSaved:'Nowe hasło dla {name} zapisane.', persRemoveConfirm:'Na pewno usunąć {name}? Konto zostanie usunięte.', persSecurityNote:'Hasła są przechowywane w Supabase tylko w formie zaszyfrowanej – szef też ich nie widzi, może je tylko ustawić na nowo.', logoutPendingConfirm:'Na telefonie są jeszcze niewysłane zmiany (brak sieci). Wylogować mimo to? Wtedy przepadną.',
   plaeneHeading:'Plany budowy', plaeneEmpty:'Nie przesłano jeszcze planów.', planUploadBtn:'⬆️ Prześlij plan (PDF lub zdjęcie)', planUploading:'Przesyłanie …', planHint:'Można wybrać kilka plików naraz, maks. {mb} MB na plik. Wszyscy mogą oglądać plany tej budowy.', planTooBig:'„{name}” jest za duży (maks. {mb} MB).', planNoBucket:'Magazyn plików nie jest jeszcze skonfigurowany – trzeba go raz utworzyć w Supabase.', planUploadFail:'Przesyłanie nie powiodło się – sprawdź sieć i spróbuj ponownie.', planDelete:'Usuń plan', planDeleteConfirm:'Na pewno usunąć „{name}”?',
   wunschLabel:'Kiedy jest potrzebne?', wunschNormal:'Normalnie', wunschDringend:'🔴 Pilne – od razu', wunschMorgen:'Jutro rano', wunschDatum:'📅 Wybrany termin', badgeDringend:'🔴 PILNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrzebne dziś', badgeUeberfaellig:'⚠️ po terminie – było do {d}', gebrauchtLabel:'Potrzebne', nUrgentT:'🔴 PILNE: Nowe zamówienie #{id}', pickHint:'Odhaczaj przy kompletowaniu. Czego brakuje, zostanie automatycznie dosłane.', pickOkBtn:'Spakowane', pickMissBtn:'Brak', pickMissQty:'Brakuje z tego:', pickProgress:'{a} z {n} odhaczonych', pickMissingCount:'{n} brak', pickAllMissing:'Brakuje wszystkiego – zamówienia nie można zgłosić jako gotowe.', fehltHeading:'⚠️ Brak – zostanie dosłane z dostawą #{id}:', nachVonBadge:'↩ Dosyłka do #{id}', nMissingT:'Brakuje części w zamówieniu #{id}', nMissingB:'{n} pozycja(e) przyjdzie z dosyłką #{neu}.', lsFehlt:'Brak (przyjdzie z dosyłką #{id})',
@@ -1101,6 +1142,7 @@ sk:{
   puTitle:'Odvoz', puBtnMelden:'↩ Vrátiť materiál / nahlásiť odvoz', puEditorTitle:'Čo ide späť?', puEditorSub:'Zvyšný materiál alebo celé lešenie – množstvá môžeš meniť až do vyloženia v sklade.', puVorOrt:'na mieste: {n}', puAllBtn:'Všetko, čo je na mieste', puZeroBtn:'Všetko na 0', puNothingVor:'Pre túto stavbu ešte nie je nič zapísané ako dodané – pridaj diely cez vyhľadávanie.', puSearchPh:'Hľadať ďalší diel …', puAbbauLabel:'Demontáž celého lešenia / odviezť všetko', puNotizLabel:'Poznámka pre vodiča', puNotizPh:'napr. leží za domom, cca 1 nákladné auto', puWannLabel:'Kedy sa dá odviezť?', puSaveNew:'Nahlásiť odvoz', puSaveEdit:'Uložiť zmeny', puCancel:'Zrušiť', puWarnOrt:'Vyber stavbu alebo zadaj adresu.', puWarnEmpty:'Zadaj množstvá alebo zaškrtni „Celé lešenie“.', puGemeldet:'Nahlásené', puUnterwegs:'Vodič ide', puAbgeholt:'Na aute', puImLager:'V sklade', puBtnHin:'🚚 Idem to vyzdvihnúť', puBtnGeladen:'✓ Naložené', puBtnLager:'🏭 Vyložené v sklade', puEditBtn:'✏️ Zmeniť množstvá', puDeleteBtn:'Vymazať odvoz', puDeleteConfirm:'Naozaj vymazať odvoz #{id}?', puGemeldetAm:'Nahlásené', puMine:'Moje odvozy', puFahrerHeading:'↩ Vyzdvihnúť', puLagerHeading:'↩ Vracia sa do skladu', puChefHeading:'↩ Odvozy', puBvHeading:'↩ Odvozy tu', puBvAdd:'↩ Pridať odvoz', puSaved:'Odvoz #{id} nahlásený – vodič aj sklad vedia.', puUpdated:'Odvoz #{id} zmenený.', wAbholen:'Vyzdvihnúť', fkAbholung:'↩ Odvoz', nPuNewT:'↩ Odvoz #{id}: {ort}', nPuNewB:'{person} hlási materiál na odvoz.', nPuOnWayT:'Odvoz #{id}: ide {fahrer}', nPuOnWayB:'{ort}',
   qtyInputAria:'Zadaj množstvo', reorderBtn:'🔁 Objednať znova', reorderToast:'Diely z #{id} sú v zozname objednávky – skontroluj množstvá a odošli.', reorderNone:'Tieto diely už v katalógu nie sú.', pickAllBtn:'✓ Všetko zabalené',
   forgotPwLink:'Zabudol si heslo?', forgotPwText:'Žiadny problém: povedz to šéfovi. V aplikácii ti hneď nastaví nové (záložka Personál → „Vytvoriť nové heslo“). Potom si ho môžeš sám zmeniť: menu ☰ → „Zmeniť moje heslo“.', persNewPinBtn:'🔑 Vytvoriť nové heslo', persNewPinConfirm:'Vytvoriť nové heslo pre {name}? Staré potom prestane platiť.', persNewPinTitle:'Nové heslo pre {name}', persNewPinHint:'Odovzdaj ho osobne. Nikde sa neukladá a zobrazí sa iba teraz.', persNewPinDone:'Hotovo – odovzdané', myPwMenu:'🔑 Zmeniť moje heslo', myPwTitle:'Zmeniť moje heslo', myPwSub:'Aspoň 4 znaky, napr. 4-miestne číslo, ktoré si zapamätáš.', myPwNew:'Nové heslo', myPwRepeat:'Zopakuj nové heslo', myPwSave:'Uložiť', myPwCancel:'Zrušiť', myPwMismatch:'Oba zadania nie sú rovnaké.', myPwSaved:'Heslo je zmenené. Odteraz sa prihlasuj novým.', myPwSame:'To už je tvoje heslo – vyber iné.', myPwReauth:'Odhlás sa, znova sa prihlás a skús to ešte raz.', myPwFail:'Nepodarilo sa – skontroluj internet a skús znova.',
+  dpKw:'Týž. {n}', dpToday:'Tento týždeň', dpPrev:'Týždeň späť', dpNext:'Týždeň dopredu', dpPickDate:'Vybrať týždeň', dpRowHead:'Partia', dpDriverHead:'Vodič', dpRaeumen:'Upratať stavbu', dpUrlaub:'Dovolenka', dpKrank:'Chorý', dpTapHint:'Na zápis ťukni na políčko.', dpText:'Čo / Kde', dpTextPh:'napr. Ginsterweg 9 + 11', dpNotiz:'Doplnok (voliteľné)', dpNotizPh:'napr. navijak, roznášacie platne', dpFill:'Pozadie', dpInk:'Písmo', dpAlsoDays:'Zapísať v tieto dni', dpAdd:'Zapísať', dpSave:'Uložiť zmenu', dpClose:'Hotovo', dpWarnText:'Zapíš, čo/kde.', dpDelConfirm:'Zmazať záznam „{text}“?', dpRows:'Partie (riadky tabuľky)', dpRowAdd:'Pridať', dpRowPh:'napr. Maik / Knut', dpRowTemplate:'Prevziať vaše partie ({list})', dpRowDelConfirm:'Odobrať partiu „{name}“ z tabuľky? Staré záznamy zostanú.', dpFahrerTitle:'Kde boli vodiči?', dpFahrerSub:'Dodávky, odvozy a jazdy zapisuje aplikácia sama. S heslom šéfa sa dá plánovať a meniť ručne. Šípkami ‹ › sa dá ísť ľubovoľne ďaleko späť.', dpFahrerOwn:'Kde som bol?', dpNoDrivers:'Zatiaľ žiadni vodiči.', dpKind_lieferung:'Dodávka', dpKind_abholung:'Odvoz', dpKind_fahrt:'Jazda', dpCol_none:'Žiadne', dpCol_gruen:'Zelená', dpCol_blau:'Modrá', dpCol_rosa:'Ružová', dpCol_gelb:'Žltá', dpCol_grau:'Sivá', dpCol_std:'Normálne', dpCol_rot:'Červená', dpCol_dblau:'Modrá',
   warnLoginNet:'Prihlásenie teraz nie je možné – skontroluj sieť a skús znova.', loggingIn:'Prihlasovanie …', calLoginFirst:'Úpravy len pre prihlásených zamestnancov: najprv sa prihlás v aplikácii, potom tu „Upraviť“.', persChefPwHeading:'Heslo šéfa (dodatočné zabezpečenie roly šéfa)', persChefPwBtn:'Zmeniť', persChefPwSaved:'Heslo šéfa zmenené.', persWarnPwShort:'Heslo musí mať aspoň 4 znaky.', persFnMissing:'Správa zamestnancov ešte nie je nastavená na serveri (funkcia „manage-users“) – alebo nie je sieť.', persErr:'Nepodarilo sa: {msg}', persBusy:'Ukladá sa …', persNotChef:'Zamestnancov môže spravovať len šéf.', persPwSaved:'Nové heslo pre {name} uložené.', persRemoveConfirm:'Naozaj odstrániť {name}? Konto sa vymaže.', persSecurityNote:'Heslá sú v Supabase uložené len zašifrované – ani šéf ich nevidí, môže ich len nastaviť nanovo.', logoutPendingConfirm:'V telefóne sú ešte neodoslané zmeny (žiadna sieť). Napriek tomu odhlásiť? Potom sa stratia.',
   plaeneHeading:'Stavebné plány', plaeneEmpty:'Zatiaľ neboli nahrané žiadne plány.', planUploadBtn:'⬆️ Nahrať plán (PDF alebo foto)', planUploading:'Nahráva sa …', planHint:'Naraz môžeš vybrať viac súborov, max. {mb} MB na súbor. Plány k tejto stavbe môžu vidieť všetci.', planTooBig:'„{name}“ je príliš veľký (max. {mb} MB).', planNoBucket:'Úložisko súborov ešte nie je nastavené – treba ho raz vytvoriť v Supabase.', planUploadFail:'Nahrávanie nevyšlo – skontroluj sieť a skús znova.', planDelete:'Vymazať plán', planDeleteConfirm:'Naozaj vymazať „{name}“?',
   wunschLabel:'Kedy je to potrebné?', wunschNormal:'Normálne', wunschDringend:'🔴 Súrne – hneď', wunschMorgen:'Zajtra ráno', wunschDatum:'📅 Želaný termín', badgeDringend:'🔴 SÚRNE', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebné dnes', badgeUeberfaellig:'⚠️ po termíne – bolo do {d}', gebrauchtLabel:'Potrebné', nUrgentT:'🔴 SÚRNE: Nová objednávka #{id}', pickHint:'Pri chystaní odškrtávaj. Čo chýba, príde automaticky ako doplnenie.', pickOkBtn:'Zabalené', pickMissBtn:'Chýba', pickMissQty:'Z toho chýba:', pickProgress:'{a} z {n} odškrtnuté', pickMissingCount:'{n} chýba', pickAllMissing:'Chýba všetko – objednávku nemožno nahlásiť ako pripravenú.', fehltHeading:'⚠️ Chýba – príde s doplnením #{id}:', nachVonBadge:'↩ Doplnenie k #{id}', nMissingT:'V objednávke #{id} chýbajú diely', nMissingB:'{n} položka(y) príde s doplnením #{neu}.', lsFehlt:'Chýba (príde s doplnením #{id})',
@@ -1292,6 +1334,7 @@ hr:{
   puTitle:'Odvoz', puBtnMelden:'↩ Vrati materijal / prijavi odvoz', puEditorTitle:'Što se vraća?', puEditorSub:'Višak materijala ili cijela skela – količine možeš mijenjati sve do istovara u skladištu.', puVorOrt:'na licu mjesta: {n}', puAllBtn:'Sve što je na licu mjesta', puZeroBtn:'Sve na 0', puNothingVor:'Za ovo gradilište još ništa nije zabilježeno kao isporučeno – dodaj dijelove pretragom.', puSearchPh:'Traži drugi dio …', puAbbauLabel:'Demontaža cijele skele / odvesti sve', puNotizLabel:'Napomena za vozača', puNotizPh:'npr. leži iza kuće, oko 1 kamion', puWannLabel:'Kada se može odvesti?', puSaveNew:'Prijavi odvoz', puSaveEdit:'Spremi promjene', puCancel:'Odustani', puWarnOrt:'Odaberi gradilište ili upiši adresu.', puWarnEmpty:'Upiši količine ili označi „Cijela skela”.', puGemeldet:'Prijavljeno', puUnterwegs:'Vozač dolazi', puAbgeholt:'Na kamionu', puImLager:'U skladištu', puBtnHin:'🚚 Ja to preuzimam', puBtnGeladen:'✓ Utovareno', puBtnLager:'🏭 Istovareno u skladištu', puEditBtn:'✏️ Promijeni količine', puDeleteBtn:'Izbriši odvoz', puDeleteConfirm:'Stvarno izbrisati odvoz #{id}?', puGemeldetAm:'Prijavljeno', puMine:'Moji odvozi', puFahrerHeading:'↩ Preuzeti', puLagerHeading:'↩ Vraća se u skladište', puChefHeading:'↩ Odvozi', puBvHeading:'↩ Odvozi ovdje', puBvAdd:'↩ Dodaj odvoz', puSaved:'Odvoz #{id} prijavljen – vozač i skladište su obaviješteni.', puUpdated:'Odvoz #{id} promijenjen.', wAbholen:'Preuzeti', fkAbholung:'↩ Odvoz', nPuNewT:'↩ Odvoz #{id}: {ort}', nPuNewB:'{person} prijavljuje materijal za odvoz.', nPuOnWayT:'Odvoz #{id}: dolazi {fahrer}', nPuOnWayB:'{ort}',
   qtyInputAria:'Upiši količinu', reorderBtn:'🔁 Naruči ponovno', reorderToast:'Dijelovi iz #{id} su na popisu narudžbe – provjeri količine i pošalji.', reorderNone:'Ovih dijelova više nema u katalogu.', pickAllBtn:'✓ Sve spakirano',
   forgotPwLink:'Zaboravio si lozinku?', forgotPwText:'Nema problema: reci šefu. U aplikaciji će ti odmah dati novu (kartica Osoblje → „Napravi novu lozinku“). Zatim je možeš sam promijeniti: izbornik ☰ → „Promijeni moju lozinku“.', persNewPinBtn:'🔑 Napravi novu lozinku', persNewPinConfirm:'Napraviti novu lozinku za {name}? Stara više neće vrijediti.', persNewPinTitle:'Nova lozinka za {name}', persNewPinHint:'Predaj je osobno. Nigdje se ne sprema i prikazuje se samo sada.', persNewPinDone:'Gotovo – predano', myPwMenu:'🔑 Promijeni moju lozinku', myPwTitle:'Promijeni moju lozinku', myPwSub:'Najmanje 4 znaka, npr. 4-znamenkasti broj koji ćeš zapamtiti.', myPwNew:'Nova lozinka', myPwRepeat:'Ponovi novu lozinku', myPwSave:'Spremi', myPwCancel:'Odustani', myPwMismatch:'Dva unosa nisu ista.', myPwSaved:'Lozinka je promijenjena. Od sada se prijavljuj novom.', myPwSame:'To je već tvoja lozinka – odaberi drugu.', myPwReauth:'Odjavi se, ponovno se prijavi i pokušaj opet.', myPwFail:'Nije uspjelo – provjeri internet i pokušaj ponovno.',
+  dpKw:'Tj. {n}', dpToday:'Ovaj tjedan', dpPrev:'Tjedan natrag', dpNext:'Tjedan naprijed', dpPickDate:'Odaberi tjedan', dpRowHead:'Ekipa', dpDriverHead:'Vozač', dpRaeumen:'Očistiti gradilište', dpUrlaub:'Godišnji', dpKrank:'Bolovanje', dpTapHint:'Za unos dodirni polje.', dpText:'Što / Gdje', dpTextPh:'npr. Ginsterweg 9 + 11', dpNotiz:'Dodatak (neobavezno)', dpNotizPh:'npr. vitlo, podložne ploče', dpFill:'Pozadina', dpInk:'Tekst', dpAlsoDays:'Upiši u ove dane', dpAdd:'Upiši', dpSave:'Spremi promjenu', dpClose:'Gotovo', dpWarnText:'Upiši što/gdje.', dpDelConfirm:'Obrisati unos „{text}“?', dpRows:'Ekipe (redovi tablice)', dpRowAdd:'Dodaj', dpRowPh:'npr. Maik / Knut', dpRowTemplate:'Preuzmi vaše ekipe ({list})', dpRowDelConfirm:'Maknuti ekipu „{name}“ iz tablice? Stari unosi ostaju.', dpFahrerTitle:'Gdje su bili vozači?', dpFahrerSub:'Dostave, odvoze i vožnje aplikacija upisuje sama. Uz lozinku šefa može se ručno planirati i mijenjati. Strelicama ‹ › može se ići koliko god unatrag.', dpFahrerOwn:'Gdje sam bio?', dpNoDrivers:'Još nema vozača.', dpKind_lieferung:'Dostava', dpKind_abholung:'Odvoz', dpKind_fahrt:'Vožnja', dpCol_none:'Bez', dpCol_gruen:'Zelena', dpCol_blau:'Plava', dpCol_rosa:'Ružičasta', dpCol_gelb:'Žuta', dpCol_grau:'Siva', dpCol_std:'Normalno', dpCol_rot:'Crvena', dpCol_dblau:'Plava',
   warnLoginNet:'Prijava trenutno nije moguća – provjeri mrežu i pokušaj ponovno.', loggingIn:'Prijava …', calLoginFirst:'Uređivanje samo za prijavljene zaposlenike: najprije se prijavi u aplikaciji, zatim ovdje „Uredi”.', persChefPwHeading:'Lozinka šefa (dodatna zaštita uloge šefa)', persChefPwBtn:'Promijeni', persChefPwSaved:'Lozinka šefa promijenjena.', persWarnPwShort:'Lozinka mora imati najmanje 4 znaka.', persFnMissing:'Upravljanje zaposlenicima još nije postavljeno na poslužitelju (funkcija „manage-users”) – ili nema mreže.', persErr:'Nije uspjelo: {msg}', persBusy:'Spremanje …', persNotChef:'Samo šef može upravljati zaposlenicima.', persPwSaved:'Nova lozinka za {name} spremljena.', persRemoveConfirm:'Stvarno ukloniti {name}? Račun će biti izbrisan.', persSecurityNote:'Lozinke su u Supabaseu spremljene samo šifrirano – ni šef ih ne vidi, može ih samo postaviti iznova.', logoutPendingConfirm:'Na mobitelu su još neposlane promjene (nema mreže). Ipak se odjaviti? Tada će se izgubiti.',
   plaeneHeading:'Građevinski planovi', plaeneEmpty:'Još nisu učitani planovi.', planUploadBtn:'⬆️ Učitaj plan (PDF ili fotografija)', planUploading:'Učitavanje …', planHint:'Može se odabrati više datoteka odjednom, maks. {mb} MB po datoteci. Svi mogu vidjeti planove ovog gradilišta.', planTooBig:'„{name}” je prevelika (maks. {mb} MB).', planNoBucket:'Spremište datoteka još nije postavljeno – treba ga jednom napraviti u Supabaseu.', planUploadFail:'Učitavanje nije uspjelo – provjeri mrežu i pokušaj ponovno.', planDelete:'Izbriši plan', planDeleteConfirm:'Stvarno izbrisati „{name}”?',
   wunschLabel:'Kada je potrebno?', wunschNormal:'Normalno', wunschDringend:'🔴 Hitno – odmah', wunschMorgen:'Sutra ujutro', wunschDatum:'📅 Željeni termin', badgeDringend:'🔴 HITNO', badgeBis:'📅 do {d}', badgeHeute:'📅 potrebno danas', badgeUeberfaellig:'⚠️ kasni – bilo do {d}', gebrauchtLabel:'Potrebno', nUrgentT:'🔴 HITNO: Nova narudžba #{id}', pickHint:'Odkvačuj pri slaganju. Što nedostaje, stiže automatski kao dopuna.', pickOkBtn:'Spakirano', pickMissBtn:'Nedostaje', pickMissQty:'Od toga nedostaje:', pickProgress:'{a} od {n} odkvačeno', pickMissingCount:'{n} nedostaje', pickAllMissing:'Nedostaje sve – narudžba se ne može prijaviti kao spremna.', fehltHeading:'⚠️ Nedostaje – stiže s dopunom #{id}:', nachVonBadge:'↩ Dopuna za #{id}', nMissingT:'Nedostaju dijelovi u narudžbi #{id}', nMissingB:'{n} stavka(e) stiže s dopunom #{neu}.', lsFehlt:'Nedostaje (stiže s dopunom #{id})',
@@ -1483,6 +1526,7 @@ en:{
   puTitle:'Pickup', puBtnMelden:'↩ Return material / request pickup', puEditorTitle:'What goes back?', puEditorSub:'Surplus material or the whole scaffold – you can change the quantities until it is unloaded at the warehouse.', puVorOrt:'on site: {n}', puAllBtn:'Everything on site', puZeroBtn:'All to 0', puNothingVor:'Nothing is recorded as delivered to this site yet – add parts via search.', puSearchPh:'Search another part …', puAbbauLabel:'Dismantle whole scaffold / collect everything', puNotizLabel:'Note for the driver', puNotizPh:'e.g. behind the house, approx. 1 truck', puWannLabel:'When can it be collected?', puSaveNew:'Request pickup', puSaveEdit:'Save changes', puCancel:'Cancel', puWarnOrt:'Please choose a project or enter an address.', puWarnEmpty:'Please enter quantities or tick “Whole scaffold”.', puGemeldet:'Requested', puUnterwegs:'Driver on the way', puAbgeholt:'On the truck', puImLager:'At the warehouse', puBtnHin:'🚚 I will collect it', puBtnGeladen:'✓ Loaded', puBtnLager:'🏭 Unloaded at warehouse', puEditBtn:'✏️ Change quantities', puDeleteBtn:'Delete pickup', puDeleteConfirm:'Really delete pickup #{id}?', puGemeldetAm:'Requested', puMine:'My pickups', puFahrerHeading:'↩ To collect', puLagerHeading:'↩ Coming back to the warehouse', puChefHeading:'↩ Pickups', puBvHeading:'↩ Pickups here', puBvAdd:'↩ Add pickup', puSaved:'Pickup #{id} requested – driver and warehouse are informed.', puUpdated:'Pickup #{id} changed.', wAbholen:'To collect', fkAbholung:'↩ Pickup', nPuNewT:'↩ Pickup #{id}: {ort}', nPuNewB:'{person} requests a material pickup.', nPuOnWayT:'Pickup #{id}: {fahrer} is coming', nPuOnWayB:'{ort}',
   qtyInputAria:'Type quantity', reorderBtn:'🔁 Order again', reorderToast:'Parts from #{id} are in the order list – check quantities and send.', reorderNone:'These parts are no longer in the catalogue.', pickAllBtn:'✓ All packed',
   forgotPwLink:'Forgot your password?', forgotPwText:'No problem: ask the boss. You can get a new one in the app right away (Staff tab → “Create new password”). You can then change it yourself: menu ☰ → “Change my password”.', persNewPinBtn:'🔑 Create new password', persNewPinConfirm:'Create a new password for {name}? The old one will stop working.', persNewPinTitle:'New password for {name}', persNewPinHint:'Please hand it over in person. It is not stored anywhere and is only shown now.', persNewPinDone:'Done – handed over', myPwMenu:'🔑 Change my password', myPwTitle:'Change my password', myPwSub:'At least 4 characters, e.g. a 4-digit number you can remember.', myPwNew:'New password', myPwRepeat:'Repeat new password', myPwSave:'Save', myPwCancel:'Cancel', myPwMismatch:'The two entries do not match.', myPwSaved:'Your password has been changed. Use the new one from now on.', myPwSame:'That is already your password – please choose another.', myPwReauth:'Please log out, log in again and then try once more.', myPwFail:'That did not work – please check the internet and try again.',
+  dpKw:'Week {n}', dpToday:'This week', dpPrev:'Previous week', dpNext:'Next week', dpPickDate:'Pick week', dpRowHead:'Crew', dpDriverHead:'Driver', dpRaeumen:'Clear site', dpUrlaub:'Holiday', dpKrank:'Sick', dpTapHint:'Tap a cell to add an entry.', dpText:'What / Where', dpTextPh:'e.g. Ginsterweg 9 + 11', dpNotiz:'Extra (optional)', dpNotizPh:'e.g. winch, load spreader plates', dpFill:'Background', dpInk:'Text', dpAlsoDays:'Enter on these days', dpAdd:'Add', dpSave:'Save change', dpClose:'Done', dpWarnText:'Please enter what/where.', dpDelConfirm:'Delete entry “{text}”?', dpRows:'Crews (table rows)', dpRowAdd:'Add', dpRowPh:'e.g. Maik / Knut', dpRowTemplate:'Use your crews ({list})', dpRowDelConfirm:'Remove crew “{name}” from the table? Old entries are kept.', dpFahrerTitle:'Where were the drivers?', dpFahrerSub:'Deliveries, pickups and trips are entered by the app itself. With the boss password you can plan and change by hand. Use ‹ › to go back as far as you like.', dpFahrerOwn:'Where was I?', dpNoDrivers:'No drivers yet.', dpKind_lieferung:'Delivery', dpKind_abholung:'Pickup', dpKind_fahrt:'Trip', dpCol_none:'None', dpCol_gruen:'Green', dpCol_blau:'Blue', dpCol_rosa:'Pink', dpCol_gelb:'Yellow', dpCol_grau:'Grey', dpCol_std:'Normal', dpCol_rot:'Red', dpCol_dblau:'Blue',
   warnLoginNet:'Login not possible right now – please check the network and try again.', loggingIn:'Logging in …', calLoginFirst:'Editing only for logged-in staff: log in to the app first, then tap “Edit” here.', persChefPwHeading:'Boss password (extra protection for the boss role)', persChefPwBtn:'Change', persChefPwSaved:'Boss password changed.', persWarnPwShort:'The password needs at least 4 characters.', persFnMissing:'Staff management is not set up on the server yet (function “manage-users”) – or no network.', persErr:'Did not work: {msg}', persBusy:'Saving …', persNotChef:'Only the boss can manage staff.', persPwSaved:'New password for {name} saved.', persRemoveConfirm:'Really remove {name}? The account will be deleted.', persSecurityNote:'Passwords are only stored encrypted at Supabase – even the boss cannot see them, only set new ones.', logoutPendingConfirm:'There are unsent changes on this phone (no network). Log out anyway? They will be lost.',
   plaeneHeading:'Building plans', plaeneEmpty:'No plans uploaded yet.', planUploadBtn:'⬆️ Upload plan (PDF or photo)', planUploading:'Uploading …', planHint:'You can pick several files at once, max. {mb} MB per file. Everyone can view the plans for this project.', planTooBig:'“{name}” is too large (max. {mb} MB).', planNoBucket:'The file storage is not set up yet – it needs to be created once in Supabase.', planUploadFail:'Upload failed – please check the network and try again.', planDelete:'Delete plan', planDeleteConfirm:'Really delete “{name}”?',
   wunschLabel:'When is it needed?', wunschNormal:'Normal', wunschDringend:'🔴 Urgent – right away', wunschMorgen:'Tomorrow morning', wunschDatum:'📅 Preferred date', badgeDringend:'🔴 URGENT', badgeBis:'📅 by {d}', badgeHeute:'📅 needed today', badgeUeberfaellig:'⚠️ overdue – was due {d}', gebrauchtLabel:'Needed', nUrgentT:'🔴 URGENT: New order #{id}', pickHint:'Tick off while packing. Anything missing is sent automatically as a follow-up delivery.', pickOkBtn:'Packed', pickMissBtn:'Missing', pickMissQty:'Missing:', pickProgress:'{a} of {n} ticked', pickMissingCount:'{n} missing', pickAllMissing:'Everything is missing – the order cannot be marked as ready.', fehltHeading:'⚠️ Missing – comes with follow-up #{id}:', nachVonBadge:'↩ Follow-up for #{id}', nMissingT:'Parts missing in order #{id}', nMissingB:'{n} item(s) will come with follow-up #{neu}.', lsFehlt:'Missing (comes with follow-up #{id})',
@@ -1793,7 +1837,7 @@ const state = {
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
   calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
-  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, showDone:{}, pickups:[], pickupCounter:1, puDraft:null, puWarn:'', authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', newPin:null, forgotPw:false, myPwOpen:false, myPwWarn:'', myPwBusy:false, loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
+  driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, showDone:{}, pickups:[], pickupCounter:1, puDraft:null, puWarn:'', authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', newPin:null, kolonnen:[], kolonneCounter:1, fahrten:[], fahrtCounter:1, publicKolonnen:[], dpWeek:null, cellEdit:null, forgotPw:false, myPwOpen:false, myPwWarn:'', myPwBusy:false, loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
@@ -1836,7 +1880,8 @@ function itemOrderCounts(){
 // ======================================================================
 const CACHE_KEY = 'geruest-cache', PENDING_KEY = 'geruest-pending';
 const RECORD_ARRAYS = {orders:'counter', projects:'projektCounter', calendarEntries:'calCounter',
-  plannedDeliveries:'planCounter', lkwEntries:'lkwCounter', employees:'empCounter', pickups:'pickupCounter'};
+  plannedDeliveries:'planCounter', lkwEntries:'lkwCounter', employees:'empCounter', pickups:'pickupCounter',
+  kolonnen:'kolonneCounter', fahrten:'fahrtCounter'};
 let syncBase = null;          // letzter bekannter Server-Stand (ohne rev)
 let syncChain = Promise.resolve();
 state.syncOffline = false; state.syncPending = false;
@@ -1856,6 +1901,7 @@ function stateToValue(){
     calendarEntries:state.calendarEntries, calCounter:state.calCounter,
     driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager, chefPw:state.chefPw,
     pickups:state.pickups, pickupCounter:state.pickupCounter,
+    kolonnen:state.kolonnen, kolonneCounter:state.kolonneCounter, fahrten:state.fahrten, fahrtCounter:state.fahrtCounter,
     plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
     lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
     employees:state.employees, empCounter:state.empCounter,
@@ -1875,6 +1921,10 @@ function applyValue(v){
   state.lager = v.lager || null;
   state.pickups = v.pickups || [];
   state.pickupCounter = v.pickupCounter || 1;
+  state.kolonnen = v.kolonnen || [];
+  state.kolonneCounter = v.kolonneCounter || 1;
+  state.fahrten = v.fahrten || [];
+  state.fahrtCounter = v.fahrtCounter || 1;
   state.chefPw = v.chefPw || null;
   state.plannedDeliveries = v.plannedDeliveries || [];
   state.planCounter = v.planCounter || 1;
@@ -2102,6 +2152,7 @@ async function loadPublic(){
   state.calendarEntries = info.calendarEntries || [];
   state.lkwEntries = info.lkwEntries || [];
   state.projects = info.projects || [];
+  state.publicKolonnen = Array.isArray(info.kolonnen) ? info.kolonnen.map(k=>k && k.name).filter(Boolean) : [];
 }
 function loginPeople(){
   return state.authed && state.employees.length ? state.employees.map(e=>({id:e.id, name:e.name})) : state.publicNames;
@@ -4111,59 +4162,164 @@ function formatDateDE(iso){
   return `${wt}, ${d}.${m}.${y}`;
 }
 
+// Kalender = Dispo (wie die Excel-Tabelle der Firma): Woche Mo–Sa als
+// Tabelle, Zeilen = Kolonnen (state.kolonnen, vom Chef gepflegt) plus
+// Baustelle räumen / Urlaub / Krank. Einträge stehen weiter in
+// state.calendarEntries ({id, date, person = Zeile, ort = Text, notiz,
+// fill, ink}), damit der Kalender auch ohne Anmeldung (public_info) zu
+// sehen ist und alte Einträge (person = Mitarbeiter) als Zeile erscheinen.
+function calLockBarHTML(){
+  return `${state.calAskPw? `<div class="order-card">
+      <div class="field"><label>${t('calPwLabel')}</label><input id="calPwInput" type="password" placeholder="${t('pwPlaceholder')}"></div>
+      <div id="calPwWarn"></div>
+      <button class="advance-btn" data-action="cal-unlock-ok">${t('calUnlockBtn')}</button>
+      <button class="refresh-btn" data-action="cal-unlock-cancel" style="margin-top:8px;">${t('calCancelBtn')}</button>
+    </div>` : ''}
+    ${state.calUnlocked? `<div class="dp-lockbar"><span class="order-time" style="margin:0;">${t('dpTapHint')}</span><button class="refresh-btn" data-action="cal-lock">${t('calLockBtn')}</button></div>`
+      : state.authed ? `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>`
+      : `<div class="order-time" style="margin:0 0 14px 0;">🔒 ${t('calLoginFirst')}</div>`}`;
+}
 function calendarPageHTML(){
-  const entries = [...state.calendarEntries].sort((a,b)=> a.date.localeCompare(b.date) || a.person.localeCompare(b.person));
-  const grouped = {};
-  entries.forEach(e=>{ (grouped[e.date] = grouped[e.date]||[]).push(e); });
-  const dates = Object.keys(grouped).sort();
-  const d = state.calDraft || {};
-
+  const wk = dpWeek();
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
-    <main style="padding:0;max-width:720px;margin:0 auto;">
+    <main style="padding:0;max-width:1320px;margin:0 auto;">
       <h2 class="view-title">${t('calTitle')}</h2>
       <p class="view-sub">${t('calSub')}</p>
-
-      ${state.calAskPw? `<div class="order-card">
-        <div class="field"><label>${t('calPwLabel')}</label><input id="calPwInput" type="password" placeholder="${t('pwPlaceholder')}"></div>
-        <div id="calPwWarn"></div>
-        <button class="advance-btn" data-action="cal-unlock-ok">${t('calUnlockBtn')}</button>
-        <button class="refresh-btn" data-action="cal-unlock-cancel" style="margin-top:8px;">${t('calCancelBtn')}</button>
-      </div>` : ''}
-
-      ${state.calUnlocked? `<div class="order-card">
-        <div class="field"><label>${t('calDateLabel')}</label><input type="date" id="calDate" value="${d.date||''}"></div>
-        <div class="field"><label>${t('calPersonLabel')}</label>
-          <select id="calPerson">
-            <option value="" ${d.person?'':'selected'} disabled>${t('selectPlaceholder')}</option>
-            ${state.employees.map(e=>`<option value="${e.name}" ${d.person===e.name?'selected':''}>${e.name}</option>`).join('')}
-          </select>
-        </div>
-        <div class="field"><label>${t('calOrtLabel')}</label><input id="calOrt" placeholder="${t('calOrtPlaceholder')}" value="${d.ort? d.ort.replace(/"/g,'&quot;'):''}"></div>
-        <div class="field"><label>${t('calNotizLabel')}</label><input id="calNotiz" placeholder="${t('calNotizPlaceholder')}" value="${d.notiz? d.notiz.replace(/"/g,'&quot;'):''}"></div>
-        ${state.calWarn? `<div class="warn">${state.calWarn}</div>`:''}
-        <button class="advance-btn" data-action="cal-save">${state.calEditId? t('calSaveBtn') : t('calAddBtn')}</button>
-        ${state.calEditId? `<button class="refresh-btn" data-action="cal-cancel-edit" style="margin-top:8px;">${t('calCancelBtn')}</button>`:''}
-      </div>
-      <button class="refresh-btn" data-action="cal-lock" style="margin-bottom:14px;">${t('calLockBtn')}</button>`
-      : state.authed ? `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>` : `<div class="order-time" style="margin:0 0 14px 0;">🔒 ${t('calLoginFirst')}</div>`}
-
-      ${dates.length? dates.map(dt=>`
-        <h3 style="margin-top:18px;font-size:14px;">${formatDateDE(dt)}</h3>
-        ${grouped[dt].map(e=>`
-          <div class="order-card">
-            <div class="order-head">
-              <div><div class="no">${e.person}</div><div class="site">${e.ort}</div></div>
-            </div>
-            ${e.notiz? `<div class="order-time">${e.notiz}</div>`:''}
-            ${state.calUnlocked? `<div style="display:flex;gap:8px;margin-top:8px;">
-              <button class="refresh-btn" data-action="cal-edit" data-id="${e.id}">${t('calEditBtn')}</button>
-              <button class="refresh-btn" data-action="cal-delete" data-id="${e.id}" style="color:var(--red);border-color:var(--red);">${t('calDeleteBtn')}</button>
-            </div>`:''}
-          </div>
-        `).join('')}
-      `).join('') : `<div class="empty-state">${t('calEmpty')}</div>`}
+      ${calLockBarHTML()}
+      ${dpNavHTML(wk)}
+      ${dpGridHTML('kol', kolRows(wk), wk)}
+      ${state.calUnlocked? kolRowsEditorHTML() : ''}
     </main>
+  </div>${state.cellEdit? cellEditHTML() : ''}`;
+}
+
+// ---- Wochentabelle (Dispo) ---------------------------------------------
+const DP_EXTRA = {'#raeumen':'dpRaeumen', '#urlaub':'dpUrlaub', '#krank':'dpKrank'};
+const DP_FILLS = ['none','gruen','blau','rosa','gelb','grau'];
+const DP_INKS = ['std','rot','dblau'];
+const DP_KIND_ICON = {lieferung:'truck', abholung:'undo-2', fahrt:'navigation'};
+const KOLONNEN_VORLAGE = ['Maik / Knut','Halas','KMP','JJR','JJR 2','MK','Michal'];
+function dpWeek(){ return state.dpWeek || weekStartISO(todayISO()); }
+function isoWeekNo(iso){
+  const d = new Date(iso+'T12:00:00');
+  d.setDate(d.getDate() + 3 - (d.getDay()+6)%7);          // Donnerstag dieser Woche
+  const w1 = new Date(d.getFullYear(), 0, 4, 12);
+  return 1 + Math.round(((d - w1)/864e5 - 3 + (w1.getDay()+6)%7) / 7);
+}
+function dayShort(iso){ return (WEEKDAYS[state.lang]||WEEKDAYS.de)[new Date(iso+'T12:00:00').getDay()]; }
+function dpEntries(grid){ return grid==='kol' ? state.calendarEntries : state.fahrten; }
+function dpRowOf(grid, e){ return grid==='kol' ? e.person : e.fahrer; }
+// Mo–Sa; Sonntag nur, wenn dort etwas steht
+function dpDays(wk, grid){
+  const days = [0,1,2,3,4,5].map(i=>addDaysISO(wk, i));
+  const so = addDaysISO(wk, 6);
+  if(dpEntries(grid).some(e=>e.date===so)) days.push(so);
+  return days;
+}
+function kolRows(wk){
+  const end = addDaysISO(wk, 6);
+  const names = state.kolonnen.length
+    ? [...state.kolonnen].sort((a,b)=>(a.pos??a.id)-(b.pos??b.id)).map(k=>k.name)
+    : state.publicKolonnen;
+  const extra = [...new Set(state.calendarEntries.filter(e=>e.date>=wk && e.date<=end).map(e=>e.person))]
+    .filter(n=>n && !names.includes(n) && !DP_EXTRA[n]).sort((a,b)=>String(a).localeCompare(String(b)));
+  return [...names, ...extra].map(n=>({key:n, label:n}))
+    .concat(Object.keys(DP_EXTRA).map(k=>({key:k, label:t(DP_EXTRA[k]), cls:'dp-extra'})));
+}
+function fahrerRows(){
+  const names = state.role==='chef' ? driverNames() : [state.name];
+  return names.map(n=>({key:n, label:n}));
+}
+function dpLines(grid, row, iso){
+  return dpEntries(grid).filter(e=>dpRowOf(grid, e)===row && e.date===iso).sort((a,b)=>a.id-b.id);
+}
+function dpLineText(grid, e){ return grid==='kol' ? (e.ort||'') : (e.text||''); }
+function dpLineHTML(grid, e){
+  const icon = grid==='fahr' && DP_KIND_ICON[e.kind] ? ic(DP_KIND_ICON[e.kind])+' ' : '';
+  const sub = grid==='fahr' && e.auto ? `${t('dpKind_'+e.kind)} #${String(e.ref||'').slice(1)}` : (e.notiz||'');
+  return `<div class="dp-line dp-f-${DP_FILLS.includes(e.fill)?e.fill:'none'} dp-i-${DP_INKS.includes(e.ink)?e.ink:'std'}">${icon}${escapeHtml(dpLineText(grid, e))}${sub? `<small>${escapeHtml(sub)}</small>`:''}</div>`;
+}
+function dpNavHTML(wk){
+  return `<div class="dp-nav">
+    <button class="dp-nav-btn" data-action="dp-week" data-d="-7" aria-label="${t('dpPrev')}">‹</button>
+    <div class="dp-kw"><b>${t('dpKw',{n:isoWeekNo(wk)})}</b><span>${isoToDE(wk)} – ${isoToDE(addDaysISO(wk,6))}</span></div>
+    <button class="dp-nav-btn" data-action="dp-week" data-d="7" aria-label="${t('dpNext')}">›</button>
+    ${wk!==weekStartISO(todayISO())? `<button class="refresh-btn" data-action="dp-today">${t('dpToday')}</button>`:''}
+    <input type="date" id="dpPick" value="${wk}" aria-label="${t('dpPickDate')}" title="${t('dpPickDate')}">
   </div>`;
+}
+function dpGridHTML(grid, rows, wk){
+  const days = dpDays(wk, grid);
+  const today = todayISO();
+  const edit = state.calUnlocked;
+  return `<div class="dp-wrap"><table class="dp-grid">
+    <thead><tr><th class="dp-rowhead">${grid==='kol'? t('dpRowHead') : t('dpDriverHead')}</th>
+      ${days.map(d=>`<th class="${d===today?'today':''}">${dayShort(d)}<small>${isoToDE(d).slice(0,6)}</small></th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr class="${r.cls||''}"><th class="dp-rowhead">${escapeHtml(String(r.label))}</th>
+      ${days.map(d=>`<td class="${d===today?'today':''} ${edit?'dp-edit':''}" ${edit? `data-action="dp-cell" data-grid="${grid}" data-row="${escapeHtml(String(r.key))}" data-date="${d}"`:''}>${dpLines(grid, r.key, d).map(e=>dpLineHTML(grid, e)).join('')}</td>`).join('')}</tr>`).join('')}
+    </tbody></table></div>`;
+}
+function dpRowLabel(grid, row){ return grid==='kol' && DP_EXTRA[row] ? t(DP_EXTRA[row]) : row; }
+function cellEditHTML(){
+  const c = state.cellEdit;
+  const list = dpLines(c.grid, c.row, c.date);
+  const days = dpDays(weekStartISO(c.date), c.grid);
+  const chips = (vals, cur, act, cls) => vals.map(v=>`<button class="dp-chip ${cls}${v} ${cur===v?'on':''}" data-action="${act}" data-v="${v}">${t('dpCol_'+v)}</button>`).join('');
+  return `<div class="overlay" data-action="dp-close-bg">
+    <div class="drawer dp-drawer">
+      <div class="review-head"><div class="eyebrow">${escapeHtml(dpRowLabel(c.grid, c.row))}</div><h3>${formatDateDE(c.date)}</h3></div>
+      ${list.length? `<div class="dp-cell-list">${list.map(e=>`<div class="dp-cell-item ${c.editId===e.id?'editing':''}">
+        <div style="flex:1;min-width:0;">${dpLineHTML(c.grid, e)}</div>
+        <button class="mini-btn" data-action="dp-line-edit" data-id="${e.id}" aria-label="${t('calEditBtn')}">✏️</button>
+        <button class="mini-btn" data-action="dp-line-del" data-id="${e.id}" aria-label="${t('calDeleteBtn')}">🗑</button>
+      </div>`).join('')}</div>`:''}
+      <div class="field"><label>${t('dpText')}</label><input id="dpText" list="dpBvList" value="${escapeHtml(c.text||'')}" placeholder="${t('dpTextPh')}" autocomplete="off"></div>
+      <datalist id="dpBvList">${state.projects.filter(p=>p.aktiv).map(p=>`<option value="${escapeHtml(String(p.name||''))}"></option>`).join('')}</datalist>
+      <div class="field"><label>${t('dpNotiz')}</label><input id="dpNotiz" value="${escapeHtml(c.notiz||'')}" placeholder="${t('dpNotizPh')}" autocomplete="off"></div>
+      <div class="field"><label>${t('dpFill')}</label><div class="dp-chips">${chips(DP_FILLS, c.fill, 'dp-fill', 'dp-f-')}</div></div>
+      <div class="field"><label>${t('dpInk')}</label><div class="dp-chips">${chips(DP_INKS, c.ink, 'dp-ink', 'dp-i-')}</div></div>
+      ${c.editId? '' : `<div class="field"><label>${t('dpAlsoDays')}</label><div class="dp-chips">${days.map(d=>`<button class="dp-chip ${c.days.includes(d)?'on':''}" data-action="dp-day" data-d="${d}">${dayShort(d)} ${isoToDE(d).slice(0,6)}</button>`).join('')}</div></div>`}
+      ${c.warn? `<div class="warn">${c.warn}</div>`:''}
+      <button class="advance-btn" data-action="dp-save">${c.editId? t('dpSave') : t('dpAdd')}</button>
+      <button class="refresh-btn" data-action="dp-close" style="margin-top:8px;width:100%;">${t('dpClose')}</button>
+    </div>
+  </div>`;
+}
+function kolRowsEditorHTML(){
+  const list = [...state.kolonnen].sort((a,b)=>(a.pos??a.id)-(b.pos??b.id));
+  return `<div class="order-card" style="margin-top:16px;">
+    <div class="no" style="font-size:16px;margin-bottom:8px;">${t('dpRows')}</div>
+    ${list.map((k,i)=>`<div class="dp-row-item"><span>${escapeHtml(k.name)}</span>
+      <button class="mini-btn" data-action="dp-row-move" data-id="${k.id}" data-d="-1" ${i===0?'disabled':''}>↑</button>
+      <button class="mini-btn" data-action="dp-row-move" data-id="${k.id}" data-d="1" ${i===list.length-1?'disabled':''}>↓</button>
+      <button class="mini-btn" data-action="dp-row-del" data-id="${k.id}">🗑</button></div>`).join('')}
+    ${list.length? '' : `<button class="loc-btn" data-action="dp-row-template" style="margin:4px 0 10px 0;">${t('dpRowTemplate',{list:KOLONNEN_VORLAGE.join(', ')})}</button>`}
+    <div style="display:flex;gap:8px;margin-top:8px;"><input id="dpRowName" placeholder="${t('dpRowPh')}" autocomplete="off" style="flex:1;">
+      <button class="refresh-btn" data-action="dp-row-add">${t('dpRowAdd')}</button></div>
+  </div>`;
+}
+// Fahrer-Tabelle (LKW-Kalender): nur angemeldet; Chef sieht alle Fahrer,
+// ein Fahrer nur sich selbst. Nicht öffentlich (Standort-Verlauf, DSGVO).
+function fahrerDispoHTML(){
+  if(!state.authed || !state.loggedIn || !['chef','fahrer'].includes(state.role)) return '';
+  const wk = dpWeek();
+  const rows = fahrerRows();
+  return `<h3 style="font-size:17px;margin:4px 0 4px 0;">${state.role==='chef'? t('dpFahrerTitle') : t('dpFahrerOwn')}</h3>
+    <p class="view-sub" style="margin-top:0;">${t('dpFahrerSub')}</p>
+    ${dpNavHTML(wk)}
+    ${rows.length? dpGridHTML('fahr', rows, wk) : `<div class="empty-state">${t('dpNoDrivers')}</div>`}`;
+}
+// Automatischer Eintrag "wo war der Fahrer" (einmal je Tag + Auftrag)
+function logFahrt(fahrer, kind, ref, text){
+  if(!fahrer || !text) return;
+  const date = todayISO();
+  const ex = state.fahrten.find(f=>f.fahrer===fahrer && f.date===date && f.ref===ref);
+  if(ex){ ex.text = text; return; }
+  state.fahrten.push({id: state.fahrtCounter++, date, fahrer, kind, ref, text, auto:true});
+}
+function placeText(projekt, fallback){
+  const p = projekt ? state.projects.find(x=>x.id===projekt) : null;
+  return p ? String(p.name||'') : String(fallback||'');
 }
 
 // LKW-Logistik-Kalender: eigener, von der Startseite/dem Menü aus frei
@@ -4186,7 +4342,8 @@ function lkwKalenderPageHTML(){
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
     <main style="padding:0;max-width:720px;margin:0 auto;">
       <h2 class="view-title">${t('lkwCalTitle')}</h2>
-      <p class="view-sub">${t('lkwCalSub')}</p>
+      ${fahrerDispoHTML()}
+      <p class="view-sub" style="margin-top:22px;">${t('lkwCalSub')}</p>
 
       ${state.calAskPw? `<div class="order-card">
         <div class="field"><label>${t('calPwLabel')}</label><input id="calPwInput" type="password" placeholder="${t('pwPlaceholder')}"></div>
@@ -4233,7 +4390,7 @@ function lkwKalenderPageHTML(){
         }).join('')}
       `).join('') : `<div class="empty-state">${t('lkwCalEmpty')}</div>`}
     </main>
-  </div>`;
+  </div>${state.cellEdit? cellEditHTML() : ''}`;
 }
 
 // ---- Symbole (statt Emojis) ---------------------------------------------
@@ -4318,9 +4475,19 @@ function iconize(root){
   });
 }
 
+let dpScrollSig = '';
 function render(){
+  const keep = [...document.querySelectorAll('.dp-wrap')].map(w=>w.scrollLeft);
   renderView();
   iconize(document.getElementById('app'));
+  const wraps = [...document.querySelectorAll('.dp-wrap')];
+  const sig = state.view + '|' + dpWeek() + '|' + wraps.length;
+  wraps.forEach((w, i)=>{
+    if(sig===dpScrollSig && keep[i]!=null){ w.scrollLeft = keep[i]; return; }
+    const th = w.querySelector('thead th.today'), head = w.querySelector('thead .dp-rowhead');
+    w.scrollLeft = th && head ? Math.max(0, th.offsetLeft - head.offsetWidth) : 0;
+  });
+  dpScrollSig = sig;
 }
 function renderView(){
   if(state.loading){ document.getElementById('app').innerHTML = `<div class="loading">${t('loadingText')}</div>`; return; }
@@ -4594,6 +4761,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
         delete order.pick;
       }
       order.status = step.next;
+      if(state.role==='fahrer' && ['Beladen','Unterwegs','Geliefert'].includes(step.next))
+        logFahrt(state.name, 'lieferung', 'o'+order.id, placeText(order.projekt, order.baustelle));
       await saveShared();
       const v = {id:order.id, ort:order.baustelle};
       if(nach) notify({names:[order.person]}, 'nMissingT', 'nMissingB', {id:order.id, n:nach.items.length, neu:nach.id});
@@ -4633,6 +4802,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       (pu.items||[]).forEach(i=>{ state.inventory[i.id] = (state.inventory[i.id] ?? 0) + i.qty; });
       pu.imLagerAm = nowStr();
     }
+    if(state.role==='fahrer' && ['Unterwegs','Abgeholt','Im Lager'].includes(step.next))
+      logFahrt(state.name, 'abholung', 'p'+pu.id, placeText(pu.projekt, pu.baustelle));
     render();
     await saveShared();
     if(step.next==='Unterwegs') notify({names:[pu.person]}, 'nPuOnWayT', 'nPuOnWayB', {id:pu.id, fahrer:state.name, ort:pu.baustelle});
@@ -4725,6 +4896,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='close-projekt'){ state.chefProjekt = null; render(); }
   if(action==='send-driver'){
     state.driverStatus[el.dataset.driver] = {status:'unterwegs', ziel:parseInt(el.dataset.id,10), by:state.name, time:nowStr(), ts:Date.now()};
+    logFahrt(el.dataset.driver, 'fahrt', 'b'+el.dataset.id, placeText(parseInt(el.dataset.id,10), ''));
     await saveShared();
     render();
     const pz = state.projects.find(x=>x.id===parseInt(el.dataset.id,10));
@@ -4741,6 +4913,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     if(cur && cur.status==='unterwegs'){
       cur.ziel = cur.ziel===id ? null : id;
       cur.by = null; cur.time = nowStr(); cur.ts = Date.now(); cur.auto = false;
+      if(cur.ziel) logFahrt(state.name, 'fahrt', 'b'+cur.ziel, placeText(cur.ziel, ''));
       await saveShared();
     }
     render();
@@ -4905,7 +5078,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     }
     render();
   }
-  if(action==='cal-lock'){ state.calUnlocked=false; state.calEditId=null; state.calDraft=null; render(); }
+  if(action==='cal-lock'){ state.calUnlocked=false; state.calEditId=null; state.calDraft=null; state.cellEdit=null; render(); }
   if(action==='cal-cancel-edit'){ state.calEditId=null; state.calDraft=null; state.calWarn=''; render(); }
   if(action==='cal-edit'){
     const entry = state.calendarEntries.find(x=>String(x.id)===el.dataset.id);
@@ -4932,6 +5105,85 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     state.calDraft=null; state.calWarn='';
     await saveShared();
     render();
+  }
+
+  // ---- Dispo-Tabellen
+  if(action==='dp-week'){ state.dpWeek = addDaysISO(dpWeek(), parseInt(el.dataset.d,10)); render(); }
+  if(action==='dp-today'){ state.dpWeek = null; render(); }
+  if(action==='dp-cell' && state.calUnlocked){
+    state.cellEdit = {grid:el.dataset.grid, row:el.dataset.row, date:el.dataset.date, text:'', notiz:'', fill:'none', ink:'std', days:[el.dataset.date], editId:null, warn:''};
+    render();
+  }
+  if(['dp-fill','dp-ink','dp-day','dp-line-edit'].includes(action) && state.cellEdit){
+    const c = state.cellEdit;
+    const tx = document.getElementById('dpText'), nz = document.getElementById('dpNotiz');
+    if(tx) c.text = tx.value; if(nz) c.notiz = nz.value;
+    if(action==='dp-fill') c.fill = el.dataset.v;
+    if(action==='dp-ink') c.ink = el.dataset.v;
+    if(action==='dp-day') c.days = c.days.includes(el.dataset.d) ? c.days.filter(d=>d!==el.dataset.d) : [...c.days, el.dataset.d];
+    if(action==='dp-line-edit'){
+      const e = dpEntries(c.grid).find(x=>String(x.id)===el.dataset.id);
+      if(e){ c.editId = e.id; c.text = dpLineText(c.grid, e); c.notiz = e.notiz||''; c.fill = e.fill||'none'; c.ink = e.ink||'std'; c.warn=''; }
+    }
+    render();
+  }
+  if(action==='dp-line-del' && state.cellEdit){
+    const c = state.cellEdit;
+    const e = dpEntries(c.grid).find(x=>String(x.id)===el.dataset.id);
+    if(!e || !confirm(t('dpDelConfirm',{text:dpLineText(c.grid, e)}))) return;
+    if(c.grid==='kol') state.calendarEntries = state.calendarEntries.filter(x=>x.id!==e.id);
+    else state.fahrten = state.fahrten.filter(x=>x.id!==e.id);
+    if(c.editId===e.id){ c.editId = null; c.text = ''; c.notiz = ''; }
+    render();
+    await saveShared();
+    render();
+  }
+  if(action==='dp-save' && state.cellEdit && state.calUnlocked){
+    const c = state.cellEdit;
+    const text = ((document.getElementById('dpText')||{}).value||'').trim();
+    const notiz = ((document.getElementById('dpNotiz')||{}).value||'').trim();
+    if(!text){ c.text = text; c.notiz = notiz; c.warn = t('dpWarnText'); render(); return; }
+    const look = {fill:c.fill, ink:c.ink};
+    if(c.editId){
+      const e = dpEntries(c.grid).find(x=>x.id===c.editId);
+      if(e){ if(c.grid==='kol') e.ort = text; else e.text = text; e.notiz = notiz; Object.assign(e, look); }
+    } else {
+      (c.days.length? c.days : [c.date]).forEach(d=>{
+        if(c.grid==='kol') state.calendarEntries.push({id: state.calCounter++, date:d, person:c.row, ort:text, notiz, ...look});
+        else state.fahrten.push({id: state.fahrtCounter++, date:d, fahrer:c.row, kind:'plan', text, notiz, ...look});
+      });
+    }
+    Object.assign(c, {text:'', notiz:'', editId:null, warn:'', days:[c.date], fill:'none', ink:'std'});
+    render();
+    await saveShared();
+    render();
+  }
+  if(action==='dp-close' || (action==='dp-close-bg' && e.target===el)){ state.cellEdit = null; render(); }
+  if(action==='dp-row-add' && state.calUnlocked){
+    const inp = document.getElementById('dpRowName');
+    const name = (inp? inp.value : '').trim();
+    if(!name || state.kolonnen.some(k=>k.name.toLowerCase()===name.toLowerCase())) return;
+    const pos = Math.max(0, ...state.kolonnen.map(k=>k.pos??k.id)) + 1;
+    state.kolonnen.push({id: state.kolonneCounter++, name, pos});
+    render(); await saveShared(); render();
+  }
+  if(action==='dp-row-template' && state.calUnlocked && !state.kolonnen.length){
+    KOLONNEN_VORLAGE.forEach((name, i)=>state.kolonnen.push({id: state.kolonneCounter++, name, pos:i+1}));
+    render(); await saveShared(); render();
+  }
+  if(action==='dp-row-move' && state.calUnlocked){
+    const list = [...state.kolonnen].sort((a,b)=>(a.pos??a.id)-(b.pos??b.id));
+    list.forEach((k,i)=>{ k.pos = i+1; });
+    const i = list.findIndex(k=>String(k.id)===el.dataset.id), j = i + parseInt(el.dataset.d,10);
+    if(i<0 || j<0 || j>=list.length) return;
+    [list[i].pos, list[j].pos] = [list[j].pos, list[i].pos];
+    render(); await saveShared(); render();
+  }
+  if(action==='dp-row-del' && state.calUnlocked){
+    const k = state.kolonnen.find(x=>String(x.id)===el.dataset.id);
+    if(!k || !confirm(t('dpRowDelConfirm',{name:k.name}))) return;
+    state.kolonnen = state.kolonnen.filter(x=>x.id!==k.id);
+    render(); await saveShared(); render();
   }
 
   if(action==='lkw-cancel-edit'){ state.lkwEditId=null; state.lkwDraft=null; state.lkwWarn=''; render(); }
@@ -4998,6 +5250,7 @@ function fetchAddrSuggestions(q){
 // Fertig-Datum eines Bauvorhabens (Chef) -- 'change' feuert, sobald im
 // Datumsfeld ein Tag gewählt oder das Feld geleert wurde.
 document.getElementById('app').addEventListener('change', async (e)=>{
+  if(e.target.id==='dpPick'){ if(e.target.value){ state.dpWeek = weekStartISO(e.target.value); render(); } return; }
   if(e.target.dataset && e.target.dataset.qty){ setQtyFromInput(e.target, true); return; }
   if(e.target.id && e.target.id.startsWith('fertigDate-')){
     const p = state.projects.find(x=>String(x.id)===e.target.dataset.projekt);
@@ -5127,7 +5380,7 @@ document.getElementById('app').addEventListener('contextmenu', (e)=>{
 });
 
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.puDraft || state.myPwOpen) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.puDraft || state.myPwOpen || state.cellEdit) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;

@@ -113,6 +113,41 @@ Chef-Passwort eingibt (`verifyChefPw()`, eigene Freischalt-Abfrage
 steht dort „🔒 … erst in der App anmelden“. Die Kalender-Daten (`calendarEntries`,
 `calCounter`) liegen im selben Supabase-Datensatz wie alles andere.
 
+## Dispo-Tabellen (Kalender + LKW-Fahrer, wie die Excel-Dispo der Firma)
+
+Vorlage: die Excel-Wochenplanung der Firma (KW, Mo–Sa als Spalten,
+Kolonnen als Zeilen, farbige Zellen, unten Baustelle räumen/Urlaub/Krank).
+- **Kalender** (Menü, frei einsehbar): `calendarPageHTML()` zeigt jetzt eine
+  Wochentabelle statt der Liste. Zeilen = `state.kolonnen` (`{id, name, pos}`,
+  `RECORD_ARRAYS` → `kolonneCounter`, Reihenfolge über `pos`, Chef pflegt
+  sie unter der Tabelle: hinzufügen/↑↓/entfernen, Knopf „Eure Kolonnen
+  übernehmen“ = `KOLONNEN_VORLAGE`), dazu Personen alter Einträge und die
+  festen Zeilen `#raeumen`/`#urlaub`/`#krank` (`DP_EXTRA`). Einträge bleiben
+  in `state.calendarEntries` (`{id, date, person = Zeile, ort = Text, notiz,
+  fill, ink}`), damit sie ohne Anmeldung über `public_info()` sichtbar sind;
+  die Zeilen-Reihenfolge kommt ohne Anmeldung aus `public_info().kolonnen`
+  (`supabase/security.sql`, sonst alphabetisch).
+- **LKW-Kalender**: oben `fahrerDispoHTML()` – gleiche Tabelle, Zeilen =
+  Fahrer (`driverNames()`; Chef sieht alle, ein Fahrer nur sich, NICHT
+  öffentlich wegen DSGVO). Daten `state.fahrten` (`{id, date, fahrer, kind,
+  ref, text, notiz, fill, ink, auto}`, `fahrtCounter`). Automatisch per
+  `logFahrt()` (einmal je Tag + `ref`): Fahrer-Schritte bei Bestellungen
+  (`lieferung`, ref `o<ID>`), Abholungen (`abholung`, `p<ID>`), Ziel-BV
+  wählen bzw. Chef schickt Fahrer (`fahrt`, `b<BV>`); Text = BV-Name
+  (`placeText()`). Von Hand: `kind:'plan'`.
+- **Farben** ohne feste Bedeutung (Nutzer: bei ihnen eigene Bedeutung):
+  Hintergrund `DP_FILLS` (kein/grün/blau/rosa/gelb/grau) und Schrift
+  `DP_INKS` (normal/rot/blau), CSS-Variablen `--dp-*` (+ Dunkelmodus).
+- Woche: `state.dpWeek` (Montag, ISO), ‹ › / „Diese Woche“ / Datumsfeld
+  `#dpPick`, `isoWeekNo()` (ISO-KW, 26.10.2026 = KW 44), Sonntag nur wenn
+  dort etwas steht (`dpDays()`). Bearbeiten nur mit Chef-Passwort
+  (`state.calUnlocked`): Feld antippen → `cellEditHTML()` (`state.cellEdit`,
+  mehrere Zeilen je Feld, an mehreren Tagen auf einmal eintragen, ändern/
+  löschen); solange offen, pausiert das 4-s-Neuzeichnen. Am Handy springt
+  die Tabelle zum heutigen Tag, die waagrechte Position bleibt beim
+  Neuzeichnen erhalten (`render()`, `dpScrollSig`). Alle Texte über
+  `escapeHtml()`.
+
 ## Sprachen
 
 Fünf Sprachen: Deutsch (Standard), Polnisch, Slowakisch, Kroatisch,
