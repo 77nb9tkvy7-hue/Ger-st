@@ -73,3 +73,7 @@ select 'max read persons', (select string_agg(x->>'person', ',' order by x->>'pe
 
 -- Freigabe öffentlich: nur bv/ergebnis/datum
 select 'freigabe', public.freigabe_info('abc123'), public.freigabe_info('falsch'), public.freigabe_info('');
+-- angezeigte Nummer (nr) statt interner id
+update public.app_state set value = jsonb_set(value, '{projects,1,nr}', '"2026-17"') where key = 'shopfloor-data-v2';
+do $$ begin if public.freigabe_info('abc123') ->> 'bv' <> '2026-17' then raise exception 'freigabe zeigt nicht nr: %', public.freigabe_info('abc123'); end if; end $$;
+select 'freigabe nr', public.freigabe_info('abc123');

@@ -101,6 +101,32 @@ löscht sie.
 wenn der Chef die Person oder ihre aktuelle Rolle inzwischen entfernt hat
 oder keine Supabase-Sitzung mehr besteht.
 
+## Einstellungen (☰-Menü)
+
+Nutzerwunsch: Menüpunkt „⚙ Einstellungen“ (`go-einstellungen`, `state.view =
+'einstellungen'`, `einstellungenPageHTML()`, Zurück-Pfeil wie bei den Kalendern):
+1. **Lager-Standort** zuerst (`lagerSettingHTML()`, ändern nur Chef – `lager-save`/
+   `lager-gps` prüfen die Rolle; andere sehen die Adresse + `setLagerOnlyChef`). Steht
+   NICHT mehr im Reiter Bauvorhaben; dort nur Hinweis `lagerMissingHint`, solange er fehlt.
+2. **Darstellung** Automatisch/Hell/Dunkel (siehe Hell-/Dunkelmodus).
+3. **Sprache** (die 5 `LANGS` als Knöpfe, gleiche Aktion `set-lang` wie der Globus).
+Prüfung `einstellungen`.
+4. **Benachrichtigungen** (nur Chef, `notifySettingsHTML()`): pro Ereignis
+   (`NOTIFY_EVENTS`: order_new, order_ready, order_onway, order_delivered,
+   order_missing, pickup_new, pickup_onway, driver_sent, planned_new, lkw_new,
+   mangel_new) Rollen an/aus + ggf. „Besteller“/„Betroffener Fahrer“ (`direct`).
+   Gespeichert im Datensatz `notifyCfg` (`{ev:{roles, direct}}`, je Ereignis
+   zusammengeführt); fehlt ein Eintrag, gilt der Standard (= früheres Verhalten).
+   ALLE Push-Aufrufe laufen über `notifyEv(ev, direktNamen, titel, text, vars)` –
+   neue Ereignisse dort + in `NOTIFY_EVENTS` + Texte `nev_<ev>` (5 Sprachen).
+5. **Version** klein ganz unten (`APP_VERSION`, Format JJJJ.MM.TT – bei jeder
+   Änderung an der App hochsetzen). Prüfung `benachrichtigung`.
+
+**Kalender-Umschalter**: Im Menü nur noch „Kalender“; oben auf Kalender und
+LKW-Kalender `calSwitchHTML()` „Kalender | LKW“ (nur Chef/Fahrer, `lkwCanSee()`),
+Aktion `cal-switch` wechselt die Seite OHNE Verlauf-Eintrag (Zurück → App) und
+öffnet LKW direkt auf „Gefahren“ (`dpFahrMode = 'ist'`).
+
 ## Menü / Kalender (nur nach Anmeldung sichtbar)
 
 **SGM-Logo = Startseite** (Nutzerwunsch): Logo oben links (Kopf der App UND
@@ -115,7 +141,13 @@ auch VOR der Anmeldung sichtbar (Funktion `topNavHTML()`). Im Menü gibt es
 die Punkte „Kalender" (`state.view = 'calendar'`) und „LKW-Kalender"
 (`state.view = 'lkwkalender'`, siehe eigenen Abschnitt unten). Der Kalender
 zeigt, wer wann wo im Einsatz sein soll. Seit „Neue Funktionen“ (Nutzer-
-entscheidung) nur NACH der Anmeldung sichtbar, davor Hinweis `calLockedHTML()`. Einträge
+entscheidung) nur NACH der Anmeldung sichtbar, davor Hinweis `calLockedHTML()`.
+**Zurück-Pfeil** (Nutzerwunsch): oben auf Kalender, LKW-Kalender und der
+gesperrten Seite „‹ Zurück“ (`viewBackBtnHTML()`, Aktion `view-back`). `goView()`
+merkt sich Seite + Scroll-Stelle (`viewStack`) und legt einen Eintrag im
+Browser-Verlauf an (`history.pushState`), `popstate` → `viewBack()` – so führt auch
+die Zurück-Taste/-Geste am Handy dorthin zurück, wo man war, statt die App zu
+verlassen. Prüfung `zurueck`. Einträge
 bearbeiten/anlegen/löschen kann nur, wer in der App angemeldet ist UND das
 Chef-Passwort eingibt (`verifyChefPw()`, eigene Freischalt-Abfrage
 `state.calUnlocked`, gilt nur für die aktuelle Seitenladung); ohne Anmeldung
@@ -136,9 +168,24 @@ Kolonnen als Zeilen, farbige Zellen, unten Baustelle räumen/Urlaub/Krank).
   in `state.calendarEntries` (`{id, date, person = Zeile, ort = Text, notiz,
   fill, ink}`). (Der Weg ohne Anmeldung über `public_info().kolonnen` aus
   `supabase/security.sql` ist seit `neue-funktionen.sql` abgeschaltet.)
+- **Kalender sehen**: NICHT die Baustelle (Nutzerwunsch, `calCanSee()`; Menüpunkt
+  fehlt, Seite zeigt `calNoAccess`). Chef, Lager, Fahrer sehen ihn.
+- **Rechte (Nutzerwunsch)**: Bearbeiten beider Kalender NUR als Chef angemeldet
+  (`calCanEdit()`), OHNE Extra-Chef-Passwort (das kam schon bei der Anmeldung);
+  `state.calUnlocked`/`cal-unlock-*` sind ungenutzt. LKW-Kalender sehen NUR Chef und
+  Fahrer (`lkwCanSee()`, Menüpunkt fehlt bei Baustelle/Lager, Seite zeigt
+  `lkwNoAccess`). Achtung: nur in der App gesperrt, der Datensatz selbst ist für
+  alle Rollen lesbar (wie bisher).
+- **Geplant / Gefahren** (Umschalter `state.dpFahrMode`, `dpFahrMode()`): Geplant =
+  `fahrten` mit `kind:'plan'` + LKW-Termine (in der Zeile ihres Fahrers, sonst
+  Zeile „Noch kein Fahrer“ `#offen`, nur lesen) + geplante Lieferungen (`#offen`)
+  über `dpVirtual()`; Gefahren = alle übrigen `fahrten` (automatisch + vom Chef
+  nachgetragen, `kind:'hand'`). LKW-Termine haben optional `fahrer` (Auswahl im
+  Formular; Push dann nur an diesen Fahrer). Prüfung `dispo-rechte`.
 - **LKW-Kalender**: oben `fahrerDispoHTML()` – gleiche Tabelle, Zeilen =
-  Fahrer (`driverNames()`; Chef sieht alle, ein Fahrer nur sich, NICHT
-  öffentlich wegen DSGVO). Daten `state.fahrten` (`{id, date, fahrer, kind,
+  Fahrer (`driverNames()`; Chef und alle Fahrer sehen alle Fahrer –
+  Nutzerwunsch, eigene Zeile oben –, NICHT öffentlich wegen DSGVO; Einträge nur
+  über Antippen in der App, NICHT aus GPS – Nutzerentscheidung). Daten `state.fahrten` (`{id, date, fahrer, kind,
   ref, text, notiz, fill, ink, auto}`, `fahrtCounter`). Automatisch per
   `logFahrt()` (einmal je Tag + `ref`): Fahrer-Schritte bei Bestellungen
   (`lieferung`, ref `o<ID>`), Abholungen (`abholung`, `p<ID>`), Ziel-BV
@@ -149,8 +196,8 @@ Kolonnen als Zeilen, farbige Zellen, unten Baustelle räumen/Urlaub/Krank).
   `DP_INKS` (normal/rot/blau), CSS-Variablen `--dp-*` (+ Dunkelmodus).
 - Woche: `state.dpWeek` (Montag, ISO), ‹ › / „Diese Woche“ / Datumsfeld
   `#dpPick`, `isoWeekNo()` (ISO-KW, 26.10.2026 = KW 44), Sonntag nur wenn
-  dort etwas steht (`dpDays()`). Bearbeiten nur mit Chef-Passwort
-  (`state.calUnlocked`): Feld antippen → `cellEditHTML()` (`state.cellEdit`,
+  dort etwas steht (`dpDays()`). Bearbeiten nur als Chef (`calCanEdit()`):
+  Feld antippen → `cellEditHTML()` (`state.cellEdit`,
   mehrere Zeilen je Feld, an mehreren Tagen auf einmal eintragen, ändern/
   löschen); solange offen, pausiert das 4-s-Neuzeichnen. Am Handy springt
   die Tabelle zum heutigen Tag, die waagrechte Position bleibt beim
@@ -406,6 +453,12 @@ qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
    „Bauvorhaben": zuerst eine Liste aller Bauvorhaben mit Status-Farben
    (`projektRowHTML()`, Farb-Legende oben, darunter „Neues Bauvorhaben"
    anlegen: Name + Adresse, automatische Nummer „BV 101" aufwärts).
+   **BV-Nummer änderbar** (Nutzerwunsch): angezeigte Nummer `p.nr` (Chef im
+   BV-Detail, Feld `bvNr-<id>`, oder beim Anlegen `#pvNr`; leer = automatisch,
+   doppelte abgelehnt, „BV “ davor wird abgeschnitten). Überall `bvNr(p|id)` statt
+   `p.id` ANZEIGEN – `p.id` bleibt der feste Schlüssel (Bestellungen, Fotos, Stunden,
+   Pläne `bv<id>/…`, Fahrten). `freigabe_info()` liefert `nr` (SQL neu ausführen).
+   Prüfung `bv-nummer`.
    Antippen öffnet die Detail-Ansicht (`state.chefProjekt`,
    `projektDetailHTML()`): Karte mit Status-Farbe, was „vor Ort" bzw.
    bestellt/unterwegs ist, als fertig markieren/reaktivieren und
@@ -617,8 +670,8 @@ Hintergrund kein GPS). Sichtbar nur für den Chef.
   gestrichelte Luftlinie. Echte Google-Routen IN der Karte bräuchten ein
   kostenpflichtiges Google-Konto + API-Schlüssel – stattdessen Popup-Link
   „🧭 Route in Google Maps“ (`maps/dir/?api=1&origin=…&destination=…`).
-- **Status automatisch (Am Lager / Unterwegs)**: Der Chef trägt im Reiter
-  „Bauvorhaben“ unten den **Lager-Standort** ein (`lagerSettingHTML()`,
+- **Status automatisch (Am Lager / Unterwegs)**: Der Chef trägt unter
+  ☰ → Einstellungen den **Lager-Standort** ein (`lagerSettingHTML()`,
   Adresse → Nominatim mit München+Umland-Vorrang, oder „Ich bin gerade am
   Lager“ per GPS; gespeichert als `state.lager = {adresse, coords}` im
   großen Datensatz, Feld `lager`; 🏭 auf beiden Karten). Das Fahrer-Handy
@@ -671,8 +724,11 @@ Supabase-Storage-Bucket `bauplaene` (`PLAN_BUCKET`) unter
 
 ## Hell-/Dunkelmodus
 
-Die App folgt automatisch der Handy-/Browser-Einstellung
-(`@media (prefers-color-scheme: dark)`), kein manueller Umschalter. Alle
+Standard: wie die Handy-/Browser-Einstellung (`@media (prefers-color-scheme: dark)`
+auf `:root:not([data-theme="light"])`). In **Einstellungen** pro Gerät fest wählbar
+(Automatisch/Hell/Dunkel, localStorage `geruest-theme`, `getTheme()`/`setTheme()`/
+`applyTheme()` → `html[data-theme]`; derselbe Variablen-Block steht zusätzlich unter
+`:root[data-theme="dark"]`). Alle
 Farben laufen über CSS-Variablen im `:root` (z. B. `--bg`, `--card`,
 `--ink`, `--accent`, `--line`, `--surface-2`, `--icon-tile`, `--zebra`) –
 der Dunkelmodus überschreibt nur diese Grundwerte, Komponenten verwenden
