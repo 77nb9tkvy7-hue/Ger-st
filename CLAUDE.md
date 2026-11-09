@@ -484,7 +484,11 @@ qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
    wechselt in die App, Reiter Bauvorhaben), „‹ Alle Bauvorhaben“ führt dann
    zurück ins Archiv. „Fertig – ins Archiv“ (`projekt-toggle`) schließt die
    Detailansicht und meldet per Toast, wo es liegt; „Wieder aktivieren“
-   holt es zurück. Gilt genauso in `demo.html`.
+   holt es zurück. **Endgültig löschen** (Nutzerwunsch „mit doppelt fragen“):
+   nur bei archivierten BV im Detail, nur Chef, Knopf „🗑 Endgültig löschen“
+   (`projekt-delete`), zwei Rückfragen (`bvDelAsk1`/`bvDelAsk2`); löscht das BV
+   und seine Plan-Dateien, Bestellungen/Fotos bleiben. Prüfung `bv-loeschen`.
+   Gilt genauso in `demo.html`.
    „Planen": Lieferungen im Voraus planen. „Personal": Mitarbeiter,
    Rollen und Passwörter verwalten (siehe „Anmeldung"). Die Rolle ist
    zusätzlich zum eigenen Passwort mit dem Chef-Passwort geschützt
