@@ -351,7 +351,7 @@ module.exports = ({ switchRole, shot }) => {
         const e = state.zeit.find(x => x.id === 'k1');
         await korrigiereZeit(e, { in: '2026-11-03T06:30:00Z', out: '2026-11-03T14:30:00Z', grund: 'Pause' });
         await loadZeit();
-        state.view = 'calendar'; render();
+        state.view = 'calendar'; state.dpWeek = weekStartISO('2026-11-03'); render();   // Dispo zeigt eine Woche
         const el = [...document.querySelectorAll('.cal-hours')].map(x => x.textContent).join(' | ');
         return { h: hoursOf(state.zeit.find(x => x.id === 'k1')), el };
       }, bv.id);

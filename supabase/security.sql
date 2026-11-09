@@ -54,6 +54,9 @@ language sql stable security definer set search_path = public as $$
                        from jsonb_array_elements(coalesce(s.value -> 'employees', '[]'::jsonb)) e), '[]'::jsonb),
     'calendarEntries', coalesce(s.value -> 'calendarEntries', '[]'::jsonb),
     'lkwEntries',      coalesce(s.value -> 'lkwEntries', '[]'::jsonb),
+    -- Zeilen der Dispo-Tabelle (Kolonnen) für den frei einsehbaren Kalender
+    'kolonnen', coalesce((select jsonb_agg(jsonb_build_object('name', k -> 'name') order by coalesce((k ->> 'pos')::int, (k ->> 'id')::int))
+                          from jsonb_array_elements(coalesce(s.value -> 'kolonnen', '[]'::jsonb)) k), '[]'::jsonb),
     'projects', coalesce((select jsonb_agg(jsonb_build_object('id', p -> 'id', 'name', p -> 'name', 'adresse', p -> 'adresse',
                                                               'farbe', p -> 'farbe', 'aktiv', p -> 'aktiv'))
                           from jsonb_array_elements(coalesce(s.value -> 'projects', '[]'::jsonb)) p), '[]'::jsonb))
