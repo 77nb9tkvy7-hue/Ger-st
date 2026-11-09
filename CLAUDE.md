@@ -15,7 +15,9 @@ Anmeldung mit **Name + eigenem Passwort**, Rollen werden vom Chef
 vergeben – "wie auf einem Discord-Server" (Nutzerwunsch). Ablauf
 (`loginHTML()`, Aktionen `login` / `pick-role` / `chef-pw-ok`):
 
-1. Name aus Liste wählen + Passwort eingeben.
+1. Namen eintippen (das Gerät merkt ihn sich) + Passwort eingeben. Die
+   Server-Funktion `login_lookup(name)` liefert NUR die Konto-Nummer, keine
+   Namensliste (Groß-/Kleinschreibung egal).
 2. Hat die Person genau EINE Rolle, landet sie direkt darin. Hat sie
    mehrere, bekommt sie nur IHRE Rollen zur Auswahl (`state.authName`
    = Person ist authentifiziert, aber noch keine Rolle gewählt). Ohne
@@ -34,8 +36,8 @@ NUR verschlüsselt bei Supabase, NICHT im Datensatz. Anmelden:
 `supabaseClient.auth.signInWithPassword` (Aktion `login`), danach lädt die
 App mit Rechten. `state.authed` = Supabase-Sitzung vorhanden (bleibt
 gespeichert bis „Abmelden“, auch offline). Ohne Anmeldung: nur
-`loadPublic()` über die DB-Funktion `public_info()` (Namensliste fürs
-Anmelden + die frei einsehbaren Kalender; vorher Rückfall: direkt lesen),
+nichts Persönliches mehr (`public_info()` liefert seit „Neue Funktionen“ `{}`,
+`loadPublic()` tut nichts; keine Namen, keine Kalender),
 `saveShared()` schreibt dann nichts. Abmelden (`signOutAll()`) löscht
 Sitzung, Zwischenspeicher (`geruest-cache`/`-pending`) und Daten im Speicher.
 Wird jemandem die aktuelle Rolle entzogen, meldet `enforceSession()` →
@@ -99,14 +101,14 @@ löscht sie.
 wenn der Chef die Person oder ihre aktuelle Rolle inzwischen entfernt hat
 oder keine Supabase-Sitzung mehr besteht.
 
-## Menü / Kalender (ohne Anmeldung erreichbar)
+## Menü / Kalender (nur nach Anmeldung sichtbar)
 
 Oben links sitzt das SGM-Logo, oben rechts ein Menü-Knopf (☰) – beides ist
 auch VOR der Anmeldung sichtbar (Funktion `topNavHTML()`). Im Menü gibt es
 die Punkte „Kalender" (`state.view = 'calendar'`) und „LKW-Kalender"
 (`state.view = 'lkwkalender'`, siehe eigenen Abschnitt unten). Der Kalender
-zeigt, wer wann wo im Einsatz sein soll, und ist bewusst frei einsehbar
-(kein Login nötig; Daten ohne Anmeldung über `public_info()`). Einträge
+zeigt, wer wann wo im Einsatz sein soll. Seit „Neue Funktionen“ (Nutzer-
+entscheidung) nur NACH der Anmeldung sichtbar, davor Hinweis `calLockedHTML()`. Einträge
 bearbeiten/anlegen/löschen kann nur, wer in der App angemeldet ist UND das
 Chef-Passwort eingibt (`verifyChefPw()`, eigene Freischalt-Abfrage
 `state.calUnlocked`, gilt nur für die aktuelle Seitenladung); ohne Anmeldung
@@ -117,16 +119,16 @@ steht dort „🔒 … erst in der App anmelden“. Die Kalender-Daten (`calenda
 
 Vorlage: die Excel-Wochenplanung der Firma (KW, Mo–Sa als Spalten,
 Kolonnen als Zeilen, farbige Zellen, unten Baustelle räumen/Urlaub/Krank).
-- **Kalender** (Menü, frei einsehbar): `calendarPageHTML()` zeigt jetzt eine
+- **Kalender** (Menü, nur nach Anmeldung – Nutzerentscheidung bei „Neue
+  Funktionen“, `calLockedHTML()`): `calendarPageHTML()` zeigt jetzt eine
   Wochentabelle statt der Liste. Zeilen = `state.kolonnen` (`{id, name, pos}`,
   `RECORD_ARRAYS` → `kolonneCounter`, Reihenfolge über `pos`, Chef pflegt
   sie unter der Tabelle: hinzufügen/↑↓/entfernen, Knopf „Eure Kolonnen
   übernehmen“ = `KOLONNEN_VORLAGE`), dazu Personen alter Einträge und die
   festen Zeilen `#raeumen`/`#urlaub`/`#krank` (`DP_EXTRA`). Einträge bleiben
   in `state.calendarEntries` (`{id, date, person = Zeile, ort = Text, notiz,
-  fill, ink}`), damit sie ohne Anmeldung über `public_info()` sichtbar sind;
-  die Zeilen-Reihenfolge kommt ohne Anmeldung aus `public_info().kolonnen`
-  (`supabase/security.sql`, sonst alphabetisch).
+  fill, ink}`). (Der Weg ohne Anmeldung über `public_info().kolonnen` aus
+  `supabase/security.sql` ist seit `neue-funktionen.sql` abgeschaltet.)
 - **LKW-Kalender**: oben `fahrerDispoHTML()` – gleiche Tabelle, Zeilen =
   Fahrer (`driverNames()`; Chef sieht alle, ein Fahrer nur sich, NICHT
   öffentlich wegen DSGVO). Daten `state.fahrten` (`{id, date, fahrer, kind,
@@ -281,8 +283,11 @@ eine eigenständige App (`display: standalone` in der Manifest-Datei).
 
 **Startet auch ohne Netz** (Keller, Land, schlechtes Netz): `sw.js` legt die
 App selbst auf dem Handy ab (Caches `geruest-shell-<VERSION>` = App-Seite,
-index, manifest, Logo, Icons; `geruest-runtime-<VERSION>` = supabase-js von
-jsDelivr, Google-Schriften, Leaflet von cdnjs).
+index, manifest, Logo, Icons, `vendor/fonts/fonts.css`, `vendor/supabase/*`,
+`vendor/qrcode/qrcode.js`; Schrift-Dateien und `vendor/leaflet/` beim ersten
+Gebrauch). Seit `VERSION` v2 kommt NICHTS mehr von Google/jsDelivr/cdnjs
+(`CDN_HOSTS` leer) – Schriften, supabase-js 2.45.4, Leaflet 1.9.4 und
+qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
 - App-Seite: **erst Netz** (Neuerungen kommen sofort an), nach 4 s ohne
   Antwort (`PAGE_TIMEOUT_MS`) oder ohne Netz die gespeicherte Fassung.
 - Logo/Icons/Bibliotheken/Schriften: sofort aus dem Speicher, im Hintergrund
@@ -492,6 +497,33 @@ w-grey`); antippbare Kacheln springen in den passenden Reiter
   hat (`driverStatusSectionHTML()`), Status-Kästchen beim Chef entfernt
   (doppelt zu den Kacheln), Info-Kacheln am Handy flacher, Standort-Hinweis
   beim Fahrer kurz, wenn alles in Ordnung ist (`geoOnShort`).
+
+## Bewegung / Druck-Rückmeldung (Feinschliff)
+
+Sachlich und schnell, kein Shop-Gefühl. Kurven als Variablen `--ease-out`
+(Rückmeldung) und `--ease-drawer` (Fenster) im `:root`.
+- **Knöpfe** geben beim Drücken nach (`scale(0.97)`, 140 ms; Kacheln 0.98,
+  BV-Zeilen 0.99), `touch-action: manipulation` (kein Doppeltipp-Zoom beim
+  schnellen +/+), kein grauer Tipp-Blitz. Liste der Knopf-Klassen im Block
+  „Feinschliff (Bedienung)“ am Ende des CSS – neue Knopf-Arten dort ergänzen.
+  Gesperrte Knöpfe reagieren nicht (`:not(:disabled)`). „Bereit melden“ wird
+  beim Drücken nur etwas dunkler statt blau.
+- **KEINE Einblend-Animationen auf Karten/Listen/Reitern**: `render()`
+  zeichnet alle 4 s per innerHTML neu, sie würden ständig neu abspielen.
+- **Fenster** (Teile-Popup, Bestellschein-Entwurf, Abholung, Bestätigung):
+  `animateOverlayOnOpen()` am Ende von `render()` animiert per Web Animations
+  API nur, wenn ein ANDERES Fenster aufgeht (Schlüssel = `data-action` des
+  `.overlay`); +/− im Fenster spielt nichts neu ab. Schließen sofort.
+- **Langes Drücken**: `.lp-fill` in der `.t-name`-Zelle füllt sich in 480 ms
+  (= `lpTimer`), Klasse `holding` (gesetzt in `pointerdown`, entfernt in
+  `clearLongPress()`).
+- **Meldung** (`showToast()`): rein 220 ms, raus 150 ms; die 4 s pausieren,
+  solange die App im Hintergrund ist (`visibilitychange`).
+- Zahlen in Kacheln/Abzeichen mit `tabular-nums` (wackeln nicht beim
+  Aktualisieren); Hover nur mit Maus (`@media (hover:hover)`); einheitlicher
+  Fokus-Rahmen `:focus-visible`.
+- **Reduzierte Bewegung** (Geräte-Einstellung): kein Skalieren/Gleiten, nur
+  Blenden; `scrollBehavior()` statt fest `'smooth'` verwenden.
 
 ## PC-Ansicht (Chef im Büro)
 
@@ -808,7 +840,7 @@ Funktion `lkwKalenderPageHTML()`), der unverändert bleibt.
 
 Erreichbar wie der Mitarbeiter-Kalender über einen eigenen Menüpunkt
 ("🚚 LKW-Kalender", `topNavHTML()`/`menuDropdownHTML()`,
-`state.view='lkwkalender'`) – frei einsehbar auch ohne Anmeldung. Das
+`state.view='lkwkalender'`) – inzwischen nur nach Anmeldung. Das
 Menü zeigt je nach aktueller Seite die jeweils anderen Ansichten an
 (z. B. auf dem Mitarbeiter-Kalender erscheinen "Zurück zur App" UND
 "LKW-Kalender", damit man direkt zwischen beiden wechseln kann).
@@ -850,7 +882,55 @@ Formular einen Hinweis statt der leeren Auswahl.
   → farbige Kachel `.w-ico` in der Kachel-Farbe. Karten-Marker/Popups nutzen
   `ic()` direkt. Sprach-Flaggen bleiben.
 
+## Neue Funktionen (Pakete 1–7, aus `demo.html` übernommen)
+
+Erst als Demo gebaut (Branch `features-demo`, Plan `docs/plan-neue-funktionen.md`),
+dann Punkt für Punkt übernommen. `demo.html` = diese App + Demo-Teile
+(Beispieldaten, Supabase-Nachbau, Rollen-Leiste); `node tools/demo-check.js all`
+prüft die Demo und dass die App genau der Demo ohne Demo-Teile entspricht.
+**Server-Teil:** `supabase/neue-funktionen.sql` (nach `security.sql`) im SQL
+Editor ausführen + pg_cron-Job `zeit-cleanup` (Zeile in der Datei) – Anleitung
+und Reihenfolge in `docs/superpowers/plans/2026-11-08-ui-port-checkliste.md`.
+Ohne das SQL klappt die Anmeldung nicht (`login_lookup`).
+- **Bestand** (Lager → Inventur): Mindestbestand je Teil (`state.minStock`,
+  „Bestand niedrig“), eigener Bestand Defekt/Reparatur (`state.defect`, als
+  +/− zusammengeführt) mit „Repariert“ (zurück) / „Verschrottet“; defekte Teile
+  aus Abholungen (`bookPickupIntoStock`).
+- **Materialliste je BV** (`materialBalance`, `printMaterial`), Fahrer-Status
+  **Pause** (Automatik überschreibt ihn nicht), **Export** CSV/Druck (Chef).
+- **Beweis-Fotos** (`takePhotoFromFile`, `stampImage`: ≤ 1600 px, Zeit/Ort im
+  Bild): privater Bucket `fotos`, `state.fotos` mit Text-Ids. Löschen nur der
+  Fotograf in 5 Min. (auch Server-Regel), danach blendet nur der Chef aus.
+  Links zeitlich begrenzt (`fotoUrlCache = {url, exp}`).
+- **Mängel** (`maengelSectionHTML`), **Unterschrift** nur per Extra-Knopf
+  (`order.signatur`, auf dem Lieferschein).
+- **Geschützte Server-Zeilen** `zeit:<JJJJ-MM>`, `unterweisung:<id>`,
+  `kolonnen`: NUR über `prot_read`/`prot_upsert`/`kolonne_get`/`kolonne_set`
+  (Mitarbeiter sehen nur sich + ihre Kolonne, Zeiten stempelt der Server).
+- **Einchecken/Stunden** (`ciCardHTML`, `doCheckIn`, 150 m, frischer Standort),
+  Kolonnenführer checkt sein Team ein („Wer?“), Chef korrigiert, Regiebericht
+  und Monatsübersicht drucken; alle 4 s nur aktueller + Vormonat
+  (`loadZeit(full)`). Löschen 12 Monate nach „Abgerechnet am“ (`zeit_cleanup`).
+- **Prüfprotokoll** (`PRUEF_PUNKTE`, Foto Pflicht) + QR-Aushang →
+  `freigabe.html?t=<token>` (öffentlich, nur BV/Ergebnis/Datum, `freigabe_info`).
+  **Unterweisungen**: Chef legt an, jeder bestätigt einmal.
+- **Tour-Reihenfolge** (`suggestTourOrder`, OSRM trip) + **Fahrtenliste** (km).
+- Chef-Übersicht: offene Bestellungen, DARUNTER Abholungen, dann Erledigt.
+- Zwei verschiedene „Kolonnen“: `state.kolonnen` = Zeilen der Dispo-Tabelle
+  (im großen Datensatz); `state.ciTeams` = wer zu welchem Kolonnenführer
+  gehört (Einchecken, eigene Server-Zeile `kolonnen`, `kolonne_get/_set`).
+- Chef sieht unter der Dispo-Tabelle die eingecheckten Stunden je Tag
+  (`calHoursDayHTML`). Fahrer-Schritte landen über `setOrderStatus()` in der
+  LKW-Dispo (`logFahrt`).
+- `security.sql` macht `public_info()` wieder gesprächig (Namen, Kalender) –
+  danach IMMER `neue-funktionen.sql` erneut ausführen (liefert `{}`).
+- Beweis-Daten (Fotos/Prüfungen/Mängel) liegen noch im gemeinsamen Datensatz:
+  „nicht änderbar“ sichert bisher nur die App, nicht der Server.
+
 ## Offen
+
+- Kundenansicht (bewusst offen gelassen).
+- Rest von Paket 4: Bestellungen/Bestand/Beweise in eigene Server-Zeilen.
 
 - Reiter „Tribüne": keine Teile-Liste vorhanden (im Kunden-Excel nur
   Modul + System) – sobald sie kommt, als drittes System ergänzen.
