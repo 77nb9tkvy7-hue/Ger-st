@@ -82,7 +82,11 @@
   .view-back{display:inline-flex;align-items:center;gap:4px;min-height:var(--tap);padding:0 18px 0 12px;margin:0 0 10px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:16px;font-weight:700;cursor:pointer;}
   .seg-control.dp-mode{margin:4px 0 12px 0;}
   .seg-control.set-theme{margin:0;}
+  .seg-control.cal-switch{margin:0 0 12px 0;}
   .set-langs{display:flex;flex-wrap:wrap;gap:8px;}
+  .nf-row{padding:10px 0;border-top:1px solid var(--line);} .nf-row:first-of-type{border-top:none;}
+  .nf-name{font-weight:700;font-size:14px;margin-bottom:6px;} .nf-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .app-version{text-align:center;color:var(--muted);font-size:12px;margin:22px 0 4px 0;}
   .view-back .vb-arrow{font-size:22px;line-height:1;margin-top:-2px;}
   .menu-wrap{position:relative;}
   .menu-btn{background:rgba(255,255,255,0.18);border:none;color:#fff;width:38px;height:38px;border-radius:10px;font-size:19px;cursor:pointer;line-height:1;}
@@ -980,6 +984,7 @@ de:{
   bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
   mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
   stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  calSwitchKal:'Kalender', calSwitchLkw:'LKW', setVersion:'Version', setNotify:'Benachrichtigungen', setNotifyHint:'Wer bekommt bei welchem Ereignis eine Nachricht aufs Handy? Antippen schaltet an/aus. Gilt für alle.', nev_order_new:'Neue Bestellung', nev_order_ready:'Bestellung bereit zur Abholung', nev_order_onway:'Bestellung unterwegs', nev_order_delivered:'Bestellung geliefert', nev_order_missing:'Teile fehlen (Nachlieferung)', nev_pickup_new:'Neue Abholung', nev_pickup_onway:'Abholung unterwegs', nev_driver_sent:'Chef schickt Fahrer', nev_planned_new:'Neue geplante Lieferung', nev_lkw_new:'Neuer LKW-Termin', nev_mangel_new:'Neuer Mangel', nfDirect_besteller:'Besteller', nfDirect_fahrer:'Betroffener Fahrer',
   menuSettings:'Einstellungen', setTitle:'Einstellungen', setTheme:'Darstellung', setTheme_auto:'Automatisch', setTheme_light:'Hell', setTheme_dark:'Dunkel', setThemeHint:'Automatisch = wie am Handy eingestellt. Gilt nur für dieses Gerät.', setLang:'Sprache', setLagerOnlyChef:'Ändern kann nur der Chef.', lagerMissingHint:'Der Lager-Standort fehlt noch. Bitte unter Einstellungen eintragen.',
   pvNrLabel:'BV-Nummer', pvNrPh:'leer = automatisch ({n})', pvNrTaken:'Die Nummer BV {nr} gibt es schon.',
   dpModePlan:'Geplant', dpModeIst:'Gefahren', dpPlanTitle:'Wer fährt wann wohin?', dpPlanSub:'Geplante Fahrten und LKW-Termine. Eintragen und ändern nur durch den Chef.', dpNoDriverRow:'Noch kein Fahrer', dpKind_termin:'LKW-Termin', dpKind_geplant:'Geplante Lieferung', lkwFahrerLabel:'Fahrer', lkwFahrerOpen:'Noch offen', lkwNoAccess:'Der LKW-Kalender ist nur für Chef und Fahrer.',
@@ -1188,6 +1193,7 @@ pl:{
   bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
   mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
   stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  calSwitchKal:'Kalendarz', calSwitchLkw:'Ciężarówki', setVersion:'Wersja', setNotify:'Powiadomienia', setNotifyHint:'Kto dostaje powiadomienie przy jakim zdarzeniu? Dotknij, aby włączyć/wyłączyć. Dotyczy wszystkich.', nev_order_new:'Nowe zamówienie', nev_order_ready:'Zamówienie gotowe do odbioru', nev_order_onway:'Zamówienie w drodze', nev_order_delivered:'Zamówienie dostarczone', nev_order_missing:'Brakuje części (dostawa uzupełniająca)', nev_pickup_new:'Nowy odbiór', nev_pickup_onway:'Odbiór w drodze', nev_driver_sent:'Szef wysyła kierowcę', nev_planned_new:'Nowa zaplanowana dostawa', nev_lkw_new:'Nowy termin ciężarówki', nev_mangel_new:'Nowa usterka', nfDirect_besteller:'Zamawiający', nfDirect_fahrer:'Dany kierowca',
   menuSettings:'Ustawienia', setTitle:'Ustawienia', setTheme:'Wygląd', setTheme_auto:'Automatycznie', setTheme_light:'Jasny', setTheme_dark:'Ciemny', setThemeHint:'Automatycznie = jak w telefonie. Dotyczy tylko tego urządzenia.', setLang:'Język', setLagerOnlyChef:'Zmienić może tylko szef.', lagerMissingHint:'Brakuje lokalizacji magazynu. Wpisz ją w Ustawieniach.',
   pvNrLabel:'Numer budowy', pvNrPh:'puste = automatycznie ({n})', pvNrTaken:'Numer BV {nr} już istnieje.',
   dpModePlan:'Plan', dpModeIst:'Przejechane', dpPlanTitle:'Kto jedzie kiedy i dokąd?', dpPlanSub:'Zaplanowane przejazdy i terminy ciężarówek. Wpisuje i zmienia tylko szef.', dpNoDriverRow:'Brak kierowcy', dpKind_termin:'Termin ciężarówki', dpKind_geplant:'Zaplanowana dostawa', lkwFahrerLabel:'Kierowca', lkwFahrerOpen:'Jeszcze otwarte', lkwNoAccess:'Kalendarz ciężarówek jest tylko dla szefa i kierowców.',
@@ -1396,6 +1402,7 @@ sk:{
   bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
   mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
   stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  calSwitchKal:'Kalendár', calSwitchLkw:'Nákladiaky', setVersion:'Verzia', setNotify:'Upozornenia', setNotifyHint:'Kto dostane pri akej udalosti správu do mobilu? Ťuknutím zapnete/vypnete. Platí pre všetkých.', nev_order_new:'Nová objednávka', nev_order_ready:'Objednávka pripravená na odvoz', nev_order_onway:'Objednávka na ceste', nev_order_delivered:'Objednávka doručená', nev_order_missing:'Chýbajú diely (dodatočná dodávka)', nev_pickup_new:'Nový odvoz', nev_pickup_onway:'Odvoz na ceste', nev_driver_sent:'Šéf posiela vodiča', nev_planned_new:'Nová plánovaná dodávka', nev_lkw_new:'Nový termín nákladiaka', nev_mangel_new:'Nová chyba', nfDirect_besteller:'Objednávateľ', nfDirect_fahrer:'Dotknutý vodič',
   menuSettings:'Nastavenia', setTitle:'Nastavenia', setTheme:'Vzhľad', setTheme_auto:'Automaticky', setTheme_light:'Svetlý', setTheme_dark:'Tmavý', setThemeHint:'Automaticky = ako v telefóne. Platí iba pre toto zariadenie.', setLang:'Jazyk', setLagerOnlyChef:'Zmeniť môže iba šéf.', lagerMissingHint:'Chýba poloha skladu. Zadajte ju v Nastaveniach.',
   pvNrLabel:'Číslo stavby', pvNrPh:'prázdne = automaticky ({n})', pvNrTaken:'Číslo BV {nr} už existuje.',
   dpModePlan:'Plán', dpModeIst:'Odjazdené', dpPlanTitle:'Kto ide kedy a kam?', dpPlanSub:'Plánované jazdy a termíny nákladiakov. Zapisuje a mení iba šéf.', dpNoDriverRow:'Zatiaľ bez vodiča', dpKind_termin:'Termín nákladiaka', dpKind_geplant:'Plánovaná dodávka', lkwFahrerLabel:'Vodič', lkwFahrerOpen:'Zatiaľ otvorené', lkwNoAccess:'Kalendár nákladiakov je iba pre šéfa a vodičov.',
@@ -1604,6 +1611,7 @@ hr:{
   bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
   mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
   stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  calSwitchKal:'Kalendar', calSwitchLkw:'Kamioni', setVersion:'Verzija', setNotify:'Obavijesti', setNotifyHint:'Tko dobiva poruku na mobitel kod kojeg događaja? Dodir uključuje/isključuje. Vrijedi za sve.', nev_order_new:'Nova narudžba', nev_order_ready:'Narudžba spremna za preuzimanje', nev_order_onway:'Narudžba na putu', nev_order_delivered:'Narudžba isporučena', nev_order_missing:'Nedostaju dijelovi (naknadna isporuka)', nev_pickup_new:'Novo preuzimanje', nev_pickup_onway:'Preuzimanje na putu', nev_driver_sent:'Šef šalje vozača', nev_planned_new:'Nova planirana isporuka', nev_lkw_new:'Novi termin kamiona', nev_mangel_new:'Novi nedostatak', nfDirect_besteller:'Naručitelj', nfDirect_fahrer:'Dotični vozač',
   menuSettings:'Postavke', setTitle:'Postavke', setTheme:'Izgled', setTheme_auto:'Automatski', setTheme_light:'Svijetlo', setTheme_dark:'Tamno', setThemeHint:'Automatski = kao na mobitelu. Vrijedi samo za ovaj uređaj.', setLang:'Jezik', setLagerOnlyChef:'Mijenjati može samo šef.', lagerMissingHint:'Nedostaje lokacija skladišta. Upišite je u Postavkama.',
   pvNrLabel:'Broj gradilišta', pvNrPh:'prazno = automatski ({n})', pvNrTaken:'Broj BV {nr} već postoji.',
   dpModePlan:'Plan', dpModeIst:'Odvezeno', dpPlanTitle:'Tko vozi kada i kamo?', dpPlanSub:'Planirane vožnje i termini kamiona. Upisuje i mijenja samo šef.', dpNoDriverRow:'Još bez vozača', dpKind_termin:'Termin kamiona', dpKind_geplant:'Planirana isporuka', lkwFahrerLabel:'Vozač', lkwFahrerOpen:'Još otvoreno', lkwNoAccess:'Kalendar kamiona je samo za šefa i vozače.',
@@ -1812,6 +1820,7 @@ en:{
   bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
   mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
   stockMissingLabel:'Missing:', stockLow:'Stock low',
+  calSwitchKal:'Calendar', calSwitchLkw:'Trucks', setVersion:'Version', setNotify:'Notifications', setNotifyHint:'Who gets a phone notification for which event? Tap to switch on/off. Applies to everyone.', nev_order_new:'New order', nev_order_ready:'Order ready for pickup', nev_order_onway:'Order on its way', nev_order_delivered:'Order delivered', nev_order_missing:'Parts missing (follow-up delivery)', nev_pickup_new:'New pickup', nev_pickup_onway:'Pickup on its way', nev_driver_sent:'Boss sends driver', nev_planned_new:'New planned delivery', nev_lkw_new:'New truck appointment', nev_mangel_new:'New defect', nfDirect_besteller:'Orderer', nfDirect_fahrer:'Driver concerned',
   menuSettings:'Settings', setTitle:'Settings', setTheme:'Appearance', setTheme_auto:'Automatic', setTheme_light:'Light', setTheme_dark:'Dark', setThemeHint:'Automatic = as set on the phone. Applies to this device only.', setLang:'Language', setLagerOnlyChef:'Only the boss can change this.', lagerMissingHint:'The warehouse location is missing. Please enter it under Settings.',
   pvNrLabel:'Project number', pvNrPh:'empty = automatic ({n})', pvNrTaken:'Number BV {nr} already exists.',
   dpModePlan:'Planned', dpModeIst:'Driven', dpPlanTitle:'Who drives where and when?', dpPlanSub:'Planned trips and truck appointments. Only the boss can enter and change them.', dpNoDriverRow:'No driver yet', dpKind_termin:'Truck appointment', dpKind_geplant:'Planned delivery', lkwFahrerLabel:'Driver', lkwFahrerOpen:'Not assigned yet', lkwNoAccess:'The truck calendar is only for the boss and drivers.',
@@ -2302,7 +2311,7 @@ const state = {
   employees:[], empCounter:1, authName:null, pushSubs:[], pushMsg:'', persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
   projects:[], projektCounter:101, chefTab:'uebersicht', chefProjekt:null, fahrerTab:'lieferungen', fahrerCalDay:null, selProjekt:'', lastGPS:null,
   view:'app', menuOpen:false,
-  calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
+  notifyCfg:{}, calendarEntries:[], calCounter:1, calUnlocked:false, calAskPw:false,
   driverStatus:{}, driverPos:{}, positions:{}, geoStatus:'', lager:null, showDone:{}, tourSel:[], pickups:[], pickupCounter:1, puDraft:null, puWarn:'', authed:false, publicNames:[], chefPw:null, persBusy:false, persOk:'', newPin:null, kolonnen:[], kolonneCounter:1, fahrten:[], fahrtCounter:1, publicKolonnen:[], dpWeek:null, cellEdit:null, forgotPw:false, myPwOpen:false, myPwWarn:'', myPwBusy:false, loginBusy:false, planUploading:null, planWarn:'', planWarnFor:null, lagerWarn:'', lagerDraft:null,
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
@@ -2372,7 +2381,7 @@ function stateToValue(){
     plannedDeliveries:state.plannedDeliveries, planCounter:state.planCounter,
     lkwEntries:state.lkwEntries, lkwCounter:state.lkwCounter,
     employees:state.employees, empCounter:state.empCounter,
-    pushSubs:state.pushSubs});
+    pushSubs:state.pushSubs, notifyCfg:state.notifyCfg});
 }
 function applyValue(v){
   v = v || {};
@@ -2395,6 +2404,7 @@ function applyValue(v){
   state.driverStatus = v.driverStatus || {};
   state.driverPos = v.driverPos || {};
   state.lager = v.lager || null;
+  state.notifyCfg = v.notifyCfg || {};
   state.pickups = v.pickups || [];
   state.pickupCounter = v.pickupCounter || 1;
   state.kolonnen = v.kolonnen || [];
@@ -2516,7 +2526,7 @@ function merge3(base, local, remote){
     const lc = Number(local[ck])||0, rc = Number(remote[ck])||0;
     out[ck] = Math.max(lc, rc, maxId+1);
   });
-  [['inventory', true], ['defect', true], ['minStock', false], ['driverStatus', false], ['driverPos', false]].forEach(([k, num])=>{
+  [['inventory', true], ['defect', true], ['minStock', false], ['driverStatus', false], ['driverPos', false], ['notifyCfg', false]].forEach(([k, num])=>{
     handled.add(k);
     const m = mergeMap(base[k], local[k], remote[k], num);
     out[k] = m.out; changes += m.changes;
@@ -2755,8 +2765,7 @@ function menuDropdownHTML(){
   if(!state.menuOpen) return '';
   const items = [];
   if(state.view!=='app') items.push(`<button data-action="go-app">${t('menuBackToApp')}</button>`);
-  if(state.view!=='calendar') items.push(`<button data-action="go-calendar">${t('menuCalendar')}</button>`);
-  if(state.view!=='lkwkalender' && (!state.loggedIn || lkwCanSee())) items.push(`<button data-action="go-lkwkalender">${t('menuLkwCalendar')}</button>`);
+  if(state.view!=='calendar' && state.view!=='lkwkalender') items.push(`<button data-action="go-calendar">${t('menuCalendar')}</button>`);
   if(state.view!=='einstellungen') items.push(`<button data-action="go-einstellungen">⚙ ${t('menuSettings')}</button>`);
   if(state.loggedIn && state.view==='app') items.push(`<button data-action="refresh">${t('refreshBtn')}</button>`);
   if(state.loggedIn && state.authed) items.push(`<button data-action="my-pw-open">${t('myPwMenu')}</button>`);
@@ -2961,6 +2970,26 @@ function tlv(lang, key, vars){
 function isoToDE(iso){ const [y,m,d] = iso.split('-'); return `${d}.${m}.${y}`; }
 // target = {roles:[...], names:[...]}; Texte werden für alle 5 Sprachen
 // mitgeschickt, die Funktion nimmt pro Handy die passende.
+// Wer bei welchem Ereignis benachrichtigt wird – Chef stellt es unter Einstellungen ein
+// (state.notifyCfg = {ev:{roles:[…], direct:bool}}). Standard = bisheriges Verhalten.
+// direct = die direkt Betroffenen (Besteller, geschickter/eingeteilter Fahrer).
+const NOTIFY_EVENTS = {
+  order_new:{roles:['lager','chef']}, order_ready:{roles:['fahrer']},
+  order_onway:{roles:[], direct:'besteller'}, order_delivered:{roles:[], direct:'besteller'}, order_missing:{roles:[], direct:'besteller'},
+  pickup_new:{roles:['fahrer','lager','chef']}, pickup_onway:{roles:[], direct:'besteller'},
+  driver_sent:{roles:[], direct:'fahrer'}, planned_new:{roles:['lager','fahrer']}, lkw_new:{roles:[], direct:'fahrer'},
+  mangel_new:{roles:['chef']},
+};
+const NOTIFY_ROLES = ['chef','lager','fahrer','baustelle'];
+function notifyCfg(ev){
+  const d = NOTIFY_EVENTS[ev], c = (state.notifyCfg||{})[ev];
+  return {roles: c && Array.isArray(c.roles) ? c.roles : d.roles, direct: d.direct ? !(c && c.direct===false) : false};
+}
+function notifyEv(ev, names, titleKey, bodyKey, vars){
+  const c = notifyCfg(ev), nm = c.direct ? (names||[]).filter(Boolean) : [];
+  if(!c.roles.length && !nm.length) return;
+  notify({roles:c.roles, names:nm}, titleKey, bodyKey, vars);
+}
 function notify(target, titleKey, bodyKey, vars){
   if(!supabaseClient || !supabaseClient.functions) return;
   const msgs = {};
@@ -3471,7 +3500,7 @@ async function savePickup(){
   await saveShared();
   render();
   showToast(d.id ? t('puUpdated',{id:pu.id}) : t('puSaved',{id:pu.id}));
-  if(!d.id) notify({roles:['fahrer','lager','chef']}, 'nPuNewT', 'nPuNewB', {id:pu.id, ort:pu.baustelle, person:pu.person});
+  if(!d.id) notifyEv('pickup_new', [], 'nPuNewT', 'nPuNewB', {id:pu.id, ort:pu.baustelle, person:pu.person});
 }
 function pickupCardHTML(pu, role){
   const st = pu.status, next = PU_NEXT[st];
@@ -4573,7 +4602,7 @@ async function sendMangel(){
   const m = {id: state.mangelCounter++, projekt: d.projekt, fotoId: d.fotoId!=null ? d.fotoId : null, text, by: state.name, ts: nowStr(), status:'offen', doneBy:null, doneTs:null};
   state.maengel.push(m); state.mangelDraft = null;
   render(); await saveShared();
-  notify({roles:['chef']}, 'nMangelT', 'nMangelB', {bv:'BV '+bvNr(m.projekt), name:m.by, text:m.text.slice(0,120)});
+  notifyEv('mangel_new', [], 'nMangelT', 'nMangelB', {bv:'BV '+bvNr(m.projekt), name:m.by, text:m.text.slice(0,120)});
   showToast(t('mangelSent'));
 }
 async function doneMangel(id){
@@ -4737,6 +4766,19 @@ function projekteHTML(){
   ${state.lager && state.lager.coords ? '' : `<div class="order-card" style="margin-top:18px;"><div class="order-time" style="margin:0 0 10px 0;">${t('lagerMissingHint')}</div><button class="refresh-btn" data-action="go-einstellungen">⚙ ${t('menuSettings')}</button></div>`}`;
 }
 // Einstellungen (☰-Menü): Lager-Standort (ändern nur Chef), Darstellung, Sprache
+// Version (bei jeder Änderung an der App hochsetzen; steht klein unten in den Einstellungen)
+const APP_VERSION = '2026.11.09';
+function notifySettingsHTML(){
+  return `<h3 class="section-h">${t('setNotify')}</h3>
+  <div class="order-card">
+    <div class="order-time" style="margin:0 0 10px 0;">${t('setNotifyHint')}</div>
+    ${Object.keys(NOTIFY_EVENTS).map(ev=>{ const c = notifyCfg(ev), d = NOTIFY_EVENTS[ev];
+      return `<div class="nf-row"><div class="nf-name">${t('nev_'+ev)}</div><div class="nf-chips">
+        ${NOTIFY_ROLES.map(r=>`<button class="ziel-chip ${c.roles.includes(r)?'active':''}" data-action="nf-role" data-ev="${ev}" data-r="${r}" aria-pressed="${c.roles.includes(r)}">${t('role'+r[0].toUpperCase()+r.slice(1))}</button>`).join('')}
+        ${d.direct? `<button class="ziel-chip ${c.direct?'active':''}" data-action="nf-direct" data-ev="${ev}" aria-pressed="${c.direct}">${t('nfDirect_'+d.direct)}</button>`:''}
+      </div></div>`; }).join('')}
+  </div>`;
+}
 function einstellungenPageHTML(){
   const th = getTheme(), lg = state.lager;
   const chef = state.loggedIn && state.authed && state.role==='chef';
@@ -4746,6 +4788,7 @@ function einstellungenPageHTML(){
       ${viewBackBtnHTML()}
       <h2 class="view-title">${t('setTitle')}</h2>
       ${chef ? lagerSettingHTML() : lagerRO}
+      ${chef ? notifySettingsHTML() : ''}
       <h3 class="section-h">${t('setTheme')}</h3>
       <div class="order-card">
         <div class="seg-control set-theme">${['auto','light','dark'].map(v=>`<button class="${th===v?'active':''}" data-action="set-theme" data-v="${v}" aria-pressed="${th===v}">${t('setTheme_'+v)}</button>`).join('')}</div>
@@ -4753,6 +4796,7 @@ function einstellungenPageHTML(){
       </div>
       <h3 class="section-h">${t('setLang')}</h3>
       <div class="order-card set-langs">${LANGS.map(l=>`<button class="ziel-chip ${l.code===state.lang?'active':''}" data-action="set-lang" data-lang="${l.code}">${l.flag||''} ${l.label||l.code}</button>`).join('')}</div>
+      <div class="app-version">${t('setVersion')} ${APP_VERSION}</div>
     </main>
   </div>`;
 }
@@ -5536,6 +5580,13 @@ function calLockedHTML(){
 function calCanEdit(){ return !!(state.authed && state.loggedIn && state.role==='chef'); }
 // LKW-Kalender: nur Chef und Fahrer (Nutzerwunsch; Baustelle und Lager nicht).
 function lkwCanSee(){ return !!(state.authed && state.loggedIn && ['chef','fahrer'].includes(state.role)); }
+// Umschalter oben: Kalender (Einsatzplan) | LKW (Fahrer, gleich „Gefahren“) – nur Chef/Fahrer
+function calSwitchHTML(cur){
+  if(!lkwCanSee()) return '';
+  return `<div class="seg-control cal-switch">
+    <button class="${cur==='calendar'?'active':''}" data-action="cal-switch" data-v="calendar">${t('calSwitchKal')}</button>
+    <button class="${cur==='lkwkalender'?'active':''}" data-action="cal-switch" data-v="lkwkalender">${t('calSwitchLkw')}</button></div>`;
+}
 function calLockBarHTML(){
   return calCanEdit() ? `<div class="dp-lockbar"><span class="order-time" style="margin:0;">${t('dpTapHint')}</span></div>` : '';
 }
@@ -5545,6 +5596,7 @@ function calendarPageHTML(){
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
     <main style="padding:0;max-width:1320px;margin:0 auto;">
       ${viewBackBtnHTML()}
+      ${calSwitchHTML('calendar')}
       <h2 class="view-title">${t('calTitle')}</h2>
       <p class="view-sub">${t('calSub')}</p>
       ${calLockBarHTML()}
@@ -5738,6 +5790,7 @@ function lkwKalenderPageHTML(){
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
     <main style="padding:0;max-width:720px;margin:0 auto;">
       ${viewBackBtnHTML()}
+      ${calSwitchHTML('lkwkalender')}
       <h2 class="view-title">${t('lkwCalTitle')}</h2>
       ${fahrerDispoHTML()}
       <p class="view-sub" style="margin-top:22px;">${t('lkwCalSub')}</p>
@@ -6017,7 +6070,7 @@ async function submitOrderFinal(){
   if(!projektId) state.baustelleOrt = ort;
   await saveShared();
   render();
-  notify({roles:['lager','chef']}, order.wunsch==='dringend' ? 'nUrgentT' : 'nNewOrderT', 'nNewOrderB', {id:order.id, ort:order.baustelle, person:order.person});
+  notifyEv('order_new', [], order.wunsch==='dringend' ? 'nUrgentT' : 'nNewOrderT', 'nNewOrderB', {id:order.id, ort:order.baustelle, person:order.person});
 }
 
 document.getElementById('app').addEventListener('click', async (e)=>{
@@ -6276,10 +6329,10 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       setOrderStatus(order, step.next);
       await saveShared();
       const v = {id:order.id, ort:order.baustelle};
-      if(nach) notify({names:[order.person]}, 'nMissingT', 'nMissingB', {id:order.id, n:nach.items.length, neu:nach.id});
-      if(order.status==='Bereit zur Abholung') notify({roles:['fahrer']}, 'nReadyT', 'nReadyB', v);
-      if(order.status==='Unterwegs') notify({names:[order.person]}, 'nOnWayT', 'nOnWayB', v);
-      if(order.status==='Geliefert') notify({names:[order.person]}, 'nDeliveredT', 'nDeliveredB', v);
+      if(nach) notifyEv('order_missing', [order.person], 'nMissingT', 'nMissingB', {id:order.id, n:nach.items.length, neu:nach.id});
+      if(order.status==='Bereit zur Abholung') notifyEv('order_ready', [], 'nReadyT', 'nReadyB', v);
+      if(order.status==='Unterwegs') notifyEv('order_onway', [order.person], 'nOnWayT', 'nOnWayB', v);
+      if(order.status==='Geliefert') notifyEv('order_delivered', [order.person], 'nDeliveredT', 'nDeliveredB', v);
     }
     render();
   }
@@ -6293,7 +6346,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     if(order && order.status==='Bereit zur Abholung'){
       setOrderStatus(order, 'Beladen'); setOrderStatus(order, 'Unterwegs');
       await saveShared();
-      notify({names:[order.person]}, 'nOnWayT', 'nOnWayB', {id:order.id, ort:order.baustelle});
+      notifyEv('order_onway', [order.person], 'nOnWayT', 'nOnWayB', {id:order.id, ort:order.baustelle});
     }
     render();
   }
@@ -6306,7 +6359,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const list = tourSelClean().map(id=>state.orders.find(o=>o.id===id)).filter(o=>o.status==='Beladen');
     if(list.length){
       list.forEach(o=>setOrderStatus(o, 'Unterwegs')); await saveShared();
-      list.forEach(o=>notify({names:[o.person]}, 'nOnWayT', 'nOnWayB', {id:o.id, ort:o.baustelle}));
+      list.forEach(o=>notifyEv('order_onway', [o.person], 'nOnWayT', 'nOnWayB', {id:o.id, ort:o.baustelle}));
     }
     state.tourSel = [];
     render();
@@ -6345,7 +6398,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       logFahrt(state.name, 'abholung', 'p'+pu.id, placeText(pu.projekt, pu.baustelle));
     render();
     await saveShared();
-    if(step.next==='Unterwegs') notify({names:[pu.person]}, 'nPuOnWayT', 'nPuOnWayB', {id:pu.id, fahrer:state.name, ort:pu.baustelle});
+    if(step.next==='Unterwegs') notifyEv('pickup_onway', [pu.person], 'nPuOnWayT', 'nPuOnWayB', {id:pu.id, fahrer:state.name, ort:pu.baustelle});
   }
   if(action==='pu-delete'){
     const pu = state.pickups.find(x=>x.id===parseInt(el.dataset.id,10));
@@ -6447,7 +6500,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     await saveShared();
     render();
     const pz = state.projects.find(x=>x.id===parseInt(el.dataset.id,10));
-    notify({names:[el.dataset.driver]}, 'nSentT', 'nSentB', {bv:projektLabel(pz?pz.id:null), adr:pz?pz.adresse:''});
+    notifyEv('driver_sent', [el.dataset.driver], 'nSentT', 'nSentB', {bv:projektLabel(pz?pz.id:null), adr:pz?pz.adresse:''});
   }
   if(action==='recall-driver'){
     state.driverStatus[el.dataset.driver] = {status:'lager', ziel:null, time:nowStr(), ts:Date.now()};
@@ -6566,7 +6619,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     });
     if(items.length===0) return;
     state.plannedDeliveries.push({id: state.planCounter++, projekt: projektId, date, items, person: state.name});
-    notify({roles:['lager','fahrer']}, 'nPlannedT', 'nPlannedB', {date:isoToDE(date), bv:projektLabel(projektId)});
+    notifyEv('planned_new', [], 'nPlannedT', 'nPlannedB', {date:isoToDE(date), bv:projektLabel(projektId)});
     state.cart = {};
     state.planDraft = {projekt:'', date:''};
     state.planWarn = '';
@@ -6619,6 +6672,16 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='go-einstellungen'){ goView('einstellungen'); state.menuOpen=false; render(); window.scrollTo(0, 0); }
+  if((action==='nf-role' || action==='nf-direct') && state.role==='chef'){
+    const ev = el.dataset.ev; if(!NOTIFY_EVENTS[ev]) return;
+    const c = notifyCfg(ev), cfg = {roles:[...c.roles], direct:c.direct};
+    if(action==='nf-role'){ const r = el.dataset.r; cfg.roles = cfg.roles.includes(r) ? cfg.roles.filter(x=>x!==r) : [...cfg.roles, r]; }
+    else cfg.direct = !cfg.direct;
+    state.notifyCfg = {...(state.notifyCfg||{}), [ev]: cfg};
+    render();
+    await saveShared();
+  }
+  if(action==='cal-switch'){ const v = el.dataset.v==='lkwkalender' && lkwCanSee() ? 'lkwkalender' : 'calendar'; if(v==='lkwkalender' && state.view!=='lkwkalender') state.dpFahrMode = 'ist'; state.view = v; state.cellEdit = null; render(); }
   if(action==='set-theme'){ setTheme(el.dataset.v); render(); }
   if(action==='view-back'){ if(viewStack.length) history.back(); else { state.view='app'; state.menuOpen=false; render(); } }
   if(action==='go-app'){ state.view='app'; state.menuOpen=false; viewStack.length = 0; render(); }
@@ -6768,7 +6831,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       state.lkwEditId=null;
     } else {
       state.lkwEntries.push({id: state.lkwCounter++, date, time, projekt, notiz, fahrer});
-      notify(fahrer ? {names:[fahrer]} : {roles:['fahrer']}, 'nLkwT', 'nLkwB', {date:isoToDE(date), time, bv:projektLabel(projekt)});
+      notifyEv('lkw_new', fahrer ? [fahrer] : driverNames(), 'nLkwT', 'nLkwB', {date:isoToDE(date), time, bv:projektLabel(projekt)});
     }
     state.lkwDraft=null; state.lkwWarn='';
     await saveShared();

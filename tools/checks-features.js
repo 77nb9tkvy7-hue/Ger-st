@@ -532,15 +532,15 @@ module.exports = ({ switchRole, shot }) => {
       await go('go-calendar');
       const a = await ev(page, () => ({ v: state.view, y: window.scrollY, btn: !!document.querySelector('.view-back') }));
       if (a.v !== 'calendar' || !a.btn || a.y > 5) p.push('Kalender ohne Zurück-Knopf/oben: ' + JSON.stringify(a));
-      await go('go-lkwkalender');
-      await page.click('.view-back'); await page.waitForTimeout(500);
-      const b = await ev(page, () => state.view);
-      if (b !== 'calendar') p.push('Zurück vom LKW-Kalender führt nicht zum Kalender: ' + b);
+      await page.click('[data-action="cal-switch"][data-v="lkwkalender"]'); await page.waitForTimeout(300);
+      const b = await ev(page, () => ({ v: state.view, mode: dpFahrMode() }));
+      if (b.v !== 'lkwkalender' || b.mode !== 'ist') p.push('Umschalter LKW falsch: ' + JSON.stringify(b));
       await page.click('.view-back'); await page.waitForTimeout(500);
       const c = await ev(page, () => ({ v: state.view, tab: state.chefTab, y: window.scrollY }));
       if (c.v !== 'app' || c.tab !== 'uebersicht' || Math.abs(c.y - y0) > 40) p.push('Zurück zur App falsch: ' + JSON.stringify({ ...c, y0 }));
       // Handy-Zurück (Browser-Verlauf)
-      await go('go-lkwkalender');
+      await go('go-calendar');
+      await page.click('[data-action="cal-switch"][data-v="lkwkalender"]'); await page.waitForTimeout(300);
       await page.goBack(); await page.waitForTimeout(500);
       const d = await ev(page, () => ({ v: state.view, y: window.scrollY }));
       if (d.v !== 'app' || Math.abs(d.y - y0) > 40) p.push('Handy-Zurück falsch: ' + JSON.stringify({ ...d, y0 }));
@@ -644,6 +644,38 @@ module.exports = ({ switchRole, shot }) => {
       await open();
       const f = await ev(page, () => ({ v: state.view, input: !!document.getElementById('lagerAdresse'), txt: document.getElementById('app').textContent.includes(t('setLagerOnlyChef')) }));
       if (f.v !== 'einstellungen' || f.input || !f.txt) p.push('Fahrer-Einstellungen falsch: ' + JSON.stringify(f));
+      return errs(errors, p);
+    },
+    // Benachrichtigungen pro Ereignis/Rolle einstellbar (Chef), Version sichtbar, Kalender-Umschalter nur Chef/Fahrer
+    'benachrichtigung': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      await ev(page, () => { goView('einstellungen'); render(); });
+      const v = await ev(page, () => ({ rows: document.querySelectorAll('.nf-row').length, want: Object.keys(NOTIFY_EVENTS).length, ver: (document.querySelector('.app-version') || {}).textContent || '' }));
+      if (!v.rows || v.rows !== v.want || !/\d{4}\.\d{2}\.\d{2}/.test(v.ver)) p.push('Einstellungen Benachrichtigungen/Version: ' + JSON.stringify(v));
+      // Neue Bestellung: Chef abwählen -> nur Lager
+      await page.click('[data-action="nf-role"][data-ev="order_new"][data-r="chef"]'); await page.waitForTimeout(200);
+      await page.click('[data-action="nf-direct"][data-ev="order_onway"]'); await page.waitForTimeout(200);
+      const r = await ev(page, () => {
+        const sent = []; const orig = notify; window.notify = (tg, tk) => sent.push({ tg, tk });
+        try { notify = (tg, tk) => sent.push({ tg, tk }); } catch (e) {}
+        notifyEv('order_new', [], 'nNewOrderT', 'nNewOrderB', {});
+        notifyEv('order_onway', ['Max'], 'nOnWayT', 'nOnWayB', {});
+        notifyEv('mangel_new', [], 'nMangelT', 'nMangelB', {});
+        try { notify = orig; } catch (e) {}
+        return { sent, cfg: state.notifyCfg };
+      });
+      const on = r.sent.find(x => x.tk === 'nNewOrderT'), ow = r.sent.find(x => x.tk === 'nOnWayT'), mg = r.sent.find(x => x.tk === 'nMangelT');
+      if (!on || on.tg.roles.join() !== 'lager') p.push('Neue Bestellung nicht nur ans Lager: ' + JSON.stringify(r));
+      if (ow) p.push('Unterwegs trotz abgeschaltetem Besteller verschickt');
+      if (!mg || mg.tg.roles.join() !== 'chef') p.push('Mangel nicht an Chef: ' + JSON.stringify(mg));
+      // Fahrer/Baustelle sehen keine Benachrichtigungs-Einstellungen; Umschalter nur Chef/Fahrer
+      await switchRole(page, 'fahrer');
+      const f = await ev(page, () => { goView('einstellungen'); render(); const a = document.querySelectorAll('.nf-row').length; goView('calendar'); render(); return { a, sw: !!document.querySelector('.cal-switch'), menu: (state.menuOpen = true, render(), !!document.querySelector('[data-action="go-lkwkalender"]')) }; });
+      if (f.a || !f.sw || f.menu) p.push('Fahrer: ' + JSON.stringify(f));
+      await switchRole(page, 'baustelle');
+      const b = await ev(page, () => { goView('calendar'); render(); return !!document.querySelector('.cal-switch'); });
+      if (b) p.push('Baustelle sieht LKW-Umschalter');
       return errs(errors, p);
     },
   };

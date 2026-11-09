@@ -111,6 +111,21 @@ Nutzerwunsch: Menüpunkt „⚙ Einstellungen“ (`go-einstellungen`, `state.vie
 2. **Darstellung** Automatisch/Hell/Dunkel (siehe Hell-/Dunkelmodus).
 3. **Sprache** (die 5 `LANGS` als Knöpfe, gleiche Aktion `set-lang` wie der Globus).
 Prüfung `einstellungen`.
+4. **Benachrichtigungen** (nur Chef, `notifySettingsHTML()`): pro Ereignis
+   (`NOTIFY_EVENTS`: order_new, order_ready, order_onway, order_delivered,
+   order_missing, pickup_new, pickup_onway, driver_sent, planned_new, lkw_new,
+   mangel_new) Rollen an/aus + ggf. „Besteller“/„Betroffener Fahrer“ (`direct`).
+   Gespeichert im Datensatz `notifyCfg` (`{ev:{roles, direct}}`, je Ereignis
+   zusammengeführt); fehlt ein Eintrag, gilt der Standard (= früheres Verhalten).
+   ALLE Push-Aufrufe laufen über `notifyEv(ev, direktNamen, titel, text, vars)` –
+   neue Ereignisse dort + in `NOTIFY_EVENTS` + Texte `nev_<ev>` (5 Sprachen).
+5. **Version** klein ganz unten (`APP_VERSION`, Format JJJJ.MM.TT – bei jeder
+   Änderung an der App hochsetzen). Prüfung `benachrichtigung`.
+
+**Kalender-Umschalter**: Im Menü nur noch „Kalender“; oben auf Kalender und
+LKW-Kalender `calSwitchHTML()` „Kalender | LKW“ (nur Chef/Fahrer, `lkwCanSee()`),
+Aktion `cal-switch` wechselt die Seite OHNE Verlauf-Eintrag (Zurück → App) und
+öffnet LKW direkt auf „Gefahren“ (`dpFahrMode = 'ist'`).
 
 ## Menü / Kalender (nur nach Anmeldung sichtbar)
 
