@@ -2211,7 +2211,7 @@ function roleLabel(role){ return t('roleLabel'+role.charAt(0).toUpperCase()+role
 
 const state = {
   loggedIn:false, name:'', role:null,
-  cart:{}, orders:[], orderCounter:1001, fotos:[], fotoCounter:1, fotoDraft:null, fotoView:null, fotoBusy:false, maengel:[], mangelCounter:1, mangelDraft:null, sigDraft:null, zeit:[], kolonnen:{}, unterweisungen:[], uwCounter:1, uwBest:{}, pruefDraft:null, tourOrder:[], fahrtenOpen:null, ciMsg:'', ciBusy:false, ciSel:null, ciHintOpen:false, korrDraft:null, ciHinweis:'', inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
+  cart:{}, orders:[], orderCounter:1001, fotos:[], fotoCounter:1, fotoDraft:null, fotoView:null, fotoBusy:false, maengel:[], mangelCounter:1, mangelDraft:null, sigDraft:null, zeit:[], ciTeams:{}, unterweisungen:[], uwCounter:1, uwBest:{}, pruefDraft:null, tourOrder:[], fahrtenOpen:null, ciMsg:'', ciBusy:false, ciSel:null, ciHintOpen:false, korrDraft:null, ciHinweis:'', inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
   employees:[], empCounter:1, authName:null, pushSubs:[], pushMsg:'', persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
@@ -4014,7 +4014,7 @@ async function loadZeit(full){
   if(full) zeitFullAt = Date.now();
 }
 async function loadKolonnen(){
-  try{ const {data, error} = await supabaseClient.rpc('kolonne_get', {}); if(!error && data) state.kolonnen = data; }catch(e){}
+  try{ const {data, error} = await supabaseClient.rpc('kolonne_get', {}); if(!error && data) state.ciTeams = data; }catch(e){}
 }
 async function setKolonne(name, members){
   try{
@@ -4023,7 +4023,7 @@ async function setKolonne(name, members){
     await loadKolonnen(); return true;
   }catch(e){ return false; }
 }
-function ciTeam(){ return [state.name, ...((state.kolonnen||{})[state.name]||[]).filter(n=>n!==state.name)]; }
+function ciTeam(){ return [state.name, ...((state.ciTeams||{})[state.name]||[]).filter(n=>n!==state.name)]; }
 function nearestProject(pos){
   let best = null;
   state.projects.filter(p=>p.aktiv && p.coords).forEach(p=>{ const d = distM([pos.lat, pos.lon], [p.coords.lat, p.coords.lon]); if(!best || d < best.dist) best = {p, dist:d}; });
@@ -4178,7 +4178,7 @@ function persZeitHTML(){
   <div class="order-card">
     <div class="field"><label for="ciHinweisText">${t('persCiHinweis')}</label><textarea id="ciHinweisText" rows="4" placeholder="${escapeHtml(t('ciHintDefault'))}">${escapeHtml(state.ciHinweis||'')}</textarea></div>
     <div class="pick-hint">${t('persKolonnen')}</div>
-    ${leaders.map(l=>{ const mem = (state.kolonnen||{})[l.name] || []; return `<div class="kol-row"><b>${escapeHtml(l.name)}</b><div class="ziel-chips">${emps.filter(e=>e.name!==l.name).map(e=>`<button class="ziel-chip ${mem.includes(e.name)?'active':''}" data-action="kol-toggle" data-leader="${escapeHtml(l.name)}" data-member="${escapeHtml(e.name)}">${escapeHtml(e.name)}</button>`).join('')}</div></div>`; }).join('')}
+    ${leaders.map(l=>{ const mem = (state.ciTeams||{})[l.name] || []; return `<div class="kol-row"><b>${escapeHtml(l.name)}</b><div class="ziel-chips">${emps.filter(e=>e.name!==l.name).map(e=>`<button class="ziel-chip ${mem.includes(e.name)?'active':''}" data-action="kol-toggle" data-leader="${escapeHtml(l.name)}" data-member="${escapeHtml(e.name)}">${escapeHtml(e.name)}</button>`).join('')}</div></div>`; }).join('')}
     <button class="mini-btn" data-action="zeit-cleanup" style="margin-top:12px;">${t('persCleanup')}</button>
   </div>`;
 }
@@ -5911,7 +5911,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='korr-save'){ await saveKorr(); }
   if(action==='regie-print'){ printRegie(parseInt(el.dataset.id,10)); }
   if(action==='monat-print'){ const sel = document.getElementById('monatSel-'+el.dataset.id); printMonat(parseInt(el.dataset.id,10), sel && sel.value); }
-  if(action==='kol-toggle'){ const l = el.dataset.leader, m = el.dataset.member, cur = (state.kolonnen||{})[l] || []; const ok = await setKolonne(l, cur.includes(m) ? cur.filter(x=>x!==m) : [...cur, m]); if(!ok) showToast(t('warnLoginNet')); render(); }
+  if(action==='kol-toggle'){ const l = el.dataset.leader, m = el.dataset.member, cur = (state.ciTeams||{})[l] || []; const ok = await setKolonne(l, cur.includes(m) ? cur.filter(x=>x!==m) : [...cur, m]); if(!ok) showToast(t('warnLoginNet')); render(); }
   if(action==='zeit-cleanup'){ try{ const {data, error} = await supabaseClient.rpc('zeit_cleanup_now', {}); if(error || data==null) throw error || new Error('nicht erlaubt'); showToast(t('persCleanupDone', {n: data})); }catch(e){ showToast(t('warnLoginNet')); } await loadZeit(true); render(); }
   if(action==='mangel-open'){ state.mangelDraft = {projekt: parseInt(el.dataset.projekt,10), text:'', fotoId:null, warn:''}; render(); }
   if(action==='mangel-close' || (action==='mangel-close-bg' && e.target===el)){ state.mangelDraft = null; render(); }
