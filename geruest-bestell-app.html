@@ -552,11 +552,18 @@
     .stat-chip-btn{--wc:var(--muted);flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;min-height:var(--tap);padding:0 14px;border:1.5px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:999px;font-family:'Inter',sans-serif;font-size:var(--fs-small);font-weight:600;cursor:pointer;white-space:nowrap;}
     .stat-chip-btn .sc-dot{width:10px;height:10px;border-radius:50%;background:var(--wc);flex:none;}
     .stat-chip-btn b{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;}
-    .my-status{padding:10px 12px;}
+    .my-status{padding:8px 12px;}
     .my-status .ms-label,.my-status .ms-hint{display:none;}
     .my-status .st-full{display:none;} .my-status .st-short{display:inline;}
     .my-status .seg-control{margin-top:0;}
-    .my-status .nav-btn{margin-top:10px;}
+    .my-status{margin-bottom:10px !important;}
+    .my-status .nav-btn{margin-top:4px;}
+    .my-status .ziel-chips{flex-wrap:nowrap;overflow-x:auto;margin-top:4px;padding-bottom:0;}
+    .my-status .ziel-chip{flex:0 0 auto;white-space:nowrap;}
+    .my-status .ms-meta{margin-top:2px !important;}
+    .my-status .ziel-label{display:none;}
+    main .view-title.role-title{display:none;}
+    .hide-phone{display:none;}
     .geo-badge.geo-denied{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:6px 6px 6px 12px;}
     .geo-badge.geo-denied .gb-full{display:none;} .geo-badge.geo-denied .gb-short{display:inline;flex:1;min-width:0;}
     .geo-badge.geo-denied .geo-retry{margin-top:0;flex:none;padding:0 14px;}
@@ -565,7 +572,11 @@
   button.stat-chip-btn:active{transform:scale(0.97);}
   /* Zweitknöpfe in einer Zeile (für Task 4) */
   .btn-row-secondary{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
-  .btn-row-secondary > *{flex:1 1 auto;}
+  .btn-row-secondary > *{flex:1 1 0;}
+  .btn-row-secondary .mini-btn{border-radius:12px;min-height:var(--tap);}
+  .order-meta{margin:2px 0 4px 0;}
+  .order-card .wunsch-row{margin:6px 0 0 0;}
+  .order-card .order-items{margin:6px 0;}
   @media (prefers-reduced-motion: reduce){
     :root :is(.submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
       .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.inv-actions button,
@@ -726,7 +737,7 @@ de:{
   wFahrerUnterwegs:'Fahrer unterwegs',
   wBauvorhaben:'Aktive Bauvorhaben',
   scNeu:'Neu', scInArbeit:'In Arbeit', scFehlt:'Fehlt', scOffen:'Offen', scFahrer:'Fahrer', scBV:'Baustellen', scUnterwegs:'Unterwegs', scImLager:'Im Lager', scGeliefert:'Geliefert', scZuLaden:'Zu laden', scAufLkw:'Auf LKW', scAbholen:'Abholen', scZuRaeumen:'Räumen', scGeplant:'Geplant', scNone:'–', driverStatusLagerShort:'Am Lager', geoDeniedShort:'📍 Standort aus', geoRetryShort:'Nochmal',
-  driverZielLabel:'Wohin?',
+  driverZielLabel:'Wohin?', zielChange:'Ändern',
   driverSentBy:'Vom Chef geschickt ({name})',
   driverNoZiel:'Ziel noch nicht gewählt',
   pvListSub:'Bauvorhaben antippen: Details ansehen, Lieferung hinzufügen oder einen Fahrer hinschicken.',
@@ -918,7 +929,7 @@ pl:{
   wFahrerUnterwegs:'Kierowcy w trasie',
   wBauvorhaben:'Aktywne budowy',
   scNeu:'Nowe', scInArbeit:'W realizacji', scFehlt:'Brak', scOffen:'Otwarte', scFahrer:'Kierowcy', scBV:'Budowy', scUnterwegs:'W drodze', scImLager:'W magazynie', scGeliefert:'Dostarczone', scZuLaden:'Załadunek', scAufLkw:'Na aucie', scAbholen:'Odbiór', scZuRaeumen:'Sprzątanie', scGeplant:'Plan', scNone:'–', driverStatusLagerShort:'W magazynie', geoDeniedShort:'📍 Lokalizacja wył.', geoRetryShort:'Ponów',
-  driverZielLabel:'Dokąd?',
+  driverZielLabel:'Dokąd?', zielChange:'Zmień',
   driverSentBy:'Wysłany przez szefa ({name})',
   driverNoZiel:'Cel jeszcze nie wybrany',
   pvListSub:'Dotknij budowy: szczegóły, dodanie dostawy lub wysłanie kierowcy.',
@@ -1110,7 +1121,7 @@ sk:{
   wFahrerUnterwegs:'Vodiči na ceste',
   wBauvorhaben:'Aktívne stavby',
   scNeu:'Nové', scInArbeit:'V spracovaní', scFehlt:'Chýba', scOffen:'Otvorené', scFahrer:'Vodiči', scBV:'Stavby', scUnterwegs:'Na ceste', scImLager:'V sklade', scGeliefert:'Doručené', scZuLaden:'Na naloženie', scAufLkw:'Na aute', scAbholen:'Odvoz', scZuRaeumen:'Upratať', scGeplant:'Plán', scNone:'–', driverStatusLagerShort:'V sklade', geoDeniedShort:'📍 Poloha vypnutá', geoRetryShort:'Znova',
-  driverZielLabel:'Kam?',
+  driverZielLabel:'Kam?', zielChange:'Zmeniť',
   driverSentBy:'Poslal šéf ({name})',
   driverNoZiel:'Cieľ ešte nie je zvolený',
   pvListSub:'Ťukni na stavbu: detaily, pridať dodávku alebo poslať vodiča.',
@@ -1302,7 +1313,7 @@ hr:{
   wFahrerUnterwegs:'Vozači na putu',
   wBauvorhaben:'Aktivna gradilišta',
   scNeu:'Novo', scInArbeit:'U obradi', scFehlt:'Nedostaje', scOffen:'Otvoreno', scFahrer:'Vozači', scBV:'Gradilišta', scUnterwegs:'Na putu', scImLager:'U skladištu', scGeliefert:'Isporučeno', scZuLaden:'Za utovar', scAufLkw:'Na kamionu', scAbholen:'Preuzimanje', scZuRaeumen:'Raščistiti', scGeplant:'Plan', scNone:'–', driverStatusLagerShort:'U skladištu', geoDeniedShort:'📍 Lokacija isključena', geoRetryShort:'Ponovo',
-  driverZielLabel:'Kamo?',
+  driverZielLabel:'Kamo?', zielChange:'Promijeni',
   driverSentBy:'Poslao šef ({name})',
   driverNoZiel:'Cilj još nije odabran',
   pvListSub:'Dodirni gradilište: detalji, dodavanje isporuke ili slanje vozača.',
@@ -1494,7 +1505,7 @@ en:{
   wFahrerUnterwegs:'Drivers on the road',
   wBauvorhaben:'Active projects',
   scNeu:'New', scInArbeit:'In progress', scFehlt:'Missing', scOffen:'Open', scFahrer:'Drivers', scBV:'Sites', scUnterwegs:'En route', scImLager:'In stock', scGeliefert:'Delivered', scZuLaden:'To load', scAufLkw:'On truck', scAbholen:'Pickup', scZuRaeumen:'To clear', scGeplant:'Planned', scNone:'–', driverStatusLagerShort:'At depot', geoDeniedShort:'📍 Location off', geoRetryShort:'Retry',
-  driverZielLabel:'Where to?',
+  driverZielLabel:'Where to?', zielChange:'Change',
   driverSentBy:'Sent by the boss ({name})',
   driverNoZiel:'No destination chosen yet',
   pvListSub:'Tap a project: see details, add a delivery or send a driver.',
@@ -2579,7 +2590,7 @@ function catalogHTML(){
     });
   }
 
-  return `<h2 class="view-title">${t('catalogTitle')}</h2>
+  return `<h2 class="view-title role-title">${t('catalogTitle')}</h2>
   <p class="view-sub">${t('catalogSub')}</p>
   ${widgetsHTML('baustelle')}${statStripHTML('baustelle')}
   ${aktive.length? `<div class="field">
@@ -2897,9 +2908,11 @@ function pickupCardHTML(pu, role){
     ${pu.abbau? `<div class="pu-abbau">🏗️ ${t('puAbbauLabel')}</div>`:''}
     ${(pu.items||[]).length? itemsListHTML(pu.items) + weightLineHTML(pu.items) : ''}
     ${pu.notiz? `<div class="ev-notiz">${escapeHtml(pu.notiz)}</div>`:''}
-    ${!done? `<div class="card-actions"><a class="mini-btn" href="${mapsUrl}" target="_blank" rel="noopener">📍 ${t('mapsShort')}</a></div>`:''}
-    ${canEdit? `<button class="reorder-btn" data-action="pu-edit" data-id="${pu.id}">${t('puEditBtn')}</button>`:''}
     ${canAdvance? `<button class="advance-btn" data-action="pu-advance" data-id="${pu.id}">${t(next.key)}</button>`:''}
+    ${(!done || canEdit)? `<div class="btn-row-secondary">
+      ${!done? `<a class="mini-btn" href="${mapsUrl}" target="_blank" rel="noopener">📍 ${t('mapsShort')}</a>`:''}
+      ${canEdit? `<button class="mini-btn" data-action="pu-edit" data-id="${pu.id}">${t('puEditBtn')}</button>`:''}
+    </div>`:''}
     ${canDelete? `<button class="pu-del" data-action="pu-delete" data-id="${pu.id}">${t('puDeleteBtn')}</button>`:''}
   </div>`;
 }
@@ -2951,24 +2964,24 @@ function orderCardHTML(o, role, extra){
   const step = NEXT_STEP[o.status];
   const showBtn = role && step && step.role===role;
   const statusClass = 'st-'+slug(o.status);
+  const wTxt = weightText(o.items);
   const mapsUrl = o.coords
     ? `https://www.google.com/maps?q=${o.coords.lat},${o.coords.lon}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.baustelle)}`;
   return `<div class="order-card ${statusClass}">
     <div class="order-head">
-      <div><div class="no">#${o.id}</div><div class="site">${o.baustelle} · ${t('bestelltVonInline')} ${o.person}</div></div>
+      <div><div class="no">#${o.id}</div><div class="site">${o.baustelle}</div></div>
       <div class="status-badge ${statusClass}">${statusLabel(o.status)}</div>
     </div>
     ${wunschBadgeHTML(o) || o.nachVon? `<div class="wunsch-row">${wunschBadgeHTML(o)}${o.nachVon? `<span class="wunsch-badge w-nach">${t('nachVonBadge',{id:o.nachVon})}</span>`:''}</div>`:''}
-    <div class="order-time">${t('bestelltPrefix')} ${o.time}</div>
+    <div class="order-time order-meta">${t('bestelltVonInline')} ${o.person} · ${o.time}${wTxt? ' · ⚖️ '+wTxt : ''}</div>
     ${role==='lager' && o.status==='In Bearbeitung' ? pickListHTML(o) : itemsListHTML(o.items)}
     ${o.fehlt && o.fehlt.length? `<div class="fehlt-box"><b>${t('fehltHeading',{id:o.nachId})}</b>${itemsListHTML(o.fehlt)}</div>`:''}
-    ${weightLineHTML(o.items)}
-    <div class="card-actions">
+    ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
+    <div class="btn-row-secondary">
       <a class="mini-btn" href="${mapsUrl}" target="_blank" rel="noopener">📍 ${t('mapsShort')}</a>
       <button class="mini-btn" data-action="print-order" data-order="${o.id}">🖨️ ${t('printShort')}</button>
     </div>
-    ${showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
     ${o.status==='Geliefert'? `<div class="done-label">${t('geliefertLabel')}</div>` : ''}
     ${extra||''}
   </div>`;
@@ -3004,7 +3017,7 @@ function inventoryTableHTML(editable){
 function lagerHTML(){
   const tab = state.lagerTab;
   const orders = sortOrdersForWork(state.orders);
-  return `  <h2 class="view-title">${t('lagerTitle')}</h2>
+  return `  <h2 class="view-title role-title">${t('lagerTitle')}</h2>
   ${widgetsHTML('lager')}${statStripHTML('lager')}
   ${roleNavHTML('lager-tab', tab, [
     {id:'bestellungen', key:'tabBestellungen', ico:'package', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Abgeholt').length},
@@ -3012,11 +3025,11 @@ function lagerHTML(){
     {id:'inventur', key:'tabInventur', ico:'clipboard-list'}])}
   ${tab==='bestellungen'
     ? `<p class="view-sub">${t('lagerBestellSub')}</p>
-       ${driverStatusSectionHTML()}
-       ${openPickups().length? `<h3 style="font-size:15px;margin:22px 0 8px 0;">${t('puLagerHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'lager')}`:''}
        ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
          return `${sectionH(t('openOrdersHeading'), open.length, 'sec-offen')}
          ${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'lager')).join('')}</div>` : `<div class="empty-state">${orders.length? t('allDone') : t('lagerEmptyOrders')}</div>`}
+         ${openPickups().length? `<h3 style="font-size:15px;margin:22px 0 8px 0;">${t('puLagerHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'lager')}`:''}
+         ${driverStatusSectionHTML()}
          ${doneSectionHTML('lager', done, o=>orderCardHTML(o,'lager'))}`; })()}`
     : tab==='geplant'
     ? `<p class="view-sub">${t('plLagerSub')}</p>
@@ -3073,6 +3086,7 @@ function myStatusWidgetHTML(){
   const cur = state.driverStatus[state.name];
   const aktive = state.projects.filter(p=>p.aktiv);
   const unterwegs = cur && cur.status==='unterwegs';
+  const collapsed = unterwegs && !!cur.ziel && !state.zielOpen && aktive.some(p=>p.id===cur.ziel);
   return `<div class="order-card my-status" style="margin-bottom:16px;">
     <div class="ms-label" style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">${t('myStatusLabel')}</div>
     <div class="seg-control" style="margin-bottom:0;">
@@ -3083,11 +3097,11 @@ function myStatusWidgetHTML(){
       }).join('')}
     </div>
     ${unterwegs && cur.by? `<div class="sent-note">${t('driverSentBy',{name:cur.by})}</div>`:''}
-    ${unterwegs? `<div style="font-size:13px;font-weight:700;color:var(--muted);margin-top:12px;">${t('driverZielLabel')}</div>
-      ${aktive.length? `<div class="ziel-chips">${aktive.map(p=>{
+    ${unterwegs? `<div class="ziel-label" style="font-size:13px;font-weight:700;color:var(--muted);margin-top:12px;">${t('driverZielLabel')}</div>
+      ${aktive.length? `<div class="ziel-chips">${aktive.filter(p=>!collapsed || cur.ziel===p.id).map(p=>{
         const hex = projektColorMeta(p.farbe).hex;
         return `<button class="ziel-chip ${cur.ziel===p.id?'active':''}" data-action="set-driver-ziel" data-id="${p.id}"><i style="${hex?`background:${hex};`:''}"></i>BV ${p.id} – ${p.name}</button>`;
-      }).join('')}</div>` : `<div class="order-time" style="margin-top:6px;">${t('pvEmptyActive')}</div>`}`:''}
+      }).join('')}${collapsed? `<button class="ziel-chip" data-action="ziel-change">${t('zielChange')}</button>`:''}</div>` : `<div class="order-time" style="margin-top:6px;">${t('pvEmptyActive')}</div>`}`:''}
     ${unterwegs && cur.ziel ? navButtonHTML(cur.ziel) : ''}
     ${cur? `<div class="order-time ms-meta" style="margin-top:8px;">${t('statusUpdatedPrefix')} ${cur.time}${cur.auto? ' · 🔄 '+t('autoTag'):''}</div>`:''}
     ${state.lager && state.lager.coords && state.geoStatus==='on'? `<div class="order-time ms-hint" style="margin-top:4px;">${t('autoHint')}</div>`:''}
@@ -3122,7 +3136,7 @@ function driverStatusListHTML(){
 
 function fahrerHTML(){
   const tab = state.fahrerTab;
-  return `  <h2 class="view-title">${t('fahrerTitle')}</h2>
+  return `  <h2 class="view-title role-title">${t('fahrerTitle')}</h2>
   <div id="geoBadge">${geoBadgeHTML()}</div>
   ${widgetsHTML('fahrer')}${statStripHTML('fahrer')}
   ${myStatusWidgetHTML()}
@@ -3219,12 +3233,12 @@ function fahrerLieferungenHTML(){
   const ready = all.filter(o=>STATUS_FLOW.indexOf(o.status)>=2);
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
   const pus = openPickups();
-  return `${pus.length? `<h3 id="sec-fahrer-pu" style="font-size:15px;margin:0 0 8px 0;">${t('puFahrerHeading')} (${pus.length})</h3>${pickupListHTML(pus, 'fahrer')}<div style="height:14px;"></div>`:''}
-  <p class="view-sub">${t('fahrerSub')}</p>
-  ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
+  return `<p class="view-sub hide-phone">${t('fahrerSub')}</p>
   <div id="sec-fahrer-offen"></div>
   ${(()=>{ const open = ready.filter(o=>o.status!=='Geliefert'), done = ready.filter(o=>o.status==='Geliefert');
     return `${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'fahrer')).join('')}</div>` : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}
+    ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
+    ${pus.length? `<h3 id="sec-fahrer-pu" style="font-size:15px;margin:22px 0 8px 0;">${t('puFahrerHeading')} (${pus.length})</h3>${pickupListHTML(pus, 'fahrer')}`:''}
     ${doneSectionHTML('fahrer', done, o=>orderCardHTML(o,'fahrer'))}`; })()}`;
 }
 
@@ -4150,7 +4164,7 @@ function chefHTML(){
   const orders = sortOrdersForWork(state.orders);
   const counts = {};
   STATUS_FLOW.forEach(s=> counts[s] = orders.filter(o=>o.status===s).length);
-  return `  <h2 class="view-title">${t('chefViewTitle')}</h2>
+  return `  <h2 class="view-title role-title">${t('chefViewTitle')}</h2>
   ${roleNavHTML('chef-tab', tab, [
     {id:'uebersicht', key:'tabUebersicht', ico:'house', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Gemeldet').length},
     {id:'bauvorhaben', key:'tabBauvorhaben', ico:'building-2'},
@@ -4879,7 +4893,9 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     await saveShared();
     render();
   }
+  if(action==='ziel-change'){ state.zielOpen = true; render(); }
   if(action==='set-driver-ziel'){
+    state.zielOpen = false;
     const cur = state.driverStatus[state.name];
     const id = parseInt(el.dataset.id,10);
     if(cur && cur.status==='unterwegs'){
