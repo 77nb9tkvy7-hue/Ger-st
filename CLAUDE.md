@@ -485,9 +485,14 @@ qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
    zurück ins Archiv. „Fertig – ins Archiv“ (`projekt-toggle`) schließt die
    Detailansicht und meldet per Toast, wo es liegt; „Wieder aktivieren“
    holt es zurück. **Endgültig löschen** (Nutzerwunsch „mit doppelt fragen“):
-   nur bei archivierten BV im Detail, nur Chef, Knopf „🗑 Endgültig löschen“
+   im BV-Detail (aktiv UND Archiv), nur Chef, Knopf „🗑 Endgültig löschen“
    (`projekt-delete`), zwei Rückfragen (`bvDelAsk1`/`bvDelAsk2`); löscht das BV
-   und seine Plan-Dateien, Bestellungen/Fotos bleiben. Prüfung `bv-loeschen`.
+   und seine Plan-Dateien, Fahrer-Ziel dorthin wird geleert, Bestellungen/Fotos
+   bleiben. Prüfung `bv-loeschen`.
+   **Bestellung löschen** (`order-delete`, `canDeleteOrder()`): Chef jede,
+   Baustelle nur die eigene, solange „Neu“ (danach Hinweis `orderDelTooLate`);
+   zwei Rückfragen (`orderDelAsk1`/`orderDelAsk2`); Lagerbestand bleibt
+   unverändert. Prüfung `bestellung-loeschen`.
    Gilt genauso in `demo.html`.
    „Planen": Lieferungen im Voraus planen. „Personal": Mitarbeiter,
    Rollen und Passwörter verwalten (siehe „Anmeldung"). Die Rolle ist
