@@ -475,6 +475,16 @@ qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
    hinzufügen" (gleiches Planungs-Formular `planFormHTML(projektId)`, ohne
    BV-Auswahl) und die geplanten Lieferungen dieses BV. Am PC stehen
    Karte/Fahrer links und das Lieferungs-Formular rechts (`.detail-grid`).
+   **Archiv** (Nutzerwunsch, ☰-Menü → „🗄 Archiv“, nur Chef, `state.view =
+   'archiv'`, `archivPageHTML()`): fertige BV (`aktiv:false`) stehen NICHT mehr
+   in der Bauvorhaben-Liste, dort nur der Knopf „Archiv – N fertige
+   Bauvorhaben“ (`go-archiv`). Archiv-Seite mit Suche (`#archivSearch`,
+   `archivList()`: Nr./Name/Adresse, neueste zuerst; filtert ohne ganzes
+   Neuzeichnen). Antippen öffnet die normale BV-Detailansicht (`open-projekt`
+   wechselt in die App, Reiter Bauvorhaben), „‹ Alle Bauvorhaben“ führt dann
+   zurück ins Archiv. „Fertig – ins Archiv“ (`projekt-toggle`) schließt die
+   Detailansicht und meldet per Toast, wo es liegt; „Wieder aktivieren“
+   holt es zurück. Gilt genauso in `demo.html`.
    „Planen": Lieferungen im Voraus planen. „Personal": Mitarbeiter,
    Rollen und Passwörter verwalten (siehe „Anmeldung"). Die Rolle ist
    zusätzlich zum eigenen Passwort mit dem Chef-Passwort geschützt

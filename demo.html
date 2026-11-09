@@ -87,6 +87,7 @@
   .nf-name{font-weight:700;font-size:14px;margin-bottom:6px;} .nf-chips{display:flex;flex-wrap:wrap;gap:6px;}
   .app-version{text-align:center;color:var(--muted);font-size:12px;margin:22px 0 4px 0;}
   .view-back .vb-arrow{font-size:22px;line-height:1;margin-top:-2px;}
+  .arch-link{margin-top:14px;}
   .logo-btn{background:none;border:none;padding:0;cursor:pointer;font:inherit;color:inherit;text-align:left;display:flex;align-items:center;}
   .logo-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px;}
   .menu-wrap{position:relative;}
@@ -1342,7 +1343,7 @@ de:{
   nLkwB:'{date}, {time} Uhr: {bv}',
   mapLoadError:'Karte konnte nicht geladen werden – bitte Internet prüfen.',
   pvFertigGeplant:'Fertig geplant am', pvFertigAm:'Fertig am', fkFertig:'Fertigstellung',
-  pvAlsFertigBtn:'Als fertig markieren', pvWiederAktivBtn:'Wieder aktivieren',
+  pvAlsFertigBtn:'Fertig – ins Archiv', menuArchiv:'🗄 Archiv', archTitle:'Archiv', archSub:'Fertige Bauvorhaben. Antippen öffnet sie – dort holt „Wieder aktivieren“ sie zurück in die Liste.', archSearchPh:'Suchen: Name, Nummer oder Adresse', archEmpty:'Noch nichts im Archiv.', archNone:'Nichts gefunden.', archLink:'🗄 Archiv – {n} fertige Bauvorhaben', archToast:'{bv} liegt jetzt im Archiv (☰ → Archiv).', archBackToast:'{bv} ist wieder aktiv.', pvWiederAktivBtn:'Wieder aktivieren',
   pvColorNone:'Keine Angabe', pvColorGreen:'Lieferung nötig', pvColorBlue:'Abholung/Räumung nötig', pvColorBlack:'Nichts zu tun',
   calTitle:'Kalender',
   calSub:'Einsatzplanung der Kolonnen nach Woche und Baustelle.',
@@ -1552,7 +1553,7 @@ pl:{
   nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Nie udało się załadować mapy – sprawdź internet.',
   pvFertigGeplant:'Planowane zakończenie', pvFertigAm:'Zakończona dnia', fkFertig:'Zakończenie',
-  pvAlsFertigBtn:'Oznacz jako zakończoną', pvWiederAktivBtn:'Aktywuj ponownie',
+  pvAlsFertigBtn:'Zakończona – do archiwum', menuArchiv:'🗄 Archiwum', archTitle:'Archiwum', archSub:'Zakończone budowy. Stuknij, aby otworzyć – „Aktywuj ponownie“ przywraca je na listę.', archSearchPh:'Szukaj: nazwa, numer lub adres', archEmpty:'Archiwum jest puste.', archNone:'Nic nie znaleziono.', archLink:'🗄 Archiwum – {n} zakończonych budów', archToast:'{bv} jest teraz w archiwum (☰ → Archiwum).', archBackToast:'{bv} jest znowu aktywna.', pvWiederAktivBtn:'Aktywuj ponownie',
   pvColorNone:'Brak danych', pvColorGreen:'Potrzebna dostawa', pvColorBlue:'Potrzebny odbiór/sprzątanie', pvColorBlack:'Nic do zrobienia',
   calTitle:'Kalendarz',
   calSub:'Plan pracy brygad według tygodnia i budowy.',
@@ -1762,7 +1763,7 @@ sk:{
   nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Mapu sa nepodarilo načítať – skontrolujte internet.',
   pvFertigGeplant:'Plánované dokončenie', pvFertigAm:'Dokončená dňa', fkFertig:'Dokončenie',
-  pvAlsFertigBtn:'Označiť ako dokončenú', pvWiederAktivBtn:'Znova aktivovať',
+  pvAlsFertigBtn:'Hotové – do archívu', menuArchiv:'🗄 Archív', archTitle:'Archív', archSub:'Dokončené stavby. Ťuknutím ich otvoríš – „Znova aktivovať“ ich vráti do zoznamu.', archSearchPh:'Hľadať: názov, číslo alebo adresa', archEmpty:'Archív je zatiaľ prázdny.', archNone:'Nič sa nenašlo.', archLink:'🗄 Archív – {n} dokončených stavieb', archToast:'{bv} je teraz v archíve (☰ → Archív).', archBackToast:'{bv} je znova aktívna.', pvWiederAktivBtn:'Znova aktivovať',
   pvColorNone:'Neurčené', pvColorGreen:'Potrebná dodávka', pvColorBlue:'Potrebné vyzdvihnutie/upratanie', pvColorBlack:'Nič k vybaveniu',
   calTitle:'Kalendár',
   calSub:'Plánovanie nasadenia čiat podľa týždňa a stavby.',
@@ -1972,7 +1973,7 @@ hr:{
   nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Karta se nije mogla učitati – provjerite internet.',
   pvFertigGeplant:'Planirani završetak', pvFertigAm:'Završeno dana', fkFertig:'Završetak',
-  pvAlsFertigBtn:'Označi kao završeno', pvWiederAktivBtn:'Ponovno aktiviraj',
+  pvAlsFertigBtn:'Gotovo – u arhivu', menuArchiv:'🗄 Arhiva', archTitle:'Arhiva', archSub:'Završena gradilišta. Dodirom ih otvaraš – „Ponovno aktiviraj“ vraća ih na popis.', archSearchPh:'Traži: naziv, broj ili adresa', archEmpty:'Arhiva je još prazna.', archNone:'Ništa nije pronađeno.', archLink:'🗄 Arhiva – {n} završenih gradilišta', archToast:'{bv} je sada u arhivi (☰ → Arhiva).', archBackToast:'{bv} je ponovno aktivno.', pvWiederAktivBtn:'Ponovno aktiviraj',
   pvColorNone:'Nije postavljeno', pvColorGreen:'Potrebna isporuka', pvColorBlue:'Potrebno preuzimanje/čišćenje', pvColorBlack:'Nema posla',
   calTitle:'Kalendar',
   calSub:'Raspored ekipa po tjednu i gradilištu.',
@@ -2182,7 +2183,7 @@ en:{
   nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Map could not be loaded – please check your internet.',
   pvFertigGeplant:'Planned completion', pvFertigAm:'Completed on', fkFertig:'Completion',
-  pvAlsFertigBtn:'Mark as done', pvWiederAktivBtn:'Reactivate',
+  pvAlsFertigBtn:'Done – to archive', menuArchiv:'🗄 Archive', archTitle:'Archive', archSub:'Finished projects. Tap to open – “Reactivate” brings them back to the list.', archSearchPh:'Search: name, number or address', archEmpty:'Nothing in the archive yet.', archNone:'Nothing found.', archLink:'🗄 Archive – {n} finished projects', archToast:'{bv} is now in the archive (☰ → Archive).', archBackToast:'{bv} is active again.', pvWiederAktivBtn:'Reactivate',
   pvColorNone:'Not set', pvColorGreen:'Delivery needed', pvColorBlue:'Pickup/clearing needed', pvColorBlack:'Nothing to do',
   calTitle:'Calendar',
   calSub:'Crew schedule by week and site.',
@@ -3042,6 +3043,7 @@ function menuDropdownHTML(){
   const items = [];
   if(state.view!=='app') items.push(`<button data-action="go-app">${t('menuBackToApp')}</button>`);
   if(state.view!=='calendar' && state.view!=='lkwkalender' && (!state.loggedIn || calCanSee())) items.push(`<button data-action="go-calendar">${t('menuCalendar')}</button>`);
+  if(state.loggedIn && state.role==='chef' && state.view!=='archiv') items.push(`<button data-action="go-archiv">${t('menuArchiv')}</button>`);
   if(state.view!=='einstellungen') items.push(`<button data-action="go-einstellungen">⚙ ${t('menuSettings')}</button>`);
   if(state.loggedIn && state.view==='app') items.push(`<button data-action="refresh">${t('refreshBtn')}</button>`);
   if(state.loggedIn && state.authed) items.push(`<button data-action="my-pw-open">${t('myPwMenu')}</button>`);
@@ -5025,6 +5027,30 @@ function projektRowHTML(p){
   </button>`;
 }
 
+// Archiv (☰ → Archiv, nur Chef): fertige Bauvorhaben (aktiv:false), neueste zuerst,
+// mit Suche. Antippen öffnet die normale Detail-Ansicht (dort „Wieder aktivieren“).
+function archivList(){
+  const q = normSearch(state.archivSearch||'').trim();
+  return state.projects.filter(p=>!p.aktiv)
+    .filter(p=>!q || q.split(/\s+/).every(w=>normSearch(`bv ${p.nr||p.id} ${p.name||''} ${p.adresse||''}`).includes(w)))
+    .sort((a,b)=>String(b.fertigAm||'').localeCompare(String(a.fertigAm||'')) || b.id-a.id);
+}
+function archivListHTML(){
+  const all = state.projects.filter(p=>!p.aktiv).length, list = archivList();
+  if(!all) return `<div class="empty-state">${t('archEmpty')}</div>`;
+  return list.length? `<div class="proj-list">${list.map(projektRowHTML).join('')}</div>` : `<div class="empty-state">${t('archNone')}</div>`;
+}
+function archivPageHTML(){
+  return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
+    <main style="padding:0;max-width:1060px;margin:0 auto;">
+      ${viewBackBtnHTML()}
+      <h2 class="view-title">${t('archTitle')}</h2>
+      <p class="view-sub">${t('archSub')}</p>
+      <input class="katalog-search" id="archivSearch" placeholder="${t('archSearchPh')}" value="${escapeHtml(state.archivSearch||'')}" autocomplete="off">
+      <div id="archivList">${archivListHTML()}</div>
+    </main>
+  </div>`;
+}
 function projekteHTML(){
   const sel = state.projects.find(p=>p.id===state.chefProjekt);
   if(sel) return projektDetailHTML(sel);
@@ -5033,7 +5059,7 @@ function projekteHTML(){
   return `<p class="view-sub">${t('pvListSub')}</p>
   <div class="proj-legend">${PROJECT_COLORS.map(c=>{ const m=projektColorMeta(c); return `<span><i style="background:${m.hex}"></i>${t(m.key)}</span>`; }).join('')}</div>
   ${aktive.length? `<div class="proj-list">${aktive.map(projektRowHTML).join('')}</div>` : `<div class="empty-state">${t('pvEmptyActive')}</div>`}
-  ${fertig.length? `<h3 class="section-h">${t('pvAbgeschlossenHeading')}</h3><div class="proj-list">${fertig.map(projektRowHTML).join('')}</div>`:''}
+  ${fertig.length? `<button class="loc-btn arch-link" data-action="go-archiv">${t('archLink',{n:fertig.length})}</button>`:''}
   <h3 class="section-h">${t('pvNewHeading')}</h3>
   <div class="order-card">
     <div class="field"><label>${t('pvNameLabel')}</label><input id="pvName" placeholder="${t('pvNamePlaceholder')}" autocomplete="off"></div>
@@ -6172,6 +6198,7 @@ const SYM_ICONS = {
   'users':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
   'undo-2':'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
   'circle-alert':'<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>',
+  'archive':'<rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/>',
   'menu':'<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>'
 };
 function ic(name, cls){
@@ -6184,7 +6211,7 @@ const EMO = {
   '✏':'pencil', '🔄':'refresh-cw', '↻':'refresh-cw', '🖨':'printer', '👍':'circle-check', '🔁':'repeat',
   '⬆':'upload', '⭐':'star', '🏗':'building-2', '🏁':'flag', '🔔':'bell', '📐':'drafting-compass',
   '⚖':'weight', '🌐':'globe', '✓':'check', '✗':'x', '📦':'package', '📋':'clipboard-list', '📄':'file-text',
-  '🗑':'trash-2', '📷':'camera', '⏱':'clock', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu', '⚙':'settings',
+  '🗑':'trash-2', '📷':'camera', '⏱':'clock', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu', '🗄':'archive', '⚙':'settings',
 };
 const EMO_RE = new RegExp('(' + Object.keys(EMO).join('|') + ')\\uFE0F?', 'gu');
 function emoIcon(ch){ const v = EMO[ch]; return Array.isArray(v) ? ic(v[0], v[1]) : ic(v); }
@@ -6255,6 +6282,10 @@ function renderView(){
   if(state.view==='calendar'){ document.getElementById('app').innerHTML = calendarPageHTML(); return; }
   if(state.view==='lkwkalender'){ document.getElementById('app').innerHTML = lkwKalenderPageHTML(); return; }
   if(state.view==='einstellungen'){ document.getElementById('app').innerHTML = einstellungenPageHTML(); return; }
+  if(state.view==='archiv'){
+    if(state.loggedIn && state.role==='chef'){ document.getElementById('app').innerHTML = archivPageHTML(); return; }
+    state.view = 'app';
+  }
   if(!state.loggedIn){ document.getElementById('app').innerHTML = loginHTML(); syncGeo(); return; }
 
   let mainHTML='';
@@ -6775,8 +6806,14 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     if(el.dataset.go) jumpTo(el.dataset.go);
     else window.scrollTo({top:0, behavior:scrollBehavior()});
   }
+  if(action==='go-archiv'){ state.menuOpen=false; goView('archiv'); render(); window.scrollTo(0,0); }
+  if(action==='open-projekt' && state.view==='archiv'){ goView('app'); state.chefTab='bauvorhaben'; }
   if(action==='open-projekt'){ state.chefProjekt = parseInt(el.dataset.id,10); state.cart = {}; state.planDraft = {projekt:'', date:''}; state.planWarn=''; render(); window.scrollTo(0,0); }
-  if(action==='close-projekt'){ state.chefProjekt = null; render(); }
+  if(action==='close-projekt'){
+    state.chefProjekt = null;
+    if(viewStack.length && viewStack[viewStack.length-1].view==='archiv'){ history.back(); return; }   // aus dem Archiv geöffnet -> dorthin zurück
+    render();
+  }
   if(action==='send-driver'){
     state.driverStatus[el.dataset.driver] = {status:'unterwegs', ziel:parseInt(el.dataset.id,10), by:state.name, time:nowStr(), ts:Date.now()};
     logFahrt(el.dataset.driver, 'fahrt', 'b'+el.dataset.id, placeText(parseInt(el.dataset.id,10), ''));
@@ -6861,6 +6898,9 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       p.aktiv = !p.aktiv;
       if(!p.aktiv){ if(!p.fertigAm || p.fertigAm > todayISO()) p.fertigAm = todayISO(); }
       else p.fertigAm = null;
+      // fertig -> ins Archiv: Detail zu, kurze Meldung wo es jetzt liegt
+      if(!p.aktiv && state.view==='app'){ state.chefProjekt = null; render(); window.scrollTo(0,0); }
+      showToast(t(p.aktiv? 'archBackToast' : 'archToast', {bv: projektLabel(p.id)}));
       await saveShared();
     }
     render();
@@ -7278,6 +7318,7 @@ function setPuQtyFromInput(inp, final){
   const sum = document.getElementById('puSum'); if(sum) sum.textContent = puSumText(state.puDraft);
 }
 document.getElementById('app').addEventListener('input', (e)=>{
+  if(e.target.id==='archivSearch'){ state.archivSearch = e.target.value; const l = document.getElementById('archivList'); if(l){ l.innerHTML = archivListHTML(); iconize(l); } return; }
   if(e.target.dataset && e.target.dataset.pq){ setPuQtyFromInput(e.target, false); return; }
   if(state.mangelDraft && e.target.id==='mangelText'){ state.mangelDraft.text = e.target.value; return; }
   if(state.pruefDraft && e.target.id==='pruefBem'){ state.pruefDraft.bemerkung = e.target.value; return; }
