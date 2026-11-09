@@ -296,6 +296,9 @@
   .foto-meta{font-size:14px;margin:8px 2px;line-height:1.45;}
   .foto-hidden-note{color:var(--muted);font-weight:600;margin-top:4px;}
   .mini-btn.danger{color:var(--red);border-color:var(--red);}
+  .stop-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border-radius:999px;background:var(--accent-solid);color:#FFFFFF;font-size:14px;margin-right:4px;}
+  .tour-bar .mini-btn{min-height:var(--tap);}
+  .export-row{gap:8px;}
   .pruef-box{margin:12px 0 4px 0;padding:10px;border-radius:12px;background:var(--surface-2);}
   .pruef-badge{display:inline-block;font-size:14px;font-weight:700;border-radius:10px;padding:6px 10px;}
   .pruef-badge.frei{background:#15803D;color:#FFFFFF;}
@@ -910,6 +913,7 @@ de:{
   bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
   mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
   stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  tourOrderBtn:'Reihenfolge vorschlagen', tourOrderNoGps:'Kein Startpunkt (Lager-Standort fehlt) oder zu wenige Ziele.', tourMapsRoute:'Route in Google Maps', fahrtenBtn:'Fahrtenliste', fahrtenTitle:'Fahrtenliste', fahrtenHint:'Aus den Lieferungen berechnet – kein steuerliches Fahrtenbuch. km = einfache Strecke Lager → Bauvorhaben.', fahrtenFahrer:'Fahrer', fahrtenKm:'km', fahrtenCa:'ca.', fahrtenSum:'Summe', fahrtenCsv:'Excel-Liste (CSV) herunterladen', fahrtenNone:'Keine Fahrten im Zeitraum.', fahrtenLoading:'Kilometer werden berechnet …',
   pruefTitle:'Prüfung & Freigabe', pruefOpen:'Gerüst prüfen', pruefNone:'Noch nicht geprüft', pruefFrei:'Freigegeben am {d} ({name})', pruefGesperrt:'Gesperrt seit {d} ({name})', pruefEyebrow:'Prüfprotokoll', pruefHint:'Alle Punkte prüfen und mindestens ein Foto machen.', pruefFotoBtn:'Foto vom Gerüst', pruefNeedFoto:'Mindestens ein Foto ist Pflicht.', pruefNeedAll:'Zum Freigeben müssen alle Punkte abgehakt sein.', pruefBem:'Bemerkung', pruefFreigeben:'Freigeben', pruefSperren:'Sperren', pruefSaved:'Prüfprotokoll gespeichert', aushangPrint:'Aushang mit QR drucken', aushangFrei:'GERÜST FREIGEGEBEN', aushangGesperrt:'GERÜST GESPERRT – NICHT BETRETEN', aushangScan:'QR-Code scannen: aktueller Stand', pp_verankerung:'Verankerung', pp_belaege:'Beläge vollständig und fest', pp_seitenschutz:'Seitenschutz', pp_aufstiege:'Aufstiege / Leitergänge', pp_fuss:'Fußplatten / Spindeln', pp_kennzeichnung:'Kennzeichnung angebracht', uwTitle:'Unterweisungen', uwTitel:'Thema', uwText:'Text', uwAdd:'Unterweisung anlegen', uwAdded:'Unterweisung angelegt', uwOk:'Gelesen und verstanden', uwEyebrow:'Unterweisung', uwCount:'bestätigt {n} / {m}', uwDone:'Bestätigt – danke!', uwNone:'Noch keine Unterweisungen.',
   ciIn:'Einchecken', ciOut:'Auschecken', ciChecking:'Standort wird geprüft …', ciCheckedIn:'Eingecheckt: {bv} seit {t}', ciTeamLabel:'Wer ist dabei?', ciTooFar:'Zu weit weg vom Bauvorhaben ({m} m). Einchecken geht nur vor Ort.', ciBadGps:'GPS zu ungenau (±{m} m) – kurz warten und nochmal.', ciNoGps:'Kein Standort – bitte Standort freigeben.', ciDone:'Eingecheckt: {bv}', ciOutDone:'Ausgecheckt', ciHintTitle:'Hinweis zum Einchecken', ciHintDefault:'Beim Ein- und Auschecken werden Uhrzeit und Standort gespeichert, damit die Arbeitszeit pro Bauvorhaben erfasst wird. Sehen kann das nur die Geschäftsleitung. Gelöscht wird 12 Monate nach der Abrechnung.', ciHintOk:'Verstanden', ciHintSaved:'Hinweis gespeichert', ciRunning:'läuft', calHours:'Stunden', hoursKorr:'korrigiert', regieTitle:'Regiebericht', regieEmpty:'Noch keine Zeiten.', regieSum:'Summe', regieDatum:'Datum', regiePerson:'Person', regieZeit:'von–bis', regieStd:'Std.', regieKorrBtn:'Korrigieren', regiePrint:'Regiebericht drucken', korrTitle:'Zeit korrigieren', korrVon:'von', korrBis:'bis', korrGrund:'Grund', korrSave:'Speichern', monatTitle:'Monatsübersicht', monatPrint:'Drucken', monatLief:'Lieferungen', monatStunden:'Stunden', abrechLabel:'Abgerechnet am', persCiTitle:'Einchecken', persCiHinweis:'Datenschutzhinweis (wird vor dem ersten Einchecken gezeigt)', persKolonnen:'Kolonnen: Kolonnenführer checkt diese Leute mit ein', persCleanup:'Alte Einchecken-Daten jetzt löschen', persCleanupDone:'{n} alte Einträge gelöscht',
   mangelBtn:'Mangel melden', mangelTitle:'Mangel melden', mangelTextLabel:'Was ist los?', mangelTextPh:'z. B. Belag lose, Anker fehlt …', mangelFotoBtn:'Foto dazu (empfohlen)', mangelFotoOk:'Foto angehängt', mangelSend:'Melden', mangelNeedText:'Bitte kurz beschreiben.', mangelSent:'Mangel gemeldet – der Chef ist informiert.', maengelHeading:'Mängel offen', maengelNone:'Keine offenen Mängel.', mangelDone:'Erledigt', mangelDoneBy:'erledigt von {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Mängel offen', scMaengel:'Mängel', nMangelT:'Neuer Mangel: {bv}', nMangelB:'{name}: {text}', sigBtn:'Unterschrift', sigTitle:'Unterschrift Empfänger', sigNameLabel:'Name Empfänger', sigClear:'Neu', sigSave:'Unterschrift speichern', sigSaved:'Unterschrift gespeichert', sigFail:'Unterschrift nicht gespeichert – bitte nochmal.', sigEmpty:'Bitte unterschreiben lassen.', sigDone:'Unterschrieben von {name}, {ts}', sigLabel:'Unterschrift Empfänger',
@@ -1112,6 +1116,7 @@ pl:{
   bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
   mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
   stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  tourOrderBtn:'Zaproponuj kolejność', tourOrderNoGps:'Brak punktu startowego (brak lokalizacji magazynu) lub za mało celów.', tourMapsRoute:'Trasa w Google Maps', fahrtenBtn:'Lista przejazdów', fahrtenTitle:'Lista przejazdów', fahrtenHint:'Obliczone z dostaw – nie jest to ewidencja przebiegu dla celów podatkowych. km = w jedną stronę magazyn → budowa.', fahrtenFahrer:'Kierowca', fahrtenKm:'km', fahrtenCa:'ok.', fahrtenSum:'Suma', fahrtenCsv:'Pobierz listę Excel (CSV)', fahrtenNone:'Brak przejazdów w tym okresie.', fahrtenLoading:'Obliczanie kilometrów …',
   pruefTitle:'Kontrola i odbiór', pruefOpen:'Sprawdź rusztowanie', pruefNone:'Jeszcze nie sprawdzone', pruefFrei:'Dopuszczone {d} ({name})', pruefGesperrt:'Zablokowane od {d} ({name})', pruefEyebrow:'Protokół kontroli', pruefHint:'Sprawdź wszystkie punkty i zrób co najmniej jedno zdjęcie.', pruefFotoBtn:'Zdjęcie rusztowania', pruefNeedFoto:'Co najmniej jedno zdjęcie jest obowiązkowe.', pruefNeedAll:'Aby dopuścić, wszystkie punkty muszą być zaznaczone.', pruefBem:'Uwagi', pruefFreigeben:'Dopuść', pruefSperren:'Zablokuj', pruefSaved:'Protokół zapisany', aushangPrint:'Drukuj tablicę z QR', aushangFrei:'RUSZTOWANIE DOPUSZCZONE', aushangGesperrt:'RUSZTOWANIE ZABLOKOWANE – NIE WCHODZIĆ', aushangScan:'Zeskanuj kod QR: aktualny stan', pp_verankerung:'Kotwienie', pp_belaege:'Pomosty kompletne i stabilne', pp_seitenschutz:'Zabezpieczenie boczne', pp_aufstiege:'Wejścia / drabiny', pp_fuss:'Podstawy / śruby', pp_kennzeichnung:'Oznakowanie', uwTitle:'Instruktaże', uwTitel:'Temat', uwText:'Tekst', uwAdd:'Dodaj instruktaż', uwAdded:'Instruktaż dodany', uwOk:'Przeczytałem i zrozumiałem', uwEyebrow:'Instruktaż', uwCount:'potwierdzone {n} / {m}', uwDone:'Potwierdzone – dziękujemy!', uwNone:'Brak instruktaży.',
   ciIn:'Zamelduj się', ciOut:'Wymelduj się', ciChecking:'Sprawdzanie lokalizacji …', ciCheckedIn:'Zameldowany: {bv} od {t}', ciTeamLabel:'Kto jest na miejscu?', ciTooFar:'Za daleko od budowy ({m} m). Meldowanie tylko na miejscu.', ciBadGps:'GPS zbyt niedokładny (±{m} m) – poczekaj chwilę i spróbuj ponownie.', ciNoGps:'Brak lokalizacji – zezwól na lokalizację.', ciDone:'Zameldowano: {bv}', ciOutDone:'Wymeldowano', ciHintTitle:'Informacja o meldowaniu', ciHintDefault:'Przy zameldowaniu i wymeldowaniu zapisywane są godzina i lokalizacja, aby rejestrować czas pracy na budowie. Widzi to tylko kierownictwo. Dane są usuwane 12 miesięcy po rozliczeniu.', ciHintOk:'Rozumiem', ciHintSaved:'Informacja zapisana', ciRunning:'trwa', calHours:'Godziny', hoursKorr:'poprawione', regieTitle:'Raport godzinowy', regieEmpty:'Brak czasów.', regieSum:'Suma', regieDatum:'Data', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'godz.', regieKorrBtn:'Popraw', regiePrint:'Drukuj raport', korrTitle:'Popraw czas', korrVon:'od', korrBis:'do', korrGrund:'Powód', korrSave:'Zapisz', monatTitle:'Zestawienie miesięczne', monatPrint:'Drukuj', monatLief:'Dostawy', monatStunden:'Godziny', abrechLabel:'Rozliczono dnia', persCiTitle:'Meldowanie', persCiHinweis:'Informacja o ochronie danych (pokazywana przed pierwszym zameldowaniem)', persKolonnen:'Brygady: brygadzista melduje te osoby', persCleanup:'Usuń teraz stare dane meldowania', persCleanupDone:'Usunięto {n} starych wpisów',
   mangelBtn:'Zgłoś usterkę', mangelTitle:'Zgłoś usterkę', mangelTextLabel:'Co się stało?', mangelTextPh:'np. luźny pomost, brak kotwy …', mangelFotoBtn:'Dodaj zdjęcie (zalecane)', mangelFotoOk:'Zdjęcie dołączone', mangelSend:'Zgłoś', mangelNeedText:'Opisz krótko.', mangelSent:'Usterka zgłoszona – szef został poinformowany.', maengelHeading:'Otwarte usterki', maengelNone:'Brak otwartych usterek.', mangelDone:'Załatwione', mangelDoneBy:'załatwione przez {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otwarte usterki', scMaengel:'Usterki', nMangelT:'Nowa usterka: {bv}', nMangelB:'{name}: {text}', sigBtn:'Podpis', sigTitle:'Podpis odbiorcy', sigNameLabel:'Imię odbiorcy', sigClear:'Od nowa', sigSave:'Zapisz podpis', sigSaved:'Podpis zapisany', sigFail:'Podpis nie zapisany – spróbuj ponownie.', sigEmpty:'Poproś o podpis.', sigDone:'Podpisał(a) {name}, {ts}', sigLabel:'Podpis odbiorcy',
@@ -1314,6 +1319,7 @@ sk:{
   bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
   mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
   stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  tourOrderBtn:'Navrhnúť poradie', tourOrderNoGps:'Chýba štart (poloha skladu) alebo málo cieľov.', tourMapsRoute:'Trasa v Google Maps', fahrtenBtn:'Zoznam jázd', fahrtenTitle:'Zoznam jázd', fahrtenHint:'Vypočítané z dodávok – nie je to daňová kniha jázd. km = jednosmerne sklad → stavba.', fahrtenFahrer:'Vodič', fahrtenKm:'km', fahrtenCa:'cca', fahrtenSum:'Spolu', fahrtenCsv:'Stiahnuť zoznam pre Excel (CSV)', fahrtenNone:'V tomto období žiadne jazdy.', fahrtenLoading:'Počítajú sa kilometre …',
   pruefTitle:'Kontrola a uvoľnenie', pruefOpen:'Skontrolovať lešenie', pruefNone:'Zatiaľ neskontrolované', pruefFrei:'Uvoľnené {d} ({name})', pruefGesperrt:'Zablokované od {d} ({name})', pruefEyebrow:'Kontrolný protokol', pruefHint:'Skontroluj všetky body a urob aspoň jednu fotku.', pruefFotoBtn:'Fotka lešenia', pruefNeedFoto:'Aspoň jedna fotka je povinná.', pruefNeedAll:'Na uvoľnenie musia byť odškrtnuté všetky body.', pruefBem:'Poznámka', pruefFreigeben:'Uvoľniť', pruefSperren:'Zablokovať', pruefSaved:'Protokol uložený', aushangPrint:'Tlačiť oznam s QR', aushangFrei:'LEŠENIE UVOĽNENÉ', aushangGesperrt:'LEŠENIE ZABLOKOVANÉ – NEVSTUPOVAŤ', aushangScan:'Naskenuj QR kód: aktuálny stav', pp_verankerung:'Ukotvenie', pp_belaege:'Podlahy kompletné a pevné', pp_seitenschutz:'Bočná ochrana', pp_aufstiege:'Výstupy / rebríky', pp_fuss:'Pätky / vretená', pp_kennzeichnung:'Označenie', uwTitle:'Školenia', uwTitel:'Téma', uwText:'Text', uwAdd:'Pridať školenie', uwAdded:'Školenie pridané', uwOk:'Prečítal som a rozumiem', uwEyebrow:'Školenie', uwCount:'potvrdené {n} / {m}', uwDone:'Potvrdené – ďakujeme!', uwNone:'Zatiaľ žiadne školenia.',
   ciIn:'Prihlásiť sa na stavbe', ciOut:'Odhlásiť sa', ciChecking:'Overuje sa poloha …', ciCheckedIn:'Prihlásený: {bv} od {t}', ciTeamLabel:'Kto je pri tom?', ciTooFar:'Príliš ďaleko od stavby ({m} m). Prihlásiť sa dá len na mieste.', ciBadGps:'GPS príliš nepresné (±{m} m) – chvíľu počkaj a skús znova.', ciNoGps:'Žiadna poloha – povoľ polohu.', ciDone:'Prihlásené: {bv}', ciOutDone:'Odhlásené', ciHintTitle:'Upozornenie k prihláseniu', ciHintDefault:'Pri prihlásení a odhlásení sa uloží čas a poloha, aby sa evidoval pracovný čas na stavbe. Vidí to len vedenie. Údaje sa mažú 12 mesiacov po vyúčtovaní.', ciHintOk:'Rozumiem', ciHintSaved:'Upozornenie uložené', ciRunning:'prebieha', calHours:'Hodiny', hoursKorr:'opravené', regieTitle:'Výkaz prác', regieEmpty:'Zatiaľ žiadne časy.', regieSum:'Spolu', regieDatum:'Dátum', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'hod.', regieKorrBtn:'Opraviť', regiePrint:'Tlačiť výkaz', korrTitle:'Opraviť čas', korrVon:'od', korrBis:'do', korrGrund:'Dôvod', korrSave:'Uložiť', monatTitle:'Mesačný prehľad', monatPrint:'Tlačiť', monatLief:'Dodávky', monatStunden:'Hodiny', abrechLabel:'Vyúčtované dňa', persCiTitle:'Prihlásenie na stavbe', persCiHinweis:'Upozornenie o ochrane údajov (zobrazí sa pred prvým prihlásením)', persKolonnen:'Čaty: vedúci čaty prihlási aj týchto ľudí', persCleanup:'Teraz zmazať staré údaje prihlásení', persCleanupDone:'Zmazaných {n} starých záznamov',
   mangelBtn:'Nahlásiť nedostatok', mangelTitle:'Nahlásiť nedostatok', mangelTextLabel:'Čo sa deje?', mangelTextPh:'napr. uvoľnená podlaha, chýba kotva …', mangelFotoBtn:'Pridať fotku (odporúčané)', mangelFotoOk:'Fotka pripojená', mangelSend:'Nahlásiť', mangelNeedText:'Krátko popíš.', mangelSent:'Nedostatok nahlásený – šéf je informovaný.', maengelHeading:'Otvorené nedostatky', maengelNone:'Žiadne otvorené nedostatky.', mangelDone:'Vybavené', mangelDoneBy:'vybavil(a) {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otvorené nedostatky', scMaengel:'Nedostatky', nMangelT:'Nový nedostatok: {bv}', nMangelB:'{name}: {text}', sigBtn:'Podpis', sigTitle:'Podpis príjemcu', sigNameLabel:'Meno príjemcu', sigClear:'Znova', sigSave:'Uložiť podpis', sigSaved:'Podpis uložený', sigFail:'Podpis sa neuložil – skús znova.', sigEmpty:'Nechaj podpísať.', sigDone:'Podpísal(a) {name}, {ts}', sigLabel:'Podpis príjemcu',
@@ -1516,6 +1522,7 @@ hr:{
   bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
   mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
   stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  tourOrderBtn:'Predloži redoslijed', tourOrderNoGps:'Nema početne točke (lokacija skladišta) ili premalo odredišta.', tourMapsRoute:'Ruta u Google Maps', fahrtenBtn:'Popis vožnji', fahrtenTitle:'Popis vožnji', fahrtenHint:'Izračunato iz isporuka – nije porezna knjiga vožnji. km = u jednom smjeru skladište → gradilište.', fahrtenFahrer:'Vozač', fahrtenKm:'km', fahrtenCa:'oko', fahrtenSum:'Ukupno', fahrtenCsv:'Preuzmi Excel popis (CSV)', fahrtenNone:'Nema vožnji u razdoblju.', fahrtenLoading:'Kilometri se računaju …',
   pruefTitle:'Pregled i odobrenje', pruefOpen:'Pregledaj skelu', pruefNone:'Još nije pregledano', pruefFrei:'Odobreno {d} ({name})', pruefGesperrt:'Zaključano od {d} ({name})', pruefEyebrow:'Zapisnik pregleda', pruefHint:'Provjeri sve točke i napravi barem jednu fotografiju.', pruefFotoBtn:'Fotografija skele', pruefNeedFoto:'Barem jedna fotografija je obavezna.', pruefNeedAll:'Za odobrenje sve točke moraju biti označene.', pruefBem:'Napomena', pruefFreigeben:'Odobri', pruefSperren:'Zaključaj', pruefSaved:'Zapisnik spremljen', aushangPrint:'Ispiši obavijest s QR', aushangFrei:'SKELA ODOBRENA', aushangGesperrt:'SKELA ZAKLJUČANA – NE ULAZITI', aushangScan:'Skeniraj QR kod: trenutno stanje', pp_verankerung:'Sidrenje', pp_belaege:'Podnice potpune i čvrste', pp_seitenschutz:'Bočna zaštita', pp_aufstiege:'Usponi / ljestve', pp_fuss:'Podnožja / vretena', pp_kennzeichnung:'Oznaka postavljena', uwTitle:'Upute', uwTitel:'Tema', uwText:'Tekst', uwAdd:'Dodaj uputu', uwAdded:'Uputa dodana', uwOk:'Pročitao sam i razumijem', uwEyebrow:'Uputa', uwCount:'potvrđeno {n} / {m}', uwDone:'Potvrđeno – hvala!', uwNone:'Još nema uputa.',
   ciIn:'Prijava na gradilište', ciOut:'Odjava', ciChecking:'Provjera lokacije …', ciCheckedIn:'Prijavljen: {bv} od {t}', ciTeamLabel:'Tko je tu?', ciTooFar:'Predaleko od gradilišta ({m} m). Prijava je moguća samo na licu mjesta.', ciBadGps:'GPS je preneprecizan (±{m} m) – pričekaj malo i pokušaj ponovno.', ciNoGps:'Nema lokacije – dopusti lokaciju.', ciDone:'Prijavljeno: {bv}', ciOutDone:'Odjavljeno', ciHintTitle:'Napomena o prijavi', ciHintDefault:'Pri prijavi i odjavi spremaju se vrijeme i lokacija kako bi se evidentiralo radno vrijeme po gradilištu. Vidi to samo uprava. Podaci se brišu 12 mjeseci nakon obračuna.', ciHintOk:'Razumijem', ciHintSaved:'Napomena spremljena', ciRunning:'u tijeku', calHours:'Sati', hoursKorr:'ispravljeno', regieTitle:'Izvještaj o radu', regieEmpty:'Još nema vremena.', regieSum:'Ukupno', regieDatum:'Datum', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'sati', regieKorrBtn:'Ispravi', regiePrint:'Ispiši izvještaj', korrTitle:'Ispravi vrijeme', korrVon:'od', korrBis:'do', korrGrund:'Razlog', korrSave:'Spremi', monatTitle:'Mjesečni pregled', monatPrint:'Ispiši', monatLief:'Isporuke', monatStunden:'Sati', abrechLabel:'Obračunato dana', persCiTitle:'Prijava na gradilište', persCiHinweis:'Napomena o zaštiti podataka (prikazuje se prije prve prijave)', persKolonnen:'Ekipe: voditelj ekipe prijavljuje i ove ljude', persCleanup:'Sada obriši stare podatke prijava', persCleanupDone:'Obrisano {n} starih unosa',
   mangelBtn:'Prijavi nedostatak', mangelTitle:'Prijavi nedostatak', mangelTextLabel:'Što se dogodilo?', mangelTextPh:'npr. labava podnica, nedostaje sidro …', mangelFotoBtn:'Dodaj fotografiju (preporučeno)', mangelFotoOk:'Fotografija priložena', mangelSend:'Prijavi', mangelNeedText:'Ukratko opiši.', mangelSent:'Nedostatak prijavljen – šef je obaviješten.', maengelHeading:'Otvoreni nedostaci', maengelNone:'Nema otvorenih nedostataka.', mangelDone:'Riješeno', mangelDoneBy:'riješio/la {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otvoreni nedostaci', scMaengel:'Nedostaci', nMangelT:'Novi nedostatak: {bv}', nMangelB:'{name}: {text}', sigBtn:'Potpis', sigTitle:'Potpis primatelja', sigNameLabel:'Ime primatelja', sigClear:'Ispočetka', sigSave:'Spremi potpis', sigSaved:'Potpis spremljen', sigFail:'Potpis nije spremljen – pokušaj ponovno.', sigEmpty:'Zatraži potpis.', sigDone:'Potpisao/la {name}, {ts}', sigLabel:'Potpis primatelja',
@@ -1718,6 +1725,7 @@ en:{
   bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
   mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
   stockMissingLabel:'Missing:', stockLow:'Stock low',
+  tourOrderBtn:'Suggest order', tourOrderNoGps:'No start point (depot location missing) or too few stops.', tourMapsRoute:'Route in Google Maps', fahrtenBtn:'Trip list', fahrtenTitle:'Trip list', fahrtenHint:'Calculated from deliveries – not a tax logbook. km = one way depot → site.', fahrtenFahrer:'Driver', fahrtenKm:'km', fahrtenCa:'approx.', fahrtenSum:'Total', fahrtenCsv:'Download Excel list (CSV)', fahrtenNone:'No trips in this period.', fahrtenLoading:'Calculating kilometres …',
   pruefTitle:'Inspection & release', pruefOpen:'Inspect scaffold', pruefNone:'Not inspected yet', pruefFrei:'Released on {d} ({name})', pruefGesperrt:'Closed since {d} ({name})', pruefEyebrow:'Inspection record', pruefHint:'Check all points and take at least one photo.', pruefFotoBtn:'Photo of the scaffold', pruefNeedFoto:'At least one photo is required.', pruefNeedAll:'All points must be ticked to release.', pruefBem:'Remark', pruefFreigeben:'Release', pruefSperren:'Close', pruefSaved:'Inspection saved', aushangPrint:'Print notice with QR', aushangFrei:'SCAFFOLD RELEASED', aushangGesperrt:'SCAFFOLD CLOSED – DO NOT ENTER', aushangScan:'Scan QR code: current status', pp_verankerung:'Anchoring', pp_belaege:'Decks complete and secure', pp_seitenschutz:'Side protection', pp_aufstiege:'Access / ladders', pp_fuss:'Base plates / jacks', pp_kennzeichnung:'Tag attached', uwTitle:'Safety briefings', uwTitel:'Topic', uwText:'Text', uwAdd:'Add briefing', uwAdded:'Briefing added', uwOk:'Read and understood', uwEyebrow:'Safety briefing', uwCount:'confirmed {n} / {m}', uwDone:'Confirmed – thank you!', uwNone:'No briefings yet.',
   ciIn:'Check in', ciOut:'Check out', ciChecking:'Checking location …', ciCheckedIn:'Checked in: {bv} since {t}', ciTeamLabel:'Who is here?', ciTooFar:'Too far from the site ({m} m). Check-in only works on site.', ciBadGps:'GPS too inaccurate (±{m} m) – wait a moment and try again.', ciNoGps:'No location – please allow location.', ciDone:'Checked in: {bv}', ciOutDone:'Checked out', ciHintTitle:'About checking in', ciHintDefault:'When checking in and out, time and location are stored to record working time per site. Only management can see this. Data is deleted 12 months after billing.', ciHintOk:'Understood', ciHintSaved:'Notice saved', ciRunning:'running', calHours:'Hours', hoursKorr:'corrected', regieTitle:'Time report', regieEmpty:'No times yet.', regieSum:'Total', regieDatum:'Date', regiePerson:'Person', regieZeit:'from–to', regieStd:'h', regieKorrBtn:'Correct', regiePrint:'Print time report', korrTitle:'Correct time', korrVon:'from', korrBis:'to', korrGrund:'Reason', korrSave:'Save', monatTitle:'Monthly summary', monatPrint:'Print', monatLief:'Deliveries', monatStunden:'Hours', abrechLabel:'Billed on', persCiTitle:'Site check-in', persCiHinweis:'Privacy notice (shown before the first check-in)', persKolonnen:'Crews: the crew leader also checks in these people', persCleanup:'Delete old check-in data now', persCleanupDone:'{n} old entries deleted',
   mangelBtn:'Report defect', mangelTitle:'Report defect', mangelTextLabel:'What is wrong?', mangelTextPh:'e.g. loose deck, anchor missing …', mangelFotoBtn:'Add photo (recommended)', mangelFotoOk:'Photo attached', mangelSend:'Report', mangelNeedText:'Please describe briefly.', mangelSent:'Defect reported – the boss has been notified.', maengelHeading:'Open defects', maengelNone:'No open defects.', mangelDone:'Done', mangelDoneBy:'done by {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Open defects', scMaengel:'Defects', nMangelT:'New defect: {bv}', nMangelB:'{name}: {text}', sigBtn:'Signature', sigTitle:'Recipient signature', sigNameLabel:'Recipient name', sigClear:'Clear', sigSave:'Save signature', sigSaved:'Signature saved', sigFail:'Signature not saved – please try again.', sigEmpty:'Please get a signature.', sigDone:'Signed by {name}, {ts}', sigLabel:'Recipient signature',
@@ -2068,6 +2076,7 @@ const NEXT_STEP = {
 };
 function setOrderStatus(order, status){
   order.status = status;
+  if(status==='Unterwegs' && state.role==='fahrer') order.fahrer = state.name;
   order.steps = {...(order.steps||{}), [status]: new Date().toISOString()};
 }
 function stepTime(iso){ try{ return new Date(iso).toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}); }catch(e){ return ''; } }
@@ -2079,6 +2088,101 @@ function stepTimesText(o){
   if(st['Geliefert']) parts.push(t('stepTimeDone',{t:stepTime(st['Geliefert'])}));
   return parts.join(' · ');
 }
+// ---- Reihenfolge der Tour + Fahrtenliste ------------------------------------------
+// Reihenfolge: OSRM-"trip" (freier Dienst, wie die Routen beim Chef), Rückfall ohne
+// Antwort: nächster Nachbar nach Luftlinie. Start = Lager (sonst letzter Standort).
+function tripUrl(){ return ROUTE_URL.replace('/route/', '/trip/'); }  // Funktion: ROUTE_URL steht weiter unten
+async function orderStops(start, stops){
+  if(stops.length < 2) return stops;
+  try{
+    const coords = [start, ...stops].map(x=>`${x.lon},${x.lat}`).join(';');
+    const ctrl = new AbortController(); const tm = setTimeout(()=>ctrl.abort(), 6000);
+    const r = await fetch(`${tripUrl()}${coords}?source=first&roundtrip=false&destination=any&overview=false`, {signal: ctrl.signal});
+    clearTimeout(tm);
+    const j = await r.json();
+    if(j && j.code==='Ok' && j.waypoints && j.waypoints.length===stops.length+1)
+      return stops.map((x, i)=>({x, k: j.waypoints[i+1].waypoint_index})).sort((a,b)=>a.k-b.k).map(v=>v.x);
+  }catch(e){}
+  const rest = [...stops], out = []; let cur = start;
+  while(rest.length){
+    let bi = 0, bd = Infinity;
+    rest.forEach((x, i)=>{ const d = distM([cur.lat, cur.lon], [x.lat, x.lon]); if(d < bd){ bd = d; bi = i; } });
+    cur = rest.splice(bi, 1)[0]; out.push(cur);
+  }
+  return out;
+}
+function tourStart(){ const l = state.lager && state.lager.coords; return l ? {lat:l.lat, lon:l.lon} : (state.lastGPS ? {lat:state.lastGPS.lat, lon:state.lastGPS.lon} : null); }
+function tourStops(ids){ return ids.map(id=>state.orders.find(o=>o.id===id)).filter(o=>o && o.projekt).map(o=>{ const p = state.projects.find(x=>x.id===o.projekt); return p && p.coords ? {id:o.id, lat:p.coords.lat, lon:p.coords.lon} : null; }).filter(Boolean); }
+async function suggestTourOrder(){
+  const start = tourStart(), stops = tourStops(tourSelClean());
+  if(!start || stops.length < 2){ showToast(t('tourOrderNoGps')); return; }
+  state.tourOrder = (await orderStops(start, stops)).map(x=>x.id);
+  render();
+}
+function tourMapsUrl(){
+  const start = tourStart(), stops = tourStops(state.tourOrder||[]);
+  if(!start || !stops.length) return '';
+  const last = stops[stops.length-1], mid = stops.slice(0, -1).map(x=>`${x.lat},${x.lon}`).join('|');
+  return `https://www.google.com/maps/dir/?api=1&origin=${start.lat},${start.lon}&destination=${last.lat},${last.lon}${mid? '&waypoints='+encodeURIComponent(mid):''}&travelmode=driving`;
+}
+// Fahrtenliste: je gelieferter Bestellung eine Fahrt Lager -> BV (einfache Strecke).
+// Kein steuerliches Fahrtenbuch und keine GPS-Spuren (es bleibt bei "nur letzter Standort").
+const kmCache = {};
+async function routeKm(from, to){
+  try{
+    const ctrl = new AbortController(); const tm = setTimeout(()=>ctrl.abort(), 6000);
+    const r = await fetch(`${ROUTE_URL}${from.lon},${from.lat};${to.lon},${to.lat}?overview=false`, {signal: ctrl.signal});
+    clearTimeout(tm);
+    const j = await r.json();
+    if(j && j.code==='Ok' && j.routes && j.routes[0]) return {km: Math.round(j.routes[0].distance/100)/10, approx:false};
+  }catch(e){}
+  return {km: Math.round(distM([from.lat, from.lon], [to.lat, to.lon]) * 1.3 / 100) / 10, approx:true};
+}
+function fahrtDate(o){ const g = o.steps && o.steps.Geliefert; return g ? new Date(g) : orderDate(o); }
+async function fahrtenData(range){
+  const now = new Date(); let from = null, to = null;
+  if(range==='month'){ from = new Date(now.getFullYear(), now.getMonth(), 1); to = new Date(now.getFullYear(), now.getMonth()+1, 1); }
+  if(range==='last'){ from = new Date(now.getFullYear(), now.getMonth()-1, 1); to = new Date(now.getFullYear(), now.getMonth(), 1); }
+  const lager = state.lager && state.lager.coords;
+  const list = state.orders.filter(o=>o.status==='Geliefert' && o.projekt && (state.role!=='fahrer' || o.fahrer===state.name))
+    .filter(o=>{ if(!from) return true; const d = fahrtDate(o); return d && d>=from && d<to; })
+    .sort((a,b)=>(fahrtDate(a)||0)-(fahrtDate(b)||0));
+  const rows = [];
+  for(const o of list){
+    const p = state.projects.find(x=>x.id===o.projekt);
+    let km = null, approx = false;
+    if(lager && p && p.coords){ if(!kmCache[p.id]) kmCache[p.id] = await routeKm(lager, p.coords); km = kmCache[p.id].km; approx = kmCache[p.id].approx; }
+    const d = fahrtDate(o);
+    rows.push({id:o.id, datum: d ? d.toLocaleDateString('de-DE') : '', fahrer: o.fahrer || '', bv: p ? `BV ${p.id} ${p.name}` : (o.baustelle||''), km, approx});
+  }
+  return rows;
+}
+function fahrtenCSV(rows){
+  return '\uFEFF' + ['Datum;Fahrer;Bestellung;Bauvorhaben;km', ...rows.map(r=>[r.datum, r.fahrer, '#'+r.id, r.bv, r.km==null ? '' : (r.approx?'ca. ':'') + String(r.km).replace('.',',')].map(csvCell).join(';'))].join('\n') + '\n';
+}
+function fahrtenTableHTML(rows, forPrint){
+  if(!rows.length) return `<div class="empty-state" style="padding:14px 10px;">${t('fahrtenNone')}</div>`;
+  const sum = rows.reduce((a,r)=>a+(r.km||0), 0);
+  return `<div class="tbl-wrap"><table class="${forPrint?'ls-items':'order-table mat-table'}"><thead><tr><th>${t('exportDatum')}</th><th>${t('fahrtenFahrer')}</th><th>${t('exportBV')}</th><th class="num">${t('fahrtenKm')}</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${r.datum}</td><td>${escapeHtml(r.fahrer||'–')}</td><td>#${r.id} · ${escapeHtml(r.bv)}</td><td class="num">${r.km==null?'–':(r.approx? t('fahrtenCa')+' ':'')+String(r.km).replace('.',',')}</td></tr>`).join('')}
+    </tbody><tfoot><tr><td colspan="3"><b>${t('fahrtenSum')}</b></td><td class="num"><b>${String(Math.round(sum*10)/10).replace('.',',')}</b></td></tr></tfoot></table></div>`;
+}
+function fahrtenHTML(){
+  const f = state.fahrtenOpen;
+  return `<div class="overlay" data-action="fahrten-close-bg"><div class="drawer" role="dialog" aria-modal="true" aria-label="${t('fahrtenTitle')}">
+    <div class="review-head"><h3>${t('fahrtenTitle')}</h3></div>
+    <div class="pick-hint">${t('fahrtenHint')}</div>
+    <div class="ziel-chips">${['month','last','all'].map(k=>`<button class="ziel-chip ${f.range===k?'active':''}" data-action="fahrten-range" data-r="${k}">${t('exportRange_'+k)}</button>`).join('')}</div>
+    ${f.rows ? fahrtenTableHTML(f.rows, false) : `<div class="pick-hint">${t('fahrtenLoading')}</div>`}
+    <button class="advance-btn" data-action="fahrten-csv" ${f.rows && f.rows.length?'':'disabled'}>${t('fahrtenCsv')}</button>
+    <div class="btn-row-secondary"><button class="mini-btn" data-action="fahrten-print" ${f.rows && f.rows.length?'':'disabled'}>${t('exportPrint')}</button><button class="mini-btn" data-action="fahrten-close">${t('closeBtn')}</button></div>
+  </div></div>`;
+}
+async function openFahrten(range){
+  state.fahrtenOpen = {range, rows:null}; render();
+  const rows = await fahrtenData(range);
+  if(state.fahrtenOpen && state.fahrtenOpen.range===range){ state.fahrtenOpen.rows = rows; render(); }
+}
 function tourSelClean(){
   state.tourSel = (state.tourSel||[]).filter(id=>{ const o = state.orders.find(x=>x.id===id); return o && (o.status==='Bereit zur Abholung' || o.status==='Beladen'); });
   return state.tourSel;
@@ -2089,13 +2193,15 @@ function tourBarHTML(){
   const nLoad = sel.filter(o=>o.status==='Bereit zur Abholung').length, nGo = sel.filter(o=>o.status==='Beladen').length;
   return `<div class="tour-bar" role="region"><span class="tour-n">${t('tourSelected',{n:sel.length})}</span>
     <button class="advance-btn" data-action="tour-load" ${nLoad?'':'disabled'}>${t('tourLoadAll')}</button>
-    <button class="advance-btn" data-action="tour-go" ${nGo?'':'disabled'}>${t('tourGoAll')}</button></div>`;
+    <button class="advance-btn" data-action="tour-go" ${nGo?'':'disabled'}>${t('tourGoAll')}</button>
+    ${sel.length>1? `<button class="mini-btn" data-action="tour-order">${t('tourOrderBtn')}</button>`:''}
+    ${(state.tourOrder||[]).length? `<a class="mini-btn tour-maps" href="${tourMapsUrl()}" target="_blank" rel="noopener">${t('tourMapsRoute')}</a>`:''}</div>`;
 }
 function roleLabel(role){ return t('roleLabel'+role.charAt(0).toUpperCase()+role.slice(1)); }
 
 const state = {
   loggedIn:false, name:'', role:null,
-  cart:{}, orders:[], orderCounter:1001, fotos:[], fotoCounter:1, fotoDraft:null, fotoView:null, fotoBusy:false, maengel:[], mangelCounter:1, mangelDraft:null, sigDraft:null, zeit:[], kolonnen:{}, unterweisungen:[], uwCounter:1, uwBest:{}, pruefDraft:null, ciMsg:'', ciBusy:false, ciSel:null, ciHintOpen:false, korrDraft:null, ciHinweis:'', inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
+  cart:{}, orders:[], orderCounter:1001, fotos:[], fotoCounter:1, fotoDraft:null, fotoView:null, fotoBusy:false, maengel:[], mangelCounter:1, mangelDraft:null, sigDraft:null, zeit:[], kolonnen:{}, unterweisungen:[], uwCounter:1, uwBest:{}, pruefDraft:null, tourOrder:[], fahrtenOpen:null, ciMsg:'', ciBusy:false, ciSel:null, ciHintOpen:false, korrDraft:null, ciHinweis:'', inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
   employees:[], empCounter:1, authName:null, pushSubs:[], pushMsg:'', persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
@@ -2483,7 +2589,7 @@ async function manageUsers(body){
 // Vorübergehende Bedien-Zustände einer Rolle (Tour-Auswahl, „Wohin?“ offen,
 // Ziffernblock, aufgeklappte Teile-Art) beim Abmelden/Rollenwechsel verwerfen.
 function clearRoleUi(){
-  state.tourSel = []; state.zielOpen = false; state.numpad = null; state.openArt = null;
+  state.tourSel = []; state.tourOrder = []; state.zielOpen = false; state.numpad = null; state.openArt = null;
 }
 // Sofort lokal + beim Server abmelden, ohne vorher zu speichern
 // (z. B. wenn der Chef einem die Rolle entzogen hat).
@@ -3324,7 +3430,7 @@ function orderCardHTML(o, role, extra){
   return `<div class="order-card ${statusClass}">
     <div class="order-head">
       ${tourable? `<button class="tour-tick ${ticked?'on':''}" data-action="tour-toggle" data-order="${o.id}" role="checkbox" aria-checked="${ticked}" aria-label="${t('tourPickAria')}"><i></i></button>`:''}
-      <div class="order-head-main"><div class="no">#${o.id}</div><div class="site">${o.baustelle}</div></div>
+      <div class="order-head-main"><div class="no">${role==='fahrer' && (state.tourOrder||[]).includes(o.id)? `<span class="stop-badge">${(state.tourOrder||[]).indexOf(o.id)+1}.</span> `:''}#${o.id}</div><div class="site">${o.baustelle}</div></div>
       <div class="status-badge ${statusClass}">${statusLabel(o.status)}</div>
     </div>
     ${wunschBadgeHTML(o) || o.nachVon? `<div class="wunsch-row">${wunschBadgeHTML(o)}${o.nachVon? `<span class="wunsch-badge w-nach">${t('nachVonBadge',{id:o.nachVon})}</span>`:''}</div>`:''}
@@ -3620,7 +3726,8 @@ function fahrerKalenderHTML(){
 }
 
 function fahrerLieferungenHTML(){
-  const all = sortOrdersForWork(state.orders);
+  const to = state.tourOrder || [], rank = o=>{ const i = to.indexOf(o.id); return i<0 ? 999 : i; };
+  const all = sortOrdersForWork(state.orders).map((o, i)=>({o, i})).sort((a,b)=>(rank(a.o)-rank(b.o)) || (a.i-b.i)).map(x=>x.o);
   const ready = all.filter(o=>STATUS_FLOW.indexOf(o.status)>=2);
   const waiting = all.filter(o=>STATUS_FLOW.indexOf(o.status)<2);
   const pus = openPickups();
@@ -3630,7 +3737,8 @@ function fahrerLieferungenHTML(){
     return `${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'fahrer')).join('')}</div>` : `<div class="empty-state">${t('fahrerEmptyReady')}</div>`}
     ${waiting.length? `<div class="waiting-note">${t('waitingNote',{n:waiting.length})}</div>`:''}
     ${pus.length? `<h3 id="sec-fahrer-pu" style="font-size:15px;margin:22px 0 8px 0;">${t('puFahrerHeading')} (${pus.length})</h3>${pickupListHTML(pus, 'fahrer')}`:''}
-    ${doneSectionHTML('fahrer', done, o=>orderCardHTML(o,'fahrer'))}`; })()}`;
+    ${doneSectionHTML('fahrer', done, o=>orderCardHTML(o,'fahrer'))}`; })()}
+  <div class="export-row" style="margin-top:18px;"><button class="mini-btn" data-action="fahrten-open">${t('fahrtenBtn')}</button></div>`;
 }
 
 function fahrerGeplantHTML(){
@@ -5137,7 +5245,7 @@ function chefHTML(){
     {id:'personal', key:'tabPersonal', ico:'users'}])}
   ${tab==='lkws' ? `${chefPositionsHTML()}${sectionH(t('fahrerStatusHeading'))}${driverStatusListHTML()}` : tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
   ${widgetsHTML('chef')}${statStripHTML('chef')}
-  <div class="export-row"><button class="mini-btn" data-action="export-open">${t('exportOpenBtn')}</button></div>
+  <div class="export-row"><button class="mini-btn" data-action="fahrten-open">${t('fahrtenBtn')}</button><button class="mini-btn" data-action="export-open">${t('exportOpenBtn')}</button></div>
   ${maengelSectionHTML(null)}
   ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
   ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
@@ -5523,6 +5631,7 @@ function renderView(){
     ${state.ciHintOpen ? ciHintHTML() : ''}
     ${state.korrDraft ? korrHTML() : ''}
     ${state.pruefDraft ? pruefDraftHTML() : ''}
+    ${state.fahrtenOpen ? fahrtenHTML() : ''}
     ${state.numpad ? numpadHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
@@ -5735,6 +5844,12 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     numpadReturn = {id:el.dataset.id, i:[...document.querySelectorAll('.qty-num')].filter(x=>x.dataset.numfor===el.dataset.id).indexOf(el)};
     state.numpad = {id:el.dataset.id, val:''}; render();
   }
+  if(action==='tour-order'){ await suggestTourOrder(); }
+  if(action==='fahrten-open'){ await openFahrten('month'); }
+  if(action==='fahrten-range'){ await openFahrten(el.dataset.r); }
+  if(action==='fahrten-close' || (action==='fahrten-close-bg' && e.target===el)){ state.fahrtenOpen = null; render(); }
+  if(action==='fahrten-csv' && state.fahrtenOpen && state.fahrtenOpen.rows){ downloadText(`fahrtenliste-${state.fahrtenOpen.range}.csv`, fahrtenCSV(state.fahrtenOpen.rows)); showToast(t('exportDone')); }
+  if(action==='fahrten-print' && state.fahrtenOpen && state.fahrtenOpen.rows){ document.getElementById('printArea').innerHTML = `<img class="ls-logo" src="logo.png" alt="SGM"><h1>${t('fahrtenTitle')} – ${t('exportRange_'+state.fahrtenOpen.range)}</h1><p>${t('fahrtenHint')}</p>${fahrtenTableHTML(state.fahrtenOpen.rows, true)}`; window.print(); }
   if(action==='pruef-open'){ state.pruefDraft = {projekt: parseInt(el.dataset.projekt,10), punkte:{}, fotoIds:[], bemerkung:'', warn:''}; render(); }
   if(action==='pruef-close' || (action==='pruef-close-bg' && e.target===el)){ state.pruefDraft = null; render(); }
   if(action==='pp-toggle' && state.pruefDraft){ const k = el.dataset.k; state.pruefDraft.punkte[k] = !state.pruefDraft.punkte[k]; state.pruefDraft.warn = ''; render(); }
@@ -6453,7 +6568,7 @@ document.addEventListener('keydown', (e)=>{
 });
 
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.fotoDraft || state.fotoView || state.mangelDraft || state.sigDraft || state.ciHintOpen || state.korrDraft || state.pruefDraft || state.puDraft || state.myPwOpen) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.fotoDraft || state.fotoView || state.mangelDraft || state.sigDraft || state.ciHintOpen || state.korrDraft || state.pruefDraft || state.fahrtenOpen || state.puDraft || state.myPwOpen) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
