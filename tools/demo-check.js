@@ -692,7 +692,7 @@ Object.assign(CHECKS, require('./checks-features')({ switchRole, measure, shot }
     const runs = [['baseline'], ['strip'], ['cards'], ['order-flow'], ['numpad'], ['plan'], ['fahrer'], ['lager'], ['chef'], ['contrast'], ['nav'], ['nav', '--lang=pl'],
       ['baseline', '--width=1280'], ['baseline', '--dark'], ['contrast', '--dark'],
       ['defekt'], ['stock'], ['material'], ['pause'], ['export'], ['login'], ['calendar-lock'], ['vendor'], ['fotos'], ['maengel'], ['signatur'],
-      ['schutz'], ['zeit'], ['pruefung'], ['unterweisung'], ['reihenfolge'], ['fahrten'], ['review-fixes']];
+      ['schutz'], ['zeit'], ['pruefung'], ['unterweisung'], ['reihenfolge'], ['fahrten'], ['review-fixes'], ['zurueck']];
     let bad = 0;
     for (const r of runs) {
       const res = spawnSync('node', [__filename, ...r], { encoding: 'utf8' });

@@ -67,6 +67,8 @@
   .top-nav.on-dark{background:transparent;}
   .top-nav.on-light{background:var(--card);border-bottom:1px solid var(--line);}
   .top-nav-logo{height:28px;width:auto;border-radius:6px;}
+  .view-back{display:inline-flex;align-items:center;gap:4px;min-height:var(--tap);padding:0 18px 0 12px;margin:0 0 10px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:16px;font-weight:700;cursor:pointer;}
+  .view-back .vb-arrow{font-size:22px;line-height:1;margin-top:-2px;}
   .menu-wrap{position:relative;}
   .menu-btn{background:rgba(255,255,255,0.18);border:none;color:#fff;width:38px;height:38px;border-radius:10px;font-size:19px;cursor:pointer;line-height:1;}
   .top-nav.on-light .menu-btn{background:var(--surface-2);color:var(--ink);}
@@ -677,7 +679,7 @@
      neu, die würden ständig neu abspielen. Fenster: animateOverlayOnOpen(). */
   .submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.pick-tap,.day-cell,.role-btn,.loc-btn,
   .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.qty-chip,.np-key,
-  .inv-actions button,.refresh-btn,.role-chip,.geo-retry,.back-link,.print-btn,
+  .inv-actions button,.refresh-btn,.role-chip,.geo-retry,.back-link,.print-btn,.view-back,
   button.widget,.proj-row,.art-row,.reorder-chip{
     transition:transform 140ms var(--ease-out), filter 140ms var(--ease-out);
     touch-action:manipulation; -webkit-tap-highlight-color:transparent;
@@ -2735,6 +2737,27 @@ function langMenuBtnHTML(bg){
     <button class="menu-btn" data-action="lang-toggle" aria-label="${t('menuLangLabel')}" ${bg?`style="background:${bg};color:var(--ink);"`:''}>🌐</button>
     ${langDropdownHTML()}
   </div>`;
+}
+// Zurück aus den Kalender-Seiten: dahin, wo man vorher war (Seite + Stelle in
+// der Liste). Läuft über den Browser-Verlauf, damit auch die Zurück-Taste bzw.
+// -Geste am Handy dasselbe macht statt die App zu verlassen.
+const viewStack = [];
+function goView(v){
+  if(state.view===v) return;
+  viewStack.push({view: state.view, y: window.scrollY});
+  try{ history.pushState({gv: viewStack.length}, ''); }catch(e){}
+  state.view = v;
+}
+function viewBack(){
+  const prev = viewStack.pop();
+  if(!prev) return;
+  state.view = prev.view; state.menuOpen = false; state.cellEdit = null; state.calAskPw = false;
+  render();
+  requestAnimationFrame(()=>window.scrollTo(0, prev.y||0));
+}
+window.addEventListener('popstate', viewBack);
+function viewBackBtnHTML(){
+  return `<button class="view-back" data-action="view-back"><span class="vb-arrow" aria-hidden="true">‹</span>${t('backBtn')}</button>`;
 }
 function topNavHTML(mode){
   return `<div class="top-nav ${mode==='dark'?'on-dark':'on-light'}">
@@ -5437,7 +5460,7 @@ function formatDateDE(iso){
 
 function calLockedHTML(){
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
-    <main style="padding:0;max-width:720px;margin:0 auto;"><div class="order-card" style="text-align:center;">
+    <main style="padding:0;max-width:720px;margin:0 auto;">${viewBackBtnHTML()}<div class="order-card" style="text-align:center;">
       <div style="font-size:15px;font-weight:600;margin-bottom:12px;">${t('calLockedText')}</div>
       <button class="advance-btn" data-action="go-app">${t('calLoginBtn')}</button>
     </div></main></div>`;
@@ -5464,6 +5487,7 @@ function calendarPageHTML(){
   const wk = dpWeek();
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
     <main style="padding:0;max-width:1320px;margin:0 auto;">
+      ${viewBackBtnHTML()}
       <h2 class="view-title">${t('calTitle')}</h2>
       <p class="view-sub">${t('calSub')}</p>
       ${calLockBarHTML()}
@@ -5626,6 +5650,7 @@ function lkwKalenderPageHTML(){
 
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
     <main style="padding:0;max-width:720px;margin:0 auto;">
+      ${viewBackBtnHTML()}
       <h2 class="view-title">${t('lkwCalTitle')}</h2>
       ${fahrerDispoHTML()}
       <p class="view-sub" style="margin-top:22px;">${t('lkwCalSub')}</p>
@@ -6492,16 +6517,19 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='push-enable'){ state.menuOpen=false; await enablePush(); }
   if(action==='push-later'){ lsSet(PUSH_LATER_KEY, '1'); state.pushMsg=''; render(); }
   if(action==='go-calendar'){
-    state.view='calendar'; state.menuOpen=false; state.calWarn='';
+    goView('calendar'); state.menuOpen=false; state.calWarn='';
+    render(); window.scrollTo(0, 0);
     await loadShared();
     render();
   }
   if(action==='go-lkwkalender'){
-    state.view='lkwkalender'; state.menuOpen=false; state.lkwWarn='';
+    goView('lkwkalender'); state.menuOpen=false; state.lkwWarn='';
+    render(); window.scrollTo(0, 0);
     await loadShared();
     render();
   }
-  if(action==='go-app'){ state.view='app'; state.menuOpen=false; render(); }
+  if(action==='view-back'){ if(viewStack.length) history.back(); else { state.view='app'; state.menuOpen=false; render(); } }
+  if(action==='go-app'){ state.view='app'; state.menuOpen=false; viewStack.length = 0; render(); }
 
   if(action==='cal-unlock-ask'){ state.calAskPw=true; render(); }
   if(action==='cal-unlock-cancel'){ state.calAskPw=false; render(); }

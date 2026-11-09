@@ -520,6 +520,34 @@ module.exports = ({ switchRole, shot }) => {
       if (small.length) p.push('I9 Knöpfe unter 48 px: ' + small.join(', '));
       return errs(errors, p);
     },
+    // Zurück-Pfeil auf den Kalender-Seiten: zurück zur vorigen Seite + Stelle; Handy-Zurück genauso
+    'zurueck': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      await page.setViewportSize({ width: 390, height: 500 });
+      await ev(page, () => { state.chefTab = 'uebersicht'; render(); window.scrollTo(0, 400); });
+      await page.waitForTimeout(200);
+      const y0 = await ev(page, () => window.scrollY);
+      const go = async a => { await ev(page, () => { state.menuOpen = true; render(); }); await page.click(`[data-action="${a}"]`); await page.waitForTimeout(500); };
+      await go('go-calendar');
+      const a = await ev(page, () => ({ v: state.view, y: window.scrollY, btn: !!document.querySelector('.view-back') }));
+      if (a.v !== 'calendar' || !a.btn || a.y > 5) p.push('Kalender ohne Zurück-Knopf/oben: ' + JSON.stringify(a));
+      await go('go-lkwkalender');
+      await page.click('.view-back'); await page.waitForTimeout(500);
+      const b = await ev(page, () => state.view);
+      if (b !== 'calendar') p.push('Zurück vom LKW-Kalender führt nicht zum Kalender: ' + b);
+      await page.click('.view-back'); await page.waitForTimeout(500);
+      const c = await ev(page, () => ({ v: state.view, tab: state.chefTab, y: window.scrollY }));
+      if (c.v !== 'app' || c.tab !== 'uebersicht' || Math.abs(c.y - y0) > 40) p.push('Zurück zur App falsch: ' + JSON.stringify({ ...c, y0 }));
+      // Handy-Zurück (Browser-Verlauf)
+      await go('go-lkwkalender');
+      await page.goBack(); await page.waitForTimeout(500);
+      const d = await ev(page, () => ({ v: state.view, y: window.scrollY }));
+      if (d.v !== 'app' || Math.abs(d.y - y0) > 40) p.push('Handy-Zurück falsch: ' + JSON.stringify({ ...d, y0 }));
+      const h = await ev(page, () => document.querySelector('.view-back') ? 1 : 0);
+      if (h) p.push('Zurück-Knopf in der App sichtbar');
+      return errs(errors, p);
+    },
   };
 };
 

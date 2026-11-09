@@ -108,7 +108,13 @@ auch VOR der Anmeldung sichtbar (Funktion `topNavHTML()`). Im Menü gibt es
 die Punkte „Kalender" (`state.view = 'calendar'`) und „LKW-Kalender"
 (`state.view = 'lkwkalender'`, siehe eigenen Abschnitt unten). Der Kalender
 zeigt, wer wann wo im Einsatz sein soll. Seit „Neue Funktionen“ (Nutzer-
-entscheidung) nur NACH der Anmeldung sichtbar, davor Hinweis `calLockedHTML()`. Einträge
+entscheidung) nur NACH der Anmeldung sichtbar, davor Hinweis `calLockedHTML()`.
+**Zurück-Pfeil** (Nutzerwunsch): oben auf Kalender, LKW-Kalender und der
+gesperrten Seite „‹ Zurück“ (`viewBackBtnHTML()`, Aktion `view-back`). `goView()`
+merkt sich Seite + Scroll-Stelle (`viewStack`) und legt einen Eintrag im
+Browser-Verlauf an (`history.pushState`), `popstate` → `viewBack()` – so führt auch
+die Zurück-Taste/-Geste am Handy dorthin zurück, wo man war, statt die App zu
+verlassen. Prüfung `zurueck`. Einträge
 bearbeiten/anlegen/löschen kann nur, wer in der App angemeldet ist UND das
 Chef-Passwort eingibt (`verifyChefPw()`, eigene Freischalt-Abfrage
 `state.calUnlocked`, gilt nur für die aktuelle Seitenladung); ohne Anmeldung
