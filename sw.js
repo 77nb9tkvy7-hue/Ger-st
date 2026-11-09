@@ -7,22 +7,22 @@
 //   * App-Seite: erst Netz (damit Neuerungen sofort ankommen), nach 4 s ohne
 //     Antwort oder ohne Netz die gespeicherte Fassung.
 //   * Logo/Symbole/Schriften/Bibliotheken: sofort aus dem Speicher, im
-//     Hintergrund aktualisiert.
+//     Hintergrund aktualisiert. Schriften, Supabase, Leaflet und QR liegen
+//     seit v2 selbst im Ordner vendor/ (keine Google-/CDN-Server mehr);
+//     die Schrift-Dateien (woff2) und Leaflet kommen beim ersten Gebrauch dazu.
 //   * Daten (Supabase), Adresssuche, Routen, Kartenkacheln: NIE gespeichert,
 //     gehen immer direkt ins Netz.
 // - Empfängt Push-Nachrichten (verschickt von der Supabase Edge Function
 //   "send-push") und zeigt sie an -- auch wenn die App geschlossen ist.
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL = 'geruest-shell-' + VERSION;
 const RUNTIME = 'geruest-runtime-' + VERSION;
 const APP_PAGE = './geruest-bestell-app.html';
-const SHELL_FILES = [APP_PAGE, './index.html', './manifest.json', './logo.png', './icon-192.png', './icon-512.png'];
-const CDN_FILES = [
-  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js',
-  'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap',
-];
-// Fremde Server, deren Dateien gespeichert werden dürfen (Bibliotheken, Schriften)
-const CDN_HOSTS = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com', 'cdnjs.cloudflare.com'];
+const SHELL_FILES = [APP_PAGE, './index.html', './manifest.json', './logo.png', './icon-192.png', './icon-512.png',
+  './vendor/fonts/fonts.css', './vendor/supabase/supabase.js', './vendor/supabase/591.supabase.js'];
+const CDN_FILES = [];
+// Fremde Server, deren Dateien gespeichert werden dürfen (seit v2 keine mehr)
+const CDN_HOSTS = [];
 const PAGE_TIMEOUT_MS = 4000;
 
 self.addEventListener('install', (event) => {
