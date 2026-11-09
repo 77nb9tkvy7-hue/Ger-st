@@ -411,7 +411,7 @@
   .geo-badge.geo-on{padding:7px 12px;font-size:13px;}
   @media (max-width: 899px){
     .role-nav{position:fixed;left:0;right:0;bottom:0;margin:0;border-radius:18px 18px 0 0;z-index:20;background:var(--card);box-shadow:0 -6px 20px rgba(23,36,45,.14);padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:4px;}
-    .role-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 2px 6px 2px;font-size:13px;position:relative;border-radius:12px;min-height:54px;}
+    .role-nav button{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 2px 6px 2px;font-size:13px;position:relative;border-radius:12px;min-height:54px;}
     .role-nav button.active{background:var(--accent-soft);color:var(--accent-dark);box-shadow:none;}
     .role-nav .rn-ico{display:block;line-height:1;}
     .role-nav .rn-ico .ic{width:22px;height:22px;vertical-align:0;}
@@ -873,7 +873,7 @@ de:{
   plGeplantVonPrefix:'Geplant von:', plDeleteBtn:'Löschen',
   plLagerSub:'Für diese Bauvorhaben ist schon eine Lieferung geplant.',
   plFahrerSub:'Diese Lieferungen sind schon geplant.',
-  chefViewTitle:'Chef', tabUebersicht:'Übersicht', tabBauvorhaben:'Bauvorhaben',
+  chefViewTitle:'Chef', tabUebersicht:'Übersicht', tabLkws:'LKWs', tabBauvorhaben:'Bauvorhaben',
   chefOverviewSub:'Gesamtüberblick über alle Bestellungen und den Lagerbestand.',
   allOrdersHeading:'Alle Bestellungen', chefEmptyOrders:'Noch keine Bestellungen.',
   lagerbestandHeading:'Lagerbestand',
@@ -898,7 +898,7 @@ de:{
   syncPending:'📶 Kein Netz – deine Änderungen sind auf dem Handy gemerkt und werden automatisch gesendet, sobald wieder Netz da ist.', syncOffline:'📶 Kein Netz – angezeigt wird der letzte bekannte Stand.',
   lagerHeading:'🏭 Lager-Standort', lagerHint:'Damit stellt sich der Fahrer-Status von selbst um: Kommt ein Fahrer (App offen) am Lager an, steht er auf „Am Lager“ – fährt er weg, auf „Unterwegs“. Umkreis ca. 250 m.', lagerNotSet:'Noch kein Lager eingetragen.', lagerAdresseLabel:'Adresse des Lagers', lagerSaveBtn:'Lager-Adresse speichern', lagerGpsBtn:'📍 Ich bin gerade am Lager – Standort übernehmen', lagerNotFound:'Adresse nicht gefunden – bitte mit Ort eingeben, z. B. „Musterstraße 1, München“.', lagerMapLabel:'Lager', autoTag:'automatisch', autoHint:'🔄 Stellt sich automatisch um, wenn du am Lager ankommst oder wegfährst.',
   routeEta:'ca. {min} Min. Fahrt · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Navigation starten (Google Maps)',
-  geoOn:'📍 Dein Standort wird geteilt – nur der Chef sieht ihn, und nur solange du angemeldet bist und die App offen ist.', geoWait:'📍 Standort wird gesucht …', geoDenied:'📍 Standort-Freigabe ist aus – der Chef sieht dich nicht auf der Karte. Bitte in den Handy-Einstellungen den Standort für diese App erlauben.', geoUnavail:'📍 Dieses Gerät liefert keinen Standort.', geoRetry:'Nochmal versuchen', posHeading:'📍 Wo sind die LKWs?', posHint:'Nur für dich (Chef) sichtbar. Fahrer teilen ihren Standort nur, solange sie angemeldet sind und die App offen haben. Gespeichert wird nur die letzte Position.', posNone:'Gerade teilt kein Fahrer seinen Standort.', posNow:'gerade eben', posMinAgo:'vor {n} Min.', posLastSeen:'zuletzt gesehen um {time}', posAcc:'Genauigkeit ± {m} m',
+  geoOn:'📍 Dein Standort wird geteilt – nur der Chef sieht ihn, und nur solange du angemeldet bist und die App offen ist.', geoWait:'📍 Standort wird gesucht …', geoDenied:'📍 Standort-Freigabe ist aus – der Chef sieht dich nicht auf der Karte. Bitte in den Handy-Einstellungen den Standort für diese App erlauben.', geoUnavail:'📍 Dieses Gerät liefert keinen Standort.', geoRetry:'Nochmal versuchen', posHeading:'📍 Wo sind die LKWs?', posHint:'Nur für dich sichtbar – Fahrer teilen ihren Standort nur, solange die App offen ist.', posNone:'Gerade teilt kein Fahrer seinen Standort.', posNow:'gerade eben', posMinAgo:'vor {n} Min.', posLastSeen:'zuletzt gesehen um {time}', posAcc:'Genauigkeit ± {m} m',
   pushCardTitle:'Benachrichtigungen',
   pushCardText:'Bekomm eine Nachricht aufs Handy, wenn es für dich etwas Neues gibt – auch wenn die App zu ist.',
   pushEnableBtn:'Einschalten',
@@ -1068,7 +1068,7 @@ pl:{
   plGeplantVonPrefix:'Zaplanował(a):', plDeleteBtn:'Usuń',
   plLagerSub:'Dla tych budów jest już zaplanowana dostawa.',
   plFahrerSub:'Te dostawy są już zaplanowane.',
-  chefViewTitle:'Szef', tabUebersicht:'Przegląd', tabBauvorhaben:'Budowy',
+  chefViewTitle:'Szef', tabUebersicht:'Przegląd', tabLkws:'Auta', tabBauvorhaben:'Budowy',
   chefOverviewSub:'Pełny przegląd wszystkich zamówień i stanu magazynu.',
   allOrdersHeading:'Wszystkie zamówienia', chefEmptyOrders:'Brak zamówień.',
   lagerbestandHeading:'Stan magazynu',
@@ -1093,7 +1093,7 @@ pl:{
   syncPending:'📶 Brak sieci – twoje zmiany są zapisane w telefonie i zostaną wysłane automatycznie, gdy sieć wróci.', syncOffline:'📶 Brak sieci – widoczny jest ostatni znany stan.',
   lagerHeading:'🏭 Lokalizacja magazynu', lagerHint:'Dzięki temu status kierowcy zmienia się sam: gdy kierowca (z otwartą aplikacją) dojedzie do magazynu, ma status „W magazynie“ – gdy odjedzie, „W trasie“. Promień ok. 250 m.', lagerNotSet:'Magazyn nie jest jeszcze wpisany.', lagerAdresseLabel:'Adres magazynu', lagerSaveBtn:'Zapisz adres magazynu', lagerGpsBtn:'📍 Jestem teraz w magazynie – użyj mojej lokalizacji', lagerNotFound:'Nie znaleziono adresu – podaj go z miejscowością, np. „Musterstraße 1, München“.', lagerMapLabel:'Magazyn', autoTag:'automatycznie', autoHint:'🔄 Zmienia się automatycznie, gdy dojeżdżasz do magazynu lub z niego odjeżdżasz.',
   routeEta:'ok. {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa w Google Maps', navStart:'🧭 Uruchom nawigację (Google Maps)',
-  geoOn:'📍 Twoja lokalizacja jest udostępniana – widzi ją tylko szef i tylko wtedy, gdy jesteś zalogowany i aplikacja jest otwarta.', geoWait:'📍 Szukam lokalizacji …', geoDenied:'📍 Udostępnianie lokalizacji jest wyłączone – szef nie widzi cię na mapie. Zezwól na lokalizację dla tej aplikacji w ustawieniach telefonu.', geoUnavail:'📍 To urządzenie nie podaje lokalizacji.', geoRetry:'Spróbuj ponownie', posHeading:'📍 Gdzie są ciężarówki?', posHint:'Widoczne tylko dla ciebie (szef). Kierowcy udostępniają lokalizację tylko wtedy, gdy są zalogowani i mają otwartą aplikację. Zapisywana jest tylko ostatnia pozycja.', posNone:'Obecnie żaden kierowca nie udostępnia lokalizacji.', posNow:'przed chwilą', posMinAgo:'{n} min temu', posLastSeen:'ostatnio widziany o {time}', posAcc:'Dokładność ± {m} m',
+  geoOn:'📍 Twoja lokalizacja jest udostępniana – widzi ją tylko szef i tylko wtedy, gdy jesteś zalogowany i aplikacja jest otwarta.', geoWait:'📍 Szukam lokalizacji …', geoDenied:'📍 Udostępnianie lokalizacji jest wyłączone – szef nie widzi cię na mapie. Zezwól na lokalizację dla tej aplikacji w ustawieniach telefonu.', geoUnavail:'📍 To urządzenie nie podaje lokalizacji.', geoRetry:'Spróbuj ponownie', posHeading:'📍 Gdzie są ciężarówki?', posHint:'Widoczne tylko dla ciebie – kierowcy udostępniają lokalizację tylko przy otwartej aplikacji.', posNone:'Obecnie żaden kierowca nie udostępnia lokalizacji.', posNow:'przed chwilą', posMinAgo:'{n} min temu', posLastSeen:'ostatnio widziany o {time}', posAcc:'Dokładność ± {m} m',
   pushCardTitle:'Powiadomienia',
   pushCardText:'Otrzymuj wiadomość na telefon, gdy jest coś nowego dla ciebie – nawet gdy aplikacja jest zamknięta.',
   pushEnableBtn:'Włącz',
@@ -1263,7 +1263,7 @@ sk:{
   plGeplantVonPrefix:'Naplánoval(a):', plDeleteBtn:'Vymazať',
   plLagerSub:'Pre tieto stavby je už naplánovaná dodávka.',
   plFahrerSub:'Tieto dodávky sú už naplánované.',
-  chefViewTitle:'Šéf', tabUebersicht:'Prehľad', tabBauvorhaben:'Stavby',
+  chefViewTitle:'Šéf', tabUebersicht:'Prehľad', tabLkws:'Autá', tabBauvorhaben:'Stavby',
   chefOverviewSub:'Celkový prehľad všetkých objednávok a stavu skladu.',
   allOrdersHeading:'Všetky objednávky', chefEmptyOrders:'Zatiaľ žiadne objednávky.',
   lagerbestandHeading:'Stav skladu',
@@ -1288,7 +1288,7 @@ sk:{
   syncPending:'📶 Žiadna sieť – tvoje zmeny sú uložené v telefóne a odošlú sa automaticky, keď bude sieť.', syncOffline:'📶 Žiadna sieť – zobrazuje sa posledný známy stav.',
   lagerHeading:'🏭 Poloha skladu', lagerHint:'Vďaka tomu sa stav vodiča mení sám: keď vodič (s otvorenou aplikáciou) príde do skladu, má stav „V sklade“ – keď odíde, „Na ceste“. Okruh cca 250 m.', lagerNotSet:'Sklad ešte nie je zadaný.', lagerAdresseLabel:'Adresa skladu', lagerSaveBtn:'Uložiť adresu skladu', lagerGpsBtn:'📍 Som práve v sklade – použiť moju polohu', lagerNotFound:'Adresa sa nenašla – zadaj ju aj s mestom, napr. „Musterstraße 1, München“.', lagerMapLabel:'Sklad', autoTag:'automaticky', autoHint:'🔄 Mení sa automaticky, keď prídeš do skladu alebo z neho odídeš.',
   routeEta:'cca {min} min jazdy · {km} km', routeGmaps:'🧭 Trasa v Google Maps', navStart:'🧭 Spustiť navigáciu (Google Maps)',
-  geoOn:'📍 Tvoja poloha sa zdieľa – vidí ju iba šéf a iba kým si prihlásený a aplikácia je otvorená.', geoWait:'📍 Hľadám polohu …', geoDenied:'📍 Zdieľanie polohy je vypnuté – šéf ťa nevidí na mape. Povoľ polohu pre túto aplikáciu v nastaveniach telefónu.', geoUnavail:'📍 Toto zariadenie neposkytuje polohu.', geoRetry:'Skúsiť znova', posHeading:'📍 Kde sú nákladné autá?', posHint:'Viditeľné iba pre teba (šéf). Vodiči zdieľajú polohu iba vtedy, keď sú prihlásení a majú otvorenú aplikáciu. Ukladá sa iba posledná poloha.', posNone:'Momentálne žiadny vodič nezdieľa polohu.', posNow:'práve teraz', posMinAgo:'pred {n} min', posLastSeen:'naposledy videný o {time}', posAcc:'Presnosť ± {m} m',
+  geoOn:'📍 Tvoja poloha sa zdieľa – vidí ju iba šéf a iba kým si prihlásený a aplikácia je otvorená.', geoWait:'📍 Hľadám polohu …', geoDenied:'📍 Zdieľanie polohy je vypnuté – šéf ťa nevidí na mape. Povoľ polohu pre túto aplikáciu v nastaveniach telefónu.', geoUnavail:'📍 Toto zariadenie neposkytuje polohu.', geoRetry:'Skúsiť znova', posHeading:'📍 Kde sú nákladné autá?', posHint:'Viditeľné iba pre teba – vodiči zdieľajú polohu iba pri otvorenej aplikácii.', posNone:'Momentálne žiadny vodič nezdieľa polohu.', posNow:'práve teraz', posMinAgo:'pred {n} min', posLastSeen:'naposledy videný o {time}', posAcc:'Presnosť ± {m} m',
   pushCardTitle:'Upozornenia',
   pushCardText:'Dostaň správu do mobilu, keď je pre teba niečo nové – aj keď je aplikácia zatvorená.',
   pushEnableBtn:'Zapnúť',
@@ -1458,7 +1458,7 @@ hr:{
   plGeplantVonPrefix:'Planirao/la:', plDeleteBtn:'Izbriši',
   plLagerSub:'Za ova gradilišta je već planirana isporuka.',
   plFahrerSub:'Ove isporuke su već planirane.',
-  chefViewTitle:'Šef', tabUebersicht:'Pregled', tabBauvorhaben:'Gradilišta',
+  chefViewTitle:'Šef', tabUebersicht:'Pregled', tabLkws:'Kamioni', tabBauvorhaben:'Gradilišta',
   chefOverviewSub:'Cjelokupni pregled svih narudžbi i stanja skladišta.',
   allOrdersHeading:'Sve narudžbe', chefEmptyOrders:'Još nema narudžbi.',
   lagerbestandHeading:'Stanje skladišta',
@@ -1483,7 +1483,7 @@ hr:{
   syncPending:'📶 Nema mreže – tvoje promjene su spremljene na mobitelu i bit će poslane automatski kad se mreža vrati.', syncOffline:'📶 Nema mreže – prikazano je zadnje poznato stanje.',
   lagerHeading:'🏭 Lokacija skladišta', lagerHint:'Tako se status vozača mijenja sam: kad vozač (s otvorenom aplikacijom) stigne u skladište, ima status „U skladištu“ – kad ode, „Na putu“. Radijus oko 250 m.', lagerNotSet:'Skladište još nije upisano.', lagerAdresseLabel:'Adresa skladišta', lagerSaveBtn:'Spremi adresu skladišta', lagerGpsBtn:'📍 Upravo sam u skladištu – preuzmi moju lokaciju', lagerNotFound:'Adresa nije pronađena – upiši je s mjestom, npr. „Musterstraße 1, München“.', lagerMapLabel:'Skladište', autoTag:'automatski', autoHint:'🔄 Mijenja se automatski kad stigneš u skladište ili odeš iz njega.',
   routeEta:'oko {min} min vožnje · {km} km', routeGmaps:'🧭 Ruta u Google Maps', navStart:'🧭 Pokreni navigaciju (Google Maps)',
-  geoOn:'📍 Tvoja se lokacija dijeli – vidi je samo šef i samo dok si prijavljen i aplikacija je otvorena.', geoWait:'📍 Tražim lokaciju …', geoDenied:'📍 Dijeljenje lokacije je isključeno – šef te ne vidi na karti. Dopusti lokaciju za ovu aplikaciju u postavkama mobitela.', geoUnavail:'📍 Ovaj uređaj ne daje lokaciju.', geoRetry:'Pokušaj ponovno', posHeading:'📍 Gdje su kamioni?', posHint:'Vidljivo samo tebi (šef). Vozači dijele lokaciju samo dok su prijavljeni i imaju otvorenu aplikaciju. Sprema se samo zadnja pozicija.', posNone:'Trenutno nijedan vozač ne dijeli lokaciju.', posNow:'upravo sada', posMinAgo:'prije {n} min', posLastSeen:'zadnji put viđen u {time}', posAcc:'Točnost ± {m} m',
+  geoOn:'📍 Tvoja se lokacija dijeli – vidi je samo šef i samo dok si prijavljen i aplikacija je otvorena.', geoWait:'📍 Tražim lokaciju …', geoDenied:'📍 Dijeljenje lokacije je isključeno – šef te ne vidi na karti. Dopusti lokaciju za ovu aplikaciju u postavkama mobitela.', geoUnavail:'📍 Ovaj uređaj ne daje lokaciju.', geoRetry:'Pokušaj ponovno', posHeading:'📍 Gdje su kamioni?', posHint:'Vidljivo samo tebi – vozači dijele lokaciju samo dok je aplikacija otvorena.', posNone:'Trenutno nijedan vozač ne dijeli lokaciju.', posNow:'upravo sada', posMinAgo:'prije {n} min', posLastSeen:'zadnji put viđen u {time}', posAcc:'Točnost ± {m} m',
   pushCardTitle:'Obavijesti',
   pushCardText:'Primi poruku na mobitel kad za tebe ima nešto novo – čak i kad je aplikacija zatvorena.',
   pushEnableBtn:'Uključi',
@@ -1653,7 +1653,7 @@ en:{
   plGeplantVonPrefix:'Planned by:', plDeleteBtn:'Delete',
   plLagerSub:'A delivery is already planned for these projects.',
   plFahrerSub:'These deliveries are already planned.',
-  chefViewTitle:'Boss', tabUebersicht:'Overview', tabBauvorhaben:'Projects',
+  chefViewTitle:'Boss', tabUebersicht:'Overview', tabLkws:'Trucks', tabBauvorhaben:'Projects',
   chefOverviewSub:'Full overview of all orders and warehouse stock.',
   allOrdersHeading:'All orders', chefEmptyOrders:'No orders yet.',
   lagerbestandHeading:'Warehouse stock',
@@ -1678,7 +1678,7 @@ en:{
   syncPending:'📶 No network – your changes are saved on the phone and will be sent automatically once the network is back.', syncOffline:'📶 No network – showing the last known data.',
   lagerHeading:'🏭 Warehouse location', lagerHint:'This makes the driver status update by itself: when a driver (app open) arrives at the warehouse, the status becomes “At the warehouse” – when they drive off, “On the road”. Radius approx. 250 m.', lagerNotSet:'No warehouse entered yet.', lagerAdresseLabel:'Warehouse address', lagerSaveBtn:'Save warehouse address', lagerGpsBtn:'📍 I am at the warehouse right now – use my location', lagerNotFound:'Address not found – please include the town, e.g. “Musterstraße 1, München”.', lagerMapLabel:'Warehouse', autoTag:'automatic', autoHint:'🔄 Updates automatically when you arrive at or leave the warehouse.',
   routeEta:'approx. {min} min drive · {km} km', routeGmaps:'🧭 Route in Google Maps', navStart:'🧭 Start navigation (Google Maps)',
-  geoOn:'📍 Your location is being shared – only the boss can see it, and only while you are logged in and the app is open.', geoWait:'📍 Finding your location …', geoDenied:'📍 Location sharing is off – the boss cannot see you on the map. Please allow location for this app in your phone settings.', geoUnavail:'📍 This device does not provide a location.', geoRetry:'Try again', posHeading:'📍 Where are the trucks?', posHint:'Only visible to you (boss). Drivers share their location only while they are logged in and have the app open. Only the latest position is stored.', posNone:'No driver is sharing their location right now.', posNow:'just now', posMinAgo:'{n} min ago', posLastSeen:'last seen at {time}', posAcc:'Accuracy ± {m} m',
+  geoOn:'📍 Your location is being shared – only the boss can see it, and only while you are logged in and the app is open.', geoWait:'📍 Finding your location …', geoDenied:'📍 Location sharing is off – the boss cannot see you on the map. Please allow location for this app in your phone settings.', geoUnavail:'📍 This device does not provide a location.', geoRetry:'Try again', posHeading:'📍 Where are the trucks?', posHint:'Only visible to you – drivers share their location only while the app is open.', posNone:'No driver is sharing their location right now.', posNow:'just now', posMinAgo:'{n} min ago', posLastSeen:'last seen at {time}', posAcc:'Accuracy ± {m} m',
   pushCardTitle:'Notifications',
   pushCardText:'Get a message on your phone when there is something new for you – even when the app is closed.',
   pushEnableBtn:'Turn on',
@@ -3573,7 +3573,7 @@ function widgetData(role){
       {tone:'amber', icon:'package', label:t('wOffen'), chip:t('scOffen'), value:offen.length,
         detail:t('wOffenDetail',{neu:by(['Neu']).length, unterwegs:by(['Beladen','Unterwegs']).length}), tab:'uebersicht', go:'sec-offen'},
       {tone:'blue', icon:'truck', label:t('wFahrerUnterwegs'), chip:t('scFahrer'), value:`${unterwegs.length}/${drivers.length}`,
-        detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', '), tab:'uebersicht', go:'sec-lkw'},
+        detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', '), tab:'lkws', go:'sec-lkw'},
       {tone:'green', icon:'building-2', label:t('wBauvorhaben'), chip:t('scBV'), value:aktive.length, dots, tab:'bauvorhaben'},
       planTile('planen'),
     ];
@@ -4362,13 +4362,12 @@ function chefHTML(){
   return `  <h2 class="view-title role-title">${t('chefViewTitle')}</h2>
   ${roleNavHTML('chef-tab', tab, [
     {id:'uebersicht', key:'tabUebersicht', ico:'house', badge: state.orders.filter(o=>o.status==='Neu').length + state.pickups.filter(p=>p.status==='Gemeldet').length},
+    {id:'lkws', key:'tabLkws', ico:'truck'},
     {id:'bauvorhaben', key:'tabBauvorhaben', ico:'building-2'},
     {id:'planen', key:'tabPlanen', ico:'calendar-clock'},
     {id:'personal', key:'tabPersonal', ico:'users'}])}
-  ${tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
+  ${tab==='lkws' ? `${chefPositionsHTML()}${sectionH(t('fahrerStatusHeading'))}${driverStatusListHTML()}` : tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
   ${widgetsHTML('chef')}${statStripHTML('chef')}
-  ${driverStatusSectionHTML()}
-  ${chefPositionsHTML()}
   ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
   ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
     return `${sectionH(t('openOrdersHeading'), open.length, 'sec-offen')}
