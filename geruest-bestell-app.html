@@ -120,10 +120,6 @@
   .order-table td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:middle;}
   .order-table tbody tr:last-child td{border-bottom:none;}
   .order-table tbody tr.row-alt{background:var(--zebra);}
-  .order-table tbody tr.cat-row td{background:var(--accent-soft);color:var(--accent-dark);font-weight:700;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;padding:7px 12px;cursor:pointer;-webkit-user-select:none;user-select:none;}
-  .order-table tbody tr.cat-row:active td{background:var(--accent-soft);filter:brightness(0.95);}
-  .cat-chevron{display:inline-block;width:14px;}
-  .cat-count{color:var(--accent-dark);opacity:0.65;font-weight:600;text-transform:none;letter-spacing:0;}
   .t-name{display:flex;align-items:center;gap:9px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;isolation:isolate;}
   /* Langes Drücken: Zeile füllt sich in 480 ms (= lpTimer), dann kommt das
      Detail-Popup. Loslassen zieht die Füllung schnell zurück. */
@@ -136,9 +132,34 @@
   .order-weight b{font-family:'Space Grotesk',sans-serif;}
   .inv-cat{font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:var(--accent-dark);margin:18px 0 8px 0;}
   .qty-ctl{display:flex;align-items:center;border:1.5px solid var(--line-strong);border-radius:8px;overflow:hidden;flex:none;background:var(--card);}
-  .qty-ctl button{background:none;border:none;width:48px;height:48px;font-size:20px;line-height:1;cursor:pointer;color:var(--muted);}
+  .qty-ctl button{background:none;border:none;width:48px;height:48px;font-size:22px;line-height:1;cursor:pointer;color:var(--muted);}
   .qty-ctl button:active{background:var(--accent-soft);color:var(--accent-dark);}
+  .qty-ctl .qty-num{width:64px;height:48px;padding:0;margin:0;border-left:1px solid var(--line-strong);border-right:1px solid var(--line-strong);font-weight:800;font-size:18px;color:var(--ink);font-family:inherit;font-variant-numeric:tabular-nums;background:transparent;border-top:none;border-bottom:none;border-radius:0;cursor:pointer;}
+  .qty-ctl .qty-num.zero{color:var(--muted);font-weight:600;}
   .qty-ctl .qty-val{width:56px;height:48px;padding:0;margin:0;text-align:center;font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;border:none;border-left:1px solid var(--line-strong);border-right:1px solid var(--line-strong);border-radius:0;background:transparent;color:var(--ink);font-family:inherit;-moz-appearance:textfield;appearance:textfield;}
+  .qty-ctl .qty-num:active{background:var(--accent-soft);}
+  /* Schnellwahl: Chips in der zweiten Zeile der Variant-Zeile */
+  .var-row{flex-wrap:wrap;}
+  .var-row .var-name{flex:1 1 140px;}
+  .qty-chips{flex:1 0 100%;display:flex;gap:8px;padding:2px 0 6px 0;}
+  .qty-chip{flex:1 1 0;min-width:0;min-height:48px;padding:0 6px;border:1.5px solid var(--line-strong);border-radius:10px;background:var(--card);color:var(--ink);font-family:inherit;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;cursor:pointer;}
+  .qty-chip.on{background:var(--accent-solid);border-color:var(--accent-solid);color:#fff;}
+  .item-popup .qty-chips{margin-top:10px;padding-bottom:0;}
+  .art.single > .var-row{padding-left:14px;}
+  .art.single.has-cart > .var-row{box-shadow:inset 4px 0 0 var(--accent);}
+  .art-single-ico{flex:none;display:flex;}
+  /* Ziffernblock */
+  .drawer.numpad{max-width:420px;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));}
+  .np-name{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;text-align:center;}
+  .np-unit{font-size:var(--fs-small);color:var(--muted);text-align:center;}
+  .np-display{font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:700;text-align:center;line-height:1.2;margin:6px 0 10px 0;font-variant-numeric:tabular-nums;min-height:64px;}
+  .np-display.empty{color:var(--muted);opacity:.55;}
+  .np-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .np-key{min-height:64px;border:1.5px solid var(--line-strong);border-radius:12px;background:var(--surface-2);color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;cursor:pointer;}
+  .np-key:active{background:var(--accent-soft);}
+  .np-key.np-ok{background:#FFEE00;border-color:#FFEE00;color:#0B2A42;}
+  .np-key.np-ok:active{filter:brightness(0.92);}
+  .np-key svg{width:28px;height:28px;}
   .qty-ctl .qty-val::-webkit-outer-spin-button,.qty-ctl .qty-val::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
   .qty-ctl .qty-val:focus{outline:none;background:var(--accent-soft);}
   .qty-ctl .qty-val::placeholder{color:var(--muted);opacity:.7;}
@@ -547,7 +568,7 @@
      Animationen auf Karten/Listen: render() zeichnet alle 4 s per innerHTML
      neu, die würden ständig neu abspielen. Fenster: animateOverlayOnOpen(). */
   .submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
-  .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,
+  .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.qty-chip,.np-key,
   .inv-actions button,.refresh-btn,.role-chip,.geo-retry,.back-link,.print-btn,
   button.widget,.proj-row,.art-row,.reorder-chip{
     transition:transform 140ms var(--ease-out), filter 140ms var(--ease-out);
@@ -556,7 +577,7 @@
   .submit-btn:active:not(:disabled),.advance-btn:active:not(:disabled),.chip-btn:active:not(:disabled),
   .mini-btn:active,.ziel-chip:active,.pick-btn:active,.day-cell:active,.role-btn:active,.loc-btn:active,
   .done-toggle:active,.reorder-btn:active,.pick-all-btn:active,.pu-open-btn:active,.seg-control button:active,
-  .qty-ctl button:active,.inv-actions button:active,.refresh-btn:active,.role-chip:active,.geo-retry:active,
+  .qty-ctl button:active,.qty-chip:active,.np-key:active,.inv-actions button:active,.refresh-btn:active,.role-chip:active,.geo-retry:active,
   .print-btn:active,.reorder-chip:active{transform:scale(0.97);}
   .art-row:active{transform:scale(0.99);}
   /* Zahlen, die sich bei der Aktualisierung ändern: gleich breite Ziffern, damit nichts wackelt */
@@ -572,7 +593,6 @@
   .mini-btn,.ziel-chip,.chip-btn,.pick-btn,.geo-retry,.role-chip,.refresh-btn,.print-btn,.back-link,.inv-restock,.maps-btn{display:inline-flex;align-items:center;justify-content:center;}
   .geo-retry{display:flex;}
   .maps-btn{display:flex;}
-  .order-table tbody tr.cat-row td{min-height:var(--tap);height:var(--tap);}
   .inv-actions button{width:var(--tap);}
   .menu-btn{width:44px;height:44px;}
   .katalog-search,.pu-del,.nav-btn{min-height:var(--tap);}
@@ -614,7 +634,7 @@
   .order-card .order-items{margin:6px 0;}
   @media (prefers-reduced-motion: reduce){
     :root :is(.submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
-      .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.inv-actions button,
+      .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.qty-chip,.np-key,.inv-actions button,
       .refresh-btn,.role-chip,.geo-retry,.print-btn,button.widget,.proj-row,.art-row,.reorder-chip):active{transform:none;}
     :root button.stat-chip-btn:active{transform:none;}
     .toast,.toast.show{transform:translateX(-50%);}
@@ -846,6 +866,7 @@ de:{
   pvAktivBadge:'Aktiv', pvFertigBadge:'Fertig',
   doneSection:'✓ Erledigt ({n})', openOrdersHeading:'Offene Bestellungen', allDone:'Alles erledigt 👍', mapsShort:'Karte', printShort:'Lieferschein', geoOnShort:'📍 Standort wird geteilt – nur der Chef sieht ihn',
   puTitle:'Abholung', puBtnMelden:'↩ Material zurückgeben / Abholung melden', puEditorTitle:'Was geht zurück?', puEditorSub:'Übriges Material oder ganzes Gerüst – die Mengen kannst du bis zum Abladen im Lager jederzeit ändern.', puVorOrt:'vor Ort: {n}', puAllBtn:'Alles, was vor Ort ist', puZeroBtn:'Alle auf 0', puNothingVor:'Für dieses Bauvorhaben ist noch nichts als geliefert erfasst – Teile über die Suche hinzufügen.', puSearchPh:'Weiteres Teil suchen …', puAbbauLabel:'Komplettes Gerüst abbauen / alles abholen', puNotizLabel:'Hinweis für den Fahrer', puNotizPh:'z. B. liegt hinter dem Haus, ca. 1 LKW', puWannLabel:'Wann kann abgeholt werden?', puSaveNew:'Abholung melden', puSaveEdit:'Änderungen speichern', puCancel:'Abbrechen', puWarnOrt:'Bitte Bauvorhaben wählen oder Adresse eingeben.', puWarnEmpty:'Bitte Mengen eintragen oder „Komplettes Gerüst“ ankreuzen.', puGemeldet:'Gemeldet', puUnterwegs:'Fahrer kommt', puAbgeholt:'Auf dem LKW', puImLager:'Im Lager', puBtnHin:'🚚 Ich hole es ab', puBtnGeladen:'✓ Aufgeladen', puBtnLager:'🏭 Im Lager abgeladen', puEditBtn:'✏️ Mengen ändern', puDeleteBtn:'Abholung löschen', puDeleteConfirm:'Abholung #{id} wirklich löschen?', puGemeldetAm:'Gemeldet', puMine:'Meine Abholungen', puFahrerHeading:'↩ Abholen', puLagerHeading:'↩ Kommt zurück ins Lager', puChefHeading:'↩ Abholungen', puBvHeading:'↩ Abholungen hier', puBvAdd:'↩ Abholung anlegen', puSaved:'Abholung #{id} gemeldet – Fahrer und Lager wissen Bescheid.', puUpdated:'Abholung #{id} geändert.', wAbholen:'Abholen', fkAbholung:'↩ Abholung', nPuNewT:'↩ Abholung #{id}: {ort}', nPuNewB:'{person} meldet Material zum Abholen.', nPuOnWayT:'Abholung #{id}: {fahrer} kommt', nPuOnWayB:'{ort}',
+  qtyNumAria:'Menge eintippen (Ziffernblock)', numpadOk:'OK', numpadDelAria:'Letzte Ziffer löschen', quickAria:'Menge {n} setzen', numpadCurrent:'bisher {n}',
   qtyInputAria:'Menge eintippen', reorderBtn:'🔁 Nochmal bestellen', reorderToast:'Teile von #{id} sind in der Bestellliste – Mengen prüfen und abschicken.', reorderNone:'Diese Teile gibt es im Katalog nicht mehr.', pickAllBtn:'✓ Alles eingepackt',
   forgotPwLink:'Passwort vergessen?', forgotPwText:'Kein Problem: Melde dich beim Chef. Dort bekommst du in der App sofort ein neues (Reiter Personal → „Neues Passwort erzeugen“). Danach kannst du es selbst ändern: Menü ☰ → „Mein Passwort ändern“.', persNewPinBtn:'🔑 Neues Passwort erzeugen', persNewPinConfirm:'Neues Passwort für {name} erzeugen? Das alte gilt dann nicht mehr.', persNewPinTitle:'Neues Passwort für {name}', persNewPinHint:'Bitte persönlich weitergeben. Es wird nirgends gespeichert und nur jetzt angezeigt.', persNewPinDone:'Erledigt – weitergegeben', myPwMenu:'🔑 Mein Passwort ändern', myPwTitle:'Mein Passwort ändern', myPwSub:'Mindestens 4 Zeichen, z. B. eine 4-stellige Zahl, die du dir merken kannst.', myPwNew:'Neues Passwort', myPwRepeat:'Neues Passwort wiederholen', myPwSave:'Speichern', myPwCancel:'Abbrechen', myPwMismatch:'Die beiden Eingaben sind nicht gleich.', myPwSaved:'Dein Passwort ist geändert. Ab jetzt mit dem neuen anmelden.', myPwSame:'Das ist schon dein Passwort – bitte ein anderes wählen.', myPwReauth:'Bitte einmal abmelden, neu anmelden und dann nochmal versuchen.', myPwFail:'Hat nicht geklappt – bitte Internet prüfen und nochmal versuchen.',
   warnLoginNet:'Anmeldung gerade nicht möglich – bitte Netz prüfen und nochmal versuchen.', loggingIn:'Anmelden …', calLoginFirst:'Bearbeiten nur für angemeldete Mitarbeiter: erst in der App anmelden, dann hier „Bearbeiten“.', persChefPwHeading:'Chef-Passwort (zusätzliche Sicherung für die Chef-Rolle)', persChefPwBtn:'Ändern', persChefPwSaved:'Chef-Passwort geändert.', persWarnPwShort:'Das Passwort braucht mindestens 4 Zeichen.', persFnMissing:'Die Mitarbeiter-Verwaltung ist auf dem Server noch nicht eingerichtet (Funktion „manage-users“) – oder kein Netz.', persErr:'Hat nicht geklappt: {msg}', persBusy:'Wird gespeichert …', persNotChef:'Nur der Chef darf Mitarbeiter verwalten.', persPwSaved:'Neues Passwort für {name} gespeichert.', persRemoveConfirm:'{name} wirklich entfernen? Das Konto wird gelöscht.', persSecurityNote:'Passwörter liegen nur verschlüsselt bei Supabase – auch der Chef kann sie nicht sehen, nur neu setzen.', logoutPendingConfirm:'Es sind noch nicht gesendete Änderungen auf dem Handy (kein Netz). Trotzdem abmelden? Dann gehen sie verloren.',
@@ -1039,6 +1060,7 @@ pl:{
   pvAktivBadge:'Aktywna', pvFertigBadge:'Zakończona',
   doneSection:'✓ Zakończone ({n})', openOrdersHeading:'Otwarte zamówienia', allDone:'Wszystko zrobione 👍', mapsShort:'Mapa', printShort:'Dowód dostawy', geoOnShort:'📍 Lokalizacja jest udostępniana – widzi ją tylko szef',
   puTitle:'Odbiór', puBtnMelden:'↩ Zwróć materiał / zgłoś odbiór', puEditorTitle:'Co wraca?', puEditorSub:'Nadwyżka materiału albo całe rusztowanie – ilości możesz zmieniać aż do rozładunku w magazynie.', puVorOrt:'na miejscu: {n}', puAllBtn:'Wszystko, co jest na miejscu', puZeroBtn:'Wszystko na 0', puNothingVor:'Dla tej budowy nic nie zostało jeszcze zapisane jako dostarczone – dodaj części przez wyszukiwanie.', puSearchPh:'Szukaj innej części …', puAbbauLabel:'Demontaż całego rusztowania / odebrać wszystko', puNotizLabel:'Uwaga dla kierowcy', puNotizPh:'np. leży za domem, ok. 1 ciężarówka', puWannLabel:'Kiedy można odebrać?', puSaveNew:'Zgłoś odbiór', puSaveEdit:'Zapisz zmiany', puCancel:'Anuluj', puWarnOrt:'Wybierz budowę albo wpisz adres.', puWarnEmpty:'Wpisz ilości albo zaznacz „Całe rusztowanie”.', puGemeldet:'Zgłoszone', puUnterwegs:'Kierowca jedzie', puAbgeholt:'Na ciężarówce', puImLager:'W magazynie', puBtnHin:'🚚 Odbieram', puBtnGeladen:'✓ Załadowane', puBtnLager:'🏭 Rozładowane w magazynie', puEditBtn:'✏️ Zmień ilości', puDeleteBtn:'Usuń odbiór', puDeleteConfirm:'Na pewno usunąć odbiór #{id}?', puGemeldetAm:'Zgłoszone', puMine:'Moje odbiory', puFahrerHeading:'↩ Do odebrania', puLagerHeading:'↩ Wraca do magazynu', puChefHeading:'↩ Odbiory', puBvHeading:'↩ Odbiory tutaj', puBvAdd:'↩ Dodaj odbiór', puSaved:'Odbiór #{id} zgłoszony – kierowca i magazyn wiedzą.', puUpdated:'Odbiór #{id} zmieniony.', wAbholen:'Do odebrania', fkAbholung:'↩ Odbiór', nPuNewT:'↩ Odbiór #{id}: {ort}', nPuNewB:'{person} zgłasza materiał do odbioru.', nPuOnWayT:'Odbiór #{id}: {fahrer} jedzie', nPuOnWayB:'{ort}',
+  qtyNumAria:'Wpisz ilość (klawiatura)', numpadOk:'OK', numpadDelAria:'Usuń ostatnią cyfrę', quickAria:'Ustaw ilość {n}', numpadCurrent:'dotąd {n}',
   qtyInputAria:'Wpisz ilość', reorderBtn:'🔁 Zamów ponownie', reorderToast:'Części z #{id} są na liście zamówienia – sprawdź ilości i wyślij.', reorderNone:'Tych części nie ma już w katalogu.', pickAllBtn:'✓ Wszystko spakowane',
   forgotPwLink:'Nie pamiętasz hasła?', forgotPwText:'Nie ma problemu: powiedz szefowi. Od razu nada ci nowe w aplikacji (zakładka Personel → „Utwórz nowe hasło“). Potem możesz je sam zmienić: menu ☰ → „Zmień moje hasło“.', persNewPinBtn:'🔑 Utwórz nowe hasło', persNewPinConfirm:'Utworzyć nowe hasło dla {name}? Stare przestanie działać.', persNewPinTitle:'Nowe hasło dla {name}', persNewPinHint:'Przekaż je osobiście. Nie jest nigdzie zapisywane i jest pokazane tylko teraz.', persNewPinDone:'Gotowe – przekazane', myPwMenu:'🔑 Zmień moje hasło', myPwTitle:'Zmień moje hasło', myPwSub:'Co najmniej 4 znaki, np. 4-cyfrowa liczba, którą zapamiętasz.', myPwNew:'Nowe hasło', myPwRepeat:'Powtórz nowe hasło', myPwSave:'Zapisz', myPwCancel:'Anuluj', myPwMismatch:'Oba wpisy nie są takie same.', myPwSaved:'Hasło zostało zmienione. Od teraz loguj się nowym.', myPwSame:'To już jest twoje hasło – wybierz inne.', myPwReauth:'Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.', myPwFail:'Nie udało się – sprawdź internet i spróbuj ponownie.',
   warnLoginNet:'Logowanie teraz niemożliwe – sprawdź sieć i spróbuj ponownie.', loggingIn:'Logowanie …', calLoginFirst:'Edycja tylko dla zalogowanych pracowników: najpierw zaloguj się w aplikacji, potem tutaj „Edytuj”.', persChefPwHeading:'Hasło szefa (dodatkowe zabezpieczenie roli szefa)', persChefPwBtn:'Zmień', persChefPwSaved:'Hasło szefa zmienione.', persWarnPwShort:'Hasło musi mieć co najmniej 4 znaki.', persFnMissing:'Zarządzanie pracownikami nie jest jeszcze skonfigurowane na serwerze (funkcja „manage-users”) – albo brak sieci.', persErr:'Nie udało się: {msg}', persBusy:'Zapisywanie …', persNotChef:'Tylko szef może zarządzać pracownikami.', persPwSaved:'Nowe hasło dla {name} zapisane.', persRemoveConfirm:'Na pewno usunąć {name}? Konto zostanie usunięte.', persSecurityNote:'Hasła są przechowywane w Supabase tylko w formie zaszyfrowanej – szef też ich nie widzi, może je tylko ustawić na nowo.', logoutPendingConfirm:'Na telefonie są jeszcze niewysłane zmiany (brak sieci). Wylogować mimo to? Wtedy przepadną.',
@@ -1232,6 +1254,7 @@ sk:{
   pvAktivBadge:'Aktívna', pvFertigBadge:'Dokončená',
   doneSection:'✓ Hotové ({n})', openOrdersHeading:'Otvorené objednávky', allDone:'Všetko hotové 👍', mapsShort:'Mapa', printShort:'Dodací list', geoOnShort:'📍 Poloha sa zdieľa – vidí ju iba šéf',
   puTitle:'Odvoz', puBtnMelden:'↩ Vrátiť materiál / nahlásiť odvoz', puEditorTitle:'Čo ide späť?', puEditorSub:'Zvyšný materiál alebo celé lešenie – množstvá môžeš meniť až do vyloženia v sklade.', puVorOrt:'na mieste: {n}', puAllBtn:'Všetko, čo je na mieste', puZeroBtn:'Všetko na 0', puNothingVor:'Pre túto stavbu ešte nie je nič zapísané ako dodané – pridaj diely cez vyhľadávanie.', puSearchPh:'Hľadať ďalší diel …', puAbbauLabel:'Demontáž celého lešenia / odviezť všetko', puNotizLabel:'Poznámka pre vodiča', puNotizPh:'napr. leží za domom, cca 1 nákladné auto', puWannLabel:'Kedy sa dá odviezť?', puSaveNew:'Nahlásiť odvoz', puSaveEdit:'Uložiť zmeny', puCancel:'Zrušiť', puWarnOrt:'Vyber stavbu alebo zadaj adresu.', puWarnEmpty:'Zadaj množstvá alebo zaškrtni „Celé lešenie“.', puGemeldet:'Nahlásené', puUnterwegs:'Vodič ide', puAbgeholt:'Na aute', puImLager:'V sklade', puBtnHin:'🚚 Idem to vyzdvihnúť', puBtnGeladen:'✓ Naložené', puBtnLager:'🏭 Vyložené v sklade', puEditBtn:'✏️ Zmeniť množstvá', puDeleteBtn:'Vymazať odvoz', puDeleteConfirm:'Naozaj vymazať odvoz #{id}?', puGemeldetAm:'Nahlásené', puMine:'Moje odvozy', puFahrerHeading:'↩ Vyzdvihnúť', puLagerHeading:'↩ Vracia sa do skladu', puChefHeading:'↩ Odvozy', puBvHeading:'↩ Odvozy tu', puBvAdd:'↩ Pridať odvoz', puSaved:'Odvoz #{id} nahlásený – vodič aj sklad vedia.', puUpdated:'Odvoz #{id} zmenený.', wAbholen:'Vyzdvihnúť', fkAbholung:'↩ Odvoz', nPuNewT:'↩ Odvoz #{id}: {ort}', nPuNewB:'{person} hlási materiál na odvoz.', nPuOnWayT:'Odvoz #{id}: ide {fahrer}', nPuOnWayB:'{ort}',
+  qtyNumAria:'Zadať množstvo (číselník)', numpadOk:'OK', numpadDelAria:'Zmazať poslednú číslicu', quickAria:'Nastaviť množstvo {n}', numpadCurrent:'doteraz {n}',
   qtyInputAria:'Zadaj množstvo', reorderBtn:'🔁 Objednať znova', reorderToast:'Diely z #{id} sú v zozname objednávky – skontroluj množstvá a odošli.', reorderNone:'Tieto diely už v katalógu nie sú.', pickAllBtn:'✓ Všetko zabalené',
   forgotPwLink:'Zabudol si heslo?', forgotPwText:'Žiadny problém: povedz to šéfovi. V aplikácii ti hneď nastaví nové (záložka Personál → „Vytvoriť nové heslo“). Potom si ho môžeš sám zmeniť: menu ☰ → „Zmeniť moje heslo“.', persNewPinBtn:'🔑 Vytvoriť nové heslo', persNewPinConfirm:'Vytvoriť nové heslo pre {name}? Staré potom prestane platiť.', persNewPinTitle:'Nové heslo pre {name}', persNewPinHint:'Odovzdaj ho osobne. Nikde sa neukladá a zobrazí sa iba teraz.', persNewPinDone:'Hotovo – odovzdané', myPwMenu:'🔑 Zmeniť moje heslo', myPwTitle:'Zmeniť moje heslo', myPwSub:'Aspoň 4 znaky, napr. 4-miestne číslo, ktoré si zapamätáš.', myPwNew:'Nové heslo', myPwRepeat:'Zopakuj nové heslo', myPwSave:'Uložiť', myPwCancel:'Zrušiť', myPwMismatch:'Oba zadania nie sú rovnaké.', myPwSaved:'Heslo je zmenené. Odteraz sa prihlasuj novým.', myPwSame:'To už je tvoje heslo – vyber iné.', myPwReauth:'Odhlás sa, znova sa prihlás a skús to ešte raz.', myPwFail:'Nepodarilo sa – skontroluj internet a skús znova.',
   warnLoginNet:'Prihlásenie teraz nie je možné – skontroluj sieť a skús znova.', loggingIn:'Prihlasovanie …', calLoginFirst:'Úpravy len pre prihlásených zamestnancov: najprv sa prihlás v aplikácii, potom tu „Upraviť“.', persChefPwHeading:'Heslo šéfa (dodatočné zabezpečenie roly šéfa)', persChefPwBtn:'Zmeniť', persChefPwSaved:'Heslo šéfa zmenené.', persWarnPwShort:'Heslo musí mať aspoň 4 znaky.', persFnMissing:'Správa zamestnancov ešte nie je nastavená na serveri (funkcia „manage-users“) – alebo nie je sieť.', persErr:'Nepodarilo sa: {msg}', persBusy:'Ukladá sa …', persNotChef:'Zamestnancov môže spravovať len šéf.', persPwSaved:'Nové heslo pre {name} uložené.', persRemoveConfirm:'Naozaj odstrániť {name}? Konto sa vymaže.', persSecurityNote:'Heslá sú v Supabase uložené len zašifrované – ani šéf ich nevidí, môže ich len nastaviť nanovo.', logoutPendingConfirm:'V telefóne sú ešte neodoslané zmeny (žiadna sieť). Napriek tomu odhlásiť? Potom sa stratia.',
@@ -1425,6 +1448,7 @@ hr:{
   pvAktivBadge:'Aktivno', pvFertigBadge:'Završeno',
   doneSection:'✓ Završeno ({n})', openOrdersHeading:'Otvorene narudžbe', allDone:'Sve gotovo 👍', mapsShort:'Karta', printShort:'Otpremnica', geoOnShort:'📍 Lokacija se dijeli – vidi je samo šef',
   puTitle:'Odvoz', puBtnMelden:'↩ Vrati materijal / prijavi odvoz', puEditorTitle:'Što se vraća?', puEditorSub:'Višak materijala ili cijela skela – količine možeš mijenjati sve do istovara u skladištu.', puVorOrt:'na licu mjesta: {n}', puAllBtn:'Sve što je na licu mjesta', puZeroBtn:'Sve na 0', puNothingVor:'Za ovo gradilište još ništa nije zabilježeno kao isporučeno – dodaj dijelove pretragom.', puSearchPh:'Traži drugi dio …', puAbbauLabel:'Demontaža cijele skele / odvesti sve', puNotizLabel:'Napomena za vozača', puNotizPh:'npr. leži iza kuće, oko 1 kamion', puWannLabel:'Kada se može odvesti?', puSaveNew:'Prijavi odvoz', puSaveEdit:'Spremi promjene', puCancel:'Odustani', puWarnOrt:'Odaberi gradilište ili upiši adresu.', puWarnEmpty:'Upiši količine ili označi „Cijela skela”.', puGemeldet:'Prijavljeno', puUnterwegs:'Vozač dolazi', puAbgeholt:'Na kamionu', puImLager:'U skladištu', puBtnHin:'🚚 Ja to preuzimam', puBtnGeladen:'✓ Utovareno', puBtnLager:'🏭 Istovareno u skladištu', puEditBtn:'✏️ Promijeni količine', puDeleteBtn:'Izbriši odvoz', puDeleteConfirm:'Stvarno izbrisati odvoz #{id}?', puGemeldetAm:'Prijavljeno', puMine:'Moji odvozi', puFahrerHeading:'↩ Preuzeti', puLagerHeading:'↩ Vraća se u skladište', puChefHeading:'↩ Odvozi', puBvHeading:'↩ Odvozi ovdje', puBvAdd:'↩ Dodaj odvoz', puSaved:'Odvoz #{id} prijavljen – vozač i skladište su obaviješteni.', puUpdated:'Odvoz #{id} promijenjen.', wAbholen:'Preuzeti', fkAbholung:'↩ Odvoz', nPuNewT:'↩ Odvoz #{id}: {ort}', nPuNewB:'{person} prijavljuje materijal za odvoz.', nPuOnWayT:'Odvoz #{id}: dolazi {fahrer}', nPuOnWayB:'{ort}',
+  qtyNumAria:'Upiši količinu (tipkovnica)', numpadOk:'OK', numpadDelAria:'Obriši zadnju znamenku', quickAria:'Postavi količinu {n}', numpadCurrent:'dosad {n}',
   qtyInputAria:'Upiši količinu', reorderBtn:'🔁 Naruči ponovno', reorderToast:'Dijelovi iz #{id} su na popisu narudžbe – provjeri količine i pošalji.', reorderNone:'Ovih dijelova više nema u katalogu.', pickAllBtn:'✓ Sve spakirano',
   forgotPwLink:'Zaboravio si lozinku?', forgotPwText:'Nema problema: reci šefu. U aplikaciji će ti odmah dati novu (kartica Osoblje → „Napravi novu lozinku“). Zatim je možeš sam promijeniti: izbornik ☰ → „Promijeni moju lozinku“.', persNewPinBtn:'🔑 Napravi novu lozinku', persNewPinConfirm:'Napraviti novu lozinku za {name}? Stara više neće vrijediti.', persNewPinTitle:'Nova lozinka za {name}', persNewPinHint:'Predaj je osobno. Nigdje se ne sprema i prikazuje se samo sada.', persNewPinDone:'Gotovo – predano', myPwMenu:'🔑 Promijeni moju lozinku', myPwTitle:'Promijeni moju lozinku', myPwSub:'Najmanje 4 znaka, npr. 4-znamenkasti broj koji ćeš zapamtiti.', myPwNew:'Nova lozinka', myPwRepeat:'Ponovi novu lozinku', myPwSave:'Spremi', myPwCancel:'Odustani', myPwMismatch:'Dva unosa nisu ista.', myPwSaved:'Lozinka je promijenjena. Od sada se prijavljuj novom.', myPwSame:'To je već tvoja lozinka – odaberi drugu.', myPwReauth:'Odjavi se, ponovno se prijavi i pokušaj opet.', myPwFail:'Nije uspjelo – provjeri internet i pokušaj ponovno.',
   warnLoginNet:'Prijava trenutno nije moguća – provjeri mrežu i pokušaj ponovno.', loggingIn:'Prijava …', calLoginFirst:'Uređivanje samo za prijavljene zaposlenike: najprije se prijavi u aplikaciji, zatim ovdje „Uredi”.', persChefPwHeading:'Lozinka šefa (dodatna zaštita uloge šefa)', persChefPwBtn:'Promijeni', persChefPwSaved:'Lozinka šefa promijenjena.', persWarnPwShort:'Lozinka mora imati najmanje 4 znaka.', persFnMissing:'Upravljanje zaposlenicima još nije postavljeno na poslužitelju (funkcija „manage-users”) – ili nema mreže.', persErr:'Nije uspjelo: {msg}', persBusy:'Spremanje …', persNotChef:'Samo šef može upravljati zaposlenicima.', persPwSaved:'Nova lozinka za {name} spremljena.', persRemoveConfirm:'Stvarno ukloniti {name}? Račun će biti izbrisan.', persSecurityNote:'Lozinke su u Supabaseu spremljene samo šifrirano – ni šef ih ne vidi, može ih samo postaviti iznova.', logoutPendingConfirm:'Na mobitelu su još neposlane promjene (nema mreže). Ipak se odjaviti? Tada će se izgubiti.',
@@ -1618,6 +1642,7 @@ en:{
   pvAktivBadge:'Active', pvFertigBadge:'Done',
   doneSection:'✓ Done ({n})', openOrdersHeading:'Open orders', allDone:'All done 👍', mapsShort:'Map', printShort:'Delivery note', geoOnShort:'📍 Location shared – only the boss can see it',
   puTitle:'Pickup', puBtnMelden:'↩ Return material / request pickup', puEditorTitle:'What goes back?', puEditorSub:'Surplus material or the whole scaffold – you can change the quantities until it is unloaded at the warehouse.', puVorOrt:'on site: {n}', puAllBtn:'Everything on site', puZeroBtn:'All to 0', puNothingVor:'Nothing is recorded as delivered to this site yet – add parts via search.', puSearchPh:'Search another part …', puAbbauLabel:'Dismantle whole scaffold / collect everything', puNotizLabel:'Note for the driver', puNotizPh:'e.g. behind the house, approx. 1 truck', puWannLabel:'When can it be collected?', puSaveNew:'Request pickup', puSaveEdit:'Save changes', puCancel:'Cancel', puWarnOrt:'Please choose a project or enter an address.', puWarnEmpty:'Please enter quantities or tick “Whole scaffold”.', puGemeldet:'Requested', puUnterwegs:'Driver on the way', puAbgeholt:'On the truck', puImLager:'At the warehouse', puBtnHin:'🚚 I will collect it', puBtnGeladen:'✓ Loaded', puBtnLager:'🏭 Unloaded at warehouse', puEditBtn:'✏️ Change quantities', puDeleteBtn:'Delete pickup', puDeleteConfirm:'Really delete pickup #{id}?', puGemeldetAm:'Requested', puMine:'My pickups', puFahrerHeading:'↩ To collect', puLagerHeading:'↩ Coming back to the warehouse', puChefHeading:'↩ Pickups', puBvHeading:'↩ Pickups here', puBvAdd:'↩ Add pickup', puSaved:'Pickup #{id} requested – driver and warehouse are informed.', puUpdated:'Pickup #{id} changed.', wAbholen:'To collect', fkAbholung:'↩ Pickup', nPuNewT:'↩ Pickup #{id}: {ort}', nPuNewB:'{person} requests a material pickup.', nPuOnWayT:'Pickup #{id}: {fahrer} is coming', nPuOnWayB:'{ort}',
+  qtyNumAria:'Enter quantity (number pad)', numpadOk:'OK', numpadDelAria:'Delete last digit', quickAria:'Set quantity {n}', numpadCurrent:'so far {n}',
   qtyInputAria:'Type quantity', reorderBtn:'🔁 Order again', reorderToast:'Parts from #{id} are in the order list – check quantities and send.', reorderNone:'These parts are no longer in the catalogue.', pickAllBtn:'✓ All packed',
   forgotPwLink:'Forgot your password?', forgotPwText:'No problem: ask the boss. You can get a new one in the app right away (Staff tab → “Create new password”). You can then change it yourself: menu ☰ → “Change my password”.', persNewPinBtn:'🔑 Create new password', persNewPinConfirm:'Create a new password for {name}? The old one will stop working.', persNewPinTitle:'New password for {name}', persNewPinHint:'Please hand it over in person. It is not stored anywhere and is only shown now.', persNewPinDone:'Done – handed over', myPwMenu:'🔑 Change my password', myPwTitle:'Change my password', myPwSub:'At least 4 characters, e.g. a 4-digit number you can remember.', myPwNew:'New password', myPwRepeat:'Repeat new password', myPwSave:'Save', myPwCancel:'Cancel', myPwMismatch:'The two entries do not match.', myPwSaved:'Your password has been changed. Use the new one from now on.', myPwSame:'That is already your password – please choose another.', myPwReauth:'Please log out, log in again and then try once more.', myPwFail:'That did not work – please check the internet and try again.',
   warnLoginNet:'Login not possible right now – please check the network and try again.', loggingIn:'Logging in …', calLoginFirst:'Editing only for logged-in staff: log in to the app first, then tap “Edit” here.', persChefPwHeading:'Boss password (extra protection for the boss role)', persChefPwBtn:'Change', persChefPwSaved:'Boss password changed.', persWarnPwShort:'The password needs at least 4 characters.', persFnMissing:'Staff management is not set up on the server yet (function “manage-users”) – or no network.', persErr:'Did not work: {msg}', persBusy:'Saving …', persNotChef:'Only the boss can manage staff.', persPwSaved:'New password for {name} saved.', persRemoveConfirm:'Really remove {name}? The account will be deleted.', persSecurityNote:'Passwords are only stored encrypted at Supabase – even the boss cannot see them, only set new ones.', logoutPendingConfirm:'There are unsent changes on this phone (no network). Log out anyway? They will be lost.',
@@ -1935,7 +1960,7 @@ const state = {
   plannedDeliveries:[], planCounter:1, planDraft:{projekt:'', date:''}, planWarn:'',
   calEditId:null, calDraft:null, calWarn:'',
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
-  itemPopup:null, orderReview:null,
+  itemPopup:null, numpad:null, orderReview:null,
   lang:'de', langMenuOpen:false,
   catalogSearch:'', systemSel: SYSTEMS[0].id, openArt:null,
 };
@@ -2558,13 +2583,18 @@ function matchSearch(it, q){
     .map(tok=>/^\d+m$/.test(tok) ? tok.slice(0,-1)+'.0' : tok.replace(/^(\d+\.\d+)m$/,'$1'))
     .every(tok=>hay.includes(tok));
 }
-function qtyControlHTML(it){
+const QUICK_QTY = [5, 10, 20, 50];
+function qtyControlHTML(it, withChips){
   const q = state.cart[it.id]||0;
   return `<div class="qty-ctl">
     <button type="button" data-action="qty" data-id="${it.id}" data-delta="-1" aria-label="${t('qtyMinusAria')}">−</button>
-    <input class="qty-val" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" data-qty="${it.id}" value="${q||''}" placeholder="0" aria-label="${t('qtyInputAria')}">
+    <button type="button" class="qty-num${q?'':' zero'}" data-action="numpad-open" data-id="${it.id}" data-numfor="${it.id}" aria-label="${t('qtyNumAria')}">${q||0}</button>
     <button type="button" data-action="qty" data-id="${it.id}" data-delta="1" aria-label="${t('qtyPlusAria')}">+</button>
   </div>`;
+}
+function qtyChipsHTML(it){
+  const q = state.cart[it.id]||0;
+  return `<div class="qty-chips">${QUICK_QTY.map(n=>`<button type="button" class="qty-chip${q===n?' on':''}" data-action="qty-quick" data-id="${it.id}" data-q="${n}" aria-pressed="${q===n}" aria-label="${t('quickAria',{n})}">${n}</button>`).join('')}</div>`;
 }
 
 // ---- Bestellliste: Teile-Arten mit Varianten ---------------------------
@@ -2577,16 +2607,18 @@ function qtyControlHTML(it){
 const PART_GROUPS = { konsole: ['konsole30','konsole70','konsole100'] };
 const PART_GROUP_OF = Object.fromEntries(Object.entries(PART_GROUPS).flatMap(([g, keys])=>keys.map(k=>[k, g])));
 
-function variantRowHTML(it, full){
+function variantRowHTML(it, full, icon, noChips){
   const label = (!full && it.v!=null) ? variantLabel(it.v, state.lang) : itemName(it);
   const kg = it.kg!=null ? `${it.kg.toLocaleString(LOCALES[state.lang]||'de-DE')} kg` : '';
   const on = (state.cart[it.id]||0) > 0;
   return `<div class="var-row${on?' on':''}">
+    ${icon? `<span class="t-icon art-single-ico">${icon}</span>`:''}
     <div class="var-name" data-longpress="${it.id}"><span class="lp-fill"></span>
       <span class="var-label">${label}</span>
       <span class="var-sub">${unitLabel(it.unit)}${kg? ' · '+kg : ''}</span>
     </div>
     ${qtyControlHTML(it)}
+    ${noChips? '' : qtyChipsHTML(it)}
   </div>`;
 }
 
@@ -2611,6 +2643,10 @@ function artEntries(systemItems, counts){
 
 function artRowHTML(a){
   const items = a.parts.flatMap(p=>p.items);
+  if(items.length===1){
+    const only = items[0], on = (state.cart[only.id]||0)>0;
+    return `<div class="art single${on?' has-cart':''}">${variantRowHTML(only, true, ICONS[a.icon]||'', true)}</div>`;
+  }
   const inCart = items.reduce((s,it)=>s+(state.cart[it.id]||0), 0);
   const open = state.openArt===a.key;
   const numeric = items.every(it=>typeof it.v==='number');
@@ -2720,9 +2756,45 @@ function itemPopupHTML(){
       <div class="item-popup-name">${itemName(it)}</div>
       <div class="item-popup-unit">${unitLabel(it.unit)}${it.kg!=null? ` · ${it.kg.toLocaleString(LOCALES[state.lang]||'de-DE')} kg ${t('perPiece')}`:''}</div>
       ${qtyControlHTML(it)}
+      ${qtyChipsHTML(it)}
       <button class="refresh-btn" data-action="close-item-popup" style="margin-top:16px;width:100%;">${t('closeBtn')}</button>
     </div>
   </div>`;
+}
+
+function numpadHTML(){
+  const np = state.numpad;
+  const it = np && CATALOG.find(c=>c.id===np.id);
+  if(!it) return '';
+  const cur = state.cart[it.id]||0;
+  const keys = ['1','2','3','4','5','6','7','8','9'].map(k=>`<button type="button" class="np-key" data-action="numpad-key" data-k="${k}">${k}</button>`).join('');
+  return `<div class="overlay" data-action="numpad-cancel">
+    <div class="drawer numpad">
+      <div class="np-name">${itemName(it)}</div>
+      <div class="np-unit">${unitLabel(it.unit)}${cur? ' · '+t('numpadCurrent',{n:cur}):''}</div>
+      <div class="np-display${np.val===''?' empty':''}" id="npDisplay" aria-live="polite">${np.val===''? cur : np.val}</div>
+      <div class="np-grid">${keys}
+        <button type="button" class="np-key" data-action="numpad-key" data-k="del" aria-label="${t('numpadDelAria')}">⌫</button>
+        <button type="button" class="np-key" data-action="numpad-key" data-k="0">0</button>
+        <button type="button" class="np-key np-ok" data-action="numpad-ok">${t('numpadOk')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+function numpadKey(k){
+  const np = state.numpad; if(!np) return;
+  if(k==='del') np.val = np.val.slice(0,-1);
+  else if(np.val.length < 4) np.val = (np.val==='0' ? '' : np.val) + k;
+  render();
+}
+function numpadOk(){
+  const np = state.numpad; if(!np) return;
+  state.numpad = null;
+  if(np.val!==''){
+    const n = Math.max(0, Math.min(9999, parseInt(np.val,10)||0));
+    if(n) state.cart[np.id] = n; else delete state.cart[np.id];
+  }
+  render();
 }
 
 function orderReviewHTML(){
@@ -4272,11 +4344,11 @@ function scrollBehavior(){ return REDUCE_MOTION.matches ? 'auto' : 'smooth'; }
 // bei jeder Änderung darin (+/−, Chips) neu baut – dann würde es jedes Mal
 // neu hereingleiten. Gemerkt wird, welches Fenster offen war (data-action
 // des Hintergrunds); nur bei einem Wechsel wird animiert. Schließen: sofort.
-let overlayOpenKey = null;
+let overlayOpenKeys = [];
 function animateOverlayOnOpen(){
-  const ov = document.querySelector('#app > .overlay');
-  const key = ov ? ov.dataset.action : null;
-  if(ov && key !== overlayOpenKey && ov.animate){
+  const ovs = [...document.querySelectorAll('#app > .overlay')];
+  ovs.forEach(ov=>{
+    if(overlayOpenKeys.includes(ov.dataset.action) || !ov.animate) return;
     const reduce = REDUCE_MOTION.matches;
     ov.animate([{opacity:0},{opacity:1}], {duration:200, easing:'ease-out'});
     const pop = ov.querySelector('.item-popup');
@@ -4288,8 +4360,8 @@ function animateOverlayOnOpen(){
       sheet.animate(frames, pop ? {duration:180, easing:'cubic-bezier(0.23,1,0.32,1)'}
                                 : {duration:280, easing:'cubic-bezier(0.32,0.72,0,1)'});
     }
-  }
-  overlayOpenKey = key;
+  });
+  overlayOpenKeys = ovs.map(ov=>ov.dataset.action);
 }
 
 // Reiter einer Rolle: am PC wie bisher oben, am Handy als feste Leiste unten
@@ -4567,6 +4639,7 @@ function renderView(){
     ${state.itemPopup ? itemPopupHTML() : ''}
     ${state.orderReview ? orderReviewHTML() : ''}
     ${state.puDraft ? pickupEditorHTML() : ''}
+    ${state.numpad ? numpadHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
   document.body.classList.toggle('has-nav', ['lager','fahrer','chef'].includes(state.role));
@@ -4755,9 +4828,19 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   if(action==='qty'){
     const id = el.dataset.id, delta = parseInt(el.dataset.delta,10);
     const cur = state.cart[id]||0;
-    state.cart[id] = Math.max(0, cur+delta);
-    render();
+    const n = Math.min(9999, Math.max(0, cur+delta));
+    if(n) state.cart[id] = n; else delete state.cart[id];
+    syncQtyDom(id);
   }
+  if(action==='qty-quick'){
+    const id = el.dataset.id, q = parseInt(el.dataset.q,10);
+    if(state.cart[id]===q) delete state.cart[id]; else state.cart[id] = q;
+    syncQtyDom(id);
+  }
+  if(action==='numpad-open'){ state.numpad = {id:el.dataset.id, val:''}; render(); }
+  if(action==='numpad-key'){ numpadKey(el.dataset.k); }
+  if(action==='numpad-ok'){ numpadOk(); }
+  if(action==='numpad-cancel' && e.target===el){ state.numpad=null; render(); }
   if(action==='open-order-review'){ openOrderReview(); }
   if(action==='reorder'){
     const o = state.orders.find(x=>x.id===parseInt(el.dataset.order,10));
@@ -5217,7 +5300,6 @@ function fetchAddrSuggestions(q){
 // Fertig-Datum eines Bauvorhabens (Chef) -- 'change' feuert, sobald im
 // Datumsfeld ein Tag gewählt oder das Feld geleert wurde.
 document.getElementById('app').addEventListener('change', async (e)=>{
-  if(e.target.dataset && e.target.dataset.qty){ setQtyFromInput(e.target, true); return; }
   if(e.target.id && e.target.id.startsWith('fertigDate-')){
     const p = state.projects.find(x=>String(x.id)===e.target.dataset.projekt);
     if(!p) return;
@@ -5254,34 +5336,41 @@ document.getElementById('app').addEventListener('change', async (e)=>{
 // Mengenfeld antippen: Inhalt markieren, damit man direkt die Zahl tippt;
 // Enter = fertig (Tastatur zu).
 document.getElementById('app').addEventListener('focusin', (e)=>{
-  if(e.target.dataset && (e.target.dataset.qty || e.target.dataset.pq)) setTimeout(()=>{ try{ e.target.select(); }catch(_){} }, 0);
+  if(e.target.dataset && e.target.dataset.pq) setTimeout(()=>{ try{ e.target.select(); }catch(_){} }, 0);
 });
 // Nach dem Antippen setzt der Browser die Schreibmarke -- danach nochmal
 // alles markieren, damit die neue Zahl die alte ersetzt statt anzuhängen.
 document.getElementById('app').addEventListener('click', (e)=>{
-  if(e.target.dataset && (e.target.dataset.qty || e.target.dataset.pq) && e.target.tagName==='INPUT'){ try{ e.target.select(); }catch(_){} }
+  if(e.target.dataset && e.target.dataset.pq && e.target.tagName==='INPUT'){ try{ e.target.select(); }catch(_){} }
 }, true);
 document.getElementById('app').addEventListener('keydown', (e)=>{
-  if(e.key==='Enter' && e.target.dataset && (e.target.dataset.qty || e.target.dataset.pq)){ e.preventDefault(); e.target.blur(); }
+  if(e.key==='Enter' && e.target.dataset && e.target.dataset.pq){ e.preventDefault(); e.target.blur(); }
 });
-// Getippte Menge übernehmen OHNE die ganze Seite neu zu zeichnen (sonst
-// würde ein direkt danach angetippter Knopf "verschluckt") -- nur die
-// Fußleiste (Anzahl, Gewicht, Knopf an/aus) wird aktualisiert.
-function setQtyFromInput(inp, final){
-  if(/\D/.test(inp.value)) inp.value = inp.value.replace(/\D/g,'');
-  const n = Math.max(0, Math.min(9999, parseInt(inp.value,10) || 0));
-  if(n) state.cart[inp.dataset.qty] = n; else delete state.cart[inp.dataset.qty];
-  if(final) inp.value = n || '';
-  document.querySelectorAll(`[data-qty="${inp.dataset.qty}"]`).forEach(x=>{ if(x!==inp) x.value = n || ''; });
-  // Teile-Art-Zeile: "X im Auftrag" mitziehen (ohne render)
-  const art = inp.closest('.art');
-  if(art){
-    const sum = [...new Set([...art.querySelectorAll('[data-qty]')].map(x=>x.dataset.qty))].reduce((a,id)=>a+(state.cart[id]||0), 0);
+// Menge geändert (+/−, Schnellwahl) OHNE die ganze Seite neu zu zeichnen
+// (schnelles Mehrfach-Tippen soll nichts verschlucken): alle Stellen, die
+// dieses Teil zeigen, werden nachgezogen -- Zahl, Chips, Zeile, Teile-Art
+// ("X im Auftrag", auch Doppelungen wie "Häufig bestellt") und Fußleiste.
+function syncQtyDom(id){
+  const n = state.cart[id]||0;
+  const root = document.getElementById('app');
+  root.querySelectorAll('[data-numfor]').forEach(x=>{
+    if(x.dataset.numfor!==id) return;
+    x.textContent = n; x.classList.toggle('zero', !n);
+    const row = x.closest('.var-row'); if(row) row.classList.toggle('on', n>0);
+  });
+  root.querySelectorAll('.qty-chip').forEach(c=>{
+    if(c.dataset.id!==id) return;
+    const on = parseInt(c.dataset.q,10)===n;
+    c.classList.toggle('on', on); c.setAttribute('aria-pressed', on);
+  });
+  root.querySelectorAll('.art').forEach(art=>{
+    const ids = [...new Set([...art.querySelectorAll('[data-numfor]')].map(x=>x.dataset.numfor))];
+    if(!ids.includes(id)) return;
+    const sum = ids.reduce((a,i)=>a+(state.cart[i]||0), 0);
     const meta = art.querySelector('.art-meta');
     if(meta){ if(sum){ meta.innerHTML = ''; const b = document.createElement('b'); b.textContent = t('artInCart',{n:sum}); meta.appendChild(b); } else meta.textContent = meta.dataset.idle || ''; }
     art.classList.toggle('has-cart', sum>0);
-  }
-  const vr = inp.closest('.var-row'); if(vr) vr.classList.toggle('on', n>0);
+  });
   const count = cartCount();
   document.querySelectorAll('.order-footer').forEach(f=>{
     const sp = f.querySelector('span'), btn = f.querySelector('button');
@@ -5298,7 +5387,6 @@ function setPuQtyFromInput(inp, final){
   const sum = document.getElementById('puSum'); if(sum) sum.textContent = puSumText(state.puDraft);
 }
 document.getElementById('app').addEventListener('input', (e)=>{
-  if(e.target.dataset && e.target.dataset.qty){ setQtyFromInput(e.target, false); return; }
   if(e.target.dataset && e.target.dataset.pq){ setPuQtyFromInput(e.target, false); return; }
   if(state.puDraft && e.target.id==='puOrt'){ state.puDraft.ort = e.target.value; return; }
   if(state.puDraft && e.target.id==='puNotiz'){ state.puDraft.notiz = e.target.value; return; }
@@ -5358,8 +5446,20 @@ document.getElementById('app').addEventListener('contextmenu', (e)=>{
   if(e.target.closest('[data-longpress]')) e.preventDefault();
 });
 
+// Ziffernblock auch mit der Tastatur (PC): Ziffern, Rücktaste, Enter, Esc
+document.addEventListener('keydown', (e)=>{
+  if(!state.numpad || e.ctrlKey || e.metaKey || e.altKey) return;
+  if(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) && !e.target.closest('.numpad')) return;
+  if(/^[0-9]$/.test(e.key)) numpadKey(e.key);
+  else if(e.key==='Backspace') numpadKey('del');
+  else if(e.key==='Enter') numpadOk();
+  else if(e.key==='Escape'){ state.numpad = null; render(); }
+  else return;
+  e.preventDefault();
+});
+
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.puDraft || state.myPwOpen) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.puDraft || state.myPwOpen) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
