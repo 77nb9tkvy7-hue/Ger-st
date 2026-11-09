@@ -3806,6 +3806,24 @@ async function uploadPlans(pid, files){
   refreshPlanUrls();
 }
 
+// ---- Geschützte Zeilen (Personen-Daten) ------------------------------------------
+// Einchecken/Stunden ('zeit:<JJJJ-MM>') und Unterweisungs-Bestätigungen
+// ('unterweisung:<id>') liegen NICHT im großen Datensatz, sondern in eigenen
+// Zeilen. Lesen/Schreiben nur über Server-Funktionen (prot_read/prot_upsert):
+// Chef alles, alle anderen nur eigene (+ Kolonne des Kolonnenführers), keine Korrekturen.
+async function loadProtected(prefix){
+  try{
+    const {data, error} = await supabaseClient.rpc('prot_read', {p_prefix: prefix});
+    if(error) throw error;
+    return (data||[]).map(r=>({key:r.key, entries:r.entries||[]}));
+  }catch(e){ console.warn('Geschützte Daten nicht ladbar', e); return []; }
+}
+async function appendProtected(key, entry){
+  try{
+    const {data, error} = await supabaseClient.rpc('prot_upsert', {p_key: key, p_entry: entry});
+    return !error && data!==false;
+  }catch(e){ return false; }
+}
 // ---- Beweis-Fotos -----------------------------------------------------------
 // Datei aus der Kamera -> verkleinert (≤ 1600 px), Stempel unten (Datum, Uhrzeit,
 // Name, BV, Anlass, GPS) -> Bucket 'fotos' -> Eintrag in state.fotos.
