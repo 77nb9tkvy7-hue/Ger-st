@@ -103,6 +103,13 @@ oder keine Supabase-Sitzung mehr besteht.
 
 ## Menü / Kalender (nur nach Anmeldung sichtbar)
 
+**SGM-Logo = Startseite** (Nutzerwunsch): Logo oben links (Kopf der App UND
+`topNavHTML()` auf Kalender-/Anmeldeseiten) ist ein Knopf (`.logo-btn`,
+Aktion `go-home`): angemeldet → zurück in die App, erster Reiter der eigenen
+Rolle (Chef Übersicht, Lager Bestellungen, Fahrer Lieferungen), nach oben,
+Menüs/Fenster zu – NICHT abmelden; ohne Anmeldung → Anmeldeseite. Gilt
+genauso in `demo.html` (App = Demo).
+
 Oben links sitzt das SGM-Logo, oben rechts ein Menü-Knopf (☰) – beides ist
 auch VOR der Anmeldung sichtbar (Funktion `topNavHTML()`). Im Menü gibt es
 die Punkte „Kalender" (`state.view = 'calendar'`) und „LKW-Kalender"

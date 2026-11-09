@@ -67,6 +67,8 @@
   .top-nav.on-dark{background:transparent;}
   .top-nav.on-light{background:var(--card);border-bottom:1px solid var(--line);}
   .top-nav-logo{height:28px;width:auto;border-radius:6px;}
+  .logo-btn{background:none;border:none;padding:0;cursor:pointer;font:inherit;color:inherit;text-align:left;display:flex;align-items:center;}
+  .logo-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px;}
   .menu-wrap{position:relative;}
   .menu-btn{background:rgba(255,255,255,0.18);border:none;color:#fff;width:38px;height:38px;border-radius:10px;font-size:19px;cursor:pointer;line-height:1;}
   .top-nav.on-light .menu-btn{background:var(--surface-2);color:var(--ink);}
@@ -2738,7 +2740,7 @@ function langMenuBtnHTML(bg){
 }
 function topNavHTML(mode){
   return `<div class="top-nav ${mode==='dark'?'on-dark':'on-light'}">
-    <img src="logo.png" alt="SGM" class="top-nav-logo">
+    <button class="logo-btn" data-action="go-home" aria-label="${t('appName')}"><img src="logo.png" alt="SGM" class="top-nav-logo"></button>
     <div style="display:flex;align-items:center;gap:8px;">
       ${langMenuBtnHTML()}
       <div class="menu-wrap">
@@ -5815,10 +5817,10 @@ function renderView(){
 
   document.getElementById('app').innerHTML = `
     <header class="chrome">
-      <div class="brand">
+      <button class="brand logo-btn" data-action="go-home" aria-label="${t('appName')}">
         <img class="brand-mark" src="logo.png" alt="SGM">
         <div><h1>${t('appName')}</h1><span>${roleLabel(state.role)}</span></div>
-      </div>
+      </button>
       <div style="display:flex;align-items:center;gap:12px;">
         <div class="who"><b>${state.name}</b><br>${employeeRoles(state.name).length>1? `<a data-action="switch-role">${t('switchRoleLink')}</a> · `:''}<a data-action="logout">${t('logoutLink')}</a></div>
         ${langMenuBtnHTML('var(--surface-2)')}
@@ -6500,6 +6502,16 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     render();
   }
   if(action==='go-app'){ state.view='app'; state.menuOpen=false; render(); }
+  // SGM-Logo: zurück zur Startseite der eigenen Rolle (erster Reiter, ganz oben),
+  // Kalender/Fenster/Menüs zu. Ohne Anmeldung bleibt es die Anmeldeseite.
+  if(action==='go-home'){
+    state.view='app'; state.menuOpen=false; state.langMenuOpen=false; state.cellEdit=null;
+    state.itemPopup=null; state.orderReview=null; state.puDraft=null; state.myPwOpen=false;
+    if(state.loggedIn){
+      state.chefTab='uebersicht'; state.chefProjekt=null; state.lagerTab='bestellungen'; state.fahrerTab='lieferungen';
+    }
+    render(); window.scrollTo({top:0, behavior:'smooth'});
+  }
 
   if(action==='cal-unlock-ask'){ state.calAskPw=true; render(); }
   if(action==='cal-unlock-cancel'){ state.calAskPw=false; render(); }
