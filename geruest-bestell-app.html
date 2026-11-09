@@ -5287,10 +5287,10 @@ function chefHTML(){
   ${widgetsHTML('chef')}${statStripHTML('chef')}
   <div class="export-row"><button class="mini-btn" data-action="fahrten-open">${t('fahrtenBtn')}</button><button class="mini-btn" data-action="export-open">${t('exportOpenBtn')}</button></div>
   ${maengelSectionHTML(null)}
-  ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
   ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
     return `${sectionH(t('openOrdersHeading'), open.length, 'sec-offen')}
     ${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,null)).join('')}</div>` : `<div class="empty-state">${orders.length? t('allDone') : t('chefEmptyOrders')}</div>`}
+    ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
     ${doneSectionHTML('chef', done, o=>orderCardHTML(o,null), 30)}`; })()}
   ${SHOW_CHEF_INVENTORY? `<h3 style="margin-top:26px;font-size:15px;">${t('lagerbestandHeading')}</h3>
   ${inventoryTableHTML(false)}`:''}`}`;
