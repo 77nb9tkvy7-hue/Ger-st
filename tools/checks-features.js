@@ -614,6 +614,37 @@ module.exports = ({ switchRole, shot }) => {
       if (!f) p.push('Fahrer sieht Nummern-Feld');
       return errs(errors, p);
     },
+    // BV löschen: nur im Archiv, nur Chef, zwei Rückfragen; Abbrechen bei der 2. löscht nichts
+    'bv-loeschen': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      const a = await ev(page, async () => {
+        const pr = state.projects[0];
+        state.chefTab = 'bauvorhaben'; state.chefProjekt = pr.id; render();
+        const activeBtn = !!document.querySelector('[data-action="projekt-delete"]');
+        pr.aktiv = false; render();
+        const btn = () => document.querySelector('[data-action="projekt-delete"]');
+        if (!btn()) return { noBtn: true, activeBtn };
+        const n0 = state.projects.length, orders = state.orders.filter(o => o.projekt === pr.id).length;
+        let asked = 0; const realConfirm = window.confirm;
+        window.confirm = () => { asked++; return asked < 2; };          // 1. ja, 2. nein
+        btn().click(); await new Promise(r => setTimeout(r, 300));
+        const afterCancel = { n: state.projects.length, asked };
+        asked = 0; window.confirm = () => { asked++; return true; };
+        btn().click(); await new Promise(r => setTimeout(r, 500));
+        window.confirm = realConfirm;
+        return { activeBtn, n0, afterCancel, asked, n1: state.projects.length, gone: !state.projects.some(x => x.id === pr.id),
+          detail: state.chefProjekt, ordersKept: state.orders.filter(o => o.projekt === pr.id).length === orders };
+      });
+      if (a.noBtn) p.push('kein Löschen-Knopf im Archiv-BV');
+      else {
+        if (a.activeBtn) p.push('Löschen-Knopf bei aktivem BV');
+        if (a.afterCancel.n !== a.n0 || a.afterCancel.asked !== 2) p.push('Abbrechen bei 2. Rückfrage hat trotzdem gelöscht: ' + JSON.stringify(a));
+        if (a.asked !== 2 || !a.gone || a.n1 !== a.n0 - 1 || a.detail) p.push('nicht gelöscht/zweimal gefragt: ' + JSON.stringify(a));
+        if (!a.ordersKept) p.push('Bestellungen verschwunden');
+      }
+      return errs(errors, p);
+    },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
     'einstellungen': async ({ page, errors }) => {
       const p = [];
