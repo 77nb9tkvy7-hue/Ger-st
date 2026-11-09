@@ -702,9 +702,15 @@ Object.assign(CHECKS, require('./checks-features')({ switchRole, measure, shot }
       if (!ok) bad++;
       console.log(`${ok ? 'PASS' : 'FAIL'} ${r.join(' ')}${ok ? '' : ' -> ' + last + (res.stderr ? ' | ' + res.stderr.trim().split('\n')[0] : '')}`);
     }
-    const g = spawnSync('git', ['diff', '--quiet', '82ee6a1', '--', 'geruest-bestell-app.html', 'sw.js'], { cwd: ROOT });
-    console.log(`${g.status === 0 ? 'PASS' : 'FAIL'} Original unverändert (geruest-bestell-app.html)`);
-    if (g.status !== 0) bad++;
+    // Die App = Demo ohne Demo-Teile: nur diese Zeilen dürfen NUR in der App stehen
+    // (echte Supabase-Verbindung, Titel, Service Worker). Alles andere muss gleich sein.
+    const APP_ONLY = ['<title>Gerüst-Bestellung</title>', '<script src="vendor/supabase/supabase.js"></script>',
+      "const supabaseClient = (typeof supabase !== 'undefined')", '  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)', '  : null;',
+      "if('serviceWorker' in navigator){"];
+    const d = spawnSync('diff', ['demo.html', 'geruest-bestell-app.html'], { cwd: ROOT, encoding: 'utf8' });
+    const extra = d.stdout.split('\n').filter(l => l.startsWith('> ')).map(l => l.slice(2)).filter(l => !APP_ONLY.includes(l));
+    console.log(`${extra.length ? 'FAIL' : 'PASS'} App = Demo ohne Demo-Teile${extra.length ? ' -> nur in der App: ' + extra.slice(0, 3).join(' | ') : ''}`);
+    if (extra.length) bad++;
     console.log(bad ? `FAIL all: ${bad} Prüfung(en) fehlgeschlagen` : 'PASS all');
     process.exit(bad ? 1 : 0);
   }

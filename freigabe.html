@@ -42,8 +42,10 @@ function show(info){
   if(info.ergebnis === 'frei'){ st.className = 'status frei'; st.textContent = 'Freigegeben'; document.getElementById('datum').textContent = 'geprüft und freigegeben am ' + fmt(info.datum); }
   else { st.className = 'status gesperrt'; st.textContent = 'Gesperrt – nicht betreten'; document.getElementById('datum').textContent = 'seit ' + fmt(info.datum); }
 }
-// Demo (demo.html, gleicher Browser): Daten aus dem Demo-Speicher
+// Nur für Links aus der Demo (demo.html setzt &demo=1): Daten aus dem Demo-Speicher
+// im selben Browser. Echte QR-Codes fragen immer den Server.
 function fromDemo(){
+  if(new URLSearchParams(location.search).get('demo') !== '1') return null;
   try{
     const v = JSON.parse(localStorage.getItem('demo-state') || 'null'); if(!v) return null;
     const p = (v.projects||[]).find(x=>x.freigabeToken===token); if(!p) return null;

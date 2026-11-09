@@ -393,7 +393,7 @@ module.exports = ({ switchRole, shot }) => {
       if (!r.qr) p.push('Aushang ohne QR-Bild');
       await page.waitForFunction(t => (localStorage.getItem('demo-state') || '').includes(t), r.token, { timeout: 8000 }).catch(() => {});  // gespeichert, bevor die öffentliche Seite liest
       const pub = await context.newPage();
-      await pub.goto('file://' + require('path').resolve(__dirname, '..', 'freigabe.html') + '?t=' + r.token);
+      await pub.goto('file://' + require('path').resolve(__dirname, '..', 'freigabe.html') + '?t=' + r.token + '&demo=1');
       await pub.waitForFunction(() => document.getElementById('status').textContent !== '…', null, { timeout: 8000 }).catch(() => {});
       const txt = await pub.evaluate(() => document.body.innerText);
       if (!/freigegeben/i.test(txt) || !new RegExp('BV ' + pid).test(txt)) p.push('Freigabe-Seite zeigt Status nicht: ' + txt.slice(0, 100));
