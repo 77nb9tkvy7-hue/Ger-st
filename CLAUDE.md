@@ -135,6 +135,18 @@ Kolonnen als Zeilen, farbige Zellen, unten Baustelle räumen/Urlaub/Krank).
   in `state.calendarEntries` (`{id, date, person = Zeile, ort = Text, notiz,
   fill, ink}`). (Der Weg ohne Anmeldung über `public_info().kolonnen` aus
   `supabase/security.sql` ist seit `neue-funktionen.sql` abgeschaltet.)
+- **Rechte (Nutzerwunsch)**: Bearbeiten beider Kalender NUR als Chef angemeldet
+  (`calCanEdit()`), OHNE Extra-Chef-Passwort (das kam schon bei der Anmeldung);
+  `state.calUnlocked`/`cal-unlock-*` sind ungenutzt. LKW-Kalender sehen NUR Chef und
+  Fahrer (`lkwCanSee()`, Menüpunkt fehlt bei Baustelle/Lager, Seite zeigt
+  `lkwNoAccess`). Achtung: nur in der App gesperrt, der Datensatz selbst ist für
+  alle Rollen lesbar (wie bisher).
+- **Geplant / Gefahren** (Umschalter `state.dpFahrMode`, `dpFahrMode()`): Geplant =
+  `fahrten` mit `kind:'plan'` + LKW-Termine (in der Zeile ihres Fahrers, sonst
+  Zeile „Noch kein Fahrer“ `#offen`, nur lesen) + geplante Lieferungen (`#offen`)
+  über `dpVirtual()`; Gefahren = alle übrigen `fahrten` (automatisch + vom Chef
+  nachgetragen, `kind:'hand'`). LKW-Termine haben optional `fahrer` (Auswahl im
+  Formular; Push dann nur an diesen Fahrer). Prüfung `dispo-rechte`.
 - **LKW-Kalender**: oben `fahrerDispoHTML()` – gleiche Tabelle, Zeilen =
   Fahrer (`driverNames()`; Chef und alle Fahrer sehen alle Fahrer –
   Nutzerwunsch, eigene Zeile oben –, NICHT öffentlich wegen DSGVO; Einträge nur
@@ -149,8 +161,8 @@ Kolonnen als Zeilen, farbige Zellen, unten Baustelle räumen/Urlaub/Krank).
   `DP_INKS` (normal/rot/blau), CSS-Variablen `--dp-*` (+ Dunkelmodus).
 - Woche: `state.dpWeek` (Montag, ISO), ‹ › / „Diese Woche“ / Datumsfeld
   `#dpPick`, `isoWeekNo()` (ISO-KW, 26.10.2026 = KW 44), Sonntag nur wenn
-  dort etwas steht (`dpDays()`). Bearbeiten nur mit Chef-Passwort
-  (`state.calUnlocked`): Feld antippen → `cellEditHTML()` (`state.cellEdit`,
+  dort etwas steht (`dpDays()`). Bearbeiten nur als Chef (`calCanEdit()`):
+  Feld antippen → `cellEditHTML()` (`state.cellEdit`,
   mehrere Zeilen je Feld, an mehreren Tagen auf einmal eintragen, ändern/
   löschen); solange offen, pausiert das 4-s-Neuzeichnen. Am Handy springt
   die Tabelle zum heutigen Tag, die waagrechte Position bleibt beim

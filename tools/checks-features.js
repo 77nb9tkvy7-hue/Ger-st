@@ -548,6 +548,44 @@ module.exports = ({ switchRole, shot }) => {
       if (h) p.push('Zurück-Knopf in der App sichtbar');
       return errs(errors, p);
     },
+    // Kalender: nur Chef bearbeitet (ohne Extra-Passwort); LKW-Kalender nur Chef + Fahrer; Geplant/Gefahren
+    'dispo-rechte': async ({ page, errors }) => {
+      const p = [];
+      const look = async (role, view) => { await switchRole(page, role); return ev(page, v => { state.menuOpen = true; goView(v); render(); const r = {
+        edit: document.querySelectorAll('[data-action="dp-cell"]').length, grid: !!document.querySelector('.dp-wrap'),
+        lkwMenu: !!document.querySelector('[data-action="go-lkwkalender"]'), form: !!document.querySelector('#lkwDate'),
+        pw: !!document.querySelector('[data-action="cal-unlock-ask"]'), mode: !!document.querySelector('[data-action="dp-mode"]') };
+        state.menuOpen = false; render(); return r; }, view); };
+      const c1 = await look('chef', 'calendar');
+      if (!c1.edit || c1.pw) p.push('Chef kann Kalender nicht direkt bearbeiten: ' + JSON.stringify(c1));
+      const c2 = await look('chef', 'lkwkalender');
+      if (!c2.edit || !c2.form || !c2.mode) p.push('Chef im LKW-Kalender: ' + JSON.stringify(c2));
+      const f1 = await look('fahrer', 'calendar');
+      if (f1.edit || f1.pw) p.push('Fahrer kann Kalender bearbeiten: ' + JSON.stringify(f1));
+      const f2 = await look('fahrer', 'lkwkalender');
+      if (!f2.grid || f2.edit || f2.form || !f2.mode) p.push('Fahrer im LKW-Kalender: ' + JSON.stringify(f2));
+      for (const r of ['lager', 'baustelle']) {
+        const x = await look(r, 'lkwkalender');
+        if (x.grid || x.lkwMenu) p.push(r + ' sieht LKW-Kalender: ' + JSON.stringify(x));
+      }
+      // Geplant / Gefahren
+      await switchRole(page, 'chef');
+      const g = await ev(page, async () => {
+        state.dpWeek = null; state.dpFahrMode = 'plan'; goView('lkwkalender'); render();
+        const offen = [...document.querySelectorAll('.dp-wrap tbody th')].some(th => th.textContent.includes(t('dpNoDriverRow')));
+        state.lkwEntries.push({ id: state.lkwCounter++, date: todayISO(), time: '07:15', projekt: state.projects[0].id, notiz: '', fahrer: 'Ludwig' });
+        state.fahrten.push({ id: state.fahrtCounter++, date: todayISO(), fahrer: 'Ludwig', kind: 'lieferung', ref: 'o999', text: 'IstFahrt', auto: true });
+        render();
+        const row = n => [...document.querySelectorAll('.dp-wrap tbody tr')].find(tr => tr.querySelector('th').textContent.trim() === n);
+        const planTxt = (row('Ludwig') || {}).textContent || '';
+        state.dpFahrMode = 'ist'; render();
+        const istTxt = (row('Ludwig') || {}).textContent || '';
+        const offenIst = [...document.querySelectorAll('.dp-wrap tbody th')].some(th => th.textContent.includes(t('dpNoDriverRow')));
+        return { offen, plan: planTxt.includes('07:15') && !planTxt.includes('IstFahrt'), ist: istTxt.includes('IstFahrt') && !istTxt.includes('07:15'), offenIst };
+      });
+      if (!g.offen || !g.plan || !g.ist || g.offenIst) p.push('Geplant/Gefahren falsch: ' + JSON.stringify(g));
+      return errs(errors, p);
+    },
   };
 };
 
