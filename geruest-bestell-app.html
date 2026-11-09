@@ -295,6 +295,18 @@
   .foto-meta{font-size:14px;margin:8px 2px;line-height:1.45;}
   .foto-hidden-note{color:var(--muted);font-weight:600;margin-top:4px;}
   .mini-btn.danger{color:var(--red);border-color:var(--red);}
+  .ci-wrap{margin:0 0 10px 0;}
+  .ci-team{margin:0 0 8px 0;}
+  .ci-btn{min-height:var(--tap);font-size:15px;font-weight:700;}
+  .ci-in-btn{width:100%;}
+  .ci-bar{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;padding:6px 6px 6px 12px;border-radius:12px;background:var(--card);border-left:5px solid var(--green);box-shadow:var(--shadow);}
+  .ci-bar .ci-line{flex:1;min-width:0;font-size:14px;}
+  .ci-hint-text{font-size:15px;line-height:1.5;margin:0 0 14px 0;white-space:pre-wrap;}
+  .korr-tag{font-size:13px;color:var(--muted);font-weight:600;}
+  .cal-hours{font-size:14px;border-left:5px solid var(--accent);}
+  .kol-row{margin:8px 0 10px 0;}
+  .fertig-box input[type=time]{padding:7px 10px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;background:var(--card);color:var(--ink);}
+  .fertig-box select{padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;background:var(--card);color:var(--ink);}
   .fotos-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
   .mangel-text{font-size:15px;margin:8px 0 4px 0;white-space:pre-wrap;}
   .mangel-card::before{background:var(--red) !important;}
@@ -882,6 +894,7 @@ de:{
   bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
   mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
   stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  ciIn:'Einchecken', ciOut:'Auschecken', ciChecking:'Standort wird geprüft …', ciCheckedIn:'Eingecheckt: {bv} seit {t}', ciTeamLabel:'Wer ist dabei?', ciTooFar:'Zu weit weg vom Bauvorhaben ({m} m). Einchecken geht nur vor Ort.', ciBadGps:'GPS zu ungenau (±{m} m) – kurz warten und nochmal.', ciNoGps:'Kein Standort – bitte Standort freigeben.', ciDone:'Eingecheckt: {bv}', ciOutDone:'Ausgecheckt', ciHintTitle:'Hinweis zum Einchecken', ciHintDefault:'Beim Ein- und Auschecken werden Uhrzeit und Standort gespeichert, damit die Arbeitszeit pro Bauvorhaben erfasst wird. Sehen kann das nur die Geschäftsleitung. Gelöscht wird 12 Monate nach der Abrechnung.', ciHintOk:'Verstanden', ciHintSaved:'Hinweis gespeichert', ciRunning:'läuft', calHours:'Stunden', hoursKorr:'korrigiert', regieTitle:'Regiebericht', regieEmpty:'Noch keine Zeiten.', regieSum:'Summe', regieDatum:'Datum', regiePerson:'Person', regieZeit:'von–bis', regieStd:'Std.', regieKorrBtn:'Korrigieren', regiePrint:'Regiebericht drucken', korrTitle:'Zeit korrigieren', korrVon:'von', korrBis:'bis', korrGrund:'Grund', korrSave:'Speichern', monatTitle:'Monatsübersicht', monatPrint:'Drucken', monatLief:'Lieferungen', monatStunden:'Stunden', abrechLabel:'Abgerechnet am', persCiTitle:'Einchecken', persCiHinweis:'Datenschutzhinweis (wird vor dem ersten Einchecken gezeigt)', persKolonnen:'Kolonnen: Kolonnenführer checkt diese Leute mit ein', persCleanup:'Alte Einchecken-Daten jetzt löschen', persCleanupDone:'{n} alte Einträge gelöscht',
   mangelBtn:'Mangel melden', mangelTitle:'Mangel melden', mangelTextLabel:'Was ist los?', mangelTextPh:'z. B. Belag lose, Anker fehlt …', mangelFotoBtn:'Foto dazu (empfohlen)', mangelFotoOk:'Foto angehängt', mangelSend:'Melden', mangelNeedText:'Bitte kurz beschreiben.', mangelSent:'Mangel gemeldet – der Chef ist informiert.', maengelHeading:'Mängel offen', maengelNone:'Keine offenen Mängel.', mangelDone:'Erledigt', mangelDoneBy:'erledigt von {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Mängel offen', scMaengel:'Mängel', nMangelT:'Neuer Mangel: {bv}', nMangelB:'{name}: {text}', sigBtn:'Unterschrift', sigTitle:'Unterschrift Empfänger', sigNameLabel:'Name Empfänger', sigClear:'Neu', sigSave:'Unterschrift speichern', sigSaved:'Unterschrift gespeichert', sigFail:'Unterschrift nicht gespeichert – bitte nochmal.', sigEmpty:'Bitte unterschreiben lassen.', sigDone:'Unterschrieben von {name}, {ts}', sigLabel:'Unterschrift Empfänger',
   fotosHeading:'Fotos ({n})', fotoBtn:'Foto', fotoShort:'Foto', fotosEmpty:'Noch keine Fotos.', fotoEyebrow:'Beweis-Foto', fotoChooseAnlass:'Wofür ist das Foto?', fotoHint:'Datum, Uhrzeit, Name, Bauvorhaben und GPS werden ins Bild geschrieben. Löschen geht nur in den ersten 5 Minuten.', fotoSaving:'Foto wird gespeichert …', fotoSaved:'Foto gespeichert', fotoFail:'Foto nicht gespeichert – bitte nochmal versuchen.', fotoDelete:'Löschen', fotoDeleteConfirm:'Foto endgültig löschen?', fotoDelFail:'Löschen nicht mehr möglich.', fotoHide:'Ausblenden', fotoUnhide:'Wieder einblenden', fotoHiddenBy:'ausgeblendet von {name} am {ts}', anl_abladen:'Abladen', anl_uebergabe:'Übergabe', anl_vor_abbau:'Vor Abbau', anl_schaden:'Schaden', anl_vorher:'Vorher', anl_nachher:'Nachher', anl_mangel:'Mangel',
   nameInputPh:'Dein Name', warnEnterName:'Bitte deinen Namen eintippen.', warnLoginFail:'Name oder Passwort falsch.', calLockedText:'Der Kalender ist nur nach der Anmeldung sichtbar.', calLoginBtn:'Zur Anmeldung',
@@ -1082,6 +1095,7 @@ pl:{
   bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
   mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
   stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  ciIn:'Zamelduj się', ciOut:'Wymelduj się', ciChecking:'Sprawdzanie lokalizacji …', ciCheckedIn:'Zameldowany: {bv} od {t}', ciTeamLabel:'Kto jest na miejscu?', ciTooFar:'Za daleko od budowy ({m} m). Meldowanie tylko na miejscu.', ciBadGps:'GPS zbyt niedokładny (±{m} m) – poczekaj chwilę i spróbuj ponownie.', ciNoGps:'Brak lokalizacji – zezwól na lokalizację.', ciDone:'Zameldowano: {bv}', ciOutDone:'Wymeldowano', ciHintTitle:'Informacja o meldowaniu', ciHintDefault:'Przy zameldowaniu i wymeldowaniu zapisywane są godzina i lokalizacja, aby rejestrować czas pracy na budowie. Widzi to tylko kierownictwo. Dane są usuwane 12 miesięcy po rozliczeniu.', ciHintOk:'Rozumiem', ciHintSaved:'Informacja zapisana', ciRunning:'trwa', calHours:'Godziny', hoursKorr:'poprawione', regieTitle:'Raport godzinowy', regieEmpty:'Brak czasów.', regieSum:'Suma', regieDatum:'Data', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'godz.', regieKorrBtn:'Popraw', regiePrint:'Drukuj raport', korrTitle:'Popraw czas', korrVon:'od', korrBis:'do', korrGrund:'Powód', korrSave:'Zapisz', monatTitle:'Zestawienie miesięczne', monatPrint:'Drukuj', monatLief:'Dostawy', monatStunden:'Godziny', abrechLabel:'Rozliczono dnia', persCiTitle:'Meldowanie', persCiHinweis:'Informacja o ochronie danych (pokazywana przed pierwszym zameldowaniem)', persKolonnen:'Brygady: brygadzista melduje te osoby', persCleanup:'Usuń teraz stare dane meldowania', persCleanupDone:'Usunięto {n} starych wpisów',
   mangelBtn:'Zgłoś usterkę', mangelTitle:'Zgłoś usterkę', mangelTextLabel:'Co się stało?', mangelTextPh:'np. luźny pomost, brak kotwy …', mangelFotoBtn:'Dodaj zdjęcie (zalecane)', mangelFotoOk:'Zdjęcie dołączone', mangelSend:'Zgłoś', mangelNeedText:'Opisz krótko.', mangelSent:'Usterka zgłoszona – szef został poinformowany.', maengelHeading:'Otwarte usterki', maengelNone:'Brak otwartych usterek.', mangelDone:'Załatwione', mangelDoneBy:'załatwione przez {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otwarte usterki', scMaengel:'Usterki', nMangelT:'Nowa usterka: {bv}', nMangelB:'{name}: {text}', sigBtn:'Podpis', sigTitle:'Podpis odbiorcy', sigNameLabel:'Imię odbiorcy', sigClear:'Od nowa', sigSave:'Zapisz podpis', sigSaved:'Podpis zapisany', sigFail:'Podpis nie zapisany – spróbuj ponownie.', sigEmpty:'Poproś o podpis.', sigDone:'Podpisał(a) {name}, {ts}', sigLabel:'Podpis odbiorcy',
   fotosHeading:'Zdjęcia ({n})', fotoBtn:'Zdjęcie', fotoShort:'Zdjęcie', fotosEmpty:'Brak zdjęć.', fotoEyebrow:'Zdjęcie dowodowe', fotoChooseAnlass:'Do czego jest zdjęcie?', fotoHint:'Data, godzina, imię, budowa i GPS zostaną wpisane w zdjęcie. Usunąć można tylko w ciągu 5 minut.', fotoSaving:'Zapisywanie zdjęcia …', fotoSaved:'Zdjęcie zapisane', fotoFail:'Zdjęcie nie zostało zapisane – spróbuj ponownie.', fotoDelete:'Usuń', fotoDeleteConfirm:'Usunąć zdjęcie na stałe?', fotoDelFail:'Usunięcie nie jest już możliwe.', fotoHide:'Ukryj', fotoUnhide:'Pokaż ponownie', fotoHiddenBy:'ukryte przez {name}, {ts}', anl_abladen:'Rozładunek', anl_uebergabe:'Przekazanie', anl_vor_abbau:'Przed demontażem', anl_schaden:'Szkoda', anl_vorher:'Przed', anl_nachher:'Po', anl_mangel:'Usterka',
   nameInputPh:'Twoje imię', warnEnterName:'Wpisz swoje imię.', warnLoginFail:'Nieprawidłowe imię lub hasło.', calLockedText:'Kalendarz jest widoczny dopiero po zalogowaniu.', calLoginBtn:'Do logowania',
@@ -1282,6 +1296,7 @@ sk:{
   bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
   mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
   stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  ciIn:'Prihlásiť sa na stavbe', ciOut:'Odhlásiť sa', ciChecking:'Overuje sa poloha …', ciCheckedIn:'Prihlásený: {bv} od {t}', ciTeamLabel:'Kto je pri tom?', ciTooFar:'Príliš ďaleko od stavby ({m} m). Prihlásiť sa dá len na mieste.', ciBadGps:'GPS príliš nepresné (±{m} m) – chvíľu počkaj a skús znova.', ciNoGps:'Žiadna poloha – povoľ polohu.', ciDone:'Prihlásené: {bv}', ciOutDone:'Odhlásené', ciHintTitle:'Upozornenie k prihláseniu', ciHintDefault:'Pri prihlásení a odhlásení sa uloží čas a poloha, aby sa evidoval pracovný čas na stavbe. Vidí to len vedenie. Údaje sa mažú 12 mesiacov po vyúčtovaní.', ciHintOk:'Rozumiem', ciHintSaved:'Upozornenie uložené', ciRunning:'prebieha', calHours:'Hodiny', hoursKorr:'opravené', regieTitle:'Výkaz prác', regieEmpty:'Zatiaľ žiadne časy.', regieSum:'Spolu', regieDatum:'Dátum', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'hod.', regieKorrBtn:'Opraviť', regiePrint:'Tlačiť výkaz', korrTitle:'Opraviť čas', korrVon:'od', korrBis:'do', korrGrund:'Dôvod', korrSave:'Uložiť', monatTitle:'Mesačný prehľad', monatPrint:'Tlačiť', monatLief:'Dodávky', monatStunden:'Hodiny', abrechLabel:'Vyúčtované dňa', persCiTitle:'Prihlásenie na stavbe', persCiHinweis:'Upozornenie o ochrane údajov (zobrazí sa pred prvým prihlásením)', persKolonnen:'Čaty: vedúci čaty prihlási aj týchto ľudí', persCleanup:'Teraz zmazať staré údaje prihlásení', persCleanupDone:'Zmazaných {n} starých záznamov',
   mangelBtn:'Nahlásiť nedostatok', mangelTitle:'Nahlásiť nedostatok', mangelTextLabel:'Čo sa deje?', mangelTextPh:'napr. uvoľnená podlaha, chýba kotva …', mangelFotoBtn:'Pridať fotku (odporúčané)', mangelFotoOk:'Fotka pripojená', mangelSend:'Nahlásiť', mangelNeedText:'Krátko popíš.', mangelSent:'Nedostatok nahlásený – šéf je informovaný.', maengelHeading:'Otvorené nedostatky', maengelNone:'Žiadne otvorené nedostatky.', mangelDone:'Vybavené', mangelDoneBy:'vybavil(a) {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otvorené nedostatky', scMaengel:'Nedostatky', nMangelT:'Nový nedostatok: {bv}', nMangelB:'{name}: {text}', sigBtn:'Podpis', sigTitle:'Podpis príjemcu', sigNameLabel:'Meno príjemcu', sigClear:'Znova', sigSave:'Uložiť podpis', sigSaved:'Podpis uložený', sigFail:'Podpis sa neuložil – skús znova.', sigEmpty:'Nechaj podpísať.', sigDone:'Podpísal(a) {name}, {ts}', sigLabel:'Podpis príjemcu',
   fotosHeading:'Fotky ({n})', fotoBtn:'Fotka', fotoShort:'Fotka', fotosEmpty:'Zatiaľ žiadne fotky.', fotoEyebrow:'Dôkazová fotka', fotoChooseAnlass:'Na čo je fotka?', fotoHint:'Dátum, čas, meno, stavba a GPS sa zapíšu do fotky. Zmazať sa dá len počas prvých 5 minút.', fotoSaving:'Fotka sa ukladá …', fotoSaved:'Fotka uložená', fotoFail:'Fotka sa neuložila – skús to znova.', fotoDelete:'Zmazať', fotoDeleteConfirm:'Fotku natrvalo zmazať?', fotoDelFail:'Zmazanie už nie je možné.', fotoHide:'Skryť', fotoUnhide:'Znova zobraziť', fotoHiddenBy:'skryl(a) {name}, {ts}', anl_abladen:'Vykládka', anl_uebergabe:'Odovzdanie', anl_vor_abbau:'Pred demontážou', anl_schaden:'Škoda', anl_vorher:'Pred', anl_nachher:'Po', anl_mangel:'Nedostatok',
   nameInputPh:'Tvoje meno', warnEnterName:'Zadaj svoje meno.', warnLoginFail:'Nesprávne meno alebo heslo.', calLockedText:'Kalendár je viditeľný až po prihlásení.', calLoginBtn:'Na prihlásenie',
@@ -1482,6 +1497,7 @@ hr:{
   bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
   mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
   stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  ciIn:'Prijava na gradilište', ciOut:'Odjava', ciChecking:'Provjera lokacije …', ciCheckedIn:'Prijavljen: {bv} od {t}', ciTeamLabel:'Tko je tu?', ciTooFar:'Predaleko od gradilišta ({m} m). Prijava je moguća samo na licu mjesta.', ciBadGps:'GPS je preneprecizan (±{m} m) – pričekaj malo i pokušaj ponovno.', ciNoGps:'Nema lokacije – dopusti lokaciju.', ciDone:'Prijavljeno: {bv}', ciOutDone:'Odjavljeno', ciHintTitle:'Napomena o prijavi', ciHintDefault:'Pri prijavi i odjavi spremaju se vrijeme i lokacija kako bi se evidentiralo radno vrijeme po gradilištu. Vidi to samo uprava. Podaci se brišu 12 mjeseci nakon obračuna.', ciHintOk:'Razumijem', ciHintSaved:'Napomena spremljena', ciRunning:'u tijeku', calHours:'Sati', hoursKorr:'ispravljeno', regieTitle:'Izvještaj o radu', regieEmpty:'Još nema vremena.', regieSum:'Ukupno', regieDatum:'Datum', regiePerson:'Osoba', regieZeit:'od–do', regieStd:'sati', regieKorrBtn:'Ispravi', regiePrint:'Ispiši izvještaj', korrTitle:'Ispravi vrijeme', korrVon:'od', korrBis:'do', korrGrund:'Razlog', korrSave:'Spremi', monatTitle:'Mjesečni pregled', monatPrint:'Ispiši', monatLief:'Isporuke', monatStunden:'Sati', abrechLabel:'Obračunato dana', persCiTitle:'Prijava na gradilište', persCiHinweis:'Napomena o zaštiti podataka (prikazuje se prije prve prijave)', persKolonnen:'Ekipe: voditelj ekipe prijavljuje i ove ljude', persCleanup:'Sada obriši stare podatke prijava', persCleanupDone:'Obrisano {n} starih unosa',
   mangelBtn:'Prijavi nedostatak', mangelTitle:'Prijavi nedostatak', mangelTextLabel:'Što se dogodilo?', mangelTextPh:'npr. labava podnica, nedostaje sidro …', mangelFotoBtn:'Dodaj fotografiju (preporučeno)', mangelFotoOk:'Fotografija priložena', mangelSend:'Prijavi', mangelNeedText:'Ukratko opiši.', mangelSent:'Nedostatak prijavljen – šef je obaviješten.', maengelHeading:'Otvoreni nedostaci', maengelNone:'Nema otvorenih nedostataka.', mangelDone:'Riješeno', mangelDoneBy:'riješio/la {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otvoreni nedostaci', scMaengel:'Nedostaci', nMangelT:'Novi nedostatak: {bv}', nMangelB:'{name}: {text}', sigBtn:'Potpis', sigTitle:'Potpis primatelja', sigNameLabel:'Ime primatelja', sigClear:'Ispočetka', sigSave:'Spremi potpis', sigSaved:'Potpis spremljen', sigFail:'Potpis nije spremljen – pokušaj ponovno.', sigEmpty:'Zatraži potpis.', sigDone:'Potpisao/la {name}, {ts}', sigLabel:'Potpis primatelja',
   fotosHeading:'Fotografije ({n})', fotoBtn:'Fotografija', fotoShort:'Foto', fotosEmpty:'Još nema fotografija.', fotoEyebrow:'Dokazna fotografija', fotoChooseAnlass:'Za što je fotografija?', fotoHint:'Datum, vrijeme, ime, gradilište i GPS upisuju se u sliku. Brisanje je moguće samo u prvih 5 minuta.', fotoSaving:'Fotografija se sprema …', fotoSaved:'Fotografija spremljena', fotoFail:'Fotografija nije spremljena – pokušaj ponovno.', fotoDelete:'Obriši', fotoDeleteConfirm:'Trajno obrisati fotografiju?', fotoDelFail:'Brisanje više nije moguće.', fotoHide:'Sakrij', fotoUnhide:'Ponovno prikaži', fotoHiddenBy:'sakrio/la {name}, {ts}', anl_abladen:'Istovar', anl_uebergabe:'Primopredaja', anl_vor_abbau:'Prije demontaže', anl_schaden:'Šteta', anl_vorher:'Prije', anl_nachher:'Poslije', anl_mangel:'Nedostatak',
   nameInputPh:'Tvoje ime', warnEnterName:'Upiši svoje ime.', warnLoginFail:'Pogrešno ime ili lozinka.', calLockedText:'Kalendar je vidljiv tek nakon prijave.', calLoginBtn:'Na prijavu',
@@ -1682,6 +1698,7 @@ en:{
   bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
   mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
   stockMissingLabel:'Missing:', stockLow:'Stock low',
+  ciIn:'Check in', ciOut:'Check out', ciChecking:'Checking location …', ciCheckedIn:'Checked in: {bv} since {t}', ciTeamLabel:'Who is here?', ciTooFar:'Too far from the site ({m} m). Check-in only works on site.', ciBadGps:'GPS too inaccurate (±{m} m) – wait a moment and try again.', ciNoGps:'No location – please allow location.', ciDone:'Checked in: {bv}', ciOutDone:'Checked out', ciHintTitle:'About checking in', ciHintDefault:'When checking in and out, time and location are stored to record working time per site. Only management can see this. Data is deleted 12 months after billing.', ciHintOk:'Understood', ciHintSaved:'Notice saved', ciRunning:'running', calHours:'Hours', hoursKorr:'corrected', regieTitle:'Time report', regieEmpty:'No times yet.', regieSum:'Total', regieDatum:'Date', regiePerson:'Person', regieZeit:'from–to', regieStd:'h', regieKorrBtn:'Correct', regiePrint:'Print time report', korrTitle:'Correct time', korrVon:'from', korrBis:'to', korrGrund:'Reason', korrSave:'Save', monatTitle:'Monthly summary', monatPrint:'Print', monatLief:'Deliveries', monatStunden:'Hours', abrechLabel:'Billed on', persCiTitle:'Site check-in', persCiHinweis:'Privacy notice (shown before the first check-in)', persKolonnen:'Crews: the crew leader also checks in these people', persCleanup:'Delete old check-in data now', persCleanupDone:'{n} old entries deleted',
   mangelBtn:'Report defect', mangelTitle:'Report defect', mangelTextLabel:'What is wrong?', mangelTextPh:'e.g. loose deck, anchor missing …', mangelFotoBtn:'Add photo (recommended)', mangelFotoOk:'Photo attached', mangelSend:'Report', mangelNeedText:'Please describe briefly.', mangelSent:'Defect reported – the boss has been notified.', maengelHeading:'Open defects', maengelNone:'No open defects.', mangelDone:'Done', mangelDoneBy:'done by {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Open defects', scMaengel:'Defects', nMangelT:'New defect: {bv}', nMangelB:'{name}: {text}', sigBtn:'Signature', sigTitle:'Recipient signature', sigNameLabel:'Recipient name', sigClear:'Clear', sigSave:'Save signature', sigSaved:'Signature saved', sigFail:'Signature not saved – please try again.', sigEmpty:'Please get a signature.', sigDone:'Signed by {name}, {ts}', sigLabel:'Recipient signature',
   fotosHeading:'Photos ({n})', fotoBtn:'Photo', fotoShort:'Photo', fotosEmpty:'No photos yet.', fotoEyebrow:'Evidence photo', fotoChooseAnlass:'What is the photo for?', fotoHint:'Date, time, name, site and GPS are written into the image. Deleting is only possible in the first 5 minutes.', fotoSaving:'Saving photo …', fotoSaved:'Photo saved', fotoFail:'Photo not saved – please try again.', fotoDelete:'Delete', fotoDeleteConfirm:'Delete photo permanently?', fotoDelFail:'Deleting is no longer possible.', fotoHide:'Hide', fotoUnhide:'Show again', fotoHiddenBy:'hidden by {name} on {ts}', anl_abladen:'Unloading', anl_uebergabe:'Handover', anl_vor_abbau:'Before dismantling', anl_schaden:'Damage', anl_vorher:'Before', anl_nachher:'After', anl_mangel:'Defect',
   nameInputPh:'Your name', warnEnterName:'Please type your name.', warnLoginFail:'Wrong name or password.', calLockedText:'The calendar is only visible after signing in.', calLoginBtn:'Go to sign-in',
@@ -2057,7 +2074,7 @@ function roleLabel(role){ return t('roleLabel'+role.charAt(0).toUpperCase()+role
 
 const state = {
   loggedIn:false, name:'', role:null,
-  cart:{}, orders:[], orderCounter:1001, fotos:[], fotoCounter:1, fotoDraft:null, fotoView:null, fotoBusy:false, maengel:[], mangelCounter:1, mangelDraft:null, sigDraft:null, inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
+  cart:{}, orders:[], orderCounter:1001, fotos:[], fotoCounter:1, fotoDraft:null, fotoView:null, fotoBusy:false, maengel:[], mangelCounter:1, mangelDraft:null, sigDraft:null, zeit:[], kolonnen:{}, ciMsg:'', ciBusy:false, ciSel:null, ciHintOpen:false, korrDraft:null, ciHinweis:'', inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
   employees:[], empCounter:1, authName:null, pushSubs:[], pushMsg:'', persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
@@ -2124,7 +2141,7 @@ function same(a, b){ return stableStr(a)===stableStr(b); }
 
 function stateToValue(){
   return clone({orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
-    minStock:state.minStock, defect:state.defect, fotos:state.fotos, fotoCounter:state.fotoCounter, maengel:state.maengel, mangelCounter:state.mangelCounter,
+    minStock:state.minStock, defect:state.defect, fotos:state.fotos, fotoCounter:state.fotoCounter, maengel:state.maengel, mangelCounter:state.mangelCounter, ciHinweis:state.ciHinweis || null,
     projects:state.projects, projektCounter:state.projektCounter,
     calendarEntries:state.calendarEntries, calCounter:state.calCounter,
     driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager, chefPw:state.chefPw,
@@ -2144,6 +2161,7 @@ function applyValue(v){
   state.fotoCounter = v.fotoCounter || 1;
   state.maengel = v.maengel || [];
   state.mangelCounter = v.mangelCounter || 1;
+  state.ciHinweis = v.ciHinweis || '';
   state.defect = v.defect || {};
   state.projects = v.projects || [];
   state.projektCounter = v.projektCounter || 101;
@@ -2380,6 +2398,7 @@ async function loadShared(){
   try{
     await sync();
     if(state.loggedIn && state.role==='chef') await loadPositions();
+    if(state.loggedIn && (state.role==='chef' || state.role==='baustelle')){ await loadKolonnen(); await loadZeit(); }
     refreshPlanUrls();
   }catch(e){
     console.error('Laden fehlgeschlagen', e);
@@ -2844,6 +2863,7 @@ function catalogHTML(){
   return `<h2 class="view-title role-title">${t('catalogTitle')}</h2>
   <p class="view-sub hide-phone">${t('catalogSub')}</p>
   <div class="catalog-col">
+  ${ciCardHTML()}
   ${aktive.length? `<div class="bv-line">
     <label for="projektSelect">${t('projektLabel')}</label>
     <select id="projektSelect">
@@ -3824,6 +3844,183 @@ async function appendProtected(key, entry){
     return !error && data!==false;
   }catch(e){ return false; }
 }
+// ---- Zeiterfassung: Einchecken / Stunden / Regiebericht -------------------------
+// Ein-/Auschecken nur in GPS-Nähe zum BV (≤ CI_RADIUS_M, Genauigkeit ≤ CI_MAX_ACC).
+// Kolonnenführer checkt sein Team mit (Kolonnen setzt nur der Chef, geschützte Zeile).
+// Stunden = von–bis (oder Chef-Korrektur), auf 0,25 h gerundet; sehen nur Chef + man selbst.
+const CI_RADIUS_M = 150, CI_MAX_ACC = 100;
+const CI_HINT_KEY = 'geruest-ci-ok-';
+async function loadZeit(){
+  const rows = await loadProtected('zeit:');
+  state.zeit = rows.flatMap(r=>r.entries.map(e=>({...e, _key:r.key})));
+}
+async function loadKolonnen(){
+  try{ const {data, error} = await supabaseClient.rpc('kolonne_get', {}); if(!error && data) state.kolonnen = data; }catch(e){}
+}
+async function setKolonne(name, members){
+  try{
+    const {data, error} = await supabaseClient.rpc('kolonne_set', {p_name: name, p_members: members});
+    if(error || data===false) return false;
+    await loadKolonnen(); return true;
+  }catch(e){ return false; }
+}
+function ciTeam(){ return [state.name, ...((state.kolonnen||{})[state.name]||[]).filter(n=>n!==state.name)]; }
+function nearestProject(pos){
+  let best = null;
+  state.projects.filter(p=>p.aktiv && p.coords).forEach(p=>{ const d = distM([pos.lat, pos.lon], [p.coords.lat, p.coords.lon]); if(!best || d < best.dist) best = {p, dist:d}; });
+  return best;
+}
+function hoursOf(c){
+  const a = (c.korr && c.korr.in) || c.in, b = (c.korr && c.korr.out) || c.out;
+  if(!a || !b) return null;
+  return Math.round(((Date.parse(b) - Date.parse(a)) / 3600000) * 4) / 4;
+}
+function fmtH(h){ return h==null ? '–' : h.toLocaleString(LOCALES[state.lang]||'de-DE', {minimumFractionDigits:1, maximumFractionDigits:2}); }
+function hhmm(iso){ return iso ? new Date(iso).toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}) : '–'; }
+function isoDay(iso){ const d = new Date(iso); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function zeitKey(d){ d = d || new Date(); return `zeit:${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+async function checkIn(persons, projekt, pos){
+  const key = zeitKey(), now = new Date().toISOString();
+  let ok = 0;
+  for(const [i, person] of persons.entries()){
+    if(state.zeit.some(e=>e.person===person && !e.out)) continue;
+    if(await appendProtected(key, {id:`${person}-${Date.now()}-${i}`, person, projekt, in: now, inPos: pos? {lat:pos.lat, lon:pos.lon, acc:pos.acc} : null, by: state.name})) ok++;
+  }
+  await loadZeit();
+  return ok;
+}
+async function checkOut(entries, pos){
+  const now = new Date().toISOString();
+  for(const e of entries) await appendProtected(e._key, {id:e.id, person:e.person, out: now, outPos: pos? {lat:pos.lat, lon:pos.lon, acc:pos.acc} : null});
+  await loadZeit();
+}
+async function korrigiereZeit(e, k){
+  const ok = await appendProtected(e._key, {id:e.id, person:e.person, korr:{in:k.in, out:k.out, grund:k.grund||'', by:state.name, ts:nowStr()}});
+  await loadZeit();
+  return ok;
+}
+function ciOpenEntries(){ const team = ciTeam(); return state.zeit.filter(e=>!e.out && team.includes(e.person)); }
+async function doCheckIn(){
+  state.ciBusy = true; state.ciMsg = ''; render();
+  try{
+    const pos = await currentPos(true);
+    if(!pos){ state.ciMsg = t('ciNoGps'); return; }
+    if(pos.acc && pos.acc > CI_MAX_ACC){ state.ciMsg = t('ciBadGps', {m: pos.acc}); return; }
+    const np = nearestProject(pos);
+    if(!np || np.dist > CI_RADIUS_M){ state.ciMsg = t('ciTooFar', {m: np ? Math.round(np.dist) : '?'}); return; }
+    const sel = (state.ciSel || ciTeam()).filter(n=>ciTeam().includes(n));
+    await checkIn(sel.length ? sel : [state.name], np.p.id, pos);
+    state.ciSel = null;
+    showToast(t('ciDone', {bv:'BV '+np.p.id+' '+np.p.name}));
+  } finally { state.ciBusy = false; render(); }
+}
+async function doCheckOut(){
+  state.ciBusy = true; render();
+  try{ const pos = await currentPos(); await checkOut(ciOpenEntries(), pos); showToast(t('ciOutDone')); }
+  finally { state.ciBusy = false; render(); }
+}
+function ciCardHTML(){
+  const open = ciOpenEntries(), team = ciTeam(), sel = state.ciSel || team;
+  if(open.length){
+    const p = state.projects.find(x=>x.id===open[0].projekt);
+    return `<div class="ci-bar ci-on">
+      <div class="ci-line"><b>${t('ciCheckedIn', {bv: p ? 'BV '+p.id : 'BV '+open[0].projekt, t: hhmm(open[0].in)})}</b>${open.length>1? `<div class="order-time">${open.map(e=>escapeHtml(e.person)).join(', ')}</div>`:''}</div>
+      <button class="mini-btn ci-btn" data-action="ci-out" ${state.ciBusy?'disabled':''}>${t('ciOut')}</button>
+    </div>`;
+  }
+  return `<div class="ci-wrap">
+    ${team.length>1? `<div class="ziel-chips ci-team" aria-label="${t('ciTeamLabel')}">${team.map(n=>`<button class="ziel-chip ${sel.includes(n)?'active':''}" data-action="ci-sel" data-name="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('')}</div>`:''}
+    <button class="mini-btn ci-btn ci-in-btn" data-action="ci-in" ${state.ciBusy?'disabled':''}>⏱ ${state.ciBusy? t('ciChecking') : t('ciIn')}</button>
+    ${state.ciMsg? `<div class="warn">${state.ciMsg}</div>`:''}
+  </div>`;
+}
+function ciHintHTML(){
+  return `<div class="overlay" data-action="ci-hint-close-bg"><div class="drawer" role="dialog" aria-modal="true" aria-label="${t('ciHintTitle')}">
+    <div class="review-head"><h3>${t('ciHintTitle')}</h3></div>
+    <div class="ci-hint-text">${escapeHtml(state.ciHinweis || t('ciHintDefault'))}</div>
+    <button class="advance-btn" data-action="ci-hint-ok">${t('ciHintOk')}</button>
+  </div></div>`;
+}
+function regieRows(pid, month){
+  return state.zeit.filter(e=>e.projekt===pid && (!month || isoDay(e.in).slice(0,7)===month)).sort((a,b)=>Date.parse(a.in)-Date.parse(b.in));
+}
+function regieTableHTML(pid, forPrint, month){
+  const rows = regieRows(pid, month);
+  if(!rows.length) return `<div class="empty-state" style="padding:14px 10px;">${t('regieEmpty')}</div>`;
+  const sum = rows.reduce((a,e)=>a+(hoursOf(e)||0), 0);
+  return `<div class="tbl-wrap"><table class="${forPrint?'ls-items':'order-table mat-table'}"><thead><tr><th>${t('regieDatum')}</th><th>${t('regiePerson')}</th><th>${t('regieZeit')}</th><th class="num">${t('regieStd')}</th>${forPrint?'':'<th></th>'}</tr></thead><tbody>
+    ${rows.map(e=>`<tr><td>${formatDateDE(isoDay(e.in))}</td><td>${escapeHtml(e.person)}</td><td>${hhmm((e.korr&&e.korr.in)||e.in)}–${e.out||(e.korr&&e.korr.out)? hhmm((e.korr&&e.korr.out)||e.out) : t('ciRunning')}</td><td class="num">${fmtH(hoursOf(e))}${e.korr? ` <span class="korr-tag">${t('hoursKorr')}</span>`:''}</td>${forPrint?'':`<td><button class="mini-btn" data-action="korr-open" data-id="${escapeHtml(e.id)}">${t('regieKorrBtn')}</button></td>`}</tr>`).join('')}
+    </tbody><tfoot><tr><td colspan="3"><b>${t('regieSum')}</b></td><td class="num"><b>${fmtH(sum)}</b></td>${forPrint?'':'<td></td>'}</tr></tfoot></table></div>`;
+}
+function monthsOf(pid){
+  const set = new Set(regieRows(pid).map(e=>isoDay(e.in).slice(0,7)));
+  state.orders.filter(o=>o.projekt===pid).forEach(o=>{ const d = orderDate(o); if(d) set.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`); });
+  set.add(new Date().toISOString().slice(0,7));
+  return [...set].sort().reverse();
+}
+function regieHTML(p){
+  const months = monthsOf(p.id);
+  return `<h3 class="section-h" id="sec-regie">${t('regieTitle')}</h3>
+    ${regieTableHTML(p.id, false)}
+    <div class="btn-row-secondary"><button class="mini-btn" data-action="regie-print" data-id="${p.id}">${t('regiePrint')}</button></div>
+    <div class="fertig-box"><label for="monatSel-${p.id}">${t('monatTitle')}</label>
+      <select id="monatSel-${p.id}">${months.map(m=>`<option value="${m}">${m.slice(5)}/${m.slice(0,4)}</option>`).join('')}</select>
+      <button class="mini-btn" data-action="monat-print" data-id="${p.id}">${t('monatPrint')}</button></div>
+    <div class="fertig-box"><label for="abrechDate-${p.id}">${t('abrechLabel')}</label><input type="date" id="abrechDate-${p.id}" data-projekt="${p.id}" value="${p.abgerechnetAm||''}"></div>`;
+}
+function printRegie(pid){
+  const p = state.projects.find(x=>x.id===pid); if(!p) return;
+  document.getElementById('printArea').innerHTML = `<img class="ls-logo" src="logo.png" alt="SGM"><h1>${t('regieTitle')} – BV ${p.id} ${p.name}</h1><p>${p.adresse||''}</p>${regieTableHTML(pid, true)}`;
+  window.print();
+}
+function printMonat(pid, month){
+  const p = state.projects.find(x=>x.id===pid); if(!p || !month) return;
+  const lief = state.orders.filter(o=>o.projekt===pid && o.status==='Geliefert' && (()=>{ const d = orderDate(o); return d && `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`===month; })());
+  const perPerson = {}; regieRows(pid, month).forEach(e=>{ perPerson[e.person] = (perPerson[e.person]||0) + (hoursOf(e)||0); });
+  document.getElementById('printArea').innerHTML = `<img class="ls-logo" src="logo.png" alt="SGM"><h1>${t('monatTitle')} ${month.slice(5)}/${month.slice(0,4)} – BV ${p.id} ${p.name}</h1><p>${p.adresse||''}</p>
+    <h3>${t('monatLief')}</h3>${lief.length? `<table class="ls-items"><tbody>${lief.map(o=>`<tr><td>#${o.id}</td><td>${(o.time||'').split(',')[0]}</td><td>${o.items.length} ${t('matTeil')}</td><td class="ls-menge">${weightText(o.items)||''}</td></tr>`).join('')}</tbody></table>` : '<p>–</p>'}
+    <h3>${t('monatStunden')}</h3>${Object.keys(perPerson).length? `<table class="ls-items"><tbody>${Object.entries(perPerson).map(([n,h])=>`<tr><td>${escapeHtml(n)}</td><td class="ls-menge">${fmtH(h)} h</td></tr>`).join('')}<tr><td><b>${t('regieSum')}</b></td><td class="ls-menge"><b>${fmtH(Object.values(perPerson).reduce((a,b)=>a+b,0))} h</b></td></tr></tbody></table>` : '<p>–</p>'}
+    <h3>${t('matTitle')}</h3>${materialTableHTML(pid, true)}`;
+  window.print();
+}
+function korrHTML(){
+  const d = state.korrDraft, e = state.zeit.find(x=>x.id===d.id); if(!e) return '';
+  const tv = iso => iso ? new Date(iso).toTimeString().slice(0,5) : '';
+  return `<div class="overlay" data-action="korr-close-bg"><div class="drawer" role="dialog" aria-modal="true" aria-label="${t('korrTitle')}">
+    <div class="review-head"><div class="eyebrow">${escapeHtml(e.person)} · ${formatDateDE(isoDay(e.in))}</div><h3>${t('korrTitle')}</h3></div>
+    <div class="fertig-box"><label for="korrVon">${t('korrVon')}</label><input type="time" id="korrVon" value="${tv((e.korr&&e.korr.in)||e.in)}">
+      <label for="korrBis">${t('korrBis')}</label><input type="time" id="korrBis" value="${tv((e.korr&&e.korr.out)||e.out)}"></div>
+    <div class="field" style="margin-top:10px;"><label for="korrGrund">${t('korrGrund')}</label><input id="korrGrund" type="text" value="${escapeHtml((e.korr&&e.korr.grund)||'')}"></div>
+    <button class="advance-btn" data-action="korr-save">${t('korrSave')}</button>
+    <button class="mini-btn" data-action="korr-close" style="margin-top:8px;width:100%;">${t('closeBtn')}</button>
+  </div></div>`;
+}
+async function saveKorr(){
+  const d = state.korrDraft, e = state.zeit.find(x=>x.id===d.id); if(!e) return;
+  const day = isoDay(e.in), v = document.getElementById('korrVon').value, b = document.getElementById('korrBis').value;
+  const toIso = hm => hm ? new Date(`${day}T${hm}:00`).toISOString() : null;
+  await korrigiereZeit(e, {in: toIso(v) || e.in, out: toIso(b) || e.out, grund: document.getElementById('korrGrund').value.trim()});
+  state.korrDraft = null; render();
+}
+function calHoursHTML(dt){
+  if(state.role!=='chef' || !state.authed) return '';
+  const per = {};
+  state.zeit.filter(e=>isoDay(e.in)===dt).forEach(e=>{ const r = per[e.person] || (per[e.person] = {h:0, korr:false}); r.h += hoursOf(e)||0; r.korr = r.korr || !!e.korr; });
+  const names = Object.keys(per).sort();
+  if(!names.length) return '';
+  return `<div class="order-card cal-hours"><b>${t('calHours')}:</b> ${names.map(n=>`${escapeHtml(n)} ${fmtH(per[n].h)} h${per[n].korr? ' ('+t('hoursKorr')+')':''}`).join(' · ')}</div>`;
+}
+function persZeitHTML(){
+  const emps = [...state.employees].sort((a,b)=>a.name.localeCompare(b.name));
+  const leaders = emps.filter(e=>(e.roles||[]).includes('baustelle'));
+  return `<h3 class="section-h">${t('persCiTitle')}</h3>
+  <div class="order-card">
+    <div class="field"><label for="ciHinweisText">${t('persCiHinweis')}</label><textarea id="ciHinweisText" rows="4" placeholder="${escapeHtml(t('ciHintDefault'))}">${escapeHtml(state.ciHinweis||'')}</textarea></div>
+    <div class="pick-hint">${t('persKolonnen')}</div>
+    ${leaders.map(l=>{ const mem = (state.kolonnen||{})[l.name] || []; return `<div class="kol-row"><b>${escapeHtml(l.name)}</b><div class="ziel-chips">${emps.filter(e=>e.name!==l.name).map(e=>`<button class="ziel-chip ${mem.includes(e.name)?'active':''}" data-action="kol-toggle" data-leader="${escapeHtml(l.name)}" data-member="${escapeHtml(e.name)}">${escapeHtml(e.name)}</button>`).join('')}</div></div>`; }).join('')}
+    <button class="mini-btn" data-action="zeit-cleanup" style="margin-top:12px;">${t('persCleanup')}</button>
+  </div>`;
+}
 // ---- Beweis-Fotos -----------------------------------------------------------
 // Datei aus der Kamera -> verkleinert (≤ 1600 px), Stempel unten (Datum, Uhrzeit,
 // Name, BV, Anlass, GPS) -> Bucket 'fotos' -> Eintrag in state.fotos.
@@ -3854,13 +4051,15 @@ async function stampImage(file, lines){
   if(!blob) throw new Error('Bild nicht erzeugt');
   return {blob, w, h};
 }
-function currentPos(){
+// fresh=true (Einchecken): nur ein frisch gemessener Standort zählt, kein
+// zwischengespeicherter und kein letzter bekannter (sonst "zu weit weg" trotz vor Ort).
+function currentPos(fresh){
   return new Promise(res=>{
     let done = false; const fin = v=>{ if(!done){ done = true; res(v); } };
-    const last = state.lastGPS ? {lat:state.lastGPS.lat, lon:state.lastGPS.lon, acc:state.lastGPS.acc||null} : null;
+    const last = !fresh && state.lastGPS ? {lat:state.lastGPS.lat, lon:state.lastGPS.lon, acc:state.lastGPS.acc||null} : null;
     setTimeout(()=>fin(last), 4000);
     if(!navigator.geolocation) return fin(last);
-    try{ navigator.geolocation.getCurrentPosition(p=>fin({lat:p.coords.latitude, lon:p.coords.longitude, acc:Math.round(p.coords.accuracy)}), ()=>fin(last), {enableHighAccuracy:true, timeout:3500, maximumAge:60000}); }
+    try{ navigator.geolocation.getCurrentPosition(p=>fin({lat:p.coords.latitude, lon:p.coords.longitude, acc:Math.round(p.coords.accuracy)}), ()=>fin(last), {enableHighAccuracy:true, timeout:3500, maximumAge: fresh ? 0 : 60000}); }
     catch(e){ fin(last); }
   });
 }
@@ -4265,6 +4464,7 @@ function projektDetailHTML(p){
       ${materialTableHTML(p.id, false)}
       <button class="mini-btn" style="margin-top:8px;" data-action="material-print" data-id="${p.id}">${t('matPrint')}</button>
       ${maengelSectionHTML(p.id)}
+      ${regieHTML(p)}
       ${p.aktiv? `<button class="pu-open-btn" data-action="pu-open" data-projekt="${p.id}">${t('puBvAdd')}</button>`:''}
     </div>
     <div>
@@ -4406,7 +4606,8 @@ function personalHTML(){
       <button class="refresh-btn" data-action="new-pin-done">${t('persNewPinDone')}</button>
     </div>` : `<button class="refresh-btn new-pin-btn" data-action="emp-new-pin" data-id="${e.id}" ${state.persBusy?'disabled':''}>${t('persNewPinBtn')}</button>`}
     <button class="refresh-btn" data-action="emp-remove" data-id="${e.id}" style="color:var(--red);border-color:var(--red);">${t('persRemoveBtn')}</button>
-  </div>`).join('')+`</div>` : `<div class="empty-state">${t('persEmpty')}</div>`}`;
+  </div>`).join('')+`</div>` : `<div class="empty-state">${t('persEmpty')}</div>`}
+  ${persZeitHTML()}`;
 }
 
 function fahrerProjekteHTML(){
@@ -4925,6 +5126,7 @@ function calendarPageHTML(){
   const grouped = {};
   entries.forEach(e=>{ (grouped[e.date] = grouped[e.date]||[]).push(e); });
   const dates = Object.keys(grouped).sort();
+  const allDates = state.role==='chef' ? [...new Set([...dates, ...state.zeit.map(e=>isoDay(e.in))])].sort() : dates;
   const d = state.calDraft || {};
 
   return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
@@ -4956,9 +5158,10 @@ function calendarPageHTML(){
       <button class="refresh-btn" data-action="cal-lock" style="margin-bottom:14px;">${t('calLockBtn')}</button>`
       : state.authed ? `<button class="loc-btn" data-action="cal-unlock-ask" style="margin-bottom:14px;">${t('calEditPwBtn')}</button>` : `<div class="order-time" style="margin:0 0 14px 0;">🔒 ${t('calLoginFirst')}</div>`}
 
-      ${dates.length? dates.map(dt=>`
+      ${allDates.length? allDates.map(dt=>`
         <h3 style="margin-top:18px;font-size:14px;">${formatDateDE(dt)}</h3>
-        ${grouped[dt].map(e=>`
+        ${calHoursHTML(dt)}
+        ${(grouped[dt]||[]).map(e=>`
           <div class="order-card">
             <div class="order-head">
               <div><div class="no">${e.person}</div><div class="site">${e.ort}</div></div>
@@ -5086,6 +5289,7 @@ const SYM_ICONS = {
   'package-open':'<path d="M12 22v-9"/><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/>',
   'clipboard-list':'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
   'file-text':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  'clock':'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
   'camera':'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
   'trash-2':'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
   'house':'<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
@@ -5104,7 +5308,7 @@ const EMO = {
   '✏':'pencil', '🔄':'refresh-cw', '↻':'refresh-cw', '🖨':'printer', '👍':'circle-check', '🔁':'repeat',
   '⬆':'upload', '⭐':'star', '🏗':'building-2', '🏁':'flag', '🔔':'bell', '📐':'drafting-compass',
   '⚖':'weight', '🌐':'globe', '✓':'check', '✗':'x', '📦':'package', '📋':'clipboard-list', '📄':'file-text',
-  '🗑':'trash-2', '📷':'camera', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu',
+  '🗑':'trash-2', '📷':'camera', '⏱':'clock', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu',
 };
 const EMO_RE = new RegExp('(' + Object.keys(EMO).join('|') + ')\\uFE0F?', 'gu');
 function emoIcon(ch){ const v = EMO[ch]; return Array.isArray(v) ? ic(v[0], v[1]) : ic(v); }
@@ -5196,6 +5400,8 @@ function renderView(){
     ${state.fotoView ? fotoViewHTML() : ''}
     ${state.mangelDraft ? mangelHTML() : ''}
     ${state.sigDraft ? sigHTML() : ''}
+    ${state.ciHintOpen ? ciHintHTML() : ''}
+    ${state.korrDraft ? korrHTML() : ''}
     ${state.numpad ? numpadHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
@@ -5408,6 +5614,21 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     numpadReturn = {id:el.dataset.id, i:[...document.querySelectorAll('.qty-num')].filter(x=>x.dataset.numfor===el.dataset.id).indexOf(el)};
     state.numpad = {id:el.dataset.id, val:''}; render();
   }
+  if(action==='ci-in'){
+    if(!lsGet(CI_HINT_KEY + state.name)){ state.ciHintOpen = true; render(); return; }
+    await doCheckIn();
+  }
+  if(action==='ci-hint-ok'){ lsSet(CI_HINT_KEY + state.name, '1'); state.ciHintOpen = false; await doCheckIn(); }
+  if(action==='ci-hint-close-bg' && e.target===el){ state.ciHintOpen = false; render(); }
+  if(action==='ci-out'){ await doCheckOut(); }
+  if(action==='ci-sel'){ const n = el.dataset.name, cur = state.ciSel || ciTeam(); state.ciSel = cur.includes(n) ? cur.filter(x=>x!==n) : [...cur, n]; render(); }
+  if(action==='korr-open'){ state.korrDraft = {id: el.dataset.id}; render(); }
+  if(action==='korr-close' || (action==='korr-close-bg' && e.target===el)){ state.korrDraft = null; render(); }
+  if(action==='korr-save'){ await saveKorr(); }
+  if(action==='regie-print'){ printRegie(parseInt(el.dataset.id,10)); }
+  if(action==='monat-print'){ const sel = document.getElementById('monatSel-'+el.dataset.id); printMonat(parseInt(el.dataset.id,10), sel && sel.value); }
+  if(action==='kol-toggle'){ const l = el.dataset.leader, m = el.dataset.member, cur = (state.kolonnen||{})[l] || []; const ok = await setKolonne(l, cur.includes(m) ? cur.filter(x=>x!==m) : [...cur, m]); if(!ok) showToast(t('warnLoginNet')); render(); }
+  if(action==='zeit-cleanup'){ try{ const {data} = await supabaseClient.rpc('zeit_cleanup', {}); showToast(t('persCleanupDone', {n: data||0})); }catch(e){} await loadZeit(); render(); }
   if(action==='mangel-open'){ state.mangelDraft = {projekt: parseInt(el.dataset.projekt,10), text:'', fotoId:null, warn:''}; render(); }
   if(action==='mangel-close' || (action==='mangel-close-bg' && e.target===el)){ state.mangelDraft = null; render(); }
   if(action==='mangel-send'){ await sendMangel(); }
@@ -5928,6 +6149,11 @@ function fetchAddrSuggestions(q){
 // Fertig-Datum eines Bauvorhabens (Chef) -- 'change' feuert, sobald im
 // Datumsfeld ein Tag gewählt oder das Feld geleert wurde.
 document.getElementById('app').addEventListener('change', async (e)=>{
+  if(e.target.id && e.target.id.startsWith('abrechDate-')){
+    const p = state.projects.find(x=>String(x.id)===e.target.dataset.projekt);
+    if(p){ p.abgerechnetAm = e.target.value || null; await saveShared(); render(); }
+  }
+  if(e.target.id==='ciHinweisText'){ state.ciHinweis = e.target.value.trim(); await saveShared(); showToast(t('ciHintSaved')); }
   if(e.target.id && e.target.id.startsWith('fertigDate-')){
     const p = state.projects.find(x=>String(x.id)===e.target.dataset.projekt);
     if(!p) return;
@@ -6097,7 +6323,7 @@ document.addEventListener('keydown', (e)=>{
 });
 
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.fotoDraft || state.fotoView || state.mangelDraft || state.sigDraft || state.puDraft || state.myPwOpen) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.fotoDraft || state.fotoView || state.mangelDraft || state.sigDraft || state.ciHintOpen || state.korrDraft || state.puDraft || state.myPwOpen) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
