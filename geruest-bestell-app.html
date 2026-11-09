@@ -2102,7 +2102,8 @@ function applyValue(v){
 }
 
 // Feldweise: was lokal (gegenüber base) geändert wurde, gewinnt; sonst Server.
-function mergeRecord(b, l, r){
+// isOrder: Bestellungen – Status läuft nie rückwärts, Packliste je Zeile.
+function mergeRecord(b, l, r, isOrder){
   const out = {...r};
   new Set([...Object.keys(b||{}), ...Object.keys(l||{})]).forEach(f=>{
     if(f==='steps'){ // Status-Zeiten: je Status zusammenführen (zwei Geräte ergänzen verschiedene Zeiten)
@@ -2112,12 +2113,29 @@ function mergeRecord(b, l, r){
       Object.keys(ls).forEach(k=>{ if(!same(ls[k], bs[k]) && !(m[k] && !same(m[k], bs[k]) && String(m[k])>String(ls[k]))) m[k] = ls[k]; });
       out.steps = m; return;
     }
+    if(isOrder && f==='pick'){ // Packliste: je Zeile zusammenführen (zwei Geräte haken verschiedene Zeilen ab)
+      const bp = (b||{}).pick||{}, lp = (l||{}).pick||{}, rp = (r||{}).pick||{};
+      if(same(lp, bp)) return;
+      const m = {...rp};
+      new Set([...Object.keys(bp), ...Object.keys(lp)]).forEach(k=>{
+        if(same(lp[k], bp[k])) return;
+        if(lp[k]===undefined) delete m[k]; else m[k] = clone(lp[k]);
+      });
+      out.pick = m; return;
+    }
     if(!same((l||{})[f], (b||{})[f])){ if(l[f]===undefined) delete out[f]; else out[f] = clone(l[f]); }
   });
+  if(isOrder){
+    // Status nie rückwärts: der weiter fortgeschrittene Stand (lokal/Server) gilt
+    const ri = STATUS_FLOW.indexOf((r||{}).status), oi = STATUS_FLOW.indexOf(out.status);
+    if(ri > oi){ out.status = r.status; if(r.items) out.items = clone(r.items); }
+    // Packliste nur bis „In Bearbeitung“ – danach ist sie ausgewertet
+    if(STATUS_FLOW.indexOf(out.status) > STATUS_FLOW.indexOf('In Bearbeitung')) delete out.pick;
+  }
   return out;
 }
 // Listen mit Schlüssel (id bzw. endpoint): Hinzufügen/Löschen/Ändern je Eintrag.
-function mergeList(b, l, r, key, counterInfo){
+function mergeList(b, l, r, key, counterInfo, isOrder){
   b = b||[]; l = l||[]; r = r||[];
   let changes = 0;
   const bm = new Map(b.map(x=>[x[key], x])), lm = new Map(l.map(x=>[x[key], x]));
@@ -2130,7 +2148,7 @@ function mergeList(b, l, r, key, counterInfo){
     if(bx && !same(bx, x)){
       changes++;
       const i = out.findIndex(y=>y[key]===x[key]);
-      if(i>=0) out[i] = mergeRecord(bx, x, out[i]);
+      if(i>=0) out[i] = mergeRecord(bx, x, out[i], isOrder);
       else out.push(clone(x));   // auf dem Server inzwischen gelöscht -> lokale Änderung behalten
     }
   });
@@ -2174,7 +2192,7 @@ function merge3(base, local, remote){
   const handled = new Set(['rev']);
   Object.entries(RECORD_ARRAYS).forEach(([k, ck])=>{
     handled.add(k); handled.add(ck);
-    const m = mergeList(base[k], local[k], remote[k], 'id', true);
+    const m = mergeList(base[k], local[k], remote[k], 'id', true, k==='orders');
     out[k] = m.out; changes += m.changes;
     const maxId = Math.max(0, ...m.out.map(x=>typeof x.id==='number'? x.id : 0));
     // Zähler laufen nur mit den Einträgen mit (neuer Eintrag = Änderung),
