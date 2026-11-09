@@ -44,8 +44,10 @@
        Geliefert weiß/#15803D 5,02 (#16A34A hätte nur 3,30). */
     --tap:48px; --fs-body:15px; --fs-small:13px;
   }
+  /* Hell/Dunkel: Standard wie Handy-Einstellung; in Einstellungen pro Gerät
+     fest wählbar (html[data-theme="light"|"dark"], applyTheme()). */
   @media (prefers-color-scheme: dark){
-    :root{
+    :root:not([data-theme="light"]){
       --bg:#0C161F; --card:#122130; --ink:#EAF1F6; --muted:#A9B8C4; --line:#233242; --line-strong:#324457;
       --accent:#5CAEEA; --accent-dark:#8FCBFA; --accent-soft:rgba(92,174,234,0.14);
       --surface-2:#18262F; --icon-tile:rgba(255,238,0,0.12); --zebra:#0F1D29;
@@ -55,6 +57,16 @@
       --shadow:0 1px 2px rgba(0,0,0,0.35),0 10px 26px rgba(0,0,0,0.35);
     }
   }
+  :root[data-theme="dark"]{
+      --bg:#0C161F; --card:#122130; --ink:#EAF1F6; --muted:#A9B8C4; --line:#233242; --line-strong:#324457;
+      --accent:#5CAEEA; --accent-dark:#8FCBFA; --accent-soft:rgba(92,174,234,0.14);
+      --surface-2:#18262F; --icon-tile:rgba(255,238,0,0.12); --zebra:#0F1D29;
+      --disabled-bg:#233242; --disabled-fg:#5B6B79;
+      --red:#F87171; --green:#4ADE80;
+      --dp-gruen:#BFDDB0; --dp-blau:#AECBE6; --dp-rosa:#E9BFE3; --dp-gelb:#F0E1A0; --dp-grau:#C3C9D0; --dp-rot:#B71C1C; --dp-dblau:#174C8C; --dp-extra:#C3C9D0;
+      --shadow:0 1px 2px rgba(0,0,0,0.35),0 10px 26px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="dark"]{color-scheme:dark;} :root[data-theme="light"]{color-scheme:light;}
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:var(--fs-body);}
   h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
@@ -69,6 +81,8 @@
   .top-nav-logo{height:28px;width:auto;border-radius:6px;}
   .view-back{display:inline-flex;align-items:center;gap:4px;min-height:var(--tap);padding:0 18px 0 12px;margin:0 0 10px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:16px;font-weight:700;cursor:pointer;}
   .seg-control.dp-mode{margin:4px 0 12px 0;}
+  .seg-control.set-theme{margin:0;}
+  .set-langs{display:flex;flex-wrap:wrap;gap:8px;}
   .view-back .vb-arrow{font-size:22px;line-height:1;margin-top:-2px;}
   .menu-wrap{position:relative;}
   .menu-btn{background:rgba(255,255,255,0.18);border:none;color:#fff;width:38px;height:38px;border-radius:10px;font-size:19px;cursor:pointer;line-height:1;}
@@ -830,6 +844,12 @@ const SESSION_KEY = 'geruest-session';
 // Speicher-Schlüssel: in der Demo mit Vorsilbe 'demo-', damit echte
 // App-Daten im selben Browser nie gelesen oder überschrieben werden.
 function skey(k){ return window.DEMO_MODE===true ? 'demo-'+k : k; }
+// Darstellung pro Gerät: 'auto' (wie Handy), 'light', 'dark' (Einstellungen)
+const THEME_KEY = 'geruest-theme';
+function getTheme(){ try{ const v = localStorage.getItem(skey(THEME_KEY)); return v==='light'||v==='dark' ? v : 'auto'; }catch(e){ return 'auto'; } }
+function applyTheme(){ const v = getTheme(); if(v==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', v); }
+function setTheme(v){ try{ if(v==='light'||v==='dark') localStorage.setItem(skey(THEME_KEY), v); else localStorage.removeItem(skey(THEME_KEY)); }catch(e){} applyTheme(); }
+applyTheme();
 function saveSession(){
   try{ localStorage.setItem(skey(SESSION_KEY), JSON.stringify({name:state.name, role:state.role})); }catch(e){}
 }
@@ -960,6 +980,7 @@ de:{
   bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
   mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
   stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  menuSettings:'Einstellungen', setTitle:'Einstellungen', setTheme:'Darstellung', setTheme_auto:'Automatisch', setTheme_light:'Hell', setTheme_dark:'Dunkel', setThemeHint:'Automatisch = wie am Handy eingestellt. Gilt nur für dieses Gerät.', setLang:'Sprache', setLagerOnlyChef:'Ändern kann nur der Chef.', lagerMissingHint:'Der Lager-Standort fehlt noch. Bitte unter Einstellungen eintragen.',
   pvNrLabel:'BV-Nummer', pvNrPh:'leer = automatisch ({n})', pvNrTaken:'Die Nummer BV {nr} gibt es schon.',
   dpModePlan:'Geplant', dpModeIst:'Gefahren', dpPlanTitle:'Wer fährt wann wohin?', dpPlanSub:'Geplante Fahrten und LKW-Termine. Eintragen und ändern nur durch den Chef.', dpNoDriverRow:'Noch kein Fahrer', dpKind_termin:'LKW-Termin', dpKind_geplant:'Geplante Lieferung', lkwFahrerLabel:'Fahrer', lkwFahrerOpen:'Noch offen', lkwNoAccess:'Der LKW-Kalender ist nur für Chef und Fahrer.',
   ciInTeam:'Einchecken ({n} Pers.)', ciWho:'Wer?',
@@ -1167,6 +1188,7 @@ pl:{
   bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
   mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
   stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  menuSettings:'Ustawienia', setTitle:'Ustawienia', setTheme:'Wygląd', setTheme_auto:'Automatycznie', setTheme_light:'Jasny', setTheme_dark:'Ciemny', setThemeHint:'Automatycznie = jak w telefonie. Dotyczy tylko tego urządzenia.', setLang:'Język', setLagerOnlyChef:'Zmienić może tylko szef.', lagerMissingHint:'Brakuje lokalizacji magazynu. Wpisz ją w Ustawieniach.',
   pvNrLabel:'Numer budowy', pvNrPh:'puste = automatycznie ({n})', pvNrTaken:'Numer BV {nr} już istnieje.',
   dpModePlan:'Plan', dpModeIst:'Przejechane', dpPlanTitle:'Kto jedzie kiedy i dokąd?', dpPlanSub:'Zaplanowane przejazdy i terminy ciężarówek. Wpisuje i zmienia tylko szef.', dpNoDriverRow:'Brak kierowcy', dpKind_termin:'Termin ciężarówki', dpKind_geplant:'Zaplanowana dostawa', lkwFahrerLabel:'Kierowca', lkwFahrerOpen:'Jeszcze otwarte', lkwNoAccess:'Kalendarz ciężarówek jest tylko dla szefa i kierowców.',
   ciInTeam:'Zamelduj ({n} os.)', ciWho:'Kto?',
@@ -1374,6 +1396,7 @@ sk:{
   bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
   mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
   stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  menuSettings:'Nastavenia', setTitle:'Nastavenia', setTheme:'Vzhľad', setTheme_auto:'Automaticky', setTheme_light:'Svetlý', setTheme_dark:'Tmavý', setThemeHint:'Automaticky = ako v telefóne. Platí iba pre toto zariadenie.', setLang:'Jazyk', setLagerOnlyChef:'Zmeniť môže iba šéf.', lagerMissingHint:'Chýba poloha skladu. Zadajte ju v Nastaveniach.',
   pvNrLabel:'Číslo stavby', pvNrPh:'prázdne = automaticky ({n})', pvNrTaken:'Číslo BV {nr} už existuje.',
   dpModePlan:'Plán', dpModeIst:'Odjazdené', dpPlanTitle:'Kto ide kedy a kam?', dpPlanSub:'Plánované jazdy a termíny nákladiakov. Zapisuje a mení iba šéf.', dpNoDriverRow:'Zatiaľ bez vodiča', dpKind_termin:'Termín nákladiaka', dpKind_geplant:'Plánovaná dodávka', lkwFahrerLabel:'Vodič', lkwFahrerOpen:'Zatiaľ otvorené', lkwNoAccess:'Kalendár nákladiakov je iba pre šéfa a vodičov.',
   ciInTeam:'Prihlásiť ({n} os.)', ciWho:'Kto?',
@@ -1581,6 +1604,7 @@ hr:{
   bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
   mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
   stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  menuSettings:'Postavke', setTitle:'Postavke', setTheme:'Izgled', setTheme_auto:'Automatski', setTheme_light:'Svijetlo', setTheme_dark:'Tamno', setThemeHint:'Automatski = kao na mobitelu. Vrijedi samo za ovaj uređaj.', setLang:'Jezik', setLagerOnlyChef:'Mijenjati može samo šef.', lagerMissingHint:'Nedostaje lokacija skladišta. Upišite je u Postavkama.',
   pvNrLabel:'Broj gradilišta', pvNrPh:'prazno = automatski ({n})', pvNrTaken:'Broj BV {nr} već postoji.',
   dpModePlan:'Plan', dpModeIst:'Odvezeno', dpPlanTitle:'Tko vozi kada i kamo?', dpPlanSub:'Planirane vožnje i termini kamiona. Upisuje i mijenja samo šef.', dpNoDriverRow:'Još bez vozača', dpKind_termin:'Termin kamiona', dpKind_geplant:'Planirana isporuka', lkwFahrerLabel:'Vozač', lkwFahrerOpen:'Još otvoreno', lkwNoAccess:'Kalendar kamiona je samo za šefa i vozače.',
   ciInTeam:'Prijava ({n} os.)', ciWho:'Tko?',
@@ -1788,6 +1812,7 @@ en:{
   bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
   mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
   stockMissingLabel:'Missing:', stockLow:'Stock low',
+  menuSettings:'Settings', setTitle:'Settings', setTheme:'Appearance', setTheme_auto:'Automatic', setTheme_light:'Light', setTheme_dark:'Dark', setThemeHint:'Automatic = as set on the phone. Applies to this device only.', setLang:'Language', setLagerOnlyChef:'Only the boss can change this.', lagerMissingHint:'The warehouse location is missing. Please enter it under Settings.',
   pvNrLabel:'Project number', pvNrPh:'empty = automatic ({n})', pvNrTaken:'Number BV {nr} already exists.',
   dpModePlan:'Planned', dpModeIst:'Driven', dpPlanTitle:'Who drives where and when?', dpPlanSub:'Planned trips and truck appointments. Only the boss can enter and change them.', dpNoDriverRow:'No driver yet', dpKind_termin:'Truck appointment', dpKind_geplant:'Planned delivery', lkwFahrerLabel:'Driver', lkwFahrerOpen:'Not assigned yet', lkwNoAccess:'The truck calendar is only for the boss and drivers.',
   ciInTeam:'Check in ({n} people)', ciWho:'Who?',
@@ -2732,6 +2757,7 @@ function menuDropdownHTML(){
   if(state.view!=='app') items.push(`<button data-action="go-app">${t('menuBackToApp')}</button>`);
   if(state.view!=='calendar') items.push(`<button data-action="go-calendar">${t('menuCalendar')}</button>`);
   if(state.view!=='lkwkalender' && (!state.loggedIn || lkwCanSee())) items.push(`<button data-action="go-lkwkalender">${t('menuLkwCalendar')}</button>`);
+  if(state.view!=='einstellungen') items.push(`<button data-action="go-einstellungen">⚙ ${t('menuSettings')}</button>`);
   if(state.loggedIn && state.view==='app') items.push(`<button data-action="refresh">${t('refreshBtn')}</button>`);
   if(state.loggedIn && state.authed) items.push(`<button data-action="my-pw-open">${t('myPwMenu')}</button>`);
   if(state.loggedIn && pushSupported() && !(Notification.permission==='granted' && pushActiveHere())) items.push(`<button data-action="push-enable">🔔 ${t('pushMenuItem')}</button>`);
@@ -4708,7 +4734,27 @@ function projekteHTML(){
     <div id="pvWarn"></div>
     <button class="advance-btn" data-action="add-projekt">${t('pvAddBtn')}</button>
   </div>
-  ${lagerSettingHTML()}`;
+  ${state.lager && state.lager.coords ? '' : `<div class="order-card" style="margin-top:18px;"><div class="order-time" style="margin:0 0 10px 0;">${t('lagerMissingHint')}</div><button class="refresh-btn" data-action="go-einstellungen">⚙ ${t('menuSettings')}</button></div>`}`;
+}
+// Einstellungen (☰-Menü): Lager-Standort (ändern nur Chef), Darstellung, Sprache
+function einstellungenPageHTML(){
+  const th = getTheme(), lg = state.lager;
+  const chef = state.loggedIn && state.authed && state.role==='chef';
+  const lagerRO = state.loggedIn ? `<h3 class="section-h">${t('lagerHeading')}</h3><div class="order-card"><div style="font-weight:700;font-size:14px;">${lg && lg.coords ? '🏭 '+escapeHtml(lg.adresse || `${lg.coords.lat}, ${lg.coords.lon}`) : t('lagerNotSet')}</div><div class="order-time" style="margin:6px 0 0 0;">${t('setLagerOnlyChef')}</div></div>` : '';
+  return `${topNavHTML('light')}<div class="login-wrap" style="min-height:auto;background:var(--bg);display:block;padding:70px 14px 40px 14px;">
+    <main style="padding:0;max-width:720px;margin:0 auto;">
+      ${viewBackBtnHTML()}
+      <h2 class="view-title">${t('setTitle')}</h2>
+      ${chef ? lagerSettingHTML() : lagerRO}
+      <h3 class="section-h">${t('setTheme')}</h3>
+      <div class="order-card">
+        <div class="seg-control set-theme">${['auto','light','dark'].map(v=>`<button class="${th===v?'active':''}" data-action="set-theme" data-v="${v}" aria-pressed="${th===v}">${t('setTheme_'+v)}</button>`).join('')}</div>
+        <div class="order-time" style="margin:8px 0 0 0;">${t('setThemeHint')}</div>
+      </div>
+      <h3 class="section-h">${t('setLang')}</h3>
+      <div class="order-card set-langs">${LANGS.map(l=>`<button class="ziel-chip ${l.code===state.lang?'active':''}" data-action="set-lang" data-lang="${l.code}">${l.flag||''} ${l.label||l.code}</button>`).join('')}</div>
+    </main>
+  </div>`;
 }
 function lagerSettingHTML(){
   const lg = state.lager;
@@ -5750,6 +5796,7 @@ function lkwKalenderPageHTML(){
 // ersetzt iconize() nach jedem render() automatisch durch das passende
 // Symbol (Tabelle EMO); neue Emojis also dort eintragen.
 const SYM_ICONS = {
+  'settings':'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
   'map-pin':'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
   'map':'<path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/>',
   'truck':'<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
@@ -5801,7 +5848,7 @@ const EMO = {
   '✏':'pencil', '🔄':'refresh-cw', '↻':'refresh-cw', '🖨':'printer', '👍':'circle-check', '🔁':'repeat',
   '⬆':'upload', '⭐':'star', '🏗':'building-2', '🏁':'flag', '🔔':'bell', '📐':'drafting-compass',
   '⚖':'weight', '🌐':'globe', '✓':'check', '✗':'x', '📦':'package', '📋':'clipboard-list', '📄':'file-text',
-  '🗑':'trash-2', '📷':'camera', '⏱':'clock', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu',
+  '🗑':'trash-2', '📷':'camera', '⏱':'clock', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu', '⚙':'settings',
 };
 const EMO_RE = new RegExp('(' + Object.keys(EMO).join('|') + ')\\uFE0F?', 'gu');
 function emoIcon(ch){ const v = EMO[ch]; return Array.isArray(v) ? ic(v[0], v[1]) : ic(v); }
@@ -5871,6 +5918,7 @@ function renderView(){
   if(state.loading){ document.getElementById('app').innerHTML = `<div class="loading">${t('loadingText')}</div>`; return; }
   if(state.view==='calendar'){ document.getElementById('app').innerHTML = calendarPageHTML(); return; }
   if(state.view==='lkwkalender'){ document.getElementById('app').innerHTML = lkwKalenderPageHTML(); return; }
+  if(state.view==='einstellungen'){ document.getElementById('app').innerHTML = einstellungenPageHTML(); return; }
   if(!state.loggedIn){ document.getElementById('app').innerHTML = loginHTML(); syncGeo(); return; }
 
   let mainHTML='';
@@ -6419,7 +6467,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     }
     render();
   }
-  if(action==='lager-save'){
+  if(action==='lager-save' && state.role==='chef'){
     const inp = document.getElementById('lagerAdresse');
     const adresse = (inp? inp.value : '').trim();
     if(!adresse) return;
@@ -6439,7 +6487,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       render();
     }
   }
-  if(action==='lager-gps'){
+  if(action==='lager-gps' && state.role==='chef'){
     if(!navigator.geolocation){ state.lagerWarn = t('locNoSupport'); render(); return; }
     el.textContent = t('locFetching');
     navigator.geolocation.getCurrentPosition(async (pos)=>{
@@ -6570,6 +6618,8 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     await loadShared();
     render();
   }
+  if(action==='go-einstellungen'){ goView('einstellungen'); state.menuOpen=false; render(); window.scrollTo(0, 0); }
+  if(action==='set-theme'){ setTheme(el.dataset.v); render(); }
   if(action==='view-back'){ if(viewStack.length) history.back(); else { state.view='app'; state.menuOpen=false; render(); } }
   if(action==='go-app'){ state.view='app'; state.menuOpen=false; viewStack.length = 0; render(); }
 

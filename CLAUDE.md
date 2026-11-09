@@ -101,6 +101,17 @@ löscht sie.
 wenn der Chef die Person oder ihre aktuelle Rolle inzwischen entfernt hat
 oder keine Supabase-Sitzung mehr besteht.
 
+## Einstellungen (☰-Menü)
+
+Nutzerwunsch: Menüpunkt „⚙ Einstellungen“ (`go-einstellungen`, `state.view =
+'einstellungen'`, `einstellungenPageHTML()`, Zurück-Pfeil wie bei den Kalendern):
+1. **Lager-Standort** zuerst (`lagerSettingHTML()`, ändern nur Chef – `lager-save`/
+   `lager-gps` prüfen die Rolle; andere sehen die Adresse + `setLagerOnlyChef`). Steht
+   NICHT mehr im Reiter Bauvorhaben; dort nur Hinweis `lagerMissingHint`, solange er fehlt.
+2. **Darstellung** Automatisch/Hell/Dunkel (siehe Hell-/Dunkelmodus).
+3. **Sprache** (die 5 `LANGS` als Knöpfe, gleiche Aktion `set-lang` wie der Globus).
+Prüfung `einstellungen`.
+
 ## Menü / Kalender (nur nach Anmeldung sichtbar)
 
 Oben links sitzt das SGM-Logo, oben rechts ein Menü-Knopf (☰) – beides ist
@@ -635,8 +646,8 @@ Hintergrund kein GPS). Sichtbar nur für den Chef.
   gestrichelte Luftlinie. Echte Google-Routen IN der Karte bräuchten ein
   kostenpflichtiges Google-Konto + API-Schlüssel – stattdessen Popup-Link
   „🧭 Route in Google Maps“ (`maps/dir/?api=1&origin=…&destination=…`).
-- **Status automatisch (Am Lager / Unterwegs)**: Der Chef trägt im Reiter
-  „Bauvorhaben“ unten den **Lager-Standort** ein (`lagerSettingHTML()`,
+- **Status automatisch (Am Lager / Unterwegs)**: Der Chef trägt unter
+  ☰ → Einstellungen den **Lager-Standort** ein (`lagerSettingHTML()`,
   Adresse → Nominatim mit München+Umland-Vorrang, oder „Ich bin gerade am
   Lager“ per GPS; gespeichert als `state.lager = {adresse, coords}` im
   großen Datensatz, Feld `lager`; 🏭 auf beiden Karten). Das Fahrer-Handy
@@ -689,8 +700,11 @@ Supabase-Storage-Bucket `bauplaene` (`PLAN_BUCKET`) unter
 
 ## Hell-/Dunkelmodus
 
-Die App folgt automatisch der Handy-/Browser-Einstellung
-(`@media (prefers-color-scheme: dark)`), kein manueller Umschalter. Alle
+Standard: wie die Handy-/Browser-Einstellung (`@media (prefers-color-scheme: dark)`
+auf `:root:not([data-theme="light"])`). In **Einstellungen** pro Gerät fest wählbar
+(Automatisch/Hell/Dunkel, localStorage `geruest-theme`, `getTheme()`/`setTheme()`/
+`applyTheme()` → `html[data-theme]`; derselbe Variablen-Block steht zusätzlich unter
+`:root[data-theme="dark"]`). Alle
 Farben laufen über CSS-Variablen im `:root` (z. B. `--bg`, `--card`,
 `--ink`, `--accent`, `--line`, `--surface-2`, `--icon-tile`, `--zebra`) –
 der Dunkelmodus überschreibt nur diese Grundwerte, Komponenten verwenden

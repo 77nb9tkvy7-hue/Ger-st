@@ -614,6 +614,38 @@ module.exports = ({ switchRole, shot }) => {
       if (!f) p.push('Fahrer sieht Nummern-Feld');
       return errs(errors, p);
     },
+    // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
+    'einstellungen': async ({ page, errors }) => {
+      const p = [];
+      await page.emulateMedia({ colorScheme: 'dark' });
+      await switchRole(page, 'chef');
+      const open = async () => { await ev(page, () => { state.menuOpen = true; render(); }); await page.click('[data-action="go-einstellungen"]'); await page.waitForTimeout(300); };
+      await open();
+      const a = await ev(page, () => ({ v: state.view, lager: !!document.getElementById('lagerAdresse'), back: !!document.querySelector('.view-back'), themes: document.querySelectorAll('[data-action="set-theme"]').length, langs: document.querySelectorAll('.set-langs [data-action="set-lang"]').length }));
+      if (a.v !== 'einstellungen' || !a.lager || !a.back || a.themes !== 3 || a.langs !== 5) p.push('Chef-Einstellungen unvollständig: ' + JSON.stringify(a));
+      const bg = () => ev(page, () => getComputedStyle(document.body).backgroundColor);
+      const bAuto = await bg();
+      await page.click('[data-action="set-theme"][data-v="light"]'); await page.waitForTimeout(150);
+      const bLight = await bg();
+      await page.click('[data-action="set-theme"][data-v="dark"]'); await page.waitForTimeout(150);
+      await page.emulateMedia({ colorScheme: 'light' });
+      const bDark = await bg();
+      await page.click('[data-action="set-theme"][data-v="auto"]'); await page.waitForTimeout(150);
+      const bAuto2 = await bg();
+      if (bAuto !== 'rgb(12, 22, 31)' || bLight !== 'rgb(242, 244, 246)' || bDark !== 'rgb(12, 22, 31)' || bAuto2 !== 'rgb(242, 244, 246)')
+        p.push('Hell/Dunkel falsch: ' + JSON.stringify({ bAuto, bLight, bDark, bAuto2 }));
+      await page.click('.set-langs [data-lang="pl"]'); await page.waitForTimeout(150);
+      const lang = await ev(page, () => state.lang);
+      await page.click('.set-langs [data-lang="de"]'); await page.waitForTimeout(150);
+      if (lang !== 'pl') p.push('Sprache nicht umgestellt: ' + lang);
+      const bv = await ev(page, () => { state.view = 'app'; state.chefTab = 'bauvorhaben'; state.chefProjekt = null; render(); return !!document.getElementById('lagerAdresse'); });
+      if (bv) p.push('Lager-Formular steht noch im Reiter Bauvorhaben');
+      await switchRole(page, 'fahrer');
+      await open();
+      const f = await ev(page, () => ({ v: state.view, input: !!document.getElementById('lagerAdresse'), txt: document.getElementById('app').textContent.includes(t('setLagerOnlyChef')) }));
+      if (f.v !== 'einstellungen' || f.input || !f.txt) p.push('Fahrer-Einstellungen falsch: ' + JSON.stringify(f));
+      return errs(errors, p);
+    },
   };
 };
 
