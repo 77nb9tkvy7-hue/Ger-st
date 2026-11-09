@@ -295,6 +295,14 @@
   .foto-meta{font-size:14px;margin:8px 2px;line-height:1.45;}
   .foto-hidden-note{color:var(--muted);font-weight:600;margin-top:4px;}
   .mini-btn.danger{color:var(--red);border-color:var(--red);}
+  .fotos-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+  .mangel-text{font-size:15px;margin:8px 0 4px 0;white-space:pre-wrap;}
+  .mangel-card::before{background:var(--red) !important;}
+  .sig-canvas{display:block;width:100%;height:260px;border:1.5px dashed var(--line-strong);border-radius:12px;background:#FFFFFF;touch-action:none;}
+  .sig-note{margin-top:6px;}
+  #printArea .ls-sig-box{margin-top:16px;font-size:13px;color:#111;}
+  #printArea .ls-sig{height:90px;margin-top:6px;border-bottom:1px solid #111;}
+  .field textarea{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;font-family:inherit;background:var(--card);color:var(--ink);}
   .export-row{display:flex;justify-content:flex-end;margin:4px 0 0 0;}
   .mat-table th.num,.mat-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
   .inv-extra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;}
@@ -874,6 +882,7 @@ de:{
   bestelltVonInline:'bestellt von', bestelltPrefix:'Bestellt:',
   mapsLink:'🗺️ In Google Maps öffnen', geliefertLabel:'✓ Geliefert',
   stockMissingLabel:'Fehlt:', stockLow:'Bestand niedrig',
+  mangelBtn:'Mangel melden', mangelTitle:'Mangel melden', mangelTextLabel:'Was ist los?', mangelTextPh:'z. B. Belag lose, Anker fehlt …', mangelFotoBtn:'Foto dazu (empfohlen)', mangelFotoOk:'Foto angehängt', mangelSend:'Melden', mangelNeedText:'Bitte kurz beschreiben.', mangelSent:'Mangel gemeldet – der Chef ist informiert.', maengelHeading:'Mängel offen', maengelNone:'Keine offenen Mängel.', mangelDone:'Erledigt', mangelDoneBy:'erledigt von {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Mängel offen', scMaengel:'Mängel', nMangelT:'Neuer Mangel: {bv}', nMangelB:'{name}: {text}', sigBtn:'Unterschrift', sigTitle:'Unterschrift Empfänger', sigNameLabel:'Name Empfänger', sigClear:'Neu', sigSave:'Unterschrift speichern', sigSaved:'Unterschrift gespeichert', sigFail:'Unterschrift nicht gespeichert – bitte nochmal.', sigEmpty:'Bitte unterschreiben lassen.', sigDone:'Unterschrieben von {name}, {ts}', sigLabel:'Unterschrift Empfänger',
   fotosHeading:'Fotos ({n})', fotoBtn:'Foto', fotoShort:'Foto', fotosEmpty:'Noch keine Fotos.', fotoEyebrow:'Beweis-Foto', fotoChooseAnlass:'Wofür ist das Foto?', fotoHint:'Datum, Uhrzeit, Name, Bauvorhaben und GPS werden ins Bild geschrieben. Löschen geht nur in den ersten 5 Minuten.', fotoSaving:'Foto wird gespeichert …', fotoSaved:'Foto gespeichert', fotoFail:'Foto nicht gespeichert – bitte nochmal versuchen.', fotoDelete:'Löschen', fotoDeleteConfirm:'Foto endgültig löschen?', fotoDelFail:'Löschen nicht mehr möglich.', fotoHide:'Ausblenden', fotoUnhide:'Wieder einblenden', fotoHiddenBy:'ausgeblendet von {name} am {ts}', anl_abladen:'Abladen', anl_uebergabe:'Übergabe', anl_vor_abbau:'Vor Abbau', anl_schaden:'Schaden', anl_vorher:'Vorher', anl_nachher:'Nachher', anl_mangel:'Mangel',
   nameInputPh:'Dein Name', warnEnterName:'Bitte deinen Namen eintippen.', warnLoginFail:'Name oder Passwort falsch.', calLockedText:'Der Kalender ist nur nach der Anmeldung sichtbar.', calLoginBtn:'Zur Anmeldung',
   driverStatusPause:'Pause', matTitle:'Material', matEmpty:'Noch nichts geliefert.', matTeil:'Teil', matGeliefert:'geliefert', matZurueck:'zurück', matDefekt:'defekt', matVorOrt:'vor Ort', matPrint:'Materialliste drucken', exportOpenBtn:'Export', exportEyebrow:'Bestellungen', exportTitle:'Export', exportRange_month:'Dieser Monat', exportRange_last:'Letzter Monat', exportRange_all:'Alle', exportCount:'{n} Bestellung(en)', exportCsv:'Excel-Liste (CSV) herunterladen', exportPrint:'PDF / Drucken', exportDone:'Liste heruntergeladen', exportDatum:'Datum', exportBV:'Bauvorhaben', exportMenge:'Menge',
@@ -1073,6 +1082,7 @@ pl:{
   bestelltVonInline:'zamówił(a)', bestelltPrefix:'Zamówiono:',
   mapsLink:'🗺️ Otwórz w Google Maps', geliefertLabel:'✓ Dostarczone',
   stockMissingLabel:'Brakuje:', stockLow:'Niski stan',
+  mangelBtn:'Zgłoś usterkę', mangelTitle:'Zgłoś usterkę', mangelTextLabel:'Co się stało?', mangelTextPh:'np. luźny pomost, brak kotwy …', mangelFotoBtn:'Dodaj zdjęcie (zalecane)', mangelFotoOk:'Zdjęcie dołączone', mangelSend:'Zgłoś', mangelNeedText:'Opisz krótko.', mangelSent:'Usterka zgłoszona – szef został poinformowany.', maengelHeading:'Otwarte usterki', maengelNone:'Brak otwartych usterek.', mangelDone:'Załatwione', mangelDoneBy:'załatwione przez {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otwarte usterki', scMaengel:'Usterki', nMangelT:'Nowa usterka: {bv}', nMangelB:'{name}: {text}', sigBtn:'Podpis', sigTitle:'Podpis odbiorcy', sigNameLabel:'Imię odbiorcy', sigClear:'Od nowa', sigSave:'Zapisz podpis', sigSaved:'Podpis zapisany', sigFail:'Podpis nie zapisany – spróbuj ponownie.', sigEmpty:'Poproś o podpis.', sigDone:'Podpisał(a) {name}, {ts}', sigLabel:'Podpis odbiorcy',
   fotosHeading:'Zdjęcia ({n})', fotoBtn:'Zdjęcie', fotoShort:'Zdjęcie', fotosEmpty:'Brak zdjęć.', fotoEyebrow:'Zdjęcie dowodowe', fotoChooseAnlass:'Do czego jest zdjęcie?', fotoHint:'Data, godzina, imię, budowa i GPS zostaną wpisane w zdjęcie. Usunąć można tylko w ciągu 5 minut.', fotoSaving:'Zapisywanie zdjęcia …', fotoSaved:'Zdjęcie zapisane', fotoFail:'Zdjęcie nie zostało zapisane – spróbuj ponownie.', fotoDelete:'Usuń', fotoDeleteConfirm:'Usunąć zdjęcie na stałe?', fotoDelFail:'Usunięcie nie jest już możliwe.', fotoHide:'Ukryj', fotoUnhide:'Pokaż ponownie', fotoHiddenBy:'ukryte przez {name}, {ts}', anl_abladen:'Rozładunek', anl_uebergabe:'Przekazanie', anl_vor_abbau:'Przed demontażem', anl_schaden:'Szkoda', anl_vorher:'Przed', anl_nachher:'Po', anl_mangel:'Usterka',
   nameInputPh:'Twoje imię', warnEnterName:'Wpisz swoje imię.', warnLoginFail:'Nieprawidłowe imię lub hasło.', calLockedText:'Kalendarz jest widoczny dopiero po zalogowaniu.', calLoginBtn:'Do logowania',
   driverStatusPause:'Przerwa', matTitle:'Materiał', matEmpty:'Jeszcze nic nie dostarczono.', matTeil:'Część', matGeliefert:'dostarczone', matZurueck:'zwrócone', matDefekt:'uszkodzone', matVorOrt:'na miejscu', matPrint:'Drukuj listę materiałów', exportOpenBtn:'Eksport', exportEyebrow:'Zamówienia', exportTitle:'Eksport', exportRange_month:'Ten miesiąc', exportRange_last:'Poprzedni miesiąc', exportRange_all:'Wszystkie', exportCount:'{n} zamówień', exportCsv:'Pobierz listę Excel (CSV)', exportPrint:'PDF / Drukuj', exportDone:'Lista pobrana', exportDatum:'Data', exportBV:'Budowa', exportMenge:'Ilość',
@@ -1272,6 +1282,7 @@ sk:{
   bestelltVonInline:'objednal(a)', bestelltPrefix:'Objednané:',
   mapsLink:'🗺️ Otvoriť v Google Maps', geliefertLabel:'✓ Doručené',
   stockMissingLabel:'Chýba:', stockLow:'Nízky stav',
+  mangelBtn:'Nahlásiť nedostatok', mangelTitle:'Nahlásiť nedostatok', mangelTextLabel:'Čo sa deje?', mangelTextPh:'napr. uvoľnená podlaha, chýba kotva …', mangelFotoBtn:'Pridať fotku (odporúčané)', mangelFotoOk:'Fotka pripojená', mangelSend:'Nahlásiť', mangelNeedText:'Krátko popíš.', mangelSent:'Nedostatok nahlásený – šéf je informovaný.', maengelHeading:'Otvorené nedostatky', maengelNone:'Žiadne otvorené nedostatky.', mangelDone:'Vybavené', mangelDoneBy:'vybavil(a) {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otvorené nedostatky', scMaengel:'Nedostatky', nMangelT:'Nový nedostatok: {bv}', nMangelB:'{name}: {text}', sigBtn:'Podpis', sigTitle:'Podpis príjemcu', sigNameLabel:'Meno príjemcu', sigClear:'Znova', sigSave:'Uložiť podpis', sigSaved:'Podpis uložený', sigFail:'Podpis sa neuložil – skús znova.', sigEmpty:'Nechaj podpísať.', sigDone:'Podpísal(a) {name}, {ts}', sigLabel:'Podpis príjemcu',
   fotosHeading:'Fotky ({n})', fotoBtn:'Fotka', fotoShort:'Fotka', fotosEmpty:'Zatiaľ žiadne fotky.', fotoEyebrow:'Dôkazová fotka', fotoChooseAnlass:'Na čo je fotka?', fotoHint:'Dátum, čas, meno, stavba a GPS sa zapíšu do fotky. Zmazať sa dá len počas prvých 5 minút.', fotoSaving:'Fotka sa ukladá …', fotoSaved:'Fotka uložená', fotoFail:'Fotka sa neuložila – skús to znova.', fotoDelete:'Zmazať', fotoDeleteConfirm:'Fotku natrvalo zmazať?', fotoDelFail:'Zmazanie už nie je možné.', fotoHide:'Skryť', fotoUnhide:'Znova zobraziť', fotoHiddenBy:'skryl(a) {name}, {ts}', anl_abladen:'Vykládka', anl_uebergabe:'Odovzdanie', anl_vor_abbau:'Pred demontážou', anl_schaden:'Škoda', anl_vorher:'Pred', anl_nachher:'Po', anl_mangel:'Nedostatok',
   nameInputPh:'Tvoje meno', warnEnterName:'Zadaj svoje meno.', warnLoginFail:'Nesprávne meno alebo heslo.', calLockedText:'Kalendár je viditeľný až po prihlásení.', calLoginBtn:'Na prihlásenie',
   driverStatusPause:'Prestávka', matTitle:'Materiál', matEmpty:'Zatiaľ nič nedodané.', matTeil:'Diel', matGeliefert:'dodané', matZurueck:'vrátené', matDefekt:'poškodené', matVorOrt:'na mieste', matPrint:'Tlačiť zoznam materiálu', exportOpenBtn:'Export', exportEyebrow:'Objednávky', exportTitle:'Export', exportRange_month:'Tento mesiac', exportRange_last:'Minulý mesiac', exportRange_all:'Všetky', exportCount:'{n} objednávok', exportCsv:'Stiahnuť zoznam pre Excel (CSV)', exportPrint:'PDF / Tlač', exportDone:'Zoznam stiahnutý', exportDatum:'Dátum', exportBV:'Stavba', exportMenge:'Množstvo',
@@ -1471,6 +1482,7 @@ hr:{
   bestelltVonInline:'naručio/la', bestelltPrefix:'Naručeno:',
   mapsLink:'🗺️ Otvori u Google Maps', geliefertLabel:'✓ Isporučeno',
   stockMissingLabel:'Nedostaje:', stockLow:'Nizak stok',
+  mangelBtn:'Prijavi nedostatak', mangelTitle:'Prijavi nedostatak', mangelTextLabel:'Što se dogodilo?', mangelTextPh:'npr. labava podnica, nedostaje sidro …', mangelFotoBtn:'Dodaj fotografiju (preporučeno)', mangelFotoOk:'Fotografija priložena', mangelSend:'Prijavi', mangelNeedText:'Ukratko opiši.', mangelSent:'Nedostatak prijavljen – šef je obaviješten.', maengelHeading:'Otvoreni nedostaci', maengelNone:'Nema otvorenih nedostataka.', mangelDone:'Riješeno', mangelDoneBy:'riješio/la {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Otvoreni nedostaci', scMaengel:'Nedostaci', nMangelT:'Novi nedostatak: {bv}', nMangelB:'{name}: {text}', sigBtn:'Potpis', sigTitle:'Potpis primatelja', sigNameLabel:'Ime primatelja', sigClear:'Ispočetka', sigSave:'Spremi potpis', sigSaved:'Potpis spremljen', sigFail:'Potpis nije spremljen – pokušaj ponovno.', sigEmpty:'Zatraži potpis.', sigDone:'Potpisao/la {name}, {ts}', sigLabel:'Potpis primatelja',
   fotosHeading:'Fotografije ({n})', fotoBtn:'Fotografija', fotoShort:'Foto', fotosEmpty:'Još nema fotografija.', fotoEyebrow:'Dokazna fotografija', fotoChooseAnlass:'Za što je fotografija?', fotoHint:'Datum, vrijeme, ime, gradilište i GPS upisuju se u sliku. Brisanje je moguće samo u prvih 5 minuta.', fotoSaving:'Fotografija se sprema …', fotoSaved:'Fotografija spremljena', fotoFail:'Fotografija nije spremljena – pokušaj ponovno.', fotoDelete:'Obriši', fotoDeleteConfirm:'Trajno obrisati fotografiju?', fotoDelFail:'Brisanje više nije moguće.', fotoHide:'Sakrij', fotoUnhide:'Ponovno prikaži', fotoHiddenBy:'sakrio/la {name}, {ts}', anl_abladen:'Istovar', anl_uebergabe:'Primopredaja', anl_vor_abbau:'Prije demontaže', anl_schaden:'Šteta', anl_vorher:'Prije', anl_nachher:'Poslije', anl_mangel:'Nedostatak',
   nameInputPh:'Tvoje ime', warnEnterName:'Upiši svoje ime.', warnLoginFail:'Pogrešno ime ili lozinka.', calLockedText:'Kalendar je vidljiv tek nakon prijave.', calLoginBtn:'Na prijavu',
   driverStatusPause:'Pauza', matTitle:'Materijal', matEmpty:'Još ništa nije isporučeno.', matTeil:'Dio', matGeliefert:'isporučeno', matZurueck:'vraćeno', matDefekt:'oštećeno', matVorOrt:'na gradilištu', matPrint:'Ispiši popis materijala', exportOpenBtn:'Izvoz', exportEyebrow:'Narudžbe', exportTitle:'Izvoz', exportRange_month:'Ovaj mjesec', exportRange_last:'Prošli mjesec', exportRange_all:'Sve', exportCount:'{n} narudžbi', exportCsv:'Preuzmi Excel popis (CSV)', exportPrint:'PDF / Ispis', exportDone:'Popis preuzet', exportDatum:'Datum', exportBV:'Gradilište', exportMenge:'Količina',
@@ -1670,6 +1682,7 @@ en:{
   bestelltVonInline:'ordered by', bestelltPrefix:'Ordered:',
   mapsLink:'🗺️ Open in Google Maps', geliefertLabel:'✓ Delivered',
   stockMissingLabel:'Missing:', stockLow:'Stock low',
+  mangelBtn:'Report defect', mangelTitle:'Report defect', mangelTextLabel:'What is wrong?', mangelTextPh:'e.g. loose deck, anchor missing …', mangelFotoBtn:'Add photo (recommended)', mangelFotoOk:'Photo attached', mangelSend:'Report', mangelNeedText:'Please describe briefly.', mangelSent:'Defect reported – the boss has been notified.', maengelHeading:'Open defects', maengelNone:'No open defects.', mangelDone:'Done', mangelDoneBy:'done by {name}, {ts}', mangelBy:'{name}, {ts}', wMaengel:'Open defects', scMaengel:'Defects', nMangelT:'New defect: {bv}', nMangelB:'{name}: {text}', sigBtn:'Signature', sigTitle:'Recipient signature', sigNameLabel:'Recipient name', sigClear:'Clear', sigSave:'Save signature', sigSaved:'Signature saved', sigFail:'Signature not saved – please try again.', sigEmpty:'Please get a signature.', sigDone:'Signed by {name}, {ts}', sigLabel:'Recipient signature',
   fotosHeading:'Photos ({n})', fotoBtn:'Photo', fotoShort:'Photo', fotosEmpty:'No photos yet.', fotoEyebrow:'Evidence photo', fotoChooseAnlass:'What is the photo for?', fotoHint:'Date, time, name, site and GPS are written into the image. Deleting is only possible in the first 5 minutes.', fotoSaving:'Saving photo …', fotoSaved:'Photo saved', fotoFail:'Photo not saved – please try again.', fotoDelete:'Delete', fotoDeleteConfirm:'Delete photo permanently?', fotoDelFail:'Deleting is no longer possible.', fotoHide:'Hide', fotoUnhide:'Show again', fotoHiddenBy:'hidden by {name} on {ts}', anl_abladen:'Unloading', anl_uebergabe:'Handover', anl_vor_abbau:'Before dismantling', anl_schaden:'Damage', anl_vorher:'Before', anl_nachher:'After', anl_mangel:'Defect',
   nameInputPh:'Your name', warnEnterName:'Please type your name.', warnLoginFail:'Wrong name or password.', calLockedText:'The calendar is only visible after signing in.', calLoginBtn:'Go to sign-in',
   driverStatusPause:'Break', matTitle:'Material', matEmpty:'Nothing delivered yet.', matTeil:'Part', matGeliefert:'delivered', matZurueck:'returned', matDefekt:'damaged', matVorOrt:'on site', matPrint:'Print material list', exportOpenBtn:'Export', exportEyebrow:'Orders', exportTitle:'Export', exportRange_month:'This month', exportRange_last:'Last month', exportRange_all:'All', exportCount:'{n} order(s)', exportCsv:'Download Excel list (CSV)', exportPrint:'PDF / Print', exportDone:'List downloaded', exportDatum:'Date', exportBV:'Site', exportMenge:'Qty',
@@ -2044,7 +2057,7 @@ function roleLabel(role){ return t('roleLabel'+role.charAt(0).toUpperCase()+role
 
 const state = {
   loggedIn:false, name:'', role:null,
-  cart:{}, orders:[], orderCounter:1001, fotos:[], fotoCounter:1, fotoDraft:null, fotoView:null, fotoBusy:false, inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
+  cart:{}, orders:[], orderCounter:1001, fotos:[], fotoCounter:1, fotoDraft:null, fotoView:null, fotoBusy:false, maengel:[], mangelCounter:1, mangelDraft:null, sigDraft:null, inventory:{...DEFAULT_INVENTORY}, minStock:{}, defect:{},
   baustelleOrt:'', confirmOrder:null, loginWarn:'', loading:true, lagerTab:'bestellungen',
   askChefPw:false, baustelleCoords:null,
   employees:[], empCounter:1, authName:null, pushSubs:[], pushMsg:'', persWarn:'', persDraftRoles:[], persDraftName:'', persDraftPw:'',
@@ -2095,7 +2108,7 @@ function itemOrderCounts(){
 const CACHE_KEY = 'geruest-cache', PENDING_KEY = 'geruest-pending';
 const RECORD_ARRAYS = {orders:'counter', projects:'projektCounter', calendarEntries:'calCounter',
   plannedDeliveries:'planCounter', lkwEntries:'lkwCounter', employees:'empCounter', pickups:'pickupCounter',
-  fotos:'fotoCounter'};
+  fotos:'fotoCounter', maengel:'mangelCounter'};
 let syncBase = null;          // letzter bekannter Server-Stand (ohne rev)
 let syncChain = Promise.resolve();
 state.syncOffline = false; state.syncPending = false;
@@ -2111,7 +2124,7 @@ function same(a, b){ return stableStr(a)===stableStr(b); }
 
 function stateToValue(){
   return clone({orders:state.orders, counter:state.orderCounter, inventory:state.inventory,
-    minStock:state.minStock, defect:state.defect, fotos:state.fotos, fotoCounter:state.fotoCounter,
+    minStock:state.minStock, defect:state.defect, fotos:state.fotos, fotoCounter:state.fotoCounter, maengel:state.maengel, mangelCounter:state.mangelCounter,
     projects:state.projects, projektCounter:state.projektCounter,
     calendarEntries:state.calendarEntries, calCounter:state.calCounter,
     driverStatus:state.driverStatus, driverPos:state.driverPos, lager:state.lager, chefPw:state.chefPw,
@@ -2129,6 +2142,8 @@ function applyValue(v){
   state.minStock = v.minStock || {};
   state.fotos = v.fotos || [];
   state.fotoCounter = v.fotoCounter || 1;
+  state.maengel = v.maengel || [];
+  state.mangelCounter = v.mangelCounter || 1;
   state.defect = v.defect || {};
   state.projects = v.projects || [];
   state.projektCounter = v.projektCounter || 101;
@@ -3014,6 +3029,7 @@ function printOrder(id){
       ${wt? `<tfoot><tr><td colspan="3" class="ls-total">${t('weightTotal')}: ${wt}</td></tr></tfoot>`:''}
     </table>
     ${o.fehlt && o.fehlt.length? `<p class="ls-fehlt"><b>${t('lsFehlt',{id:o.nachId})}:</b> ${o.fehlt.map(i=>{const r=resolvedItem(i); return `${i.qty} ${r.unit} ${r.name}`;}).join(', ')}</p>`:''}
+    ${o.signatur? `<div class="ls-sig-box"><b>${t('sigLabel')}:</b> ${escapeHtml(o.signatur.name||'')} · ${o.signatur.ts}${fotoUrlCache[o.signatur.path]? `<br><img class="ls-sig" src="${fotoUrlCache[o.signatur.path]}" alt="${t('sigLabel')}">`:''}</div>`:''}
   `;
   iconize(area);
   window.print();
@@ -3277,7 +3293,9 @@ function orderCardHTML(o, role, extra){
       <a class="mini-btn" href="${mapsUrl}" target="_blank" rel="noopener">📍 ${t('mapsShort')}</a>
       <button class="mini-btn" data-action="print-order" data-order="${o.id}">🖨️ ${t('printShort')}</button>
       ${role==='fahrer' && o.status==='Unterwegs' && o.projekt? `<label class="mini-btn">📷 ${t('fotoShort')}${fotoFileInput(o.projekt, 'abladen')}</label>`:''}
+      ${role==='fahrer' && (o.status==='Unterwegs' || o.status==='Geliefert') && !o.signatur? `<button class="mini-btn" data-action="sig-open" data-order="${o.id}">✏ ${t('sigBtn')}</button>`:''}
     </div>
+    ${o.signatur? `<div class="order-time sig-note">✏ ${t('sigDone',{name:escapeHtml(o.signatur.name||'–'), ts:o.signatur.ts})}</div>`:''}
     ${o.status==='Geliefert'? `<div class="done-label">${t('geliefertLabel')}</div>` : ''}
     ${extra||''}
   </div>`;
@@ -3684,6 +3702,7 @@ function widgetData(role){
       {tone:'blue', icon:'truck', label:t('wFahrerUnterwegs'), chip:t('scFahrer'), value:`${unterwegs.length}/${drivers.length}`,
         detail:unterwegs.map(n=>{ const z=state.driverStatus[n].ziel; return z? `${n} → ${projektLabel(z)}` : n; }).join(', '), tab:'lkws', go:'sec-lkw'},
       {tone:'green', icon:'building-2', label:t('wBauvorhaben'), chip:t('scBV'), value:aktive.length, dots, tab:'bauvorhaben'},
+      {tone: openMaengel(null).length?'red':'green', icon:'triangle-alert', label:t('wMaengel'), chip:t('scMaengel'), value:openMaengel(null).length, detail:openMaengel(null).slice(0,2).map(m=>'BV '+m.projekt).join(', '), tab:'uebersicht', go:'sec-maengel'},
       planTile('planen'),
     ];
   }
@@ -3887,7 +3906,7 @@ function fotoThumbHTML(f){
 function fotosHTML(pid){
   const list = fotosOf(pid);
   return `<div class="fotos" id="sec-fotos-${pid}">
-    <div class="fotos-head"><b>${t('fotosHeading',{n:list.length})}</b><button class="mini-btn" data-action="foto-open" data-projekt="${pid}">📷 ${t('fotoBtn')}</button></div>
+    <div class="fotos-head"><b>${t('fotosHeading',{n:list.length})}</b><span class="fotos-btns"><button class="mini-btn danger" data-action="mangel-open" data-projekt="${pid}">⚠ ${t('mangelBtn')}</button><button class="mini-btn" data-action="foto-open" data-projekt="${pid}">📷 ${t('fotoBtn')}</button></span></div>
     ${list.length? `<div class="foto-grid">${list.slice(0, 60).map(fotoThumbHTML).join('')}</div>` : `<div class="plan-hint">${t('fotosEmpty')}</div>`}
   </div>`;
 }
@@ -3916,6 +3935,109 @@ function fotoViewHTML(){
       <button class="mini-btn" data-action="foto-view-close">${t('closeBtn')}</button>
     </div>
   </div></div>`;
+}
+// ---- Mängel melden ------------------------------------------------------------
+// Jeder kann am BV einen Mangel melden (Text Pflicht, Foto optional, Anlass 'mangel');
+// Chef bekommt Push, sieht offene Mängel in der Übersicht + im BV und hakt ab.
+function openMaengel(pid){ return state.maengel.filter(m=>m.status==='offen' && (pid==null || m.projekt===pid)).sort((a,b)=>b.id-a.id); }
+function mangelCardHTML(m, canDone){
+  const p = state.projects.find(x=>x.id===m.projekt), f = m.fotoId!=null ? state.fotos.find(x=>x.id===m.fotoId) : null;
+  return `<div class="order-card mangel-card${m.status==='erledigt'?' mangel-done':''}">
+    <div class="order-head"><div><div class="no">⚠ BV ${m.projekt}${p? ' – '+escapeHtml(p.name):''}</div><div class="site">${t('mangelBy',{name:escapeHtml(m.by), ts:m.ts})}</div></div></div>
+    <div class="mangel-text">${escapeHtml(m.text)}</div>
+    ${f? `<div class="foto-grid" style="margin-top:8px;">${fotoThumbHTML(f)}</div>`:''}
+    ${m.status==='erledigt'? `<div class="done-label">${t('mangelDoneBy',{name:escapeHtml(m.doneBy||''), ts:m.doneTs||''})}</div>`
+      : canDone? `<button class="advance-btn" data-action="mangel-done" data-id="${m.id}">${t('mangelDone')}</button>` : ''}
+  </div>`;
+}
+function maengelSectionHTML(pid){
+  const open = openMaengel(pid);
+  if(pid==null && !open.length) return '';
+  return `${sectionH(t('maengelHeading'), open.length, 'sec-maengel')}
+    ${open.length? `<div class="card-grid">${open.map(m=>mangelCardHTML(m, state.role==='chef')).join('')}</div>` : `<div class="empty-state" style="padding:14px 10px;">${t('maengelNone')}</div>`}`;
+}
+function mangelHTML(){
+  const d = state.mangelDraft, f = d.fotoId!=null ? state.fotos.find(x=>x.id===d.fotoId) : null;
+  return `<div class="overlay" data-action="mangel-close-bg"><div class="drawer" role="dialog" aria-modal="true" aria-label="${t('mangelTitle')}">
+    <div class="review-head"><div class="eyebrow">BV ${d.projekt}</div><h3>${t('mangelTitle')}</h3></div>
+    <div class="field"><label for="mangelText">${t('mangelTextLabel')}</label><textarea id="mangelText" rows="3" placeholder="${t('mangelTextPh')}">${escapeHtml(d.text||'')}</textarea></div>
+    ${f? `<div class="pick-hint"><b>${t('mangelFotoOk')}</b></div><div class="foto-grid">${fotoThumbHTML(f)}</div>`
+      : `<label class="anlass-btn">${state.fotoBusy? t('fotoSaving') : '📷 '+t('mangelFotoBtn')}<input type="file" accept="image/*" capture="environment" data-anlass="mangel" data-projekt="${d.projekt}" data-mangel="1" hidden></label>`}
+    ${d.warn? `<div class="warn">${d.warn}</div>`:''}
+    <button class="advance-btn" data-action="mangel-send" style="margin-top:12px;">${t('mangelSend')}</button>
+    <button class="mini-btn" data-action="mangel-close" style="margin-top:8px;width:100%;">${t('closeBtn')}</button>
+  </div></div>`;
+}
+async function sendMangel(){
+  const d = state.mangelDraft; if(!d) return;
+  const el = document.getElementById('mangelText'); if(el) d.text = el.value;
+  const text = (d.text||'').trim();
+  if(text.length < 2){ d.warn = t('mangelNeedText'); render(); return; }
+  const m = {id: state.mangelCounter++, projekt: d.projekt, fotoId: d.fotoId!=null ? d.fotoId : null, text, by: state.name, ts: nowStr(), status:'offen', doneBy:null, doneTs:null};
+  state.maengel.push(m); state.mangelDraft = null;
+  render(); await saveShared();
+  notify({roles:['chef']}, 'nMangelT', 'nMangelB', {bv:'BV '+m.projekt, name:m.by, text:m.text.slice(0,120)});
+  showToast(t('mangelSent'));
+}
+async function doneMangel(id){
+  const m = state.maengel.find(x=>x.id===id); if(!m || state.role!=='chef') return;
+  m.status = 'erledigt'; m.doneBy = state.name; m.doneTs = nowStr();
+  render(); await saveShared();
+}
+// ---- Unterschrift Empfänger (nur auf Wunsch, Extra-Knopf auf der Karte) --------
+// Striche liegen in state.sigDraft.strokes (0..1-Koordinaten), damit Neuzeichnen
+// sie nicht verliert; Speichern = PNG in Bucket 'fotos', order.signatur = {path,name,ts,by}.
+function sigHTML(){
+  const d = state.sigDraft;
+  return `<div class="overlay" data-action="sig-close-bg"><div class="drawer" role="dialog" aria-modal="true" aria-label="${t('sigTitle')}">
+    <div class="review-head"><div class="eyebrow">#${d.order}</div><h3>${t('sigTitle')}</h3></div>
+    <canvas id="sigCanvas" class="sig-canvas" aria-label="${t('sigTitle')}"></canvas>
+    <div class="field" style="margin-top:10px;"><label for="sigName">${t('sigNameLabel')}</label><input id="sigName" type="text" autocomplete="off" value="${escapeHtml(d.name||'')}"></div>
+    ${d.warn? `<div class="warn">${d.warn}</div>`:''}
+    <div class="btn-row-secondary"><button class="mini-btn" data-action="sig-clear">${t('sigClear')}</button><button class="mini-btn" data-action="sig-close">${t('closeBtn')}</button></div>
+    <button class="advance-btn" data-action="sig-save" ${d.busy?'disabled':''}>${d.busy? t('fotoSaving') : t('sigSave')}</button>
+  </div></div>`;
+}
+function drawSig(){
+  const c = document.getElementById('sigCanvas'); if(!c || !state.sigDraft) return;
+  const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  c.width = Math.max(1, Math.round(r.width*dpr)); c.height = Math.max(1, Math.round(r.height*dpr));
+  const g = c.getContext('2d'); g.clearRect(0, 0, c.width, c.height);
+  g.strokeStyle = '#111111'; g.lineWidth = 2.5*dpr; g.lineCap = 'round'; g.lineJoin = 'round';
+  state.sigDraft.strokes.forEach(st=>{ g.beginPath(); st.forEach(([x,y], i)=>{ const px = x*c.width, py = y*c.height; if(i) g.lineTo(px, py); else g.moveTo(px, py); }); if(st.length===1) g.lineTo(st[0][0]*c.width+0.1, st[0][1]*c.height); g.stroke(); });
+}
+let sigDrawing = null;
+function sigPoint(e){ const c = document.getElementById('sigCanvas'); const r = c.getBoundingClientRect(); return [Math.min(1, Math.max(0, (e.clientX-r.left)/r.width)), Math.min(1, Math.max(0, (e.clientY-r.top)/r.height))]; }
+document.addEventListener('pointerdown', e=>{ if(!state.sigDraft || !e.target || e.target.id!=='sigCanvas') return; e.preventDefault(); try{ e.target.setPointerCapture(e.pointerId); }catch(_){} sigDrawing = [sigPoint(e)]; state.sigDraft.strokes.push(sigDrawing); drawSig(); });
+document.addEventListener('pointermove', e=>{ if(!sigDrawing || !state.sigDraft) return; sigDrawing.push(sigPoint(e)); drawSig(); });
+['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev, ()=>{ sigDrawing = null; }));
+async function saveSig(){
+  const d = state.sigDraft; if(!d || d.busy) return;
+  const nameEl = document.getElementById('sigName'); if(nameEl) d.name = nameEl.value;
+  if(!d.strokes.length){ d.warn = t('sigEmpty'); render(); return; }
+  const o = state.orders.find(x=>x.id===d.order); if(!o) return;
+  d.busy = true; d.warn = ''; render();
+  try{
+    const c = document.createElement('canvas'); c.width = 600; c.height = 260;
+    const g = c.getContext('2d'); g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, 600, 260);
+    g.strokeStyle = '#111111'; g.lineWidth = 3; g.lineCap = 'round'; g.lineJoin = 'round';
+    d.strokes.forEach(st=>{ g.beginPath(); st.forEach(([x,y], i)=> i? g.lineTo(x*600, y*260) : g.moveTo(x*600, y*260)); g.stroke(); });
+    const blob = await new Promise(r=>c.toBlob(r, 'image/png'));
+    const path = `${o.projekt? 'bv'+o.projekt : 'ohne-bv'}/unterschrift-${o.id}-${Math.random().toString(36).slice(2,10)}.png`;
+    const {error} = await supabaseClient.storage.from(FOTO_BUCKET).upload(path, blob, {contentType:'image/png', upsert:false});
+    if(error) throw error;
+    o.signatur = {path, name: (d.name||'').trim(), ts: nowStr(), by: state.name};
+    state.sigDraft = null;
+    render(); await saveShared();
+    showToast(t('sigSaved'));
+  }catch(e){ console.warn('Unterschrift', e); d.busy = false; d.warn = t('sigFail'); render(); }
+}
+async function printOrderWithSig(id){
+  const o = state.orders.find(x=>x.id===id);
+  if(o && o.signatur && !fotoUrlCache[o.signatur.path]){
+    try{ const {data} = await supabaseClient.storage.from(FOTO_BUCKET).createSignedUrls([o.signatur.path], 6*3600); if(data && data[0] && data[0].signedUrl) fotoUrlCache[o.signatur.path] = data[0].signedUrl; }catch(e){}
+  }
+  printOrder(id);
 }
 function projektCardHTML(p, editable){
   const orders = state.orders.filter(o=>o.projekt===p.id).sort((a,b)=>a.id-b.id);
@@ -4124,6 +4246,7 @@ function projektDetailHTML(p){
       <h3 class="section-h" id="sec-material">${t('matTitle')}</h3>
       ${materialTableHTML(p.id, false)}
       <button class="mini-btn" style="margin-top:8px;" data-action="material-print" data-id="${p.id}">${t('matPrint')}</button>
+      ${maengelSectionHTML(p.id)}
       ${p.aktiv? `<button class="pu-open-btn" data-action="pu-open" data-projekt="${p.id}">${t('puBvAdd')}</button>`:''}
     </div>
     <div>
@@ -4676,6 +4799,7 @@ function chefHTML(){
   ${tab==='lkws' ? `${chefPositionsHTML()}${sectionH(t('fahrerStatusHeading'))}${driverStatusListHTML()}` : tab==='bauvorhaben' ? projekteHTML() : tab==='planen' ? planenHTML() : tab==='personal' ? personalHTML() : `
   ${widgetsHTML('chef')}${statStripHTML('chef')}
   <div class="export-row"><button class="mini-btn" data-action="export-open">${t('exportOpenBtn')}</button></div>
+  ${maengelSectionHTML(null)}
   ${openPickups().length? `<h3 style="margin-top:22px;font-size:15px;">${t('puChefHeading')} (${openPickups().length})</h3>${pickupListHTML(openPickups(), 'chef')}`:''}
   ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
     return `${sectionH(t('openOrdersHeading'), open.length, 'sec-offen')}
@@ -4993,6 +5117,7 @@ function render(){
   iconize(document.getElementById('app'));
   animateOverlayOnOpen();
   numpadFocusAfter(np);
+  if(state.sigDraft) drawSig();
   if(state.loggedIn && state.fotos.some(f=>!(f.path in fotoUrlCache))) setTimeout(refreshFotoUrls, 0);
 }
 // Ziffernblock (Barrierefreiheit): beim Öffnen Fokus auf OK, beim Neuzeichnen
@@ -5051,6 +5176,8 @@ function renderView(){
     ${state.exportOpen ? exportHTML() : ''}
     ${state.fotoDraft ? fotoPickerHTML() : ''}
     ${state.fotoView ? fotoViewHTML() : ''}
+    ${state.mangelDraft ? mangelHTML() : ''}
+    ${state.sigDraft ? sigHTML() : ''}
     ${state.numpad ? numpadHTML() : ''}
     ${state.confirmOrder ? confirmHTML(state.confirmOrder) : ''}
   `;
@@ -5263,6 +5390,14 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     numpadReturn = {id:el.dataset.id, i:[...document.querySelectorAll('.qty-num')].filter(x=>x.dataset.numfor===el.dataset.id).indexOf(el)};
     state.numpad = {id:el.dataset.id, val:''}; render();
   }
+  if(action==='mangel-open'){ state.mangelDraft = {projekt: parseInt(el.dataset.projekt,10), text:'', fotoId:null, warn:''}; render(); }
+  if(action==='mangel-close' || (action==='mangel-close-bg' && e.target===el)){ state.mangelDraft = null; render(); }
+  if(action==='mangel-send'){ await sendMangel(); }
+  if(action==='mangel-done'){ await doneMangel(parseInt(el.dataset.id,10)); }
+  if(action==='sig-open'){ state.sigDraft = {order: parseInt(el.dataset.order,10), strokes:[], name:'', warn:'', busy:false}; render(); }
+  if(action==='sig-close' || (action==='sig-close-bg' && e.target===el)){ state.sigDraft = null; render(); }
+  if(action==='sig-clear' && state.sigDraft){ state.sigDraft.strokes = []; drawSig(); }
+  if(action==='sig-save'){ await saveSig(); }
   if(action==='foto-open'){ state.fotoDraft = {projekt: parseInt(el.dataset.projekt,10)}; render(); }
   if(action==='foto-close' || (action==='foto-close-bg' && e.target===el)){ state.fotoDraft = null; render(); }
   if(action==='foto-view'){ state.fotoView = parseInt(el.dataset.id,10); render(); }
@@ -5485,7 +5620,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     const row = [...document.querySelectorAll('.art-row')].find(r=>r.dataset.art===key);
     if(row){ const d = row.getBoundingClientRect().top - top0; if(Math.abs(d)>1) window.scrollBy(0, d); }
   }
-  if(action==='print-order'){ printOrder(parseInt(el.dataset.order,10)); }
+  if(action==='print-order'){ await printOrderWithSig(parseInt(el.dataset.order,10)); }
   if(action==='chef-tab'){ state.chefTab = el.dataset.tab; state.chefProjekt = null; state.newPin = null; render(); }
   if(action==='widget-go'){
     // Kachel antippen: passenden Reiter öffnen und zur Liste springen
@@ -5794,10 +5929,11 @@ document.getElementById('app').addEventListener('change', async (e)=>{
     await saveShared();
   }
   if(e.target.matches && e.target.matches('input[type=file][data-anlass]') && e.target.files && e.target.files.length){
-    const file = e.target.files[0], pid = parseInt(e.target.dataset.projekt,10), anlass = e.target.dataset.anlass;
+    const file = e.target.files[0], pid = parseInt(e.target.dataset.projekt,10), anlass = e.target.dataset.anlass, forMangel = !!e.target.dataset.mangel;
     e.target.value = '';
-    state.fotoDraft = null;
-    await takePhotoFromFile(file, pid, anlass);
+    if(!forMangel) state.fotoDraft = null;
+    const f = await takePhotoFromFile(file, pid, anlass);
+    if(forMangel && f && state.mangelDraft){ state.mangelDraft.fotoId = f.id; render(); }
   }
   if(e.target.id && e.target.id.startsWith('planFile-') && e.target.files && e.target.files.length){
     const files = [...e.target.files];
@@ -5870,6 +6006,8 @@ function setPuQtyFromInput(inp, final){
 }
 document.getElementById('app').addEventListener('input', (e)=>{
   if(e.target.dataset && e.target.dataset.pq){ setPuQtyFromInput(e.target, false); return; }
+  if(state.mangelDraft && e.target.id==='mangelText'){ state.mangelDraft.text = e.target.value; return; }
+  if(state.sigDraft && e.target.id==='sigName'){ state.sigDraft.name = e.target.value; return; }
   if(state.puDraft && e.target.id==='puOrt'){ state.puDraft.ort = e.target.value; return; }
   if(state.puDraft && e.target.id==='puNotiz'){ state.puDraft.notiz = e.target.value; return; }
   if(state.puDraft && e.target.id==='puSearch'){
@@ -5941,7 +6079,7 @@ document.addEventListener('keydown', (e)=>{
 });
 
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.fotoDraft || state.fotoView || state.puDraft || state.myPwOpen) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.fotoDraft || state.fotoView || state.mangelDraft || state.sigDraft || state.puDraft || state.myPwOpen) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
