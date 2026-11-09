@@ -2388,9 +2388,15 @@ async function manageUsers(body){
   if(info && info.error) throw new Error(t('persErr',{msg:info.error}));
   throw new Error(t('persFnMissing'));
 }
+// Vorübergehende Bedien-Zustände einer Rolle (Tour-Auswahl, „Wohin?“ offen,
+// Ziffernblock, aufgeklappte Teile-Art) beim Abmelden/Rollenwechsel verwerfen.
+function clearRoleUi(){
+  state.tourSel = []; state.zielOpen = false; state.numpad = null; state.openArt = null;
+}
 // Sofort lokal + beim Server abmelden, ohne vorher zu speichern
 // (z. B. wenn der Chef einem die Rolle entzogen hat).
 function dropAuthLocal(){
+  clearRoleUi();
   try{ supabaseClient.auth.signOut({scope:'local'}); }catch(e){}
   state.authed = false; state.calUnlocked = false; state.positions = {};
   syncBase = null; state.syncPending = false; state.syncOffline = false;
@@ -2403,7 +2409,7 @@ async function signOutAll(){
   try{ if(state.syncPending) await sync(); }catch(e){}
   try{ await supabaseClient.auth.signOut({scope:'local'}); }catch(e){}
   state.authed = false; state.loggedIn = false; state.role = null; state.authName = null; state.askChefPw = false;
-  state.myPwOpen = false; state.newPin = null;
+  state.myPwOpen = false; state.newPin = null; clearRoleUi();
   state.calUnlocked = false; state.positions = {};
   syncBase = null; state.syncPending = false; state.syncOffline = false;
   lsSet(CACHE_KEY, null); lsSet(PENDING_KEY, null);
@@ -4873,7 +4879,7 @@ document.getElementById('app').addEventListener('click', async (e)=>{
     if(employeeRoles(state.authName).length<=1) state.authName=null;
     render();
   }
-  if(action==='switch-role'){ await stopGeo(true); state.loggedIn=false; state.role=null; state.askChefPw=false; state.loginWarn=''; clearSession(); render(); }
+  if(action==='switch-role'){ await stopGeo(true); state.loggedIn=false; state.role=null; state.askChefPw=false; state.loginWarn=''; clearRoleUi(); clearSession(); render(); }
   if(action==='logout'){
     if(state.syncPending && !confirm(t('logoutPendingConfirm'))) return;
     await stopGeo(true); await unlinkPushSub();
