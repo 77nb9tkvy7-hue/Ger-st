@@ -19,7 +19,7 @@ const SHELL = 'geruest-shell-' + VERSION;
 const RUNTIME = 'geruest-runtime-' + VERSION;
 const APP_PAGE = './geruest-bestell-app.html';
 const SHELL_FILES = [APP_PAGE, './index.html', './manifest.json', './logo.png', './icon-192.png', './icon-512.png',
-  './vendor/fonts/fonts.css', './vendor/supabase/supabase.js', './vendor/supabase/591.supabase.js'];
+  './vendor/fonts/fonts.css', './vendor/supabase/supabase.js', './vendor/supabase/591.supabase.js', './vendor/qrcode/qrcode.js'];
 const CDN_FILES = [];
 // Fremde Server, deren Dateien gespeichert werden dürfen (seit v2 keine mehr)
 const CDN_HOSTS = [];
