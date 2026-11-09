@@ -128,7 +128,7 @@
   /* Langes Drücken: Zeile füllt sich in 480 ms (= lpTimer), dann kommt das
      Detail-Popup. Loslassen zieht die Füllung schnell zurück. */
   .lp-fill{position:absolute;inset:0;z-index:-1;background:var(--accent-soft);clip-path:inset(0 100% 0 0);transition:clip-path 150ms var(--ease-out);pointer-events:none;}
-  .t-name.holding .lp-fill{clip-path:inset(0 0 0 0);transition:clip-path 480ms linear;}
+  .t-name.holding .lp-fill,.var-name.holding .lp-fill{clip-path:inset(0 0 0 0);transition:clip-path 480ms linear;}
   .t-icon{width:22px;height:22px;color:var(--accent);flex:none;}
   .t-unit{color:var(--muted);font-size:13px;}
   .t-kg{font-size:13px;color:var(--muted);opacity:0.85;white-space:nowrap;}
@@ -142,6 +142,40 @@
   .qty-ctl .qty-val::-webkit-outer-spin-button,.qty-ctl .qty-val::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
   .qty-ctl .qty-val:focus{outline:none;background:var(--accent-soft);}
   .qty-ctl .qty-val::placeholder{color:var(--muted);opacity:.7;}
+
+  /* Bestellliste (Task 5): großes Suchfeld oben, Teile-Arten als Zeilen,
+     Antippen klappt die Varianten auf. Bewusst KEINE Animation (render()
+     zeichnet alle 4 s neu). */
+  .catalog-col{max-width:820px;}
+  .bv-line{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;}
+  .bv-line label{font-size:var(--fs-small);color:var(--muted);font-weight:600;flex:none;}
+  .bv-line select{flex:1;min-width:0;min-height:var(--tap);padding:0 12px;border:1.5px solid var(--line);border-radius:12px;font-size:var(--fs-body);font-family:inherit;background:var(--card);color:var(--ink);text-overflow:ellipsis;}
+  .bv-line select:focus{outline:none;border-color:var(--accent);}
+  .katalog-search.big{height:56px;min-height:56px;font-size:17px;padding:0 16px;border-radius:14px;border-width:2px;margin:0 0 10px 0;-webkit-appearance:none;appearance:none;}
+  .quick-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 0 10px 0;}
+  .quick-chips::-webkit-scrollbar{display:none;}
+  .reorder-chip{flex:0 0 auto;min-height:var(--tap);padding:0 16px;border:1.5px solid var(--line-strong);border-radius:999px;background:var(--card);color:var(--ink);font-family:'Inter',sans-serif;font-size:var(--fs-small);font-weight:600;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+  .art-list{border:1px solid var(--line-strong);border-radius:12px;background:var(--card);overflow:hidden;margin:10px 0 12px 0;}
+  .art + .art,.fav-block + .art{border-top:1px solid var(--line);}
+  .art-row{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:6px 12px 6px 14px;background:none;border:none;color:var(--ink);font-family:inherit;text-align:left;cursor:pointer;}
+  .art-name{flex:1;min-width:0;font-size:16px;font-weight:700;}
+  .art-meta{flex:none;font-size:var(--fs-small);color:var(--muted);white-space:nowrap;}
+  .art-meta b{color:var(--accent-dark);font-weight:800;}
+  .art-chev{flex:none;display:flex;color:var(--muted);}
+  .art.open .art-chev{transform:rotate(90deg);}
+  .art.open > .art-row{background:var(--accent-soft);}
+  .art.has-cart > .art-row{box-shadow:inset 4px 0 0 var(--accent);}
+  .art-body{border-top:1px solid var(--line);background:var(--surface-2);}
+  .art-sub{font-size:var(--fs-small);font-weight:700;color:var(--accent-dark);letter-spacing:0.03em;padding:10px 14px 4px 14px;}
+  .fav-block{border-bottom:2px solid var(--line-strong);}
+  .fav-h{padding-top:12px;}
+  .var-row{display:flex;align-items:center;gap:10px;min-height:60px;padding:6px 10px 6px 14px;border-top:1px solid var(--line);}
+  .art-sub + .var-row,.art-body > .var-row:first-child,.search-results > .var-row:first-child{border-top:none;}
+  .var-row.on .var-label{color:var(--accent-dark);}
+  .var-name{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;min-height:48px;position:relative;isolation:isolate;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;border-radius:8px;padding:0 4px;margin-left:-4px;}
+  .var-label{font-size:17px;font-weight:700;line-height:1.25;}
+  .var-sub{font-size:var(--fs-small);color:var(--muted);}
+  .pu-open-btn.calm{border:1.5px solid var(--line-strong);text-align:left;padding:0 14px;display:flex;align-items:center;font-weight:600;margin:4px 0 14px 0;}
 
   /* Detail-Popup pro Teil (langes Drücken auf den Namen) */
   .overlay-center{align-items:center;}
@@ -515,7 +549,7 @@
   .submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
   .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,
   .inv-actions button,.refresh-btn,.role-chip,.geo-retry,.back-link,.print-btn,
-  button.widget,.proj-row{
+  button.widget,.proj-row,.art-row,.reorder-chip{
     transition:transform 140ms var(--ease-out), filter 140ms var(--ease-out);
     touch-action:manipulation; -webkit-tap-highlight-color:transparent;
   }
@@ -523,7 +557,8 @@
   .mini-btn:active,.ziel-chip:active,.pick-btn:active,.day-cell:active,.role-btn:active,.loc-btn:active,
   .done-toggle:active,.reorder-btn:active,.pick-all-btn:active,.pu-open-btn:active,.seg-control button:active,
   .qty-ctl button:active,.inv-actions button:active,.refresh-btn:active,.role-chip:active,.geo-retry:active,
-  .print-btn:active{transform:scale(0.97);}
+  .print-btn:active,.reorder-chip:active{transform:scale(0.97);}
+  .art-row:active{transform:scale(0.99);}
   /* Zahlen, die sich bei der Aktualisierung ändern: gleich breite Ziffern, damit nichts wackelt */
   .w-value,.sec-n,.rn-badge,.stat-chip b,.w-dots{font-variant-numeric:tabular-nums;}
   /* Sichtbarer, einheitlicher Fokus-Rahmen für Tastatur (Chef am PC) */
@@ -580,7 +615,7 @@
   @media (prefers-reduced-motion: reduce){
     :root :is(.submit-btn,.advance-btn,.chip-btn,.mini-btn,.ziel-chip,.pick-btn,.day-cell,.role-btn,.loc-btn,
       .done-toggle,.reorder-btn,.pick-all-btn,.pu-open-btn,.seg-control button,.qty-ctl button,.inv-actions button,
-      .refresh-btn,.role-chip,.geo-retry,.print-btn,button.widget,.proj-row):active{transform:none;}
+      .refresh-btn,.role-chip,.geo-retry,.print-btn,button.widget,.proj-row,.art-row,.reorder-chip):active{transform:none;}
     :root button.stat-chip-btn:active{transform:none;}
     .toast,.toast.show{transform:translateX(-50%);}
     .jump-flash{animation-name:jumpFlashSoft;}
@@ -891,6 +926,7 @@ de:{
   sys_rahmen:'Rahmen', weightApprox:'ca.', weightLabel:'Gewicht', weightTotal:'Gesamtgewicht', weightMissing:'+ {n} Teil(e) ohne Gewichtsangabe', perPiece:'pro Stück',
   sys_modul:'Modul', searchPlaceholder:'Teil suchen…', searchNoResults:'Keine Teile gefunden.',
   favTitle:'⭐ Häufig bestellt',
+  group_konsole:'Konsole', artLengths:'{n} Längen', artVariants:'{n} Varianten', artInCart:'{n} im Auftrag', reorderLastChip:'🔁 Letzte Bestellung nochmal (#{id})',
   printBtn:'🖨️ Lieferschein drucken', pkgOne:'Paket', pkgMany:'Pakete', pkgAnd:'und',
 },
 pl:{
@@ -1083,6 +1119,7 @@ pl:{
   sys_rahmen:'Ramy', weightApprox:'ok.', weightLabel:'Waga', weightTotal:'Waga całkowita', weightMissing:'+ {n} poz. bez podanej wagi', perPiece:'za sztukę',
   sys_modul:'Modul', searchPlaceholder:'Szukaj części…', searchNoResults:'Nie znaleziono żadnych części.',
   favTitle:'⭐ Często zamawiane',
+  group_konsole:'Konsola', artLengths:'{n} długości', artVariants:'{n} wariantów', artInCart:'{n} w zamówieniu', reorderLastChip:'🔁 Ostatnie zamówienie ponownie (#{id})',
   printBtn:'🖨️ Drukuj dowód dostawy', pkgOne:'paczka', pkgMany:'paczki', pkgAnd:'i',
 },
 sk:{
@@ -1275,6 +1312,7 @@ sk:{
   sys_rahmen:'Rámy', weightApprox:'cca', weightLabel:'Hmotnosť', weightTotal:'Celková hmotnosť', weightMissing:'+ {n} pol. bez hmotnosti', perPiece:'za kus',
   sys_modul:'Modul', searchPlaceholder:'Hľadať diel…', searchNoResults:'Nenašli sa žiadne diely.',
   favTitle:'⭐ Často objednávané',
+  group_konsole:'Konzola', artLengths:'{n} dĺžok', artVariants:'{n} variantov', artInCart:'{n} v objednávke', reorderLastChip:'🔁 Poslednú objednávku znova (#{id})',
   printBtn:'🖨️ Vytlačiť dodací list', pkgOne:'balík', pkgMany:'balíky', pkgAnd:'a',
 },
 hr:{
@@ -1467,6 +1505,7 @@ hr:{
   sys_rahmen:'Okviri', weightApprox:'oko', weightLabel:'Težina', weightTotal:'Ukupna težina', weightMissing:'+ {n} stavki bez težine', perPiece:'po komadu',
   sys_modul:'Modul', searchPlaceholder:'Pretraži dio…', searchNoResults:'Nema pronađenih dijelova.',
   favTitle:'⭐ Često naručivano',
+  group_konsole:'Konzola', artLengths:'{n} duljina', artVariants:'{n} varijanti', artInCart:'{n} u narudžbi', reorderLastChip:'🔁 Zadnju narudžbu ponovno (#{id})',
   printBtn:'🖨️ Ispiši otpremnicu', pkgOne:'paket', pkgMany:'paketa', pkgAnd:'i',
 },
 en:{
@@ -1659,6 +1698,7 @@ en:{
   sys_rahmen:'Frames', weightApprox:'approx.', weightLabel:'Weight', weightTotal:'Total weight', weightMissing:'+ {n} item(s) without weight', perPiece:'per piece',
   sys_modul:'Modul', searchPlaceholder:'Search parts…', searchNoResults:'No parts found.',
   favTitle:'⭐ Frequently ordered',
+  group_konsole:'Bracket', artLengths:'{n} lengths', artVariants:'{n} variants', artInCart:'{n} in order', reorderLastChip:'🔁 Repeat last order (#{id})',
   printBtn:'🖨️ Print delivery note', pkgOne:'package', pkgMany:'packages', pkgAnd:'and',
 },
 };
@@ -1897,7 +1937,7 @@ const state = {
   lkwEntries:[], lkwCounter:1, lkwEditId:null, lkwDraft:null, lkwWarn:'',
   itemPopup:null, orderReview:null,
   lang:'de', langMenuOpen:false,
-  catalogSearch:'', systemSel: SYSTEMS[0].id, collapsedCats:{},
+  catalogSearch:'', systemSel: SYSTEMS[0].id, openArt:null,
 };
 
 function slug(s){ return s.replace(/[^a-zA-Z]/g,''); }
@@ -2527,31 +2567,99 @@ function qtyControlHTML(it){
   </div>`;
 }
 
-function catalogRowHTML(it, alt){
-  return `<tr class="${alt? 'row-alt':''}">
-    <td class="t-name" data-longpress="${it.id}"><span class="lp-fill"></span><span class="t-icon">${ICONS[it.icon]}</span>${itemName(it)}</td>
-    <td class="t-unit">${unitLabel(it.unit)}${it.kg!=null? `<div class="t-kg">${it.kg.toLocaleString(LOCALES[state.lang]||'de-DE')} kg</div>`:''}</td>
-    <td>${qtyControlHTML(it)}</td>
-  </tr>`;
+// ---- Bestellliste: Teile-Arten mit Varianten ---------------------------
+// Auf der Baustelle kennt man die Teile-ART und wählt dann die Länge/
+// Variante ("Konsole – welche: 30 oder 70?"). Darum: großes Suchfeld oben,
+// dann je Teile-Art EINE Zeile; Antippen klappt genau diese Art auf (state.
+// openArt), eine andere schließt die vorige. PART_GROUPS fasst mehrere
+// Teile-Arten (part_<key>-Namensschlüssel) zu einer Anzeige-Zeile zusammen
+// (Name T.group_<gruppe>) – nur Anzeige, Artikel-IDs bleiben unverändert.
+const PART_GROUPS = { konsole: ['konsole30','konsole70','konsole100'] };
+const PART_GROUP_OF = Object.fromEntries(Object.entries(PART_GROUPS).flatMap(([g, keys])=>keys.map(k=>[k, g])));
+
+function variantRowHTML(it, full){
+  const label = (!full && it.v!=null) ? variantLabel(it.v, state.lang) : itemName(it);
+  const kg = it.kg!=null ? `${it.kg.toLocaleString(LOCALES[state.lang]||'de-DE')} kg` : '';
+  const on = (state.cart[it.id]||0) > 0;
+  return `<div class="var-row${on?' on':''}">
+    <div class="var-name" data-longpress="${it.id}"><span class="lp-fill"></span>
+      <span class="var-label">${label}</span>
+      <span class="var-sub">${unitLabel(it.unit)}${kg? ' · '+kg : ''}</span>
+    </div>
+    ${qtyControlHTML(it)}
+  </div>`;
 }
 
-// Kategorien starten eingeklappt (Liste soll kurz wirken), "Häufig
-// bestellt" startet aufgeklappt. Eine Kategorie mit Teilen im
-// aktuellen Warenkorb bleibt immer sichtbar, auch wenn zugeklappt,
-// damit man die eigene Auswahl nicht aus den Augen verliert.
-function isCatCollapsed(id){
-  if(Object.prototype.hasOwnProperty.call(state.collapsedCats, id)) return state.collapsedCats[id];
-  return id !== '_fav';
+// Teile-Arten des aktuellen Systems (Reihenfolge wie im Excel), Gruppen an
+// der Stelle ihres ersten Mitglieds: [{key, label, icon, parts:[{cat, label, items}]}]
+function artEntries(systemItems, counts){
+  const out = [], groupIdx = {};
+  systemCategories().forEach(cat=>{
+    const items = systemItems.filter(it=>it.cat===cat.id).sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
+    if(!items.length) return;
+    const part = {cat:cat.id, label:catName(cat), items};
+    const g = PART_GROUP_OF[PART_NAMEKEY[cat.id]];
+    if(g){
+      if(groupIdx[g]==null){ groupIdx[g] = out.length; out.push({key:'g:'+g, label:t('group_'+g), icon:items[0].icon, parts:[]}); }
+      out[groupIdx[g]].parts.push(part);
+    } else {
+      out.push({key:cat.id, label:part.label, icon:items[0].icon, parts:[part]});
+    }
+  });
+  return out;
 }
 
-function catSectionHTML(id, label, items){
-  const hasCartItems = items.some(it=>(state.cart[it.id]||0)>0);
-  const open = !isCatCollapsed(id) || hasCartItems;
-  let rowIdx = 0;
-  const rows = open ? items.map(it=>{ rowIdx++; return catalogRowHTML(it, rowIdx%2===0); }).join('') : '';
-  return `<tr class="cat-row" data-action="cat-toggle" data-cat="${id}">
-    <td colspan="3"><span class="cat-chevron">${open?'▾':'▸'}</span>${label} <span class="cat-count">(${items.length})</span></td>
-  </tr>${rows}`;
+function artRowHTML(a){
+  const items = a.parts.flatMap(p=>p.items);
+  const inCart = items.reduce((s,it)=>s+(state.cart[it.id]||0), 0);
+  const open = state.openArt===a.key;
+  const numeric = items.every(it=>typeof it.v==='number');
+  const meta = inCart ? `<b>${t('artInCart',{n:inCart})}</b>`
+    : (items.length>1 ? t(numeric? 'artLengths':'artVariants', {n:items.length}) : '');
+  let body = '';
+  if(open){
+    body = `<div class="art-body">${a.parts.map(p=>{
+      // Unterüberschrift nur, wenn eine Gruppe mehrere Arten hat und diese Art mehrere Varianten
+      const sub = a.parts.length>1 && p.items.length>1;
+      return (sub? `<div class="art-sub">${p.label}</div>` : '') +
+        p.items.map(it=>variantRowHTML(it, a.parts.length>1 && !sub && it.v==null)).join('');
+    }).join('')}</div>`;
+  }
+  return `<div class="art${open?' open':''}${inCart?' has-cart':''}">
+    <button type="button" class="art-row" data-action="art-toggle" data-art="${a.key}" aria-expanded="${open}">
+      <span class="t-icon">${ICONS[a.icon]||''}</span>
+      <span class="art-name">${a.label}</span>
+      <span class="art-meta" data-idle="${items.length>1 ? t(numeric? 'artLengths':'artVariants', {n:items.length}) : ''}">${meta}</span>
+      <span class="art-chev" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+    </button>
+    ${body}
+  </div>`;
+}
+
+// Gemeinsam für Baustelle (mit "Häufig bestellt") und Chef-Planung.
+function artListHTML(withFav){
+  const counts = itemOrderCounts();
+  const search = state.catalogSearch.trim().toLowerCase();
+  const systemItems = SYSTEMS.length>1 ? CATALOG.filter(inSystem) : CATALOG;
+  if(search){
+    const matches = systemItems.filter(it=>matchSearch(it, search)).sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
+    return `<div class="art-list search-results">${matches.length
+      ? matches.map(it=>variantRowHTML(it, true)).join('')
+      : `<div class="empty-state">${t('searchNoResults')}</div>`}</div>`;
+  }
+  let fav = '';
+  if(withFav){
+    const favIds = Object.keys(counts).filter(id=>systemItems.some(it=>it.id===id)).sort((a,b)=>counts[b]-counts[a]).slice(0,5);
+    if(favIds.length) fav = `<div class="fav-block"><div class="art-sub fav-h">${t('favTitle')}</div>${favIds.map(id=>variantRowHTML(systemItems.find(x=>x.id===id), true)).join('')}</div>`;
+  }
+  return `<div class="art-list">${fav}${artEntries(systemItems, counts).map(artRowHTML).join('')}</div>`;
+}
+
+function systemTabsHTML(){
+  return SYSTEMS.length>1? `<div class="seg-control">${SYSTEMS.map(s=>`<button class="${state.systemSel===s.id?'active':''}" data-action="system-tab" data-sys="${s.id}">${t(s.nameKey)}</button>`).join('')}</div>` : '';
+}
+function catalogSearchHTML(){
+  return `<input class="katalog-search big" id="catalogSearch" type="search" enterkeyhint="search" placeholder="${t('searchPlaceholder')}" value="${state.catalogSearch.replace(/"/g,'&quot;')}" autocomplete="off">`;
 }
 
 function catalogHTML(){
@@ -2561,46 +2669,19 @@ function catalogHTML(){
   const count = cartCount();
   const aktive = state.projects.filter(p=>p.aktiv);
   const freiGewaehlt = !aktive.length || state.selProjekt==='_frei';
-  const counts = itemOrderCounts();
-  const search = state.catalogSearch.trim().toLowerCase();
-  const systemItems = SYSTEMS.length>1 ? CATALOG.filter(inSystem) : CATALOG;
-
-  let rows = '';
-  let rowIdx = 0;
-  if(search){
-    const matches = systemItems
-      .filter(it=>matchSearch(it, search))
-      .sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
-    rows = matches.length
-      ? matches.map(it=>{ rowIdx++; return catalogRowHTML(it, rowIdx%2===0); }).join('')
-      : `<tr><td colspan="3" class="empty-state">${t('searchNoResults')}</td></tr>`;
-  } else {
-    const favIds = Object.keys(counts)
-      .filter(id=>systemItems.some(it=>it.id===id))
-      .sort((a,b)=>counts[b]-counts[a])
-      .slice(0,5);
-    if(favIds.length){
-      const favItems = favIds.map(id=>systemItems.find(x=>x.id===id));
-      rows += catSectionHTML('_fav', t('favTitle'), favItems);
-    }
-    systemCategories().forEach(cat=>{
-      const items = systemItems.filter(it=>it.cat===cat.id).sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
-      if(!items.length) return;
-      rows += catSectionHTML(cat.id, catName(cat), items);
-    });
-  }
+  const last = mineAll[0];
+  const sp = aktive.find(p=>String(p.id)===String(state.selProjekt)) || (!state.selProjekt ? aktive[0] : null);
 
   return `<h2 class="view-title role-title">${t('catalogTitle')}</h2>
-  <p class="view-sub">${t('catalogSub')}</p>
-  ${widgetsHTML('baustelle')}${statStripHTML('baustelle')}
-  ${aktive.length? `<div class="field">
-    <label>${t('projektLabel')}</label>
+  <p class="view-sub hide-phone">${t('catalogSub')}</p>
+  <div class="catalog-col">
+  ${aktive.length? `<div class="bv-line">
+    <label for="projektSelect">${t('projektLabel')}</label>
     <select id="projektSelect">
       ${aktive.map(p=>`<option value="${p.id}" ${String(state.selProjekt)===String(p.id)?'selected':''}>BV ${p.id} – ${p.name}</option>`).join('')}
       <option value="_frei" ${state.selProjekt==='_frei'?'selected':''}>${t('projektFreeOption')}</option>
     </select>
   </div>`:''}
-  ${(()=>{ const sp = aktive.find(p=>String(p.id)===String(state.selProjekt)) || (!state.selProjekt ? aktive[0] : null); return sp ? plaeneHTML(sp, false) : ''; })()}
   ${freiGewaehlt? `<div class="field">
     <label>${t('ortLabel')}</label>
     <input id="baustelleOrtInput" placeholder="${t('ortPlaceholder')}" value="${state.baustelleOrt}" autocomplete="off">
@@ -2608,13 +2689,14 @@ function catalogHTML(){
   </div>
   <button class="loc-btn" data-action="use-location">${t('locBtn')}</button>`:''}
   <div id="ortWarnArea"></div>
-  <button class="pu-open-btn" data-action="pu-open">${t('puBtnMelden')}</button>
-  ${SYSTEMS.length>1? `<div class="seg-control">${SYSTEMS.map(s=>`<button class="${state.systemSel===s.id?'active':''}" data-action="system-tab" data-sys="${s.id}">${t(s.nameKey)}</button>`).join('')}</div>`:''}
-  <input class="katalog-search" id="catalogSearch" placeholder="${t('searchPlaceholder')}" value="${state.catalogSearch.replace(/"/g,'&quot;')}" autocomplete="off">
-  <div class="tbl-wrap"><table class="order-table">
-    <thead><tr><th>${t('thTeil')}</th><th>${t('thEinheit')}</th><th style="text-align:right;">${t('thMenge')}</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table></div>
+  ${catalogSearchHTML()}
+  ${last && !state.catalogSearch.trim()? `<div class="quick-chips"><button class="reorder-chip" data-action="reorder" data-order="${last.id}">${t('reorderLastChip',{id:last.id})}</button></div>`:''}
+  ${systemTabsHTML()}
+  ${artListHTML(true)}
+  <button class="pu-open-btn calm" data-action="pu-open">${t('puBtnMelden')}</button>
+  ${sp ? plaeneHTML(sp, false) : ''}
+  </div>
+  ${widgetsHTML('baustelle')}${statStripHTML('baustelle')}
   <div class="mine-section">
     <h3 id="sec-mine">${t('mineTitle')}</h3>
     ${mine.length? `<div class="card-grid">${mine.map(o=>orderCardHTML(o,null,reorderBtn(o))).join('')}</div>` : (!mineDone.length? `<div class="empty-state" style="padding:20px 0;">${t('mineEmpty')}</div>` : '')}
@@ -3606,29 +3688,6 @@ function projektDetailHTML(p){
   </div>`;
 }
 
-function planCatalogRowsHTML(){
-  const counts = itemOrderCounts();
-  const search = state.catalogSearch.trim().toLowerCase();
-  const systemItems = SYSTEMS.length>1 ? CATALOG.filter(inSystem) : CATALOG;
-  let rows = '';
-  let rowIdx = 0;
-  if(search){
-    const matches = systemItems
-      .filter(it=>matchSearch(it, search))
-      .sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
-    rows = matches.length
-      ? matches.map(it=>{ rowIdx++; return catalogRowHTML(it, rowIdx%2===0); }).join('')
-      : `<tr><td colspan="3" class="empty-state">${t('searchNoResults')}</td></tr>`;
-  } else {
-    systemCategories().forEach(cat=>{
-      const items = systemItems.filter(it=>it.cat===cat.id).sort((a,b)=>(counts[b.id]||0)-(counts[a.id]||0));
-      if(!items.length) return;
-      rows += catSectionHTML(cat.id, catName(cat), items);
-    });
-  }
-  return rows;
-}
-
 // Planungs-Formular; mit fixedProjekt (Detail-Ansicht eines Bauvorhabens)
 // entfällt die Bauvorhaben-Auswahl.
 function planFormHTML(fixedProjekt){
@@ -3644,12 +3703,9 @@ function planFormHTML(fixedProjekt){
     <div class="field"><label>${t('plDatumLabel')}</label>
       <input type="date" id="planDateInput" value="${state.planDraft.date}">
     </div>
-    ${SYSTEMS.length>1? `<div class="seg-control">${SYSTEMS.map(s=>`<button class="${state.systemSel===s.id?'active':''}" data-action="system-tab" data-sys="${s.id}">${t(s.nameKey)}</button>`).join('')}</div>`:''}
-    <input class="katalog-search" id="catalogSearch" placeholder="${t('searchPlaceholder')}" value="${state.catalogSearch.replace(/"/g,'&quot;')}" autocomplete="off">
-    <div class="tbl-wrap"><table class="order-table">
-      <thead><tr><th>${t('thTeil')}</th><th>${t('thEinheit')}</th><th style="text-align:right;">${t('thMenge')}</th></tr></thead>
-      <tbody>${planCatalogRowsHTML()}</tbody>
-    </table></div>
+    ${catalogSearchHTML()}
+    ${systemTabsHTML()}
+    ${artListHTML(false)}
     <div id="planWarnArea">${state.planWarn? `<div class="warn">${state.planWarn}</div>`:''}</div>
     <div class="order-footer">
       <span>${count? t('footerCount',{n:count}) + (weightText(cartItems())? ' · '+weightText(cartItems()) : '') : t('footerEmpty')}</span>
@@ -4863,10 +4919,13 @@ document.getElementById('app').addEventListener('click', async (e)=>{
   }
   if(action==='lager-tab'){ state.lagerTab = el.dataset.tab; render(); }
   if(action==='system-tab'){ state.systemSel = el.dataset.sys; render(); }
-  if(action==='cat-toggle'){
-    const id = el.dataset.cat;
-    state.collapsedCats[id] = !isCatCollapsed(id);
+  if(action==='art-toggle'){
+    // Genau eine Teile-Art offen; die angetippte Zeile bleibt unter dem Finger
+    const key = el.dataset.art, top0 = el.getBoundingClientRect().top;
+    state.openArt = state.openArt===key ? null : key;
     render();
+    const row = [...document.querySelectorAll('.art-row')].find(r=>r.dataset.art===key);
+    if(row){ const d = row.getBoundingClientRect().top - top0; if(Math.abs(d)>1) window.scrollBy(0, d); }
   }
   if(action==='print-order'){ printOrder(parseInt(el.dataset.order,10)); }
   if(action==='chef-tab'){ state.chefTab = el.dataset.tab; state.chefProjekt = null; state.newPin = null; render(); }
@@ -5214,6 +5273,15 @@ function setQtyFromInput(inp, final){
   if(n) state.cart[inp.dataset.qty] = n; else delete state.cart[inp.dataset.qty];
   if(final) inp.value = n || '';
   document.querySelectorAll(`[data-qty="${inp.dataset.qty}"]`).forEach(x=>{ if(x!==inp) x.value = n || ''; });
+  // Teile-Art-Zeile: "X im Auftrag" mitziehen (ohne render)
+  const art = inp.closest('.art');
+  if(art){
+    const sum = [...new Set([...art.querySelectorAll('[data-qty]')].map(x=>x.dataset.qty))].reduce((a,id)=>a+(state.cart[id]||0), 0);
+    const meta = art.querySelector('.art-meta');
+    if(meta){ if(sum){ meta.innerHTML = ''; const b = document.createElement('b'); b.textContent = t('artInCart',{n:sum}); meta.appendChild(b); } else meta.textContent = meta.dataset.idle || ''; }
+    art.classList.toggle('has-cart', sum>0);
+  }
+  const vr = inp.closest('.var-row'); if(vr) vr.classList.toggle('on', n>0);
   const count = cartCount();
   document.querySelectorAll('.order-footer').forEach(f=>{
     const sp = f.querySelector('span'), btn = f.querySelector('button');
@@ -5266,7 +5334,7 @@ document.getElementById('app').addEventListener('input', (e)=>{
 let lpTimer=null, lpStartX=0, lpStartY=0, lpId=null;
 function clearLongPress(){
   if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } lpId=null;
-  document.querySelectorAll('.t-name.holding').forEach(c=>c.classList.remove('holding'));
+  document.querySelectorAll('[data-longpress].holding').forEach(c=>c.classList.remove('holding'));
 }
 document.getElementById('app').addEventListener('pointerdown', (e)=>{
   const cell = e.target.closest('[data-longpress]');
