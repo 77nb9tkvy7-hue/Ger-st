@@ -168,6 +168,8 @@ Kolonnen als Zeilen, farbige Zellen, unten Baustelle räumen/Urlaub/Krank).
   in `state.calendarEntries` (`{id, date, person = Zeile, ort = Text, notiz,
   fill, ink}`). (Der Weg ohne Anmeldung über `public_info().kolonnen` aus
   `supabase/security.sql` ist seit `neue-funktionen.sql` abgeschaltet.)
+- **Kalender sehen**: NICHT die Baustelle (Nutzerwunsch, `calCanSee()`; Menüpunkt
+  fehlt, Seite zeigt `calNoAccess`). Chef, Lager, Fahrer sehen ihn.
 - **Rechte (Nutzerwunsch)**: Bearbeiten beider Kalender NUR als Chef angemeldet
   (`calCanEdit()`), OHNE Extra-Chef-Passwort (das kam schon bei der Anmeldung);
   `state.calUnlocked`/`cal-unlock-*` sind ungenutzt. LKW-Kalender sehen NUR Chef und

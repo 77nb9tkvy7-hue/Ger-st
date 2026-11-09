@@ -676,6 +676,8 @@ module.exports = ({ switchRole, shot }) => {
       await switchRole(page, 'baustelle');
       const b = await ev(page, () => { goView('calendar'); render(); return !!document.querySelector('.cal-switch'); });
       if (b) p.push('Baustelle sieht LKW-Umschalter');
+      const bk = await ev(page, () => { goView('calendar'); render(); const r = { grid: !!document.querySelector('.dp-wrap'), txt: document.getElementById('app').textContent.includes(t('calNoAccess')) }; state.view = 'app'; state.menuOpen = true; render(); r.menu = !!document.querySelector('[data-action="go-calendar"]'); state.menuOpen = false; render(); return r; });
+      if (bk.grid || !bk.txt || bk.menu) p.push('Baustelle sieht Kalender: ' + JSON.stringify(bk));
       return errs(errors, p);
     },
   };
