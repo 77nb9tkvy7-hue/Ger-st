@@ -294,8 +294,14 @@ System = Reihenfolge im Excel). Daraus wird `CATALOG` erzeugt:
   Treppenwange, Werbeplane. Tribüne: eigene Typen `t…` (Vertikalstiel, Fußplatten,
   U-Riegel/Riegel 0,76–2,57, 8 Diagonalen mit Farbe als Varianten `td157x050` …,
   Beläge/Bleche/Sitze 1,57/2,57, Treppe, Geländer mit Kindersicherung, Keile,
-  Schrauben-Sets, Modultreppe); Rohr gilt auch für Tribüne. OFFEN: Gewichte,
-  „Protecktrupfen“ (unklar, ob = Protect-Netz). Prüfung `tribuene`.
+  Schrauben-Sets, Modultreppe); Rohr gilt auch für Tribüne. Tribüne ist Layher
+  (Nutzer) – Gewichte, wo eindeutig zuzuordnen, aus dem Layher-Katalog (Allround
+  04.2018, Event-Systeme 04.2019): Vertikalstiel (außer 3,5 m), Riegel 1,57/2,57,
+  alle 8 Diagonalen (Maße = Allround-Diagonalen), Vertikal-Anfangsstück,
+  Sitzauflager, Sitzbelag/Schalensitzauflager (= Sitzbank), Sitzbelag-Abschluss,
+  Schalensitz, Rückengeländer mit Kindersicherung, Keile. Rest ohne Gewicht.
+  OFFEN: übrige Gewichte, „Protecktrupfen“ (unklar, ob = Protect-Netz).
+  Prüfung `tribuene`.
 
 ## Gewicht (wichtig für den LKW)
 
