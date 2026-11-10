@@ -920,6 +920,10 @@ dem Planungs-Formular.
 Jede geplante Lieferung hat „🖨️ Drucken / PDF“ (`print-planned`,
 `printPlanned()`, gleiche Vorlage wie der Lieferschein: BV, Adresse,
 Lieferdatum, Geplant von, Teile mit Gewicht) – für alle Rollen.
+Wie normale Bestellungen (Nutzerwunsch „das selbe können“): Kopf antippen oder
+„⤢ Groß öffnen“ (`plan-big`, `state.planBig`, `planBigHTML()`, alle Rollen, pausiert
+das 4-s-Neuzeichnen); „🗑 Löschen“ nur Chef (`delete-planned`, überall wo die Karte
+steht) mit zwei Rückfragen (`plDelAsk1`/`plDelAsk2`). Prüfung `geplant-gross`.
 
 ### LKW-Logistik-Kalender (umgesetzt)
 

@@ -713,6 +713,38 @@ module.exports = ({ switchRole, shot }) => {
       else if (!pr.printed || !pr.rows) p.push('geplante Lieferung nicht gedruckt: ' + JSON.stringify(pr));
       return errs(errors, p);
     },
+    // Geplante Lieferungen: groß öffnen (alle Rollen), Drucken, Löschen nur Chef mit zwei Rückfragen
+    'geplant-gross': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'fahrer');
+      await ev(page, () => { state.fahrerTab = 'geplant'; render(); });
+      const f = await ev(page, async () => {
+        const head = document.querySelector('[data-action="plan-big"]'); if (!head) return { noBtn: true };
+        head.click(); await new Promise(r => setTimeout(r, 200));
+        return { open: !!document.querySelector('.order-big .order-card-big'), del: !!document.querySelector('[data-action="delete-planned"]'), print: !!document.querySelector('.order-big [data-action="print-planned"]') };
+      });
+      if (f.noBtn || !f.open || !f.print) p.push('Fahrer: groß öffnen/Drucken fehlt: ' + JSON.stringify(f));
+      if (f.del) p.push('Fahrer sieht Löschen');
+      await shot(page, 'geplant-gross', 'fahrer', 390, false);
+      await ev(page, () => { state.planBig = null; render(); });
+      await switchRole(page, 'chef');
+      await ev(page, () => { state.chefTab = 'planen'; render(); });
+      const c = await ev(page, async () => {
+        const btn = document.querySelector('[data-action="delete-planned"]'); if (!btn) return { noBtn: true };
+        const id = +btn.dataset.id, n0 = state.plannedDeliveries.length;
+        let asked = 0; const real = window.confirm;
+        window.confirm = () => { asked++; return asked < 2; };
+        btn.click(); await new Promise(r => setTimeout(r, 300));
+        const cancelN = state.plannedDeliveries.length, asked1 = asked;
+        asked = 0; window.confirm = () => { asked++; return true; };
+        document.querySelector(`[data-action="delete-planned"][data-id="${id}"]`).click(); await new Promise(r => setTimeout(r, 500));
+        window.confirm = real;
+        return { n0, cancelN, asked1, asked, n1: state.plannedDeliveries.length };
+      });
+      if (c.noBtn) p.push('Chef: kein Löschen an geplanter Lieferung');
+      else if (c.cancelN !== c.n0 || c.asked1 !== 2 || c.asked !== 2 || c.n1 !== c.n0 - 1) p.push('Chef-Löschen falsch: ' + JSON.stringify(c));
+      return errs(errors, p);
+    },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
     'einstellungen': async ({ page, errors }) => {
       const p = [];
