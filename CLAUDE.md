@@ -406,6 +406,12 @@ qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
    (`nMissingT/B`). Fehlt alles → Warnung, Bestellung bleibt offen.
    Knopf „✓ Alles eingepackt“ (`pick-all`) hakt alle noch offenen Positionen
    auf einmal ab.
+   **Groß öffnen** (Nutzerwunsch): Lager tippt auf den Kopf einer Bestellkarte
+   oder „⤢ Groß öffnen“ (`lager-big`) → `state.lagerBig`, `lagerBigHTML()`: dieselbe
+   Karte (`orderCardHTML(o,'lager','',true)`, Klasse `.order-card-big`) fast
+   bildschirmfüllend mit großen Packzeilen, „✕ Schließen“ oben (`lager-big-close`).
+   Solange offen, pausiert das 4-s-Neuzeichnen; Scroll-Stelle bleibt beim
+   Abhaken (`render()`). Prüfung `lager-gross`.
    **Dringlichkeit/Wunschtermin**: Im Bestellschein-Entwurf wählt die
    Baustelle „Normal / 🔴 Dringend / Morgen früh / 📅 Wunschtermin“
    (`wunschPickerHTML()`, `set-wunsch`, `#wunschDate`) → `order.wunsch`
@@ -911,6 +917,9 @@ rein lesend (`geplantListHTML(false)`), nach Datum sortiert
 zusätzlich einen "Löschen"-Knopf pro Eintrag
 (`geplantListHTML(true)`, `data-action="delete-planned"`) direkt unter
 dem Planungs-Formular.
+Jede geplante Lieferung hat „🖨️ Drucken / PDF“ (`print-planned`,
+`printPlanned()`, gleiche Vorlage wie der Lieferschein: BV, Adresse,
+Lieferdatum, Geplant von, Teile mit Gewicht) – für alle Rollen.
 
 ### LKW-Logistik-Kalender (umgesetzt)
 

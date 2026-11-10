@@ -679,6 +679,38 @@ module.exports = ({ switchRole, shot }) => {
       if (!l) p.push('Lager sieht Löschen-Knopf');
       return errs(errors, p);
     },
+    // Lager: Bestellung groß öffnen (Antippen), Packen darin; geplante Lieferung drucken
+    'lager-gross': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'lager');
+      await ev(page, () => { state.lagerTab = 'bestellungen'; render(); });
+      const head = await page.$('.order-head.big-tap');
+      if (!head) { p.push('Bestellkopf nicht antippbar'); return errs(errors, p); }
+      await head.evaluate(el => el.click()); await page.waitForTimeout(250);
+      const a = await ev(page, () => ({ open: !!document.querySelector('.order-big .order-card-big'), id: state.lagerBig,
+        h: document.querySelector('.order-big') && document.querySelector('.order-big').getBoundingClientRect().height, vh: innerHeight }));
+      if (!a.open || !a.id) p.push('große Ansicht nicht offen: ' + JSON.stringify(a));
+      const tap = await page.$('.order-big .pick-tap');
+      if (tap) {
+        await tap.evaluate(el => el.click()); await page.waitForTimeout(250);
+        const b = await ev(page, () => { const o = state.orders.find(x => x.id === state.lagerBig); return { still: !!document.querySelector('.order-big'), pick: o && o.pick && Object.keys(o.pick).length, st: o && o.status }; });
+        if (!b.still || !b.pick) p.push('Packen in großer Ansicht klappt nicht: ' + JSON.stringify(b));
+      }
+      await shot(page, 'lager-gross', 'lager', 390, false);
+      await page.click('[data-action="lager-big-close"]'); await page.waitForTimeout(200);
+      if (await ev(page, () => !!document.querySelector('.order-big') || state.lagerBig)) p.push('schließt nicht');
+      await ev(page, () => { state.lagerTab = 'geplant'; render(); });
+      const pr = await ev(page, () => {
+        const b = document.querySelector('[data-action="print-planned"]'); if (!b) return { noBtn: true };
+        let printed = false; const real = window.print; window.print = () => { printed = true; };
+        b.click(); window.print = real;
+        const area = document.getElementById('printArea');
+        return { printed, rows: area.querySelectorAll('.ls-items tbody tr').length, h1: area.querySelector('h1') && area.querySelector('h1').textContent };
+      });
+      if (pr.noBtn) p.push('kein Druck-Knopf an geplanter Lieferung');
+      else if (!pr.printed || !pr.rows) p.push('geplante Lieferung nicht gedruckt: ' + JSON.stringify(pr));
+      return errs(errors, p);
+    },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
     'einstellungen': async ({ page, errors }) => {
       const p = [];

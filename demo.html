@@ -609,6 +609,19 @@
   .pick-row.pk-ok .pick-box svg{opacity:1;}
   .pick-row.pk-fehlt .pick-box{border-color:#DC2626;}
   .pick-name{font-size:15px;font-weight:600;min-width:0;}
+  /* Lager: Bestellung groß geöffnet */
+  .order-head.big-tap{cursor:pointer;}
+  .drawer.order-big{max-width:960px;max-height:94vh;padding:14px 16px 24px;}
+  .order-big-bar{position:sticky;top:-14px;z-index:2;background:var(--card);display:flex;justify-content:flex-end;padding:4px 0 10px;margin-top:-4px;}
+  .order-card-big{box-shadow:none;margin:0;}
+  .order-card-big .no{font-size:26px;}
+  .order-card-big .site{font-size:18px;}
+  .order-card-big .pick-tap{min-height:68px;}
+  .order-card-big .pick-name{font-size:18px;}
+  .order-card-big .pick-box{width:38px;height:38px;}
+  .order-card-big .pick-btn{min-height:56px;font-size:15px;}
+  .order-card-big .order-items li{font-size:17px;padding:6px 0;}
+  .order-card-big .advance-btn,.order-card-big .pick-all-btn{min-height:56px;font-size:17px;}
   .pick-row.pk-ok .pick-name{text-decoration:line-through;opacity:0.7;}
   .pick-miss{flex-basis:100%;display:block;font-size:13px;margin:0;padding:0 12px 10px 12px;color:var(--red);font-weight:600;}
   .pick-miss input{width:64px;padding:5px 6px;border:1.5px solid var(--red);border-radius:8px;font-size:14px;background:var(--card);color:var(--ink);}
@@ -1344,7 +1357,7 @@ de:{
   nLkwB:'{date}, {time} Uhr: {bv}',
   mapLoadError:'Karte konnte nicht geladen werden – bitte Internet prüfen.',
   pvFertigGeplant:'Fertig geplant am', pvFertigAm:'Fertig am', fkFertig:'Fertigstellung',
-  pvAlsFertigBtn:'Fertig – ins Archiv', menuArchiv:'🗄 Archiv', archTitle:'Archiv', archSub:'Fertige Bauvorhaben. Antippen öffnet sie – dort holt „Wieder aktivieren“ sie zurück in die Liste.', archSearchPh:'Suchen: Name, Nummer oder Adresse', archEmpty:'Noch nichts im Archiv.', archNone:'Nichts gefunden.', archLink:'🗄 Archiv – {n} fertige Bauvorhaben', archToast:'{bv} liegt jetzt im Archiv (☰ → Archiv).', archBackToast:'{bv} ist wieder aktiv.', bvDelBtn:'Endgültig löschen', bvDelAsk1:'{bv} wirklich löschen?', bvDelAsk2:'Letzte Rückfrage: {bv} wird ENDGÜLTIG gelöscht, samt Bauplänen. Das kann man nicht rückgängig machen. Bestellungen bleiben erhalten.\n\nWirklich löschen?', bvDelToast:'{bv} wurde gelöscht.', orderDelBtn:'Löschen', orderDelAsk1:'Bestellung #{id} ({site}) wirklich löschen?', orderDelAsk2:'Letzte Rückfrage: Bestellung #{id} wird ENDGÜLTIG gelöscht. Das kann man nicht rückgängig machen. Der Lagerbestand wird nicht verändert.\n\nWirklich löschen?', orderDelToast:'Bestellung #{id} wurde gelöscht.', orderDelTooLate:'Das Lager hat schon angefangen – bitte beim Lager oder Chef melden.', pvWiederAktivBtn:'Wieder aktivieren',
+  pvAlsFertigBtn:'Fertig – ins Archiv', menuArchiv:'🗄 Archiv', archTitle:'Archiv', archSub:'Fertige Bauvorhaben. Antippen öffnet sie – dort holt „Wieder aktivieren“ sie zurück in die Liste.', archSearchPh:'Suchen: Name, Nummer oder Adresse', archEmpty:'Noch nichts im Archiv.', archNone:'Nichts gefunden.', archLink:'🗄 Archiv – {n} fertige Bauvorhaben', archToast:'{bv} liegt jetzt im Archiv (☰ → Archiv).', archBackToast:'{bv} ist wieder aktiv.', bvDelBtn:'Endgültig löschen', bvDelAsk1:'{bv} wirklich löschen?', bvDelAsk2:'Letzte Rückfrage: {bv} wird ENDGÜLTIG gelöscht, samt Bauplänen. Das kann man nicht rückgängig machen. Bestellungen bleiben erhalten.\n\nWirklich löschen?', bvDelToast:'{bv} wurde gelöscht.', orderDelBtn:'Löschen', orderDelAsk1:'Bestellung #{id} ({site}) wirklich löschen?', orderDelAsk2:'Letzte Rückfrage: Bestellung #{id} wird ENDGÜLTIG gelöscht. Das kann man nicht rückgängig machen. Der Lagerbestand wird nicht verändert.\n\nWirklich löschen?', orderDelToast:'Bestellung #{id} wurde gelöscht.', orderDelTooLate:'Das Lager hat schon angefangen – bitte beim Lager oder Chef melden.', lagerBigBtn:'⤢ Groß öffnen', lagerBigClose:'✕ Schließen', lagerBigHint:'Tippe eine Bestellung an, um sie groß zu öffnen.', plPrintTitle:'Geplante Lieferung', plPrintBtn:'Drucken / PDF', pvWiederAktivBtn:'Wieder aktivieren',
   pvColorNone:'Keine Angabe', pvColorGreen:'Lieferung nötig', pvColorBlue:'Abholung/Räumung nötig', pvColorBlack:'Nichts zu tun',
   calTitle:'Kalender',
   calSub:'Einsatzplanung der Kolonnen nach Woche und Baustelle.',
@@ -1554,7 +1567,7 @@ pl:{
   nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Nie udało się załadować mapy – sprawdź internet.',
   pvFertigGeplant:'Planowane zakończenie', pvFertigAm:'Zakończona dnia', fkFertig:'Zakończenie',
-  pvAlsFertigBtn:'Zakończona – do archiwum', menuArchiv:'🗄 Archiwum', archTitle:'Archiwum', archSub:'Zakończone budowy. Stuknij, aby otworzyć – „Aktywuj ponownie“ przywraca je na listę.', archSearchPh:'Szukaj: nazwa, numer lub adres', archEmpty:'Archiwum jest puste.', archNone:'Nic nie znaleziono.', archLink:'🗄 Archiwum – {n} zakończonych budów', archToast:'{bv} jest teraz w archiwum (☰ → Archiwum).', archBackToast:'{bv} jest znowu aktywna.', bvDelBtn:'Usuń na zawsze', bvDelAsk1:'Naprawdę usunąć {bv}?', bvDelAsk2:'Ostatnie pytanie: {bv} zostanie usunięta NA ZAWSZE, razem z planami. Nie da się tego cofnąć. Zamówienia zostają.\n\nNaprawdę usunąć?', bvDelToast:'{bv} została usunięta.', orderDelBtn:'Usuń', orderDelAsk1:'Naprawdę usunąć zamówienie #{id} ({site})?', orderDelAsk2:'Ostatnie pytanie: zamówienie #{id} zostanie usunięte NA ZAWSZE. Nie da się tego cofnąć. Stan magazynu się nie zmienia.\n\nNaprawdę usunąć?', orderDelToast:'Zamówienie #{id} zostało usunięte.', orderDelTooLate:'Magazyn już zaczął – zgłoś się do magazynu lub szefa.', pvWiederAktivBtn:'Aktywuj ponownie',
+  pvAlsFertigBtn:'Zakończona – do archiwum', menuArchiv:'🗄 Archiwum', archTitle:'Archiwum', archSub:'Zakończone budowy. Stuknij, aby otworzyć – „Aktywuj ponownie“ przywraca je na listę.', archSearchPh:'Szukaj: nazwa, numer lub adres', archEmpty:'Archiwum jest puste.', archNone:'Nic nie znaleziono.', archLink:'🗄 Archiwum – {n} zakończonych budów', archToast:'{bv} jest teraz w archiwum (☰ → Archiwum).', archBackToast:'{bv} jest znowu aktywna.', bvDelBtn:'Usuń na zawsze', bvDelAsk1:'Naprawdę usunąć {bv}?', bvDelAsk2:'Ostatnie pytanie: {bv} zostanie usunięta NA ZAWSZE, razem z planami. Nie da się tego cofnąć. Zamówienia zostają.\n\nNaprawdę usunąć?', bvDelToast:'{bv} została usunięta.', orderDelBtn:'Usuń', orderDelAsk1:'Naprawdę usunąć zamówienie #{id} ({site})?', orderDelAsk2:'Ostatnie pytanie: zamówienie #{id} zostanie usunięte NA ZAWSZE. Nie da się tego cofnąć. Stan magazynu się nie zmienia.\n\nNaprawdę usunąć?', orderDelToast:'Zamówienie #{id} zostało usunięte.', orderDelTooLate:'Magazyn już zaczął – zgłoś się do magazynu lub szefa.', lagerBigBtn:'⤢ Otwórz duże', lagerBigClose:'✕ Zamknij', lagerBigHint:'Stuknij zamówienie, aby otworzyć je w dużym widoku.', plPrintTitle:'Planowana dostawa', plPrintBtn:'Drukuj / PDF', pvWiederAktivBtn:'Aktywuj ponownie',
   pvColorNone:'Brak danych', pvColorGreen:'Potrzebna dostawa', pvColorBlue:'Potrzebny odbiór/sprzątanie', pvColorBlack:'Nic do zrobienia',
   calTitle:'Kalendarz',
   calSub:'Plan pracy brygad według tygodnia i budowy.',
@@ -1764,7 +1777,7 @@ sk:{
   nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Mapu sa nepodarilo načítať – skontrolujte internet.',
   pvFertigGeplant:'Plánované dokončenie', pvFertigAm:'Dokončená dňa', fkFertig:'Dokončenie',
-  pvAlsFertigBtn:'Hotové – do archívu', menuArchiv:'🗄 Archív', archTitle:'Archív', archSub:'Dokončené stavby. Ťuknutím ich otvoríš – „Znova aktivovať“ ich vráti do zoznamu.', archSearchPh:'Hľadať: názov, číslo alebo adresa', archEmpty:'Archív je zatiaľ prázdny.', archNone:'Nič sa nenašlo.', archLink:'🗄 Archív – {n} dokončených stavieb', archToast:'{bv} je teraz v archíve (☰ → Archív).', archBackToast:'{bv} je znova aktívna.', bvDelBtn:'Natrvalo zmazať', bvDelAsk1:'Naozaj zmazať {bv}?', bvDelAsk2:'Posledná otázka: {bv} bude NATRVALO zmazaná aj s plánmi. Nedá sa to vrátiť späť. Objednávky zostanú.\n\nNaozaj zmazať?', bvDelToast:'{bv} bola zmazaná.', orderDelBtn:'Zmazať', orderDelAsk1:'Naozaj zmazať objednávku #{id} ({site})?', orderDelAsk2:'Posledná otázka: objednávka #{id} bude NATRVALO zmazaná. Nedá sa to vrátiť späť. Stav skladu sa nemení.\n\nNaozaj zmazať?', orderDelToast:'Objednávka #{id} bola zmazaná.', orderDelTooLate:'Sklad už začal – ozvi sa skladu alebo šéfovi.', pvWiederAktivBtn:'Znova aktivovať',
+  pvAlsFertigBtn:'Hotové – do archívu', menuArchiv:'🗄 Archív', archTitle:'Archív', archSub:'Dokončené stavby. Ťuknutím ich otvoríš – „Znova aktivovať“ ich vráti do zoznamu.', archSearchPh:'Hľadať: názov, číslo alebo adresa', archEmpty:'Archív je zatiaľ prázdny.', archNone:'Nič sa nenašlo.', archLink:'🗄 Archív – {n} dokončených stavieb', archToast:'{bv} je teraz v archíve (☰ → Archív).', archBackToast:'{bv} je znova aktívna.', bvDelBtn:'Natrvalo zmazať', bvDelAsk1:'Naozaj zmazať {bv}?', bvDelAsk2:'Posledná otázka: {bv} bude NATRVALO zmazaná aj s plánmi. Nedá sa to vrátiť späť. Objednávky zostanú.\n\nNaozaj zmazať?', bvDelToast:'{bv} bola zmazaná.', orderDelBtn:'Zmazať', orderDelAsk1:'Naozaj zmazať objednávku #{id} ({site})?', orderDelAsk2:'Posledná otázka: objednávka #{id} bude NATRVALO zmazaná. Nedá sa to vrátiť späť. Stav skladu sa nemení.\n\nNaozaj zmazať?', orderDelToast:'Objednávka #{id} bola zmazaná.', orderDelTooLate:'Sklad už začal – ozvi sa skladu alebo šéfovi.', lagerBigBtn:'⤢ Otvoriť veľké', lagerBigClose:'✕ Zavrieť', lagerBigHint:'Ťukni na objednávku a otvorí sa veľká.', plPrintTitle:'Plánovaná dodávka', plPrintBtn:'Tlačiť / PDF', pvWiederAktivBtn:'Znova aktivovať',
   pvColorNone:'Neurčené', pvColorGreen:'Potrebná dodávka', pvColorBlue:'Potrebné vyzdvihnutie/upratanie', pvColorBlack:'Nič k vybaveniu',
   calTitle:'Kalendár',
   calSub:'Plánovanie nasadenia čiat podľa týždňa a stavby.',
@@ -1974,7 +1987,7 @@ hr:{
   nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Karta se nije mogla učitati – provjerite internet.',
   pvFertigGeplant:'Planirani završetak', pvFertigAm:'Završeno dana', fkFertig:'Završetak',
-  pvAlsFertigBtn:'Gotovo – u arhivu', menuArchiv:'🗄 Arhiva', archTitle:'Arhiva', archSub:'Završena gradilišta. Dodirom ih otvaraš – „Ponovno aktiviraj“ vraća ih na popis.', archSearchPh:'Traži: naziv, broj ili adresa', archEmpty:'Arhiva je još prazna.', archNone:'Ništa nije pronađeno.', archLink:'🗄 Arhiva – {n} završenih gradilišta', archToast:'{bv} je sada u arhivi (☰ → Arhiva).', archBackToast:'{bv} je ponovno aktivno.', bvDelBtn:'Trajno obriši', bvDelAsk1:'Stvarno obrisati {bv}?', bvDelAsk2:'Zadnje pitanje: {bv} bit će TRAJNO obrisano, zajedno s planovima. To se ne može poništiti. Narudžbe ostaju.\n\nStvarno obrisati?', bvDelToast:'{bv} je obrisano.', orderDelBtn:'Obriši', orderDelAsk1:'Stvarno obrisati narudžbu #{id} ({site})?', orderDelAsk2:'Zadnje pitanje: narudžba #{id} bit će TRAJNO obrisana. To se ne može poništiti. Stanje skladišta se ne mijenja.\n\nStvarno obrisati?', orderDelToast:'Narudžba #{id} je obrisana.', orderDelTooLate:'Skladište je već počelo – javi se skladištu ili šefu.', pvWiederAktivBtn:'Ponovno aktiviraj',
+  pvAlsFertigBtn:'Gotovo – u arhivu', menuArchiv:'🗄 Arhiva', archTitle:'Arhiva', archSub:'Završena gradilišta. Dodirom ih otvaraš – „Ponovno aktiviraj“ vraća ih na popis.', archSearchPh:'Traži: naziv, broj ili adresa', archEmpty:'Arhiva je još prazna.', archNone:'Ništa nije pronađeno.', archLink:'🗄 Arhiva – {n} završenih gradilišta', archToast:'{bv} je sada u arhivi (☰ → Arhiva).', archBackToast:'{bv} je ponovno aktivno.', bvDelBtn:'Trajno obriši', bvDelAsk1:'Stvarno obrisati {bv}?', bvDelAsk2:'Zadnje pitanje: {bv} bit će TRAJNO obrisano, zajedno s planovima. To se ne može poništiti. Narudžbe ostaju.\n\nStvarno obrisati?', bvDelToast:'{bv} je obrisano.', orderDelBtn:'Obriši', orderDelAsk1:'Stvarno obrisati narudžbu #{id} ({site})?', orderDelAsk2:'Zadnje pitanje: narudžba #{id} bit će TRAJNO obrisana. To se ne može poništiti. Stanje skladišta se ne mijenja.\n\nStvarno obrisati?', orderDelToast:'Narudžba #{id} je obrisana.', orderDelTooLate:'Skladište je već počelo – javi se skladištu ili šefu.', lagerBigBtn:'⤢ Otvori veliko', lagerBigClose:'✕ Zatvori', lagerBigHint:'Dodirni narudžbu da je otvoriš u velikom prikazu.', plPrintTitle:'Planirana isporuka', plPrintBtn:'Ispis / PDF', pvWiederAktivBtn:'Ponovno aktiviraj',
   pvColorNone:'Nije postavljeno', pvColorGreen:'Potrebna isporuka', pvColorBlue:'Potrebno preuzimanje/čišćenje', pvColorBlack:'Nema posla',
   calTitle:'Kalendar',
   calSub:'Raspored ekipa po tjednu i gradilištu.',
@@ -2184,7 +2197,7 @@ en:{
   nLkwB:'{date}, {time}: {bv}',
   mapLoadError:'Map could not be loaded – please check your internet.',
   pvFertigGeplant:'Planned completion', pvFertigAm:'Completed on', fkFertig:'Completion',
-  pvAlsFertigBtn:'Done – to archive', menuArchiv:'🗄 Archive', archTitle:'Archive', archSub:'Finished projects. Tap to open – “Reactivate” brings them back to the list.', archSearchPh:'Search: name, number or address', archEmpty:'Nothing in the archive yet.', archNone:'Nothing found.', archLink:'🗄 Archive – {n} finished projects', archToast:'{bv} is now in the archive (☰ → Archive).', archBackToast:'{bv} is active again.', bvDelBtn:'Delete permanently', bvDelAsk1:'Really delete {bv}?', bvDelAsk2:'Last check: {bv} will be deleted PERMANENTLY, including its plans. This cannot be undone. Orders are kept.\n\nReally delete?', bvDelToast:'{bv} has been deleted.', orderDelBtn:'Delete', orderDelAsk1:'Really delete order #{id} ({site})?', orderDelAsk2:'Last check: order #{id} will be deleted PERMANENTLY. This cannot be undone. Stock levels are not changed.\n\nReally delete?', orderDelToast:'Order #{id} has been deleted.', orderDelTooLate:'The warehouse has already started – please contact the warehouse or the boss.', pvWiederAktivBtn:'Reactivate',
+  pvAlsFertigBtn:'Done – to archive', menuArchiv:'🗄 Archive', archTitle:'Archive', archSub:'Finished projects. Tap to open – “Reactivate” brings them back to the list.', archSearchPh:'Search: name, number or address', archEmpty:'Nothing in the archive yet.', archNone:'Nothing found.', archLink:'🗄 Archive – {n} finished projects', archToast:'{bv} is now in the archive (☰ → Archive).', archBackToast:'{bv} is active again.', bvDelBtn:'Delete permanently', bvDelAsk1:'Really delete {bv}?', bvDelAsk2:'Last check: {bv} will be deleted PERMANENTLY, including its plans. This cannot be undone. Orders are kept.\n\nReally delete?', bvDelToast:'{bv} has been deleted.', orderDelBtn:'Delete', orderDelAsk1:'Really delete order #{id} ({site})?', orderDelAsk2:'Last check: order #{id} will be deleted PERMANENTLY. This cannot be undone. Stock levels are not changed.\n\nReally delete?', orderDelToast:'Order #{id} has been deleted.', orderDelTooLate:'The warehouse has already started – please contact the warehouse or the boss.', lagerBigBtn:'⤢ Open large', lagerBigClose:'✕ Close', lagerBigHint:'Tap an order to open it in a large view.', plPrintTitle:'Planned delivery', plPrintBtn:'Print / PDF', pvWiederAktivBtn:'Reactivate',
   pvColorNone:'Not set', pvColorGreen:'Delivery needed', pvColorBlue:'Pickup/clearing needed', pvColorBlack:'Nothing to do',
   calTitle:'Calendar',
   calSub:'Crew schedule by week and site.',
@@ -3628,6 +3641,39 @@ function printOrder(id){
   window.print();
 }
 
+// Geplante Lieferung drucken / als PDF speichern (gleiche Vorlage wie der Lieferschein)
+function printPlanned(id){
+  const pd = state.plannedDeliveries.find(x=>x.id===id);
+  if(!pd) return;
+  const proj = state.projects.find(p=>p.id===pd.projekt);
+  const rowsHtml = pd.items.map(i=>{
+    const r = resolvedItem(i);
+    const cat = CATALOG.find(c=>c.id===i.id);
+    const pkg = formatPackages(i.qty, cat);
+    const w = itemKg(i);
+    return `<tr><td>${r.name}</td><td class="ls-menge">${pkg || (i.qty+' '+r.unit)}</td><td class="ls-menge">${w!=null? formatKg(w*i.qty) : '–'}</td></tr>`;
+  }).join('');
+  const wt = weightText(pd.items);
+  const area = document.getElementById('printArea');
+  area.innerHTML = `
+    <img class="ls-logo" src="logo.png" alt="SGM">
+    <h1>${t('plPrintTitle')} – ${formatDateDE(pd.date)}</h1>
+    <table class="ls-meta">
+      <tr><td>${t('baustelleLabel')}</td><td>${proj? escapeHtml(`BV ${bvNr(proj)} – ${proj.name}`) : ''}</td></tr>
+      ${proj && proj.adresse? `<tr><td></td><td>${escapeHtml(proj.adresse)}</td></tr>`:''}
+      <tr><td>${t('plDatumLabel')}</td><td>${formatDateDE(pd.date)}</td></tr>
+      <tr><td>${t('plGeplantVonPrefix').replace(/:\s*$/,'')}</td><td>${escapeHtml(pd.person||'')}</td></tr>
+    </table>
+    <table class="ls-items">
+      <thead><tr><th>${t('thTeil')}</th><th class="ls-menge">${t('thMenge')}</th><th class="ls-menge">${t('weightLabel')}</th></tr></thead>
+      <tbody>${rowsHtml}</tbody>
+      ${wt? `<tfoot><tr><td colspan="3" class="ls-total">${t('weightTotal')}: ${wt}</td></tr></tfoot>`:''}
+    </table>
+  `;
+  iconize(area);
+  window.print();
+}
+
 // ---- Dringlichkeit / Wunschtermin -----------------------------------
 // Die Baustelle wählt im Bestellschein-Entwurf, wann sie die Teile
 // braucht: normal / dringend / morgen früh / Wunschtermin. Gespeichert als
@@ -3863,7 +3909,7 @@ function canDeleteOrder(o){
   if(state.role==='chef') return true;
   return state.role==='baustelle' && o.person===state.name && o.status==='Neu';
 }
-function orderCardHTML(o, role, extra){
+function orderCardHTML(o, role, extra, big){
   const step = NEXT_STEP[o.status];
   const lagerPick = role==='lager' && (o.status==='Neu' || o.status==='In Bearbeitung');
   const showBtn = role && step && step.role===role && !lagerPick;
@@ -3874,8 +3920,9 @@ function orderCardHTML(o, role, extra){
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.baustelle)}`;
   const tourable = role==='fahrer' && (o.status==='Bereit zur Abholung' || o.status==='Beladen');
   const ticked = tourable && (state.tourSel||[]).includes(o.id);
-  return `<div class="order-card ${statusClass}">
-    <div class="order-head">
+  const bigTap = role==='lager' && !big;   // Lager: Antippen öffnet die Bestellung groß
+  return `<div class="order-card ${statusClass}${big? ' order-card-big':''}">
+    <div class="order-head${bigTap? ' big-tap':''}"${bigTap? ` data-action="lager-big" data-order="${o.id}"`:''}>
       ${tourable? `<button class="tour-tick ${ticked?'on':''}" data-action="tour-toggle" data-order="${o.id}" role="checkbox" aria-checked="${ticked}" aria-label="${t('tourPickAria')}"><i></i></button>`:''}
       <div class="order-head-main"><div class="no">${role==='fahrer' && (state.tourOrder||[]).includes(o.id)? `<span class="stop-badge">${(state.tourOrder||[]).indexOf(o.id)+1}.</span> `:''}#${o.id}</div><div class="site">${o.baustelle}</div></div>
       <div class="status-badge ${statusClass}">${statusLabel(o.status)}</div>
@@ -3888,6 +3935,7 @@ function orderCardHTML(o, role, extra){
       ? `<div class="advance-row"><button class="advance-btn" data-action="load-go" data-order="${o.id}">${t('loadGoBtn')}</button><button class="advance-btn advance-alt" data-action="advance" data-order="${o.id}">${t('onlyLoadBtn')}</button></div>`
       : showBtn? `<button class="advance-btn" data-action="advance" data-order="${o.id}">${stepLabel(o.status)}</button>` : ''}
     <div class="btn-row-secondary">
+      ${bigTap? `<button class="mini-btn" data-action="lager-big" data-order="${o.id}">${t('lagerBigBtn')}</button>`:''}
       <a class="mini-btn" href="${mapsUrl}" target="_blank" rel="noopener">📍 ${t('mapsShort')}</a>
       <button class="mini-btn" data-action="print-order" data-order="${o.id}">🖨️ ${t('printShort')}</button>
       ${canDeleteOrder(o)? `<button class="mini-btn danger" data-action="order-delete" data-order="${o.id}">🗑 ${t('orderDelBtn')}</button>`:''}
@@ -3957,6 +4005,18 @@ function inventoryTableHTML(editable){
   }).join('');
 }
 
+// Lager: Bestellung groß öffnen (state.lagerBig = Bestell-Nr.) -- gleiche
+// Karte wie in der Liste, aber bildschirmfüllend mit großen Zeilen zum Packen.
+function lagerBigHTML(){
+  const o = state.orders.find(x=>x.id===state.lagerBig);
+  if(!o || state.role!=='lager') return '';
+  return `<div class="overlay" data-action="lager-big-close-bg">
+    <div class="drawer order-big" role="dialog" aria-modal="true" aria-label="#${o.id}">
+      <div class="order-big-bar"><button class="refresh-btn" data-action="lager-big-close">${t('lagerBigClose')}</button></div>
+      ${orderCardHTML(o, 'lager', '', true)}
+    </div>
+  </div>`;
+}
 function lagerHTML(){
   const tab = state.lagerTab;
   const orders = sortOrdersForWork(state.orders);
@@ -3967,7 +4027,7 @@ function lagerHTML(){
     {id:'geplant', key:'tabGeplant', ico:'calendar-clock'},
     {id:'inventur', key:'tabInventur', ico:'clipboard-list'}])}
   ${tab==='bestellungen'
-    ? `<p class="view-sub">${t('lagerBestellSub')}</p>
+    ? `<p class="view-sub">${t('lagerBestellSub')} ${t('lagerBigHint')}</p>
        ${(()=>{ const open = orders.filter(o=>o.status!=='Geliefert'), done = orders.filter(o=>o.status==='Geliefert');
          return `${sectionH(t('openOrdersHeading'), open.length, 'sec-offen')}
          ${open.length? `<div class="card-grid">${open.map(o=>orderCardHTML(o,'lager')).join('')}</div>` : `<div class="empty-state">${orders.length? t('allDone') : t('lagerEmptyOrders')}</div>`}
@@ -4000,6 +4060,7 @@ function plannedDeliveryCardHTML(pd, editable){
     <ul class="order-items">${itemsHtml}</ul>
     ${weightLineHTML(pd.items)}
     <div class="order-time">${t('plGeplantVonPrefix')} ${pd.person}</div>
+    <div class="btn-row-secondary"><button class="mini-btn" data-action="print-planned" data-id="${pd.id}">🖨️ ${t('plPrintBtn')}</button></div>
     ${editable? `<button class="refresh-btn" data-action="delete-planned" data-id="${pd.id}" style="margin-top:10px;">${t('plDeleteBtn')}</button>`:''}
   </div>`;
 }
@@ -5080,7 +5141,7 @@ function projekteHTML(){
 }
 // Einstellungen (☰-Menü): Lager-Standort (ändern nur Chef), Darstellung, Sprache
 // Version (bei jeder Änderung an der App hochsetzen; steht klein unten in den Einstellungen)
-const APP_VERSION = '2026.11.09';
+const APP_VERSION = '2026.11.10';
 function notifySettingsHTML(){
   return `<h3 class="section-h">${t('setNotify')}</h3>
   <div class="order-card">
@@ -6201,6 +6262,7 @@ const SYM_ICONS = {
   'file-text':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
   'clock':'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
   'camera':'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  'maximize-2':'<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/>',
   'trash-2':'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
   'house':'<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   'users':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
@@ -6219,7 +6281,7 @@ const EMO = {
   '✏':'pencil', '🔄':'refresh-cw', '↻':'refresh-cw', '🖨':'printer', '👍':'circle-check', '🔁':'repeat',
   '⬆':'upload', '⭐':'star', '🏗':'building-2', '🏁':'flag', '🔔':'bell', '📐':'drafting-compass',
   '⚖':'weight', '🌐':'globe', '✓':'check', '✗':'x', '📦':'package', '📋':'clipboard-list', '📄':'file-text',
-  '🗑':'trash-2', '📷':'camera', '⏱':'clock', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu', '🗄':'archive', '⚙':'settings',
+  '🗑':'trash-2', '⤢':'maximize-2', '📷':'camera', '⏱':'clock', '🏠':'house', '👥':'users', '↩':'undo-2', '🔴':['circle-alert','ic-red'], '☰':'menu', '🗄':'archive', '⚙':'settings',
 };
 const EMO_RE = new RegExp('(' + Object.keys(EMO).join('|') + ')\\uFE0F?', 'gu');
 function emoIcon(ch){ const v = EMO[ch]; return Array.isArray(v) ? ic(v[0], v[1]) : ic(v); }
@@ -6248,7 +6310,9 @@ let dpScrollSig = '';
 function render(){
   const np = numpadFocusBefore();
   const keep = [...document.querySelectorAll('.dp-wrap')].map(w=>w.scrollLeft);
+  const bigEl = document.querySelector('.order-big'), bigTop = bigEl ? bigEl.scrollTop : 0;
   renderView();
+  const bigNew = document.querySelector('.order-big'); if(bigEl && bigNew) bigNew.scrollTop = bigTop;
   iconize(document.getElementById('app'));
   const wraps = [...document.querySelectorAll('.dp-wrap')];
   const sig = state.view + '|' + dpWeek() + '|' + wraps.length;
@@ -6320,6 +6384,7 @@ function renderView(){
     <main>${syncBannerHTML()}${myPwCardHTML()}${pushCardHTML()}${uwCardHTML()}${mainHTML}</main>
     ${state.itemPopup ? itemPopupHTML() : ''}
     ${state.orderReview ? orderReviewHTML() : ''}
+    ${state.lagerBig ? lagerBigHTML() : ''}
     ${state.puDraft ? pickupEditorHTML() : ''}
     ${state.exportOpen ? exportHTML() : ''}
     ${state.fotoDraft ? fotoPickerHTML() : ''}
@@ -6793,6 +6858,12 @@ document.getElementById('app').addEventListener('click', async (e)=>{
       el.textContent = t('locBtn');
     }, {enableHighAccuracy:true, timeout:10000});
   }
+  if(action==='lager-big'){
+    if(state.lagerBig) return;   // schon groß offen
+    state.lagerBig = parseInt(el.dataset.order,10); render(); return;
+  }
+  if(action==='lager-big-close' || (action==='lager-big-close-bg' && e.target===el)){ state.lagerBig = null; render(); return; }
+  if(action==='print-planned'){ printPlanned(parseInt(el.dataset.id,10)); return; }
   if(action==='lager-tab'){ state.lagerTab = el.dataset.tab; render(); }
   if(action==='system-tab'){ state.systemSel = el.dataset.sys; render(); }
   if(action==='art-toggle'){
@@ -7435,7 +7506,7 @@ document.addEventListener('keydown', (e)=>{
 });
 
 setInterval(async ()=>{
-  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.fotoDraft || state.fotoView || state.mangelDraft || state.sigDraft || state.ciHintOpen || state.korrDraft || state.pruefDraft || state.fahrtenOpen || state.puDraft || state.myPwOpen || state.cellEdit) return;
+  if((!state.loggedIn && state.view!=='calendar' && state.view!=='lkwkalender') || state.confirmOrder || state.orderReview || state.itemPopup || state.numpad || state.exportOpen || state.fotoDraft || state.fotoView || state.mangelDraft || state.sigDraft || state.ciHintOpen || state.korrDraft || state.pruefDraft || state.fahrtenOpen || state.puDraft || state.myPwOpen || state.cellEdit || state.lagerBig) return;
   // Nicht mitten ins Tippen hinein neu zeichnen
   const ae = document.activeElement;
   if(ae && (ae.tagName==='INPUT' || ae.tagName==='SELECT' || ae.tagName==='TEXTAREA')) return;
