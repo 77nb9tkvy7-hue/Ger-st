@@ -357,6 +357,8 @@ module.exports = ({ switchRole, shot }) => {
       }, bv.id);
       if (c.h !== 8) p.push('(c) korrigiert ≠ 8,0: ' + c.h);
       if (!/8,0/.test(c.el) || !/korrigiert/.test(c.el)) p.push('(c) Kalender zeigt Stunden nicht: ' + c.el.slice(0, 120));
+      const g = await ev(page, () => { const w = document.querySelector('.ci-grid'); if (w) w.scrollIntoView(); return w ? { rows: w.querySelectorAll('tbody tr').length, txt: w.textContent } : null; });
+      if (!g || !g.rows || !/Max/.test(g.txt) || !/–/.test(g.txt)) p.push('(c) Stempeluhr-Tabelle fehlt: ' + JSON.stringify(g));
       await shot(page, 'zeit', 'chef-kalender', 390, false);
       const rb = await ev(page, pid => { state.view = 'app'; state.chefTab = 'bauvorhaben'; state.chefProjekt = pid; render(); const h = document.getElementById('sec-regie'); return !!h && /8,0/.test(h.parentElement.textContent); }, bv.id);
       if (!rb) p.push('(c) Regiebericht im BV fehlt/ohne Stunden');

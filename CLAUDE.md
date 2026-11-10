@@ -1010,8 +1010,12 @@ Ohne das SQL klappt die Anmeldung nicht (`login_lookup`).
 - Zwei verschiedene „Kolonnen“: `state.kolonnen` = Zeilen der Dispo-Tabelle
   (im großen Datensatz); `state.ciTeams` = wer zu welchem Kolonnenführer
   gehört (Einchecken, eigene Server-Zeile `kolonnen`, `kolonne_get/_set`).
-- Chef sieht unter der Dispo-Tabelle die eingecheckten Stunden je Tag
-  (`calHoursDayHTML`). Fahrer-Schritte landen über `setOrderStatus()` in der
+- Chef sieht unter der Dispo-Tabelle die Tabelle „⏱ Eingecheckt (Stempeluhr)“
+  (`calCheckinGridHTML(wk)`, Nutzerwunsch „wann wer eingecheckt ist“): Zeilen =
+  Personen mit Einträgen in der Woche, je Tag Kommen–Gehen (korrigierte Zeiten
+  gehen vor, offene = „läuft“ grün), darunter BV + Stunden, rechts Wochensumme.
+  Sonntag erscheint, wenn dort jemand eingecheckt war. (`calHoursDayHTML` ist
+  ungenutzt.) Fahrer-Schritte landen über `setOrderStatus()` in der
   LKW-Dispo (`logFahrt`).
 - `security.sql` macht `public_info()` wieder gesprächig (Namen, Kalender) –
   danach IMMER `neue-funktionen.sql` erneut ausführen (liefert `{}`).
