@@ -246,8 +246,8 @@ Baustellen-Bestellliste (`catalogHTML()`) drei Bausteine dagegen:
 - **System-Reiter** (`SYSTEMS`-Array, `state.systemSel`): „Modul" und
   „Rahmen" (= Rahmen-System SL 70/SL 100, im Excel „Materialauszug
   System", interne ID `system`). Gleiche Reiter beim Bestellen, beim
-  Planen (Chef) und in der Lager-Inventur. Tribünen fehlen noch (keine
-  Teile-Liste vorhanden) – neuer Eintrag in `SYSTEMS` + Teile in `PARTS`.
+  Planen (Chef) und in der Lager-Inventur. Dritter Reiter **„Tribüne“**
+  (`tribuene`, `sys_tribuene`) seit den Kunden-Lieferscheinen (Nov. 2026).
 - **Ausklappbare Kategorien** (`state.collapsedCats`, `isCatCollapsed()`,
   `catSectionHTML()`): Jede Teile-ART ist eine Kategorie, die Längen
   sind die Zeilen darin. Kategorien starten eingeklappt (nur Name +
@@ -279,6 +279,23 @@ System = Reihenfolge im Excel). Daraus wird `CATALOG` erzeugt:
 - SL 70 und SL 100 sind getrennte Teile (Nutzerentscheidung).
 - Die alten 10 Beispielteile sind entfernt; alte Bestellungen damit
   werden über den gespeicherten deutschen Namen weiter angezeigt.
+- **Ergänzt aus den Lieferscheinen** (Modul, SL 70/SL 100, Tribünen; Abgleich
+  Nov. 2026, 58 neue Teile-Arten, 106 Positionen, ALLE ohne Gewicht):
+  Modul: Stiel 3,5 m, Abhubsicherung, Unterlage (Kantholz, auch Tribüne),
+  Doppelkeilkopfkupplung (≠ Keilkopfkupplung, Nutzer), Anschraubkupplung,
+  ZVK = Zugverbindungskupplung + Dorn (für Gitterträger/Rohre, Modul + Rahmen).
+  Rahmen: Durchstiegstafel SL 70 (3 m)/SL 100 (2,5 m), **Belag Holz** (`belagHolz`;
+  der bisherige `belag` heißt jetzt „Belag Stahl“, IDs unverändert – Nutzer: ja,
+  trennen), Ausleger-/Seitengeländerrahmen, Doppelseitengeländer, Diagonale
+  0,7–2,0, Geländer/Bordbrett 0,7, untere Diagonalbefestigung, Geländerpfosten-/
+  Schutzgitterstütze, Traverse 70/110, Druck-/Zugkupplung, Abstandsrohr + Dübel,
+  Fußplatte, Leiter, Schwerlastgitterträger, Belagstraverse, Netz 2,5/3 m, Planen
+  und DDS-Netz zusätzlich mit Längen (ohne Länge bleibt), Blitzbinder,
+  Treppenwange, Werbeplane. Tribüne: eigene Typen `t…` (Vertikalstiel, Fußplatten,
+  U-Riegel/Riegel 0,76–2,57, 8 Diagonalen mit Farbe als Varianten `td157x050` …,
+  Beläge/Bleche/Sitze 1,57/2,57, Treppe, Geländer mit Kindersicherung, Keile,
+  Schrauben-Sets, Modultreppe); Rohr gilt auch für Tribüne. OFFEN: Gewichte,
+  „Protecktrupfen“ (unklar, ob = Protect-Netz). Prüfung `tribuene`.
 
 ## Gewicht (wichtig für den LKW)
 
@@ -1031,6 +1048,5 @@ Ohne das SQL klappt die Anmeldung nicht (`login_lookup`).
 - Kundenansicht (bewusst offen gelassen).
 - Rest von Paket 4: Bestellungen/Bestand/Beweise in eigene Server-Zeilen.
 
-- Reiter „Tribüne": keine Teile-Liste vorhanden (im Kunden-Excel nur
-  Modul + System) – sobald sie kommt, als drittes System ergänzen.
+- Gewichte für die neuen Teile (v. a. Tribüne) und Klärung „Protecktrupfen“.
 - Echte Paketgrößen pro Teil (`pkg`) für die Lieferschein-Umrechnung.

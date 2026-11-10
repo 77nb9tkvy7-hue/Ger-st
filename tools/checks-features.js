@@ -745,6 +745,34 @@ module.exports = ({ switchRole, shot }) => {
       else if (c.cancelN !== c.n0 || c.asked1 !== 2 || c.asked !== 2 || c.n1 !== c.n0 - 1) p.push('Chef-Löschen falsch: ' + JSON.stringify(c));
       return errs(errors, p);
     },
+    // Tribüne = dritter System-Reiter (Bestellen + Inventur); neue Teile aus den Lieferscheinen
+    'tribuene': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      const a = await ev(page, () => {
+        const tabs = [...document.querySelectorAll('[data-action="system-tab"]')].map(b => b.dataset.sys);
+        state.systemSel = 'tribuene'; state.catalogSearch = ''; render();
+        const cats = document.querySelectorAll('.art').length;
+        state.catalogSearch = 'frosch'; render();
+        const hit = /Frosch/.test(document.getElementById('app').textContent);
+        state.catalogSearch = ''; render();
+        const ids = CATALOG.map(c => c.id);
+        return { tabs, cats, hit, dup: ids.length - new Set(ids).size, keep: ['stielMZ_200', 'belag_300', 'rahmenSL70_200offen', 'anker', 'planen'].every(id => ids.includes(id)) };
+      });
+      if (a.tabs.join() !== 'modul,system,tribuene') p.push('System-Reiter: ' + a.tabs.join());
+      if (!a.cats) p.push('Tribüne zeigt keine Kategorien');
+      if (!a.hit) p.push('Suche findet Frosch nicht');
+      if (a.dup) p.push('doppelte Artikel-IDs: ' + a.dup);
+      if (!a.keep) p.push('alte Artikel-IDs fehlen');
+      await ev(page, () => { state.systemSel = 'tribuene'; render(); const d = [...document.querySelectorAll('.art')].find(x => /Diagonale/.test(x.textContent)); if (d) { const b = d.querySelector('button, [data-action]'); if (b) b.click(); } const t = document.querySelector('[data-action="system-tab"][data-sys="tribuene"]'); if (t) t.scrollIntoView(); });
+      await page.waitForTimeout(200);
+      await shot(page, 'tribuene', 'baustelle', 390, false);
+      await switchRole(page, 'lager');
+      const l = await ev(page, () => { state.lagerTab = 'inventur'; state.systemSel = 'tribuene'; render(); return document.querySelectorAll('.inv-row').length; });
+      if (l < 50) p.push('Inventur Tribüne: nur ' + l + ' Zeilen');
+      await ev(page, () => { state.systemSel = 'modul'; render(); });
+      return errs(errors, p);
+    },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
     'einstellungen': async ({ page, errors }) => {
       const p = [];
