@@ -812,6 +812,30 @@ module.exports = ({ switchRole, shot }) => {
       if (ro) p.push('Baustelle sieht Teile-Listen-Editor');
       return errs(errors, p);
     },
+    // Notizen im Bauvorhaben (nur Chef)
+    'bv-notiz': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      const a = await ev(page, async () => {
+        const pr = state.projects.find(x => x.aktiv);
+        state.view = 'app'; state.chefTab = 'bauvorhaben'; state.chefProjekt = pr.id; render();
+        const ta = document.getElementById('bvNotiz-' + pr.id);
+        if (!ta) return { noField: true };
+        ta.value = 'Kran erst ab 9 Uhr\nSchlüssel bei Hausmeister'; ta.dispatchEvent(new Event('change', { bubbles: true }));
+        await new Promise(r => setTimeout(r, 400));
+        render();
+        const again = document.getElementById('bvNotiz-' + pr.id).value;
+        state.chefProjekt = null; render();
+        const mark = [...document.querySelectorAll('.proj-row')].some(r => r.dataset.id == pr.id && r.querySelector('[title*="Kran"]'));
+        return { saved: pr.notiz, again, mark, id: pr.id };
+      });
+      if (a.noField) p.push('kein Notizfeld im BV');
+      else if (!/Kran/.test(a.saved || '') || !/Hausmeister/.test(a.again) || !a.mark) p.push('Notiz nicht gespeichert/angezeigt: ' + JSON.stringify(a));
+      await switchRole(page, 'fahrer');
+      const f = await ev(page, () => { state.fahrerTab = 'bauvorhaben'; render(); return !document.querySelector('[id^="bvNotiz-"]') && !/Hausmeister/.test(document.getElementById('app').textContent); });
+      if (!f) p.push('Fahrer sieht die Notiz');
+      return errs(errors, p);
+    },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
     'einstellungen': async ({ page, errors }) => {
       const p = [];

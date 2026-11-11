@@ -507,6 +507,10 @@ qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
    `p.id` ANZEIGEN – `p.id` bleibt der feste Schlüssel (Bestellungen, Fotos, Stunden,
    Pläne `bv<id>/…`, Fahrten). `freigabe_info()` liefert `nr` (SQL neu ausführen).
    Prüfung `bv-nummer`.
+   **Notizen** (Nutzerwunsch „zum Sachen merken“): im BV-Detail unter dem
+   Maps-Link Textfeld „✏ Notizen“ (`bvNotiz-<id>`, nur Chef, speichert per
+   `change` = beim Verlassen in `p.notiz`, max. 4000 Zeichen); BV-Liste zeigt ✏
+   (Text als Tooltip). Lager/Fahrer/Baustelle sehen sie nicht. Prüfung `bv-notiz`.
    Antippen öffnet die Detail-Ansicht (`state.chefProjekt`,
    `projektDetailHTML()`): Karte mit Status-Farbe, was „vor Ort" bzw.
    bestellt/unterwegs ist, als fertig markieren/reaktivieren und
