@@ -310,6 +310,8 @@ System = Reihenfolge im Excel). Daraus wird `CATALOG` erzeugt:
   Sitzauflager, Sitzbelag/Schalensitzauflager (= Sitzbank), Sitzbelag-Abschluss,
   Schalensitz, Rückengeländer mit Kindersicherung, Keile. Rest ohne Gewicht.
   OFFEN: übrige Gewichte, „Protecktrupfen“ (unklar, ob = Protect-Netz).
+- **Vlies** (`vlies`, Nutzer: „Fließ“, in ALLEN drei Listen, ohne Länge/Gewicht;
+  Suche findet auch „Fließ“/„Fliess“ über `PART_ALIASES`). Prüfung `vlies`.
   Prüfung `tribuene`.
 
 ## Gewicht (wichtig für den LKW)
@@ -398,6 +400,15 @@ qrcode-generator liegen mit Lizenz im Ordner `vendor/`.
 - Tests mit Playwright: Service Worker in Tests mit Supabase-Nachbau per
   `page.route` blockieren (`service_workers='block'`), sonst lädt der SW die
   echte Bibliothek an der Attrappe vorbei.
+
+## REGEL: Bestellen überall gleich (Nutzerwunsch, gilt dauerhaft)
+
+Jede künftige Änderung am **Bestellen** (Teile-Liste, Mengen, Ablauf, Entwurf,
+Suche, Aussehen …) gilt IMMER an allen Stellen gleichzeitig: Baustelle
+(`catalogHTML()`), Chef-Reiter „Planen“ und „Lieferung hinzufügen“ im BV-Detail
+(`planFormHTML()`/`planReviewHTML()`) – außer der Nutzer sagt ausdrücklich, dass
+es nur für eine Stelle gelten soll. Gemeinsame Bausteine nutzen (`artListHTML()`,
+`variantRowHTML()`, `qtyControlHTML()`, `systemTabsHTML()`, `catalogSearchHTML()`).
 
 ## Die 4 Rollen
 
