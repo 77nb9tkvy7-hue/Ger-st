@@ -119,7 +119,16 @@ Prüfung `einstellungen`.
    zusammengeführt); fehlt ein Eintrag, gilt der Standard (= früheres Verhalten).
    ALLE Push-Aufrufe laufen über `notifyEv(ev, direktNamen, titel, text, vars)` –
    neue Ereignisse dort + in `NOTIFY_EVENTS` + Texte `nev_<ev>` (5 Sprachen).
-5. **Version** klein ganz unten (`APP_VERSION`, Format JJJJ.MM.TT – bei jeder
+5. **Teile-Listen** (nur Chef, `partsSettingsHTML()`, Nutzerwunsch: Namen ändern,
+   Reihenfolge festlegen, nicht benutzte Teile weg): Reiter je System, je Teile-Art
+   Namensfeld (`.ps-name`, `change` → `state.partNames[typ]`, leer = Original; gilt
+   in allen Sprachen, Suche findet auch den Originalnamen), ⤒ ↑ ↓ (`ps-move` →
+   `state.partOrder[sys]` = 'typ,typ,…', `sysPartOrder()`), „Ausblenden“
+   (`ps-hide` → `state.partHidden['sys:typ']`, `inSystem()`/`systemCategories()`
+   lassen sie weg – Bestellen, Planen, Inventur), „Reihenfolge zurücksetzen“
+   (`ps-reset`). Alles im Datensatz (`partNames`/`partOrder`/`partHidden`, je
+   Schlüssel zusammengeführt). Artikel-IDs ändern sich NIE. Prüfung `teile-listen`.
+6. **Version** klein ganz unten (`APP_VERSION`, Format JJJJ.MM.TT – bei jeder
    Änderung an der App hochsetzen). Prüfung `benachrichtigung`.
 
 **Kalender-Umschalter**: Im Menü nur noch „Kalender“; oben auf Kalender und
@@ -317,6 +326,10 @@ Fahrer-Widgets „Zu laden"/„Auf dem LKW" zeigen das Gesamtgewicht.
 **Excel-Werte haben IMMER Vorrang** (Nutzer: „lieber die Werte von der
 Exceltabelle nehmen“) – Herstellerkataloge nur für Lücken, nie Excel-Gewichte
 überschreiben (z. B. Modul-Diagonale 0,70 m bleibt 9,2 kg wie im Excel).
+Rahmen ist plettac SL 70/100 (Nutzer): Lücken aus Katalog plettac SL 01/2023
+(Belag Holz = Holzboden SL B32 maschinell sortiert, 1,0 m = 110 cm; Diagonale
+1,5/2,0 m; Geländer 0,7 m; untere Diagonalbefestigung; Traverse 70/110;
+Fußplatte). Tribüne: meist Layher, teils andere Firma.
 Modul ist plettac contur (Nutzer): fehlende Modul-Gewichte aus dem Katalog
 plettac contur 03/2024 (Diagonale 1,00/1,50 m = H200, Abhubsicherung =
 „Belagsicherung SL-Auflage“ außer 1,0 m, Bordbrett 0,7 m). Teile ohne
