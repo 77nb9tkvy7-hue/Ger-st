@@ -853,6 +853,21 @@ module.exports = ({ switchRole, shot }) => {
       await page.waitForTimeout(300); await shot(page, 'look-bv', 'chef', 390, false);
       return errs(errors, p);
     },
+    // Vlies (umgangssprachlich „Fließ“) in allen drei Teile-Listen, Suche findet beide Schreibweisen
+    'vlies': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      const r = await ev(page, () => ['modul', 'system', 'tribuene'].map(sys => {
+        state.systemSel = sys; state.catalogSearch = 'fließ'; render();
+        const a = /Vlies/.test(document.querySelector('.art-list').textContent);
+        state.catalogSearch = ''; render();
+        const b = [...document.querySelectorAll('.art')].some(x => /Vlies/.test(x.textContent));
+        return sys + ':' + a + '/' + b;
+      }));
+      if (r.some(x => /false/.test(x))) p.push('Vlies fehlt: ' + r.join(' '));
+      await ev(page, () => { state.systemSel = 'modul'; render(); });
+      return errs(errors, p);
+    },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
     'einstellungen': async ({ page, errors }) => {
       const p = [];
