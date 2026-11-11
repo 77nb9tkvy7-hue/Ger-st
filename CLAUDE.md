@@ -955,6 +955,12 @@ zeitig eingeloggt sind). "Lieferung einplanen" legt einen Eintrag in
 `state.plannedDeliveries` an (`{id, projekt, date, items, person}`,
 eigener Zähler `state.planCounter`, im selben Supabase-Datensatz wie
 alles andere) und leert Formular + Warenkorb wieder.
+**Gleiches Aussehen wie bei der Baustelle** (Nutzerwunsch „auf den neuesten
+Stand wie auf der Baustelle“): `planFormHTML()` steht NICHT mehr in einer
+`.order-card`, sondern wie `catalogHTML()` in `.catalog-col` – BV + Lieferdatum
+als `.bv-line`, Suche, System-Reiter, `artListHTML(true)` inkl. „Häufig
+bestellt“. Gilt im Reiter „Planen“ und im BV-Detail („Lieferung hinzufügen“).
+Bildvergleich: `node tools/demo-check.js planen-look` (nur Screenshots).
 
 Lager (eigener 3. Reiter "Geplant") und Fahrer (eigener 3. Reiter
 "Geplant", neben "Lieferungen" und "Bauvorhaben") sehen dieselbe Liste
