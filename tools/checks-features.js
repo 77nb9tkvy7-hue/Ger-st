@@ -836,6 +836,23 @@ module.exports = ({ switchRole, shot }) => {
       if (!f) p.push('Fahrer sieht die Notiz');
       return errs(errors, p);
     },
+    // Bildvergleich: Bestellliste Baustelle vs. Planen (Chef) vs. BV-Detail
+    'planen-look': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'baustelle');
+      await ev(page, () => { state.systemSel = 'modul'; state.openArt = 'stielMZ'; render(); const x = document.querySelector('.art-list'); if (x) window.scrollTo(0, x.getBoundingClientRect().top + scrollY - 160); });
+      await page.waitForTimeout(300); await shot(page, 'look-baustelle', 'baustelle', 390, false);
+      await ev(page, () => { const x = [...document.querySelectorAll('.art')].find(a => /Spindel/.test(a.textContent)); if (x) window.scrollTo(0, x.getBoundingClientRect().top + scrollY - 160); });
+      await page.waitForTimeout(300); await shot(page, 'look-baustelle2', 'baustelle', 390, false);
+      await switchRole(page, 'chef');
+      await ev(page, () => { state.chefTab = 'planen'; state.systemSel = 'modul'; state.openArt = 'stielMZ'; render(); window.scrollTo(0, 0); });
+      await page.waitForTimeout(300); await shot(page, 'look-planen', 'chef', 390, false);
+      await ev(page, () => { const x = document.querySelector('.art-list'); if (x) window.scrollTo(0, x.getBoundingClientRect().top + scrollY - 160); });
+      await page.waitForTimeout(300); await shot(page, 'look-planen2', 'chef', 390, false);
+      await ev(page, () => { state.chefTab = 'bauvorhaben'; state.chefProjekt = state.projects.find(x => x.aktiv).id; render(); const x = document.querySelector('.art-list'); if (x) window.scrollTo(0, x.getBoundingClientRect().top + scrollY - 200); });
+      await page.waitForTimeout(300); await shot(page, 'look-bv', 'chef', 390, false);
+      return errs(errors, p);
+    },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
     'einstellungen': async ({ page, errors }) => {
       const p = [];

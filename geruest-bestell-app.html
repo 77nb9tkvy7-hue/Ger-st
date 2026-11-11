@@ -195,6 +195,9 @@
   .bv-line label{font-size:var(--fs-small);color:var(--muted);font-weight:600;flex:none;}
   .bv-line select{flex:1;min-width:0;min-height:var(--tap);padding:0 12px;border:1.5px solid var(--line);border-radius:12px;font-size:var(--fs-body);font-family:inherit;background:var(--card);color:var(--ink);text-overflow:ellipsis;}
   .bv-line select:focus{outline:none;border-color:var(--accent);}
+  .bv-line input[type=date]{flex:1;min-width:0;min-height:var(--tap);padding:0 12px;border:1.5px solid var(--line);border-radius:12px;font-size:var(--fs-body);font-family:inherit;background:var(--card);color:var(--ink);}
+  .bv-line input[type=date]:focus{outline:none;border-color:var(--accent);}
+  .plan-col{margin-bottom:8px;}
   .katalog-search.big{height:56px;min-height:56px;font-size:17px;padding:0 16px;border-radius:14px;border-width:2px;margin:0 0 10px 0;-webkit-appearance:none;appearance:none;}
   .quick-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 0 10px 0;}
   .quick-chips::-webkit-scrollbar{display:none;}
@@ -5196,19 +5199,22 @@ function projektDetailHTML(p){
 function planFormHTML(fixedProjekt){
   const aktive = state.projects.filter(p=>p.aktiv);
   const count = cartCount();
-  return `<div class="order-card">
-    ${fixedProjekt? '' : `<div class="field"><label>${t('projektLabel')}</label>
+  // gleicher Aufbau wie die Bestellliste der Baustelle (catalogHTML): Kopfzeilen, Suche, Reiter, Teile-Liste mit „Häufig bestellt“
+  return `<div class="catalog-col plan-col">
+    ${fixedProjekt? '' : `<div class="bv-line">
+      <label for="planProjektSelect">${t('projektLabel')}</label>
       <select id="planProjektSelect">
         <option value="">${t('plProjektPlaceholder')}</option>
         ${aktive.map(p=>`<option value="${p.id}" ${String(state.planDraft.projekt)===String(p.id)?'selected':''}>BV ${bvNr(p)} – ${p.name}</option>`).join('')}
       </select>
     </div>`}
-    <div class="field"><label>${t('plDatumLabel')}</label>
+    <div class="bv-line">
+      <label for="planDateInput">${t('plDatumLabel')}</label>
       <input type="date" id="planDateInput" value="${state.planDraft.date}">
     </div>
     ${catalogSearchHTML()}
     ${systemTabsHTML()}
-    ${artListHTML(false)}
+    ${artListHTML(true)}
     <div id="planWarnArea">${state.planWarn? `<div class="warn">${state.planWarn}</div>`:''}</div>
     <div class="order-footer">
       <span>${count? t('footerCount',{n:count}) + (weightText(cartItems())? ' · '+weightText(cartItems()) : '') : t('footerEmpty')}</span>
