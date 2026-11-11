@@ -773,6 +773,45 @@ module.exports = ({ switchRole, shot }) => {
       await ev(page, () => { state.systemSel = 'modul'; render(); });
       return errs(errors, p);
     },
+    // Teile-Listen (Chef, Einstellungen): umbenennen, Reihenfolge, ausblenden
+    'teile-listen': async ({ page, errors }) => {
+      const p = [];
+      await switchRole(page, 'chef');
+      await ev(page, () => { state.menuOpen = true; render(); });
+      await page.click('[data-action="go-einstellungen"]'); await page.waitForTimeout(300);
+      const a = await ev(page, async () => {
+        const rows = document.querySelectorAll('.ps-row').length;
+        const inp = document.getElementById('psName-belag');
+        if (!inp) return { rows, noInput: true };
+        inp.value = 'Stahlboden'; inp.dispatchEvent(new Event('change', { bubbles: true }));
+        await new Promise(r => setTimeout(r, 300));
+        document.querySelector('[data-action="ps-move"][data-type="belag"][data-d="top"]').click();
+        await new Promise(r => setTimeout(r, 300));
+        document.querySelector('[data-action="ps-hide"][data-type="anker"]').click();
+        await new Promise(r => setTimeout(r, 300));
+        return { rows, first: sysPartOrder('modul')[0], name: state.partNames.belag, hid: partHiddenIn('modul', 'anker') };
+      });
+      if (a.noInput || a.rows < 30) p.push('Teile-Liste fehlt: ' + JSON.stringify(a));
+      else if (a.first !== 'belag' || a.name !== 'Stahlboden' || !a.hid) p.push('Ändern klappt nicht: ' + JSON.stringify(a));
+      await ev(page, () => { const x = document.querySelector('.ps-card'); if (x) window.scrollTo(0, x.getBoundingClientRect().top + scrollY - 60); });
+      await page.waitForTimeout(2500);
+      await shot(page, 'teile-listen', 'chef', 390, false);
+      await switchRole(page, 'baustelle');
+      const b = await ev(page, () => {
+        state.view = 'app'; state.systemSel = 'modul'; state.catalogSearch = ''; render();
+        const arts = [...document.querySelectorAll('.art')].map(x => x.textContent.replace(/\s+/g, ' ').trim());
+        const firstArt = arts.findIndex(x => /Stahlboden/.test(x));
+        const anker = arts.some(x => /^Anker/.test(x));
+        state.catalogSearch = 'belag stahl'; render();
+        const byOrig = /Stahlboden/.test(document.getElementById('app').textContent);
+        state.catalogSearch = ''; render();
+        return { firstArt, anker, byOrig, nameInCatalog: CATALOG.filter(c => c.type === 'belag').map(itemName)[0] };
+      });
+      if (b.firstArt < 0 || b.anker || !b.byOrig || !/^Stahlboden/.test(b.nameInCatalog)) p.push('Baustelle sieht Änderung nicht: ' + JSON.stringify(b));
+      const ro = await ev(page, () => { state.view = 'einstellungen'; render(); const r = !!document.querySelector('.ps-row'); state.view = 'app'; render(); return r; });
+      if (ro) p.push('Baustelle sieht Teile-Listen-Editor');
+      return errs(errors, p);
+    },
     // Einstellungen: Lager-Standort (nur Chef ändert), Hell/Dunkel pro Gerät, Sprache
     'einstellungen': async ({ page, errors }) => {
       const p = [];
