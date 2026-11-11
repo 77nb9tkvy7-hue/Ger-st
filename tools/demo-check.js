@@ -389,7 +389,13 @@ const CHECKS = {
     await page.locator('.art.open [data-action="qty-quick"][data-id="konsole30M"][data-q="5"]').click();
     await page.locator('.art.open [data-action="qty"][data-id="konsole30M"][data-delta="1"]').click();
     await page.waitForTimeout(150);
-    await page.click('[data-action="add-planned-delivery"]');
+    await page.click('[data-action="plan-review-open"]');
+    await page.waitForTimeout(300);
+    const rv = await page.evaluate(() => ({ open: !!state.planReview, rows: document.querySelectorAll('.overlay .review-table tbody tr').length, n: state.plannedDeliveries.length }));
+    if (!rv.open || rv.rows !== 1) problems.push('Entwurf „Lieferung prüfen“ fehlt: ' + JSON.stringify(rv));
+    if (rv.n !== before) problems.push('schon vor dem Bestätigen eingeplant');
+    await shot(page, 'plan-review', 'chef', 390, false);
+    await page.click('.overlay [data-action="add-planned-delivery"]');
     await page.waitForTimeout(300);
     const r = await page.evaluate(() => ({ n: state.plannedDeliveries.length, last: state.plannedDeliveries[state.plannedDeliveries.length - 1], warn: state.planWarn }));
     console.log(`  geplant vorher ${before}, nachher ${r.n}; letzte: ${JSON.stringify(r.last && r.last.items)} ${r.warn || ''}`);

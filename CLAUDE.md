@@ -960,6 +960,11 @@ Stand wie auf der Baustelle“): `planFormHTML()` steht NICHT mehr in einer
 `.order-card`, sondern wie `catalogHTML()` in `.catalog-col` – BV + Lieferdatum
 als `.bv-line`, Suche, System-Reiter, `artListHTML(true)` inkl. „Häufig
 bestellt“. Gilt im Reiter „Planen“ und im BV-Detail („Lieferung hinzufügen“).
+Auch der **Ablauf** wie bei der Baustelle: Fußleiste „Lieferung prüfen“
+(`plan-review-open`, prüft BV + Datum) → Entwurf `planReviewHTML()`
+(`state.planReview = {projekt, date}`, pausiert das 4-s-Neuzeichnen) →
+„Lieferung verbindlich einplanen“ (`add-planned-delivery`, Toast `plDoneToast`)
+bzw. „Zurück zur Liste“.
 Bildvergleich: `node tools/demo-check.js planen-look` (nur Screenshots).
 
 Lager (eigener 3. Reiter "Geplant") und Fahrer (eigener 3. Reiter
