@@ -314,6 +314,9 @@ Bestätigungs-Ticket, gedrucktem Lieferschein (Spalte Gewicht +
 Gesamtgewicht), in der Fußleiste beim Auswählen (Baustelle + Chef-
 Planung), im Teile-Popup und klein unter der Einheit in der Tabelle;
 Fahrer-Widgets „Zu laden"/„Auf dem LKW" zeigen das Gesamtgewicht.
+**Excel-Werte haben IMMER Vorrang** (Nutzer: „lieber die Werte von der
+Exceltabelle nehmen“) – Herstellerkataloge nur für Lücken, nie Excel-Gewichte
+überschreiben (z. B. Modul-Diagonale 0,70 m bleibt 9,2 kg wie im Excel).
 Modul ist plettac contur (Nutzer): fehlende Modul-Gewichte aus dem Katalog
 plettac contur 03/2024 (Diagonale 1,00/1,50 m = H200, Abhubsicherung =
 „Belagsicherung SL-Auflage“ außer 1,0 m, Bordbrett 0,7 m). Teile ohne
